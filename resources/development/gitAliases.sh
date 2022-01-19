@@ -1,0 +1,22 @@
+#!/bin/sh
+
+git config alias.br 'branch'
+git config alias.co 'checkout'
+git config alias.ci 'commit'
+git config alias.st 'status'
+git config alias.df 'diff'
+git config alias.dfs 'diff --staged'
+git config alias.amend 'commit --amend'
+git config alias.unstage 'reset HEAD --'
+git config alias.chmodx 'update-index --chmod=+x'
+git config alias.chmod-x 'update-index --chmod=-x'
+git config alias.reset-hom 'reset --hard origin/master'
+git config alias.logo 'log --oneline'
+git config alias.logs 'log --oneline --stat'
+git config alias.logg 'log --oneline --graph --decorate --all'
+git config alias.last 'log -1 --stat'
+git config alias.lg "log --graph --all --pretty=tformat:'%C(auto)%h%d%Creset %s %C(dim green)(%cr) %C(cyan)<%an>%Creset'"
+git config alias.p 'push'
+git config alias.pf 'push --force'
+git config alias.root 'rev-parse --show-toplevel'
+git config alias.alias  ' ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /'
