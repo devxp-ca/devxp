@@ -40,7 +40,7 @@ Obviously this is completely subject to new ideas and change, just a rough idea 
  - Basic Authentication / login
  - Connecting to an existing project via GitHub API
  - Single language support, detecting if that is the language of the project
- - Installing basic linter tool of corresponding language
+ - Installing basic linter tool of corresponding language (For example if we picked JS to support first, the linter to use would be es-lint)
  - UI for changing linting rules (language specific)
  - "Save" button to commit changes into repo
  - Code quality report generators (percentage of comments, percentage of newlines, file headers)
@@ -61,3 +61,21 @@ Obviously this is completely subject to new ideas and change, just a rough idea 
  - Individual framework support (like for react, or magento, or other common frameworks)
  - Fifth language support (linter setup + linting rules, UI, detection)
  - etc etc with the language support (We could stop at just a couple, or if we have time add more and more)
+
+## Existing competitors
+
+Honestly, I find it difficult to find anything like this which has the goal of simplicity for the end-user. Obviously all of the tools to do the heavy lifting, ie the linters, git features, etc, are already out there, but simplified GUIs intended to be used by people without prerequisite technology knowledge are sparse. Large cloud providers like Google Cloud, AWS, and Azure have dashboards for most of their features, but the complexity is very high, and most of their tools are either much more broad, or much more integrated then what I'm proposing here. For example with deployment, DXaaS would not actually create new deployment software, instead it would just provide an easy to use visual way to configure/initialize deployment pipelines in a project USING GCP, AWS, etc etc.
+
+Even just looking for strictly linter configuration tools, never mind any of the other features, I found the following (subpar) options:
+
+https://marketplace.visualstudio.com/items?itemName=Anna-JayneMetcalfe.VisualLint
+Strictly for visual studio code, and seems to be aimed more at actual developers by providing analysis to the developer themselves, as opposed to allowing the owner to globally configure how linters will work on a project-wide basis for all developers. Seems limited and frankly it looks awful.
+
+https://github.com/coala/coala
+A great looking language-agnostic linter, but is just that, a linter. No GUI, requires technology knowledge to setup the config file.
+
+https://github.com/conventional-changelog/commitlint
+Great linter for commit messages, so overlaps with some of our functionality, but again, is CLI only.
+
+https://megalinter.github.io/latest/
+The closest thing I've found to what I've envisioned, but again no GUI, doesn't operate out of browser. Seems more targeted to a developer leading a project, not a business owner with minimal tooling experience. 
