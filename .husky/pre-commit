@@ -1,0 +1,22 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+FRONTEND=0
+BACKEND=0
+STATUS=0
+
+git diff --cached --name-only | grep '^frontend' >/dev/null && FRONTEND=1
+git diff --cached --name-only | grep '^backend' >/dev/null && BACKEND=1
+
+[ $FRONTEND -eq 1 ] && {
+	cd frontend
+	npm run format && npm run lint:fix || STATUS=1
+	cd ..
+}
+[ $BACKEND -eq 1 ] && {
+	cd backend
+	npm run format && npm run lint:fix || STATUS=1
+	cd ..
+}
+
+exit $STATUS

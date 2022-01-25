@@ -9,7 +9,8 @@
         "dev": "nodemon",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "format": "prettier --config .prettierrc.json 'src/**/*.ts' --write"
+        "format": "prettier --config .prettierrc.json 'src/**/*.ts' --write",
+        "prepare": "cd .. && husky install backend/.husky"
     },
     "husky": {
         "hooks": {
