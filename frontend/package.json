@@ -1,19 +1,53 @@
 {
-  "name": "dxaas-frontend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo 'Tests not setup' ; exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/emerald-river/startup.git"
-  },
-  "author": "Emerald River",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/emerald-river/startup/issues"
-  },
-  "homepage": "https://github.com/emerald-river/startup#readme"
+	"name": "dxaas-frontend",
+	"version": "1.0.0",
+	"description": "React frontend for DXaaS webapp",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo 'Tests not setup' ; exit 1",
+		"dev": "webpack-dev-server --config ./webpack.config.js",
+		"build": "webpack --mode=production",
+		"lint": "eslint .",
+		"lint:fix": "eslint --fix",
+		"format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json",
+		"prepare": "cd .. && husky install frontend/.husky"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run format && npm run lint:fix"
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/emerald-river/startup.git"
+	},
+	"author": "Emerald River",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/emerald-river/startup/issues"
+	},
+	"homepage": "https://github.com/emerald-river/startup#readme",
+	"dependencies": {
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.16.12",
+		"@babel/preset-env": "^7.16.11",
+		"@babel/preset-react": "^7.16.7",
+		"babel-loader": "^8.2.3",
+		"css-loader": "^6.5.1",
+		"eslint": "^8.7.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"eslint-plugin-react": "^7.28.0",
+		"file-loader": "^6.2.0",
+		"html-webpack-plugin": "^5.5.0",
+		"husky": "^7.0.4",
+		"prettier": "^2.5.1",
+		"style-loader": "^3.3.1",
+		"webpack": "^5.67.0",
+		"webpack-cli": "^4.9.2",
+		"webpack-dev-server": "^4.7.3"
+	}
 }
