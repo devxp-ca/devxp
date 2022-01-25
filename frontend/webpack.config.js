@@ -1,6 +1,8 @@
-const path = require('path');
-const fs = require('fs');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+/* eslint no-undef: "off" */
+
+const path = require("path");
+const fs = require("fs");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 // App directory
 const appDirectory = fs.realpathSync(process.cwd());
@@ -8,29 +10,26 @@ const appDirectory = fs.realpathSync(process.cwd());
 // Gets absolute path of file within app directory
 const resolveAppPath = relativePath => path.resolve(appDirectory, relativePath);
 
-// Host
-const host = process.env.HOST || 'localhost';
-
 // Required for babel-preset-react-app
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = "development";
 
 module.exports = {
 	entry: path.join(__dirname, "src", "index.js"),
 	output: {
-		path:path.resolve(__dirname, "dist"),
+		path: path.resolve(__dirname, "dist")
 	},
 	resolve: {
 		modules: [
 			path.resolve(__dirname, "src"),
 			path.resolve(__dirname, "node_modules")
-		],
+		]
 	},
 	devServer: {
 		static: {
-				directory: path.join(__dirname, 'public'),
-			},
+			directory: path.join(__dirname, "public")
+		},
 		compress: true,
-		port: 9000,
+		port: 9000
 	},
 	module: {
 		rules: [
@@ -40,24 +39,24 @@ module.exports = {
 				use: {
 					loader: "babel-loader",
 					options: {
-						presets: ['@babel/preset-env', '@babel/preset-react']
+						presets: ["@babel/preset-env", "@babel/preset-react"]
 					}
 				}
 			},
 			{
 				test: /\.css$/i,
-				use: ["style-loader", "css-loader"],
+				use: ["style-loader", "css-loader"]
 			},
 			{
 				test: /\.(png|jp(e*)g|svg|gif)$/,
-				use: ['file-loader'],
-			},
+				use: ["file-loader"]
+			}
 		]
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			inject: true,
-			template: resolveAppPath('public/index.html'),
-		}),
-	],
-}
+			template: resolveAppPath("public/index.html")
+		})
+	]
+};
