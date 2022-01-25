@@ -11,6 +11,12 @@
         "lint:fix": "eslint --fix",
         "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json"
     },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run format && npm run lint:fix",
+            "post-merge": "../resources/development/packageChanged.sh backend && npm install"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/emerald-river/startup.git"
@@ -37,6 +43,7 @@
         "eslint-plugin-react": "^7.28.0",
         "file-loader": "^6.2.0",
         "html-webpack-plugin": "^5.5.0",
+        "husky": "^7.0.4",
         "prettier": "^2.5.1",
         "style-loader": "^3.3.1",
         "webpack": "^5.67.0",
