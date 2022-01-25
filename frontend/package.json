@@ -1,0 +1,19 @@
+{
+  "name": "dxaas-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'Tests not setup' ; exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emerald-river/startup.git"
+  },
+  "author": "Emerald River",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emerald-river/startup/issues"
+  },
+  "homepage": "https://github.com/emerald-river/startup#readme"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "dxaas-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API for DXaaS",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo 'Testing not setup' ; exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emerald-river/startup.git"
+  },
+  "author": "Emerald River",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emerald-river/startup/issues"
+  },
+  "homepage": "https://github.com/emerald-river/startup#readme"
+}
