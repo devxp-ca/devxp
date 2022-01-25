@@ -1,0 +1,41 @@
+{
+    "name": "dxaas-backend",
+    "version": "1.0.0",
+    "description": "Backend REST API for DXaaS",
+    "main": "src/index.ts",
+    "scripts": {
+        "test": "echo 'Testing not setup' ; exit 1",
+        "build": "tsc",
+        "dev": "nodemon",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run lint:fix && npm run format",
+            "post-merge": "../resources/development/packageChanged.sh backend && npm install"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/emerald-river/startup.git"
+    },
+    "author": "Emerald River",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/emerald-river/startup/issues"
+    },
+    "homepage": "https://github.com/emerald-river/startup#readme",
+    "devDependencies": {
+        "@types/node": "^17.0.11",
+        "@typescript-eslint/eslint-plugin": "^5.10.1",
+        "@typescript-eslint/parser": "^5.10.1",
+        "eslint": "^8.7.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "husky": "^7.0.4",
+        "prettier": "^2.5.1",
+        "typescript": "^4.5.5"
+    }
+}
