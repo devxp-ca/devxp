@@ -14,7 +14,7 @@ const resolveAppPath = relativePath => path.resolve(appDirectory, relativePath);
 process.env.NODE_ENV = "development";
 
 module.exports = {
-	entry: path.join(__dirname, "src", "index.js"),
+	entry: path.join(__dirname, "src", "index.tsx"),
 	output: {
 		path: path.resolve(__dirname, "dist")
 	},
@@ -22,7 +22,8 @@ module.exports = {
 		modules: [
 			path.resolve(__dirname, "src"),
 			path.resolve(__dirname, "node_modules")
-		]
+		],
+		extensions: ['.tsx', '.ts', '.js']
 	},
 	devServer: {
 		static: {
@@ -33,6 +34,11 @@ module.exports = {
 	},
 	module: {
 		rules: [
+			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/,
+			},
 			{
 				test: /\.?js$/,
 				exclude: /node_modules/,
