@@ -6,6 +6,7 @@
     "scripts": {
         "test": "echo 'Testing not setup' ; exit 1",
         "build": "tsc",
+        "start": "node build/index.js",
         "dev": "nodemon",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
