@@ -1,8 +1,7 @@
-import express, { Express, Router } from "express";
+import express, {Express, Router} from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import { Server } from "http";
-
+import {Server} from "http";
 
 /**
 	Server abstration object
@@ -14,22 +13,22 @@ export default class RESTServer {
 		otherwise uses the port set in the config file. Defaults to 8080.
 		@type {number|string}
 	*/
-	port: string | number
+	port: string | number;
 
 	/**
 		Express init object
 		@type {object}
 	*/
-	app: Express
+	app: Express;
 
-	server: Server | undefined
+	server: Server | undefined;
 
 	/**
 		Basic express setup.
 		Sets JSON encoding, url encoded bodies and static routing.
 		Sets up routes from API config
 	*/
-	constructor () {
+	constructor() {
 		// Initialize port
 		this.port = process.env.PORT ?? 8080;
 
@@ -43,11 +42,10 @@ export default class RESTServer {
 		this.app.use(cookieParser());
 
 		// support encoded bodies
-		this.app.use(bodyParser.urlencoded({ extended: true }));
-
+		this.app.use(bodyParser.urlencoded({extended: true}));
 	}
 
-	route (path: string, router: Router): void {
+	route(path: string, router: Router): void {
 		this.app.use(path, router);
 		console.log(`Created route ${path}`);
 	}
@@ -56,12 +54,12 @@ export default class RESTServer {
 		Starts the webserver.
 		This method should be run last, after init and routing.
 	*/
-	start (): void {
+	start(): void {
 		// 404 messages
 		this.app.get("*", (req, res) => {
 			console.log("Received invalid GET request for", req.url);
 
-			res.writeHead(404, { "Content-Type": "text/html" });
+			res.writeHead(404, {"Content-Type": "text/html"});
 			res.write(`
 			<html>
 				<head>
@@ -93,7 +91,12 @@ export default class RESTServer {
 		this.server = this.app.listen(this.port, () => {
 			if (this.server) {
 				const address = this.server?.address();
-				console.log("server is listening", (address && !(typeof address === "string")) ? `on port ${address.port}` : "");
+				console.log(
+					"server is listening",
+					address && !(typeof address === "string")
+						? `on port ${address.port}`
+						: ""
+				);
 			}
 		});
 
@@ -104,7 +107,7 @@ export default class RESTServer {
 	/**
 	 * Closes socket connection
 	 */
-	close (): void {
+	close(): void {
 		if (this.server) {
 			this.server.close();
 		}

@@ -23,7 +23,7 @@ module.exports = {
 			path.resolve(__dirname, "src"),
 			path.resolve(__dirname, "node_modules")
 		],
-		extensions: ['.tsx', '.ts', '.js']
+		extensions: [".tsx", ".ts", ".js"]
 	},
 	devServer: {
 		static: {
@@ -36,8 +36,8 @@ module.exports = {
 		rules: [
 			{
 				test: /\.tsx?$/,
-				use: 'ts-loader',
-				exclude: /node_modules/,
+				use: "ts-loader",
+				exclude: /node_modules/
 			},
 			{
 				test: /\.?js$/,

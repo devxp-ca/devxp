@@ -12,11 +12,6 @@
         "format": "prettier --config .prettierrc.json 'src/**/*.ts' --write",
         "prepare": "cd .. && husky install backend/.husky"
     },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run format && npm run lint:fix"
-        }
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/emerald-river/startup.git"
