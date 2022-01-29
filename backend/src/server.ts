@@ -2,6 +2,7 @@ import express, {Express, Router} from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import {Server} from "http";
+import CONFIG from "./config";
 
 /**
 	Server abstration object
@@ -30,7 +31,7 @@ export default class RESTServer {
 	*/
 	constructor() {
 		// Initialize port
-		this.port = process.env.PORT ?? 8080;
+		this.port = CONFIG.PORT;
 
 		// Initialize express
 		this.app = express();
