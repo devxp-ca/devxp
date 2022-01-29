@@ -17,7 +17,7 @@ jobs:
     - name: 'Deploy to Cloud Run'
       uses: 'google-github-actions/deploy-cloudrun@v0'
       with:
-        service: '${{ env.SERVICE }}'
-        image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}'
+        service: '${{ secrets.SERVICE }}'
+        image: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
         region: 'us-west1'
-        env_vars: 'CONNECTION_STRING=${{ env.CONNECTION_STRING }}'
+        env_vars: 'CONNECTION_STRING=${{ secrets.CONNECTION_STRING }}'
