@@ -119,3 +119,4 @@
 **/bundle*
 **/build/
 **/*.p8
+devxp-*-*.json
