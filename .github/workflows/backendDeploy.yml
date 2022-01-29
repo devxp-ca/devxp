@@ -21,6 +21,8 @@ jobs:
 
     - name: 'Build Docker image and upload to GCCR'
       run: 'cd backend && gcloud builds submit --tag gcr.io/${{ secrets.PROJECT_ID }}/devxp-backend'
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   deploy:
     needs: build
