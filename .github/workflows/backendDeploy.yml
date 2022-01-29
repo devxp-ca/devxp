@@ -8,6 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - id: 'checkout'
+      uses: actions/checkout@v2
+    
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
@@ -17,7 +20,6 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
 
     - name: 'Build Docker image and upload to GCCR'
-      uses: actions/checkout@v2
       run: 'ls -al && pwd && cd backend && gcloud builds submit --tag gcr.io/${{ secrets.PROJECT_ID }}/devxp-backend'
 
   deploy:
