@@ -5,8 +5,8 @@ This repository contains the CSC 485A startup programming course project.
 ***TL;DR***  
 *Two folders, `frontend/` and `backend/`, treat them as separate projects.*  
 *Install nodeJS.*  
-*In each `frontend/` and `backend/` run `npm install` to install JS libraries*  
-*In each `frontend/` and `backend/` run `npm run dev` to launch a live updating development server.*
+*In each run `npm install` to install JS libraries*  
+*In each run `npm run dev` to launch a live updating development server.*
 
 ## Developing
 
