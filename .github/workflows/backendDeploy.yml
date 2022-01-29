@@ -17,7 +17,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
 
     - name: 'Build Docker image and upload to GCCR'
-      run: 'cd backend && gcloud builds submit --tag gcr.io/${{ secrets.PROJECT_ID }}/devxp-backend'
+      run: 'ls -al && pwd && cd backend && gcloud builds submit --tag gcr.io/${{ secrets.PROJECT_ID }}/devxp-backend'
 
   deploy:
     needs: build
