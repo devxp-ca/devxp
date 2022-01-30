@@ -37,4 +37,4 @@ jobs:
         service: '${{ secrets.SERVICE }}'
         image: 'gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
         region: 'us-west1'
-        env_vars: 'CONNECTION_STRING=${{ secrets.CONNECTION_STRING }}'
+        env_vars: 'CONNECTION_STRING=${{ secrets.CONNECTION_STRING }},GITHUB_CLIENT_ID=${{ secrets.OAUTH_GITHUB_CLIENT_ID }},GITHUB_CLIENT_SECRET=${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}'
