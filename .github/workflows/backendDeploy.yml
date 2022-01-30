@@ -20,7 +20,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
 
     - name: 'Build Docker image and upload to GCCR'
-      run: 'cd backend && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
+      run: 'cd backend && gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
 
   deploy:
     needs: build
