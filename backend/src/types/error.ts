@@ -15,6 +15,7 @@ export default interface BaseError {
 	message?: string;
 	toArray: (array?: BaseError[]) => BaseError[];
 	toResponse: (array?: BaseError[]) => ErrorResponse;
+	serialize: () => BaseError;
 }
 
 export class BaseErrorImpl implements BaseError {
@@ -44,8 +45,18 @@ export class BaseErrorImpl implements BaseError {
 
 	toResponse(array?: BaseError[]): ErrorResponse {
 		return {
-			errors: this.toArray(array)
+			errors: this.toArray(array).map(err => err.serialize())
 		};
+	}
+
+	serialize(): BaseError {
+		return new BaseErrorImpl(
+			this.error,
+			this.path,
+			this.status,
+			this.message,
+			this.timestamp
+		);
 	}
 }
 
@@ -104,7 +115,7 @@ export class ValidationError extends BaseErrorImpl {
 
 	toResponse(array?: BaseError[]): ErrorResponse {
 		return {
-			errors: this.toArray(array)
+			errors: this.toArray(array).map(err => err.serialize())
 		};
 	}
 }

@@ -24,10 +24,19 @@ export const callbackFromGithub = (req: Request, res: Response): void => {
 				}
 			}
 		)
-		.then(res => res.data["access_token"])
-		.then(token => {
-			console.dir(`Token: ${token}`);
-			res.json({token});
+		.then(resp => {
+			if ("access_token" in resp.data) {
+				res.json({
+					token: resp.data.access_token
+				});
+			}
+			return Promise.reject(
+				new Error(
+					`${resp.data?.error ?? "GitHub Error"}: ${
+						resp.data?.error_description ?? "an error occurred"
+					}`
+				)
+			);
 		})
 		.catch(internalErrorHandler(req, res));
 };
