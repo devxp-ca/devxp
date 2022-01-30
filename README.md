@@ -9,7 +9,7 @@ This repository contains the CSC 485A startup programming course project.
 *Install nodeJS.*  
 *In each run `npm install` to install JS libraries*  
 *In each run `npm run dev` to launch a live updating development server.*
-*In `backend/` create a `.env` file, and add the CONNECTION_STRING variable from the slack channel*
+*In `backend/` create a `.env` file, and add the all the variables mentioned below, and from the slack channel*
 
 ## Developing
 
@@ -29,6 +29,12 @@ In both folders `backend/` and `frontend/` a script is setup to launch a live up
 
 For the backend, we have a connection string environment variable with the user/pass for our DB connection. The point of using an environment variable instead of hardcoding it is so that the credential doesn't show up in the git repo, ie get leaked. It'll be set automatically in deployment, but for setting it locally easiest is to create a file `.env` (notice the dot) in the `backend/` folder, and add the line sent to the slack channel.
 The `.env` is in the gitignore so it won't be tracked by the git repo, hence why we need to add it locally manually. Theres also a file called .env.sample with a template of how the .env file should look
+
+Variables which must be set:
+ - CONNECTION_STRING
+ - GITHUB_CLIENT_ID
+ - GITHUB_CLIENT_SECRET
+
 
 ## Dependencies
 
