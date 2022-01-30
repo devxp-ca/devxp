@@ -6,7 +6,7 @@ const apiV1Router = Router();
 //Here we can setup our actual API routes
 
 apiV1Router.get("/", (_req, res) =>
-	res.send({
+	res.json({
 		healthy: true
 	})
 );
