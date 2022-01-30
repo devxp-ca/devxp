@@ -1,4 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import {render} from "react-dom";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import Homepage from "./pages/homepage";
 
-ReactDOM.render(<h1>Hello World</h1>, document.getElementById("root"));
+render(
+	<BrowserRouter>
+		<Routes>
+			<Route path="/" element={<Homepage />} />
+		</Routes>
+	</BrowserRouter>,
+	document.getElementById("root")
+);
