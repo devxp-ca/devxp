@@ -1,9 +1,9 @@
 // Imports
 import {Router} from "express";
-import {redirectToGithub} from "../controllers/github";
+import {redirectToGithub, callbackFromGithub} from "../controllers/github";
 const authRouter = Router();
 
+authRouter.get("/github", callbackFromGithub);
 authRouter.get("/", redirectToGithub);
-authRouter.get("/github", redirectToGithub);
 
 export default authRouter;
