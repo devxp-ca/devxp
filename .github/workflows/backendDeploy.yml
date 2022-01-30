@@ -20,7 +20,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
 
     - name: 'Build Docker image and upload to GCCR'
-      run: 'cd backend && gcloud builds submit --tag gcr.io/${{ secrets.PROJECT_ID }}/devxp-backend'
+      run: 'cd backend && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
     options:
       logging: CLOUD_LOGGING_ONLY
 
