@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const noNullProps = (object: any): boolean =>
 	Object.values(object).reduce(
 		(acc: boolean, prop) => acc && prop !== undefined && prop !== null,
@@ -101,3 +103,5 @@ export const isGithubCommit = (object: any): object is GithubCommit =>
 	"treeSha" in object &&
 	"treeUrl" in object &&
 	noNullProps(object);
+
+/* eslint-enable @typescript-eslint/no-explicit-any */
