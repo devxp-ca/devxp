@@ -34,11 +34,10 @@ export const callbackFromGithub = (req: Request, res: Response): void => {
 		)
 		.then(resp => {
 			//Ensure tokens are actually present in response from github
-			if ("access_token" in resp.data && "refresh_token" in resp.data) {
+			if ("access_token" in resp.data) {
 				//TODO: Redirect back to frontend
 				res.json({
-					token: resp.data.access_token,
-					refresh: resp.data.refresh_token
+					token: resp.data.access_token
 				});
 			} else {
 				//This should never run, but just in case

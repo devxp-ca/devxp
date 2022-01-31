@@ -28,7 +28,7 @@ export default (token: string): Promise<GithubRepo[]> =>
 						id: repo.id,
 						name: repo.name,
 						full_name: repo.full_name,
-						description: repo.description,
+						description: repo.description ?? "No description",
 						url: repo.url,
 						html_url: repo.html_url,
 						forks_count: repo.forks_count,
@@ -42,7 +42,10 @@ export default (token: string): Promise<GithubRepo[]> =>
 							(acc, repo) =>
 								acc &&
 								Object.values(repo).reduce(
-									(acc2, prop2) => acc2 && !!prop2
+									(acc2, prop2) =>
+										acc2 &&
+										prop2 !== undefined &&
+										prop2 !== null
 								)
 						)
 					) {
