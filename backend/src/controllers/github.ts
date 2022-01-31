@@ -40,16 +40,16 @@ export const callbackFromGithub = (req: Request, res: Response): void => {
 					token: resp.data.access_token,
 					refresh: resp.data.refresh_token
 				});
+			} else {
+				//This should never run, but just in case
+				return Promise.reject(
+					new Error(
+						`${resp.data?.error ?? "GitHub Error"}: ${
+							resp.data?.error_description ?? "an error occurred"
+						}`
+					)
+				);
 			}
-
-			//This should never run, but just in case
-			return Promise.reject(
-				new Error(
-					`${resp.data?.error ?? "GitHub Error"}: ${
-						resp.data?.error_description ?? "an error occurred"
-					}`
-				)
-			);
 		})
 		.catch(internalErrorHandler(req, res));
 };
