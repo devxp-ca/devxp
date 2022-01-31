@@ -9,6 +9,6 @@ mongoose.connection.on(
 	"error",
 	console.error.bind(console, "connection error:")
 );
-mongoose.connection.once("open", function callback() {
+mongoose.connection.once("open", () => {
 	server.start();
 });

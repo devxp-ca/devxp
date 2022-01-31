@@ -3,18 +3,37 @@ import {
 	Result as ExpressResult
 } from "express-validator";
 
+// Point of this file is to create some predefined error
+// types so that our API returns consistantly structured
+// responses, even when there are errors. This will allow
+// our frontend and even third party applications to
+// better and more reliably integreate
+
 export interface ErrorResponse {
 	errors: BaseError[];
 }
 
 export default interface BaseError {
-	status: number;
+	//Datetime of error
 	timestamp: Date;
+
+	//HTTP Status
+	status: number;
+
+	//Error type / high level description
 	error: string;
+
+	//Path which created error
 	path: string;
+
+	//Detailed error message
 	message?: string;
+
+	//Utility functions for response formatting
 	toArray: (array?: BaseError[]) => BaseError[];
 	toResponse: (array?: BaseError[]) => ErrorResponse;
+
+	//Method to remove extra attributes which shouldn't be returned to the user
 	serialize: () => BaseError;
 }
 
@@ -60,18 +79,21 @@ export class BaseErrorImpl implements BaseError {
 	}
 }
 
+//For generic "something went wrong" type internal errors
 export class InternalError extends BaseErrorImpl {
 	constructor(err: Error, path: string) {
 		super(err.name, path, 500, err.message);
 	}
 }
 
+//404 class of error
 export class NotFoundError extends BaseErrorImpl {
 	constructor(resource: string, path: string) {
 		super("Not Found", path, 404, `Failed to locate ${resource}`);
 	}
 }
 
+//401 Unauthorized class of errors
 export class UnauthorizedError extends BaseErrorImpl {
 	constructor(path: string) {
 		super(
@@ -83,6 +105,8 @@ export class UnauthorizedError extends BaseErrorImpl {
 	}
 }
 
+//Errors thrown by our validation chains
+//Stuff like a query parameter being formatted wrong
 export class ValidationError extends BaseErrorImpl {
 	nestedErrors: ValidationError[];
 
