@@ -5,6 +5,7 @@ export interface Config {
 	PORT: number;
 	GITHUB_CLIENT_ID: string;
 	GITHUB_CLIENT_SECRET: string;
+	GITHUB_SCOPES: string[];
 }
 
 const envCheck = <T>(env: T | undefined, name = "every") => {
@@ -38,6 +39,7 @@ const CONFIG: Config = {
 	CONNECTION_STRING,
 	PORT,
 	GITHUB_CLIENT_ID,
-	GITHUB_CLIENT_SECRET
+	GITHUB_CLIENT_SECRET,
+	GITHUB_SCOPES: ["workflow", "repo"]
 };
 export default CONFIG;

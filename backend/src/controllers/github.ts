@@ -5,7 +5,9 @@ import {internalErrorHandler} from "../types/errorHandler";
 
 export const redirectToGithub = (_req: Request, res: Response): void => {
 	res.redirect(
-		`https://github.com/login/oauth/authorize?client_id=${CONFIG.GITHUB_CLIENT_ID}`
+		`https://github.com/login/oauth/authorize?client_id=${
+			CONFIG.GITHUB_CLIENT_ID
+		}&scope=${CONFIG.GITHUB_SCOPES.reduce((acc, str) => `${acc}%20${str}`)}`
 	);
 };
 
