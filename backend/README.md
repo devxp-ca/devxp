@@ -35,7 +35,7 @@ getHead(TOKEN, REPO, BRANCH)
 		//Create a new tree within that one
 		const newTree = await createTree(TOKEN, REPO, tree.sha, {
 			path: FILENAME,
-			mode: "100644",
+			mode: getModeNumber("blob"),
 			type: "blob",
 			sha: blob.sha,
 			url: blob.url
@@ -67,4 +67,5 @@ import postBlob from "./githubapi/postBlob";
 import createTree from "./githubapi/createTree";
 import createCommit from "./githubapi/createCommit";
 import updateHead from "./githubapi/updateHead";
+import {getModeNumber} from "./githubapi/util";
 ```
