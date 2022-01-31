@@ -1,6 +1,8 @@
 import axios from "axios";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 
+//Relevant data we want to keep about a repo
+//This may and prob will change over time
 export interface GithubRepo {
 	id: number;
 	name: string;
@@ -13,8 +15,10 @@ export interface GithubRepo {
 	visibility: string;
 }
 
+//Retrieve a list of github repos from an access token
 export default (token: string): Promise<GithubRepo[]> =>
 	new Promise<GithubRepo[]>((resolve, reject) => {
+		//api call
 		axios
 			.get(`${GITHUB_BASE_URL}/user/repos`, createGithubHeader(token))
 			.then(resp => {
