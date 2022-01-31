@@ -27,9 +27,10 @@ export const callbackFromGithub = (req: Request, res: Response): void => {
 			}
 		)
 		.then(resp => {
-			if ("access_token" in resp.data) {
+			if ("access_token" in resp.data && "refresh_token" in resp.data) {
 				res.json({
-					token: resp.data.access_token
+					token: resp.data.access_token,
+					refresh: resp.data.refresh_token
 				});
 			}
 			return Promise.reject(
