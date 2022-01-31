@@ -29,5 +29,6 @@ export default (
 				} else {
 					reject(new Error("Invalid response from github"));
 				}
-			});
+			})
+			.catch(reject);
 	});
