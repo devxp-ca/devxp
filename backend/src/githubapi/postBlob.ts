@@ -2,11 +2,7 @@ import axios from "axios";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 import base64 from "base-64";
 import utf8 from "utf8";
-
-export interface GithubBlob {
-	sha: string;
-	url: string;
-}
+import {GithubBlob, isGithubBlob} from "../types/github";
 
 export default (
 	token: string,
@@ -24,11 +20,12 @@ export default (
 				createGithubHeader(token)
 			)
 			.then(resp => {
-				if ("sha" in resp.data && "url" in resp.data) {
-					resolve({
-						sha: resp.data.sha,
-						url: resp.data.url
-					});
+				const blob = {
+					sha: resp.data.sha,
+					url: resp.data.url
+				};
+				if (isGithubBlob(blob)) {
+					resolve(blob);
 				} else {
 					reject(new Error("Invalid response from github"));
 				}

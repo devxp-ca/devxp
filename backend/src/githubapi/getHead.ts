@@ -1,10 +1,6 @@
 import axios from "axios";
+import {GithubReference, isGithubReference} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
-
-export interface GithubReference {
-	sha: string;
-	url: string;
-}
 
 export default (
 	token: string,
@@ -18,15 +14,12 @@ export default (
 				createGithubHeader(token)
 			)
 			.then(resp => {
-				if (
-					"object" in resp.data &&
-					"sha" in resp.data.object &&
-					"url" in resp.data.object
-				) {
-					resolve({
-						sha: resp.data.object.sha,
-						url: resp.data.object.url
-					});
+				const ref = {
+					sha: resp.data.object?.sha,
+					url: resp.data.object?.url
+				};
+				if (isGithubReference(ref)) {
+					resolve(ref);
 				} else {
 					reject(new Error("Invalid response from github"));
 				}

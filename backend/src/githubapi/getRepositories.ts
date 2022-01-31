@@ -1,19 +1,6 @@
 import axios from "axios";
+import {GithubRepo, isGithubRepo} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
-
-//Relevant data we want to keep about a repo
-//This may and prob will change over time
-export interface GithubRepo {
-	id: number;
-	name: string;
-	full_name: string;
-	description: string;
-	url: string;
-	html_url: string;
-	forks_count: number;
-	stargazers_count: number;
-	visibility: string;
-}
 
 //Retrieve a list of github repos from an access token
 export default (token: string): Promise<GithubRepo[]> =>
@@ -39,14 +26,8 @@ export default (token: string): Promise<GithubRepo[]> =>
 					//Ensure no properties are undefined
 					if (
 						repos.reduce(
-							(acc, repo) =>
-								acc &&
-								Object.values(repo).reduce(
-									(acc2, prop2) =>
-										acc2 &&
-										prop2 !== undefined &&
-										prop2 !== null
-								)
+							(acc: boolean, repo) => acc && isGithubRepo(repo),
+							true
 						)
 					) {
 						resolve(repos as GithubRepo[]);
