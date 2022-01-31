@@ -14,10 +14,18 @@ export interface GithubBlob {
 export const isGithubBlob = (object: any): object is GithubBlob =>
 	"sha" in object && "url" in object;
 
+export type GithubTreeNodeMode =
+	| "100644"
+	| "100755"
+	| "040000"
+	| "160000"
+	| "120000";
+export type GithubTreeNodeType = "blob" | "tree" | "commit";
+
 export interface GithubTreeNode {
 	path: string;
-	mode: string;
-	type: string;
+	mode: GithubTreeNodeMode;
+	type: GithubTreeNodeType;
 	sha: string;
 	size?: number;
 	url: string;
