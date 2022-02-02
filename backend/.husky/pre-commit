@@ -1,7 +1,6 @@
 #!/bin/sh
 
-path=$( echo "$0" | sed -E 's/^(backend|frontned)\///g' )
-. "$(dirname "$path")/_/husky.sh"
+. "$( pwd )/backend/.husky/_/husky.sh"
 
 FRONTEND=0
 BACKEND=0
@@ -23,5 +22,5 @@ FILES=$( git status -s | grep '^[^ ?]' | cut -c 4- | xargs )
 	cd ..
 }
 
-echo "$FILES" | xargs -n1 git add
+echo "$FILES" | xargs -n1 -I {} [ -f "{}" ] && git add
 exit $STATUS
