@@ -23,6 +23,9 @@
 	},
 	"homepage": "https://github.com/emerald-river/startup#readme",
 	"dependencies": {
+		"@emotion/react": "^11.7.1",
+		"@emotion/styled": "^11.6.0",
+		"@mui/material": "^5.4.0",
 		"@types/jest": "^27.4.0",
 		"@types/node": "^17.0.12",
 		"@types/react": "^17.0.38",
