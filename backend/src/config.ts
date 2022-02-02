@@ -1,5 +1,9 @@
 import "dotenv/config";
 
+/**
+ * A configuration interface for Github connections
+ * @TODO use better words :P
+ */
 export interface Config {
 	CONNECTION_STRING: string;
 	PORT: number;
@@ -19,13 +23,17 @@ const envCheck = <T>(env: T | undefined, name = "every") => {
 	return env as T;
 };
 
-//Ensure that CONNECTION_STRING env var is set for DB connection
+/**
+ * Ensure that CONNECTION_STRING env var is set for DB connection
+ */
 const CONNECTION_STRING = envCheck(
 	process.env.CONNECTION_STRING,
 	"CONNECTION_STRING"
 );
 
-//Ensure that Github data is set for oauth
+/**
+ * Ensure that Github data is set for oauth
+ */
 const GITHUB_CLIENT_ID = envCheck(
 	process.env.GITHUB_CLIENT_ID,
 	"GITHUB_CLIENT_ID"
@@ -35,7 +43,9 @@ const GITHUB_CLIENT_SECRET = envCheck(
 	"GITHUB_CLIENT_SECRET"
 );
 
-//Check for port, and otherwise assign 8080
+/**
+ * Check for port, and otherwise assign 8080
+ */
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 8080;
 
 const CONFIG: Config = {

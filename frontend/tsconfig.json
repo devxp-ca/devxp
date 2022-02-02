@@ -11,5 +11,10 @@
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true
 	},
-	"include": ["./src/**/**/*"]
+	"include": ["./src/**/**/*"],
+	"typedocOptions": {
+		"entryPoints": ["src/index.tsx"],
+		"entryPointStrategy": "expand",
+		"out": "docs"
+	}
 }
