@@ -1,6 +1,6 @@
 #!/bin/sh
 
-path=$( echo "$0" | sed -E 's/^(backend|frontned)\///g' )
+path=$( echo "$0" | sed -E 's/^(backend|frontend)\///g' )
 . "$(dirname "$path")/_/husky.sh"
 
 FRONTEND=0
