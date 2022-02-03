@@ -11,11 +11,7 @@ export default function Navbar() {
 		<Box sx={{flexGrow: 1}}>
 			<AppBar position="static">
 				<Toolbar>
-					<ButtonGroup
-						variant="text"
-						color="primary"
-						aria-label="text primary button group"
-						sx={{alignContent: "start"}}>
+					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 						<Button href="/" color="inherit">
 							Home
 						</Button>
@@ -28,10 +24,11 @@ export default function Navbar() {
 						<Button href="/contact" color="inherit">
 							Contact
 						</Button>
-					</ButtonGroup>
-					<Button color="inherit" sx={{alignContent: "end"}}>
-						<LoginWithGithub />
-					</Button>
+					</Box>
+					<Box sx={{ flexGrow: 1 }} />
+					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+						<LoginWithGithub/>
+					</Box>
 				</Toolbar>
 			</AppBar>
 		</Box>
