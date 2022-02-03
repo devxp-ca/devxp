@@ -19,6 +19,9 @@ export default function Navbar() {
 						<Button href="/" color="inherit">
 							Home
 						</Button>
+						<Button href="/wizard" color="inherit">
+							Wizard
+						</Button>
 						<Button href="/about" color="inherit">
 							About
 						</Button>
