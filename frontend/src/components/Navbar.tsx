@@ -11,7 +11,7 @@ export default function Navbar() {
 		<Box sx={{flexGrow: 1}}>
 			<AppBar position="static">
 				<Toolbar>
-					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+					<Box sx={{display: {xs: "none", md: "flex"}}}>
 						<Button href="/" color="inherit">
 							Home
 						</Button>
@@ -25,9 +25,9 @@ export default function Navbar() {
 							Contact
 						</Button>
 					</Box>
-					<Box sx={{ flexGrow: 1 }} />
-					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-						<LoginWithGithub/>
+					<Box sx={{flexGrow: 1}} />
+					<Box sx={{display: {xs: "none", md: "flex"}}}>
+						<LoginWithGithub />
 					</Box>
 				</Toolbar>
 			</AppBar>
