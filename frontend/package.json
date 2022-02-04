@@ -10,7 +10,9 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint --fix",
 		"format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json",
-		"prepare": "cd .. && husky install frontend/.husky"
+		"prepare": "cd .. && husky install frontend/.husky",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d dist"
 	},
 	"repository": {
 		"type": "git",
@@ -21,7 +23,7 @@
 	"bugs": {
 		"url": "https://github.com/emerald-river/startup/issues"
 	},
-	"homepage": "https://github.com/emerald-river/startup#readme",
+	"homepage": "https://emerald-river.github.io/startup",
 	"dependencies": {
 		"@emotion/react": "^11.7.1",
 		"@emotion/styled": "^11.6.0",
@@ -48,6 +50,7 @@
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-react": "^7.28.0",
 		"file-loader": "^6.2.0",
+		"gh-pages": "^3.2.3",
 		"html-webpack-plugin": "^5.5.0",
 		"husky": "^7.0.4",
 		"prettier": "^2.5.1",
