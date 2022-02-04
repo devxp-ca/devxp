@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import {Server} from "http";
 import CONFIG from "./config";
+import path from "path";
 
 /**
 	Server abstration object
@@ -41,6 +42,10 @@ export default class RESTServer {
 
 		// Parse cookies
 		this.app.use(cookieParser());
+
+		//Hosting the frontend
+		// Static routing for public files
+		this.app.use("/", express.static(path.join(__dirname, "..", "public")));
 
 		// support encoded bodies
 		this.app.use(bodyParser.urlencoded({extended: true}));
