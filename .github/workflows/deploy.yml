@@ -1,9 +1,10 @@
-name: Build and Deploy Backend to Google Cloud Run
+name: Build and Deploy to Google Cloud Run
 
 on:
   push:
     branches:
       - main
+      - cicd
 jobs:
   build:
     runs-on: ubuntu-latest
