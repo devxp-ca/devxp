@@ -5,14 +5,14 @@ import Footer from "../components/Footer";
 import Container from "@mui/material/Container";
 import PersistentDrawer from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import {darkTheme} from "../darkTheme";
+import {lightTheme} from "../lightTheme";
 
 interface IProps {}
 interface IState {}
 export default class Wizard extends React.Component<IProps, IState> {
 	render() {
 		return (
-			<ThemeProvider theme={darkTheme}>
+			<ThemeProvider theme={lightTheme}>
 				<Container maxWidth="lg">
 					<Navbar />
 					<PersistentDrawer

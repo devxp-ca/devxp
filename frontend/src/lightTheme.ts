@@ -14,9 +14,9 @@ declare module "@mui/material/styles" {
 	}
 }
 
-export const darkTheme = createTheme({
+export const lightTheme = createTheme({
 	palette: {
-		mode: "dark",
+		mode: "light",
 		primary: {
 			main: "#679062"
 		},
