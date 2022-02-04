@@ -31,5 +31,8 @@ jobs:
     - name: Install dependencies
       run: cd frontend && npm install
 
-    - name: Deploy to Github Pages
-      run: cd frontend && npm run deploy
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4.2.3
+      with:
+        branch: gh-pages # The branch the action should deploy to.
+        folder: frontend/dist # The folder the action should deploy.
