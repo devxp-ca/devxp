@@ -31,5 +31,8 @@ jobs:
     - name: Install dependencies
       run: cd frontend && npm install
 
+    - name: Configure git
+      run: git config user.name "$(git log -n 1 --pretty=format:%an)" && git config user.email "$(git log -n 1 --pretty=format:%ae)"
+
     - name: Deploy to Github Pages
       run: cd frontend && npm run deploy
