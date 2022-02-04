@@ -29,7 +29,7 @@ jobs:
         key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install dependencies
-      run: npm install
+      run: cd frontend && npm install
 
     - name: Deploy to Github Pages
-      run: npm run deploy
+      run: cd frontend && npm run deploy
