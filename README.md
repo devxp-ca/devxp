@@ -1,7 +1,7 @@
 # startup-project
 This repository contains the CSC 485A startup programming course project.  
 
-**Backend Deployment**: https://devxp-backend-hiq5lyfpqq-uw.a.run.app/api
+**Application Deployment**: https://devxp-hiq5lyfpqq-uw.a.run.app/
 
 
 ***TL;DR***  
