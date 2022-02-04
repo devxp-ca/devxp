@@ -27,7 +27,15 @@ export default function PersistentDrawer(props: {repos: string[]}) {
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<Drawer variant="permanent" anchor="left" open={true} sx={{width: 240, flexShrink: 0, '& .MuiDrawer-paper': {width: 240 ,boxSizing: 'border-box',}}}>
+			<Drawer
+				variant="permanent"
+				anchor="left"
+				open={true}
+				sx={{
+					width: 240,
+					flexShrink: 0,
+					"& .MuiDrawer-paper": {width: 240, boxSizing: "border-box"}
+				}}>
 				<DrawerHeader>
 					<Typography variant="h6">Repositories</Typography>
 				</DrawerHeader>

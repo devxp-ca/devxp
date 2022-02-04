@@ -23,9 +23,15 @@ export default class Wizard extends React.Component<IProps, IState> {
 						This is the config wizard which appears after successful
 						OAuth
 					</Typography>
-					<Accordion title="Linter Settings" content="Settings go here"/>
-					<Accordion title="Commit Hooks" content="Settings go here"/>
-					<Accordion title="CI/CD" content="Settings go here"/>
+					<Accordion
+						title="Linter Settings"
+						content="Settings go here"
+					/>
+					<Accordion
+						title="Commit Hooks"
+						content="Settings go here"
+					/>
+					<Accordion title="CI/CD" content="Settings go here" />
 					<Footer />
 				</Container>
 			</ThemeProvider>
