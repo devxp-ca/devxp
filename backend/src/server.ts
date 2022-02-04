@@ -43,10 +43,6 @@ export default class RESTServer {
 		// Parse cookies
 		this.app.use(cookieParser());
 
-		//Hosting the frontend
-		// Static routing for public files
-		this.app.use("/", express.static(path.join(__dirname, "..", "public")));
-
 		// support encoded bodies
 		this.app.use(bodyParser.urlencoded({extended: true}));
 	}
@@ -54,6 +50,11 @@ export default class RESTServer {
 	route(path: string, router: Router): void {
 		this.app.use(path, router);
 		console.log(`Created route ${path}`);
+	}
+
+	serve(url: string): void {
+		this.app.use(url, express.static(path.join(__dirname, "..", "public")));
+		console.log(`Created route ${url} to static public folder (frontend)`);
 	}
 
 	/**
