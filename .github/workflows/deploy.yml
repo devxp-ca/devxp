@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - cicd
+      - terraform
+
 jobs:
   build:
     runs-on: ubuntu-latest
