@@ -10,7 +10,8 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint --fix",
 		"format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" --config ./.prettierrc.json",
-		"prepare": "cd .. && husky install frontend/.husky"
+		"prepare": "cd .. && husky install frontend/.husky",
+		"docs": "typedoc"
 	},
 	"repository": {
 		"type": "git",

@@ -13,8 +13,9 @@
 	},
 	"include": ["./src/**/**/*"],
 	"typedocOptions": {
-		"entryPoints": ["src/index.tsx"],
 		"entryPointStrategy": "expand",
-		"out": "docs"
-	}
+		"entryPoints": ["./src"],
+		"out": "docs",
+		"darkHighlightTheme": "dark-plus"
+	  }
 }
