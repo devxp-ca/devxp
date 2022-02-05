@@ -19,6 +19,7 @@ resource "google_cloud_run_service" "devxp_deployment" {
     percent         = 100
     latest_revision = true
   }
+  autogenerate_revision_name = true
 
   # Waits for the Cloud Run API to be enabled
   depends_on = [google_project_service.run_api]
