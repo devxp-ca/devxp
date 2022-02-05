@@ -17,5 +17,5 @@
 		"entryPoints": ["./src"],
 		"out": "docs",
 		"darkHighlightTheme": "dark-plus"
-	  }
+	}
 }
