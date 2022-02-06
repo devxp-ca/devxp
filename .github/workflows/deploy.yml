@@ -1,9 +1,8 @@
-name: Build and Deploy to Google Cloud Run
+name: Build and Deploy to Google Cloud Run ☁️⚙️🚀
 
 on:
   push:
     branches:
-      - terraform
       - main
 
 jobs:
@@ -18,10 +17,10 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-    - name: 'Set up Cloud SDK'
+    - name: 'Set up Cloud SDK ☁️'
       uses: 'google-github-actions/setup-gcloud@v0'
 
-    - name: 'Build Docker image and upload to GCCR'
+    - name: 'Build Docker image and upload to GCCR ⚙️'
       run: 'gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
   deploy:
     needs: build
@@ -37,14 +36,14 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-    - name: 'Set up Cloud SDK'
+    - name: 'Set up Cloud SDK ☁️'
       uses: 'google-github-actions/setup-gcloud@v0'
 
-    - name: 'Setup terraform'
+    - name: 'Setup terraform 🟪'
       run: 'terraform init'
 
-    - name: 'Initialize terraform env vars'
+    - name: 'Initialize terraform env vars ☂️'
       run: 'CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" GITHUB_CLIENT_ID="${{ secrets.GITHUB_CLIENT_ID }}" GITHUB_CLIENT_SECRET="${{ secrets.GITHUB_CLIENT_SECRET }}" ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
     - name: 'Terraform Apply'
-      run: 'terraform apply -lock=false -auto-approve'
+      run: 'terraform apply -lock=false -auto-approve 🚀'
