@@ -7,7 +7,24 @@ on:
       - main
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - id: 'checkout'
+      uses: actions/checkout@v2
+
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+    - name: 'Build Docker image and upload to GCCR'
+      run: 'gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: hashicorp/setup-terraform@v1
@@ -29,26 +46,5 @@ jobs:
     - name: 'Initialize terraform env vars'
       run: 'CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" GITHUB_CLIENT_ID="${{ secrets.GITHUB_CLIENT_ID }}" GITHUB_CLIENT_SECRET="${{ secrets.GITHUB_CLIENT_SECRET }}" ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
-    - name: 'Verify'
-      run: 'cat terraform.tfvars | wc -c'
-
     - name: 'Terraform Apply'
       run: 'terraform apply -lock=false -auto-approve'
-
-  build:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-    - id: 'checkout'
-      uses: actions/checkout@v2
-
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v0'
-      with:
-        credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-    - name: 'Set up Cloud SDK'
-      uses: 'google-github-actions/setup-gcloud@v0'
-
-    - name: 'Build Docker image and upload to GCCR'
-      run: 'gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
