@@ -23,5 +23,8 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v0'
 
 
-    - name: 'Build Docker image and upload to GCCR'
+    - name: 'Setup terraform'
+      run: 'terraform init'
+
+    - name: 'Terraform plan'
       run: 'terraform plan'

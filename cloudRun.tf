@@ -28,6 +28,7 @@ resource "google_cloud_run_service" "devxp_deployment" {
 resource "google_cloud_run_service_iam_member" "run_all_users" {
   service  = google_cloud_run_service.devxp_deployment.name
   location = google_cloud_run_service.devxp_deployment.location
+  project  = google_cloud_run_service.devxp_deployment.project
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
