@@ -27,4 +27,4 @@ jobs:
       run: 'terraform init'
 
     - name: 'Terraform plan'
-      run: 'terraform plan'
+      run: 'TF_LOG=DEBUG terraform apply -lock=false'
