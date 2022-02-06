@@ -30,11 +30,16 @@ variable "gcr_image_name" {
   default = "devxp"
 }
 variable "CONNECTION_STRING" {
-  type = string
+  type      = string
+  sensitive = true
 }
+
 variable "GITHUB_CLIENT_ID" {
-  type = string
+  type      = string
+  sensitive = true
 }
+
 variable "GITHUB_CLIENT_SECRET" {
-  type = string
+  type      = string
+  sensitive = true
 }
