@@ -29,4 +29,4 @@ jobs:
       run: './createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
     - name: 'Terraform plan'
-      run: 'TF_LOG=DEBUG terraform apply -lock=false'
+      run: 'TF_LOG=ERROR terraform apply -lock=false'
