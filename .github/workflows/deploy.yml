@@ -27,7 +27,7 @@ jobs:
       run: 'terraform init'
 
     - name: 'Initialize terraform env vars'
-      run: 'CONNECTION_STRING=${{ secrets.CONNECTION_STRING }} GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }} GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }} ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
+      run: 'CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" GITHUB_CLIENT_ID="${{ secrets.GITHUB_CLIENT_ID }}" GITHUB_CLIENT_SECRET="${{ secrets.GITHUB_CLIENT_SECRET }}" ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
     - name: 'Verify'
       run: 'cat terraform.tfvars | wc -c'
