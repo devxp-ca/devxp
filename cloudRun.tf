@@ -1,12 +1,13 @@
 
 resource "google_project_service" "run_api" {
   service            = "run.googleapis.com"
-  disable_on_destroy = true
+  disable_on_destroy = false
 }
 
 resource "google_cloud_run_service" "devxp_deployment" {
-  name     = var.gcr_name
-  location = var.gcr_location
+  name                       = var.gcr_name
+  location                   = var.gcr_location
+  autogenerate_revision_name = true
 
   template {
     spec {
@@ -19,7 +20,6 @@ resource "google_cloud_run_service" "devxp_deployment" {
     percent         = 100
     latest_revision = true
   }
-  autogenerate_revision_name = true
 
   # Waits for the Cloud Run API to be enabled
   depends_on = [google_project_service.run_api]
