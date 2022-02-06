@@ -7,6 +7,7 @@ on:
       - main
 
 jobs:
+  needs: deploy
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +27,6 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
     steps:
     - uses: hashicorp/setup-terraform@v1
 
@@ -47,5 +47,8 @@ jobs:
     - name: 'Initialize terraform env vars'
       run: 'CONNECTION_STRING=${{ secrets.CONNECTION_STRING }} GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }} GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }} ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
+    - name: 'Verify'
+      run: 'cat terraform.tfvars | wc -c'
+
     - name: 'Terraform Apply'
-      run: 'TF_LOG=ERROR terraform apply -lock=false -auto-approve'
+      run: 'terraform apply -lock=false -auto-approve'
