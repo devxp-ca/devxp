@@ -22,9 +22,11 @@ jobs:
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
 
-
     - name: 'Setup terraform'
       run: 'terraform init'
+
+    - name: 'Initialize terraform env vars'
+      run: './createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
     - name: 'Terraform plan'
       run: 'TF_LOG=DEBUG terraform apply -lock=false'
