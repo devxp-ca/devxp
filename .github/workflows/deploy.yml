@@ -45,5 +45,5 @@ jobs:
     - name: 'Initialize terraform env vars ☂️'
       run: 'CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" GITHUB_CLIENT_ID="${{ secrets.GITHUB_CLIENT_ID }}" GITHUB_CLIENT_SECRET="${{ secrets.GITHUB_CLIENT_SECRET }}" ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
-    - name: 'Terraform Apply'
-      run: 'terraform apply -lock=false -auto-approve 🚀'
+    - name: 'Terraform Apply 🚀'
+      run: 'terraform apply -lock=false -auto-approve'
