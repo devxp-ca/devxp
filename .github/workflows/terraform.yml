@@ -1,0 +1,27 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+      - terraform
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hashicorp/setup-terraform@v1
+
+    - id: 'checkout'
+      uses: actions/checkout@v2
+
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+
+    - name: 'Build Docker image and upload to GCCR'
+      run: 'terraform --version'
