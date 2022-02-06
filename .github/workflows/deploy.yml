@@ -45,7 +45,7 @@ jobs:
       run: 'terraform init'
 
     - name: 'Initialize terraform env vars'
-      run: './createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
+      run: 'CONNECTION_STRING=${{ secrets.CONNECTION_STRING }} GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }} GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }} ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET'
 
     - name: 'Terraform Apply'
       run: 'TF_LOG=ERROR terraform apply -lock=false -auto-approve'
