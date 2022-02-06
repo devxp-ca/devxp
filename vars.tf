@@ -43,3 +43,8 @@ variable "GITHUB_CLIENT_SECRET" {
   type      = string
   sensitive = true
 }
+
+variable "gcr_domain" {
+  type    = string
+  default = "devxp.ca"
+}

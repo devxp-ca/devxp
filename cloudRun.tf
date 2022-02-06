@@ -49,3 +49,18 @@ resource "google_cloud_run_service_iam_member" "run_all_users" {
 output "service_url" {
   value = google_cloud_run_service.devxp_deployment.status[0].url
 }
+resource "google_cloud_run_domain_mapping" "devxp" {
+  location = var.gcr_location
+  name     = var.gcr_domain
+
+  metadata {
+    namespace = var.gc_project_id
+  }
+
+  spec {
+    route_name = google_cloud_run_service.devxp_deployment.name
+  }
+}
+output "CNAME_required_records" {
+  value = google_cloud_run_domain_mapping.devxp.status[0]
+}
