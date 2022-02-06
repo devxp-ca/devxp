@@ -13,6 +13,19 @@ resource "google_cloud_run_service" "devxp_deployment" {
     spec {
       containers {
         image = "gcr.io/${var.gc_project_id}/${var.gcr_image_name}"
+        env {
+          name  = "CONNECTION_STRING"
+          value = var.CONNECTION_STRING
+        }
+        env {
+          name  = "GITHUB_CLIENT_ID"
+          value = var.GITHUB_CLIENT_ID
+        }
+        env {
+          name  = "GITHUB_CLIENT_SECRET"
+          value = var.GITHUB_CLIENT_SECRET
+        }
+
       }
     }
   }

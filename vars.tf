@@ -21,3 +21,12 @@ variable "gc_service_id" {
 variable "gcr_image_name" {
   type = string
 }
+variable "CONNECTION_STRING" {
+  type = string
+}
+variable "GITHUB_CLIENT_ID" {
+  type = string
+}
+variable "GITHUB_CLIENT_SECRET" {
+  type = string
+}
