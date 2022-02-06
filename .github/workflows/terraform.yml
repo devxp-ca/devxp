@@ -24,4 +24,4 @@ jobs:
 
 
     - name: 'Build Docker image and upload to GCCR'
-      run: 'terraform --version'
+      run: 'terraform plan'
