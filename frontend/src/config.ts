@@ -4,6 +4,6 @@ export interface Config {
 }
 
 export const CONFIG: Config = {
-	BACKEND_URL: "devxp-hiq5lyfpqq-uw.a.run.app",
+	BACKEND_URL: "devxp.ca",
 	AUTH_PATH: "/auth"
 };
