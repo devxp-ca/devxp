@@ -9,7 +9,7 @@
 		"build": "webpack --mode=production",
 		"lint": "eslint .",
 		"lint:fix": "eslint --fix",
-		"format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json",
+		"format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" --config ./.prettierrc.json",
 		"prepare": "cd .. && husky install frontend/.husky"
 	},
 	"repository": {

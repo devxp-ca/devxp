@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 . "$( pwd )/backend/.husky/_/husky.sh"
 
