@@ -11,7 +11,7 @@ import {lightTheme} from "../lightTheme";
 export default function Navbar() {
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<Box sx={{flexGrow: 1}}>
+			<Box sx={{flexGrow: 1, marginTop: 5}}>
 				<AppBar position="static">
 					<Toolbar>
 						<Box sx={{display: {xs: "none", md: "flex"}}}>
