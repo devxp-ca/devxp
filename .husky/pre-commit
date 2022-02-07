@@ -1,10 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-
-echo "running"
-
-path=$( echo "$0" | sed -E 's/^(backend|frontend)\///g' )
-. "$(dirname "$path")/_/husky.sh"
+. "$( pwd )/_/husky.sh"
 
 FRONTEND=0
 BACKEND=0
