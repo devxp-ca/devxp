@@ -13,7 +13,7 @@ declare module "@mui/material/styles" {
 		};
 	}
 }
-
+//just adding a comment to see how the linter works
 export const lightTheme = createTheme({
 	palette: {
 		mode: "light",
