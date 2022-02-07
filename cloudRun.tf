@@ -12,7 +12,7 @@ resource "google_cloud_run_service" "devxp_deployment" {
   template {
     spec {
       containers {
-        image = "gcr.io/${var.gc_project_id}/${var.gcr_image_name}"
+        image = "gcr.io/${var.gc_project_id}/${var.gcr_image_name}:${var.SHA}"
         env {
           name  = "CONNECTION_STRING"
           value = var.CONNECTION_STRING
