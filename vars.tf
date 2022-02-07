@@ -44,6 +44,10 @@ variable "GITHUB_CLIENT_SECRET" {
   sensitive = true
 }
 
+variable "SHA" {
+  type = string
+}
+
 variable "gcr_domain" {
   type    = string
   default = "devxp.ca"
