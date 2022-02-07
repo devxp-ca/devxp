@@ -15,7 +15,7 @@ export default class Homepage extends React.Component<IProps, IState> {
 		return (
 			<ThemeProvider theme={lightTheme}>
 				<Container maxWidth="lg">
-					<Navbar />					
+					<Navbar />
 					<MainLandingVisual />
 					<Footer />
 				</Container>
