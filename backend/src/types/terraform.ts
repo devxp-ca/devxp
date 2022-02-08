@@ -43,8 +43,9 @@ export const isGoogleProvider = (
 
 export interface awsProvider extends namedRequiredProvider {
 	name: "aws";
-	profile?: string;
-	region?: string;
+	region: string;
+	access_key: string;
+	secret_key: string;
 }
 export const isAwsProvider = (
 	provider: namedRequiredProvider
