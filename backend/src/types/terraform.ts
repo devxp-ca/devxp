@@ -155,7 +155,7 @@ export interface GoogleBackend {
 	bucket: string;
 	prefix: string;
 }
-export interface NamedGoogleBackend extends named<GoogleBackend, "gcs">{}
+export type NamedGoogleBackend = named<GoogleBackend, "gcs">;
 export const isGoogleBackend = (
 	backend: namedTerraformBackend
 ): backend is named<GoogleBackend, "gcs"> => backend.name === "gcs";
