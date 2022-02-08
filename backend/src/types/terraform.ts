@@ -21,30 +21,28 @@ export interface variable {
 
 // -------------------------------------------------------------------------- //
 
+export type providerName = "google" | "aws";
 export interface requiredProvider {
 	source: string;
 	version: string;
+}
+export interface namedRequiredProvider extends requiredProvider {
+	name: providerName;
 }
 
 export interface googleProvider {
 	project?: string;
 	region?: string;
 	zone?: string;
-	impersonate_service_account?: string;
 	credentials?: string;
-	scopes?: string;
-	access_token?: string;
 }
 
 export interface awsProvider {
-	project?: string;
+	profile?: string;
 	region?: string;
-	zone?: string;
-	impersonate_service_account?: string;
-	credentials?: string;
-	scopes?: string;
-	access_token?: string;
 }
+
+// -------------------------------------------------------------------------- //
 
 export interface awsBackend {
 	bucket: string;
