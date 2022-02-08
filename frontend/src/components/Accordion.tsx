@@ -12,7 +12,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 //props.content will likely have to be changed some sort of array in order to accommodate fill the accordion with settings
 export default function Accordion(props: {
 	title: string;
-	content: string | symbol;
+	content: React.ReactNode;
 }) {
 	return (
 		<ThemeProvider theme={lightTheme}>
