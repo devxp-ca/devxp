@@ -5,7 +5,14 @@ import Box from "@mui/material/Box";
 
 export default function Footer() {
 	return (
-		<Box sx={{position: "absolute", left: 0, bottom: 5, right: 0}}>
+		<Box
+			sx={{
+				position: "fixed",
+				paddingTop: 5,
+				bottom: 5,
+				left: 0,
+				right: 0
+			}}>
 			<Typography variant="body2" color="text.secondary" align="center">
 				{"Copyright © "}
 				<MuiLink color="inherit">DevXP</MuiLink>{" "}

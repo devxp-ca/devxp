@@ -3,8 +3,8 @@ import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 
 export default function MouseOverPopover(props: {
-	text: string;
-	popOverInfo: string | symbol;
+	text: React.ReactNode;
+	popOverInfo: React.ReactNode;
 }) {
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
