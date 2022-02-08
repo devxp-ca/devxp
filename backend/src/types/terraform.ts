@@ -1,4 +1,9 @@
-import {DatabaseModel, generateSchema} from "./database";
+import {Model, model, Schema} from "mongoose";
+import {
+	DatabaseModel,
+	generateSchema,
+	generateSchemaInternals
+} from "./database";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -69,10 +74,10 @@ export class GoogleProvider
 	constructor(
 		source: string,
 		version: string,
-		project: string | null,
-		region: string | null,
-		zone: string | null,
-		credentials: string | null
+		project: string | null = null,
+		region: string | null = null,
+		zone: string | null = null,
+		credentials: string | null = null
 	) {
 		super(source, version, "google");
 		this.name = "google";
@@ -84,6 +89,10 @@ export class GoogleProvider
 
 	toSchema() {
 		return generateSchema<GoogleProvider>(this);
+	}
+
+	toModel() {
+		return model("GoogleProvider", this.toSchema());
 	}
 }
 
@@ -120,6 +129,10 @@ export class AwsProvider
 	toSchema() {
 		return generateSchema<AwsProvider>(this);
 	}
+
+	toModel() {
+		return model("AwsProvider", this.toSchema());
+	}
 }
 
 // --------------------------------Backend----------------------------------- //
@@ -148,6 +161,9 @@ export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 	toSchema() {
 		return generateSchema<NamedAwsBackend>(this);
 	}
+	toModel() {
+		return model("AwsBackend", this.toSchema());
+	}
 }
 
 // -- -- -- //
@@ -172,6 +188,9 @@ export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 	toSchema() {
 		return generateSchema<NamedGoogleBackend>(this);
 	}
+	toModel() {
+		return model("GoogleBackend", this.toSchema());
+	}
 }
 
 // -- -- -- //
@@ -183,6 +202,29 @@ export type namedTerraformBackend = named<terraformBackend, backendName>;
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {
-	required_providers: RequiredProvider[];
+	required_providers: NamedRequiredProvider[];
 	backend: terraformBackend;
+}
+export class Terraform implements DatabaseModel<Terraform> {
+	constructor(
+		required_providers: NamedRequiredProvider[] | NamedRequiredProvider,
+		backend: terraformBackend
+	) {
+		this.required_providers = Array.isArray(required_providers)
+			? required_providers
+			: [required_providers];
+		this.backend = backend;
+	}
+
+	toSchema() {
+		return new Schema<Terraform, Model<Terraform>, Terraform>({
+			required_providers: [
+				generateSchemaInternals(this.required_providers[0])
+			],
+			backend: generateSchemaInternals(this.backend)
+		});
+	}
+	toModel() {
+		return model("Terraform", this.toSchema());
+	}
 }
