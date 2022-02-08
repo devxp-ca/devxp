@@ -7,6 +7,12 @@ import Container from "@mui/material/Container";
 import PersistentDrawer from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../lightTheme";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
 
 interface IProps {}
 interface IState {}
@@ -14,18 +20,62 @@ export default class Wizard extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<Container maxWidth="lg">
+				<Container>
 					<Navbar />
 					<PersistentDrawer
 						repos={["Project 1", "Project 2", "Project 3"]}
 					/>
-					<Typography variant="h6">
-						This is the config wizard which appears after successful
-						OAuth
-					</Typography>
 					<Accordion
 						title="Linter Settings"
-						content="Settings go here"
+						content={
+							<Grid
+								container
+								direction="row"
+								justifyContent="center"
+								alignItems="center">
+								<Grid
+									item
+									xs
+									justifyContent="center"
+									alignItems="center">
+									<FormControlLabel
+										control={<Checkbox defaultChecked />}
+										label="Use Prettier"
+									/>
+								</Grid>
+								<Grid
+									item
+									xs
+									justifyContent="center"
+									alignItems="center">
+									<FormGroup>
+										<FormControlLabel
+											control={
+												<Checkbox defaultChecked />
+											}
+											label="Use Tabs"
+										/>
+										<TextField
+											InputLabelProps={{
+												style: {pointerEvents: "auto"}
+											}}
+											label={
+												<div>
+													<Tooltip title="The number of spaces to use for indentation.">
+														<Typography>
+															Tab Width (in
+															spaces)
+														</Typography>
+													</Tooltip>
+												</div>
+											}
+											variant="outlined"
+											type="text"
+										/>
+									</FormGroup>
+								</Grid>
+							</Grid>
+						}
 					/>
 					<Accordion
 						title="Commit Hooks"
