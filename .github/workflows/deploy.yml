@@ -9,10 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - id: 'checkout'
+    - name: checkout 🕵'
+      id: 'checkout'
       uses: actions/checkout@v2
 
-    - id: 'auth'
+    - name: 'auth 🔑'
+      id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
@@ -20,18 +22,26 @@ jobs:
     - name: 'Set up Cloud SDK ☁️'
       uses: 'google-github-actions/setup-gcloud@v0'
 
+    - name: 'Set sha 🧮'
+      id: sha
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
     - name: 'Build Docker image and upload to GCCR ⚙️'
-      run: 'gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}'
+      run: 'gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}:${{ steps.sha.outputs.sha_short }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}:${{ steps.sha.outputs.sha_short }}'
+
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: hashicorp/setup-terraform@v1
 
-    - id: 'checkout'
+    - name: checkout 🕵'
+      id: 'checkout'
       uses: actions/checkout@v2
 
-    - id: 'auth'
+    - name: 'auth 🔑'
+      id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
