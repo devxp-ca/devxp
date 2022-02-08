@@ -30,17 +30,25 @@ export interface namedRequiredProvider extends requiredProvider {
 	name: providerName;
 }
 
-export interface googleProvider {
+export interface googleProvider extends namedRequiredProvider {
+	name: "google";
 	project?: string;
 	region?: string;
 	zone?: string;
 	credentials?: string;
 }
+export const isGoogleProvider = (
+	provider: namedRequiredProvider
+): provider is googleProvider => provider.name === "google";
 
-export interface awsProvider {
+export interface awsProvider extends namedRequiredProvider {
+	name: "aws";
 	profile?: string;
 	region?: string;
 }
+export const isAwsProvider = (
+	provider: namedRequiredProvider
+): provider is awsProvider => provider.name === "aws";
 
 // -------------------------------------------------------------------------- //
 

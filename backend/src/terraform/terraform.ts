@@ -1,4 +1,11 @@
-import {namedRequiredProvider, requiredProvider} from "../types/terraform";
+import {
+	isGoogleProvider,
+	namedRequiredProvider,
+	requiredProvider,
+	awsProvider as awsProviderType
+} from "../types/terraform";
+import awsProvider from "./awsProvider";
+import googleProvider from "./googleProvider";
 
 export const terraformBlock = (
 	providers: namedRequiredProvider[] | namedRequiredProvider
@@ -26,6 +33,17 @@ export const rootBlock = (
 	providers: namedRequiredProvider[] | namedRequiredProvider
 ) => {
 	return {
-		terraform: terraformBlock(providers)
+		terraform: terraformBlock(providers),
+		providers: (Array.isArray(providers) ? providers : [providers]).map(
+			provider => {
+				if (isGoogleProvider(provider)) {
+					return googleProvider(provider);
+				}
+				//else if (isAwsProvider(provider)){
+				else {
+					return awsProvider(provider as awsProviderType);
+				}
+			}
+		)
 	};
 };
