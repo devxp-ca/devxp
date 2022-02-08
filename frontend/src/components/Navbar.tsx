@@ -13,19 +13,19 @@ export default function Navbar() {
 			<Box sx={{flexGrow: 1, marginTop: 5}}>
 				<AppBar position="relative">
 					<Toolbar>
-						<Box sx={{display: {xs: "flex", md: "flex"}}}>
+						<Box sx={{display: "flex"}}>
 							<Button href="/" color="inherit">
 								Home
 							</Button>
 							<Button href="/wizard" color="inherit">
 								Wizard
 							</Button>
-							<Button href="/about" color="inherit">
+							{/*<Button href="/about" color="inherit">
 								About
 							</Button>
 							<Button href="/contact" color="inherit">
 								Contact
-							</Button>
+							</Button>*/}
 						</Box>
 						<Box sx={{flexGrow: 1}} />
 						<Box sx={{display: {xs: "flex", md: "flex"}}}>
