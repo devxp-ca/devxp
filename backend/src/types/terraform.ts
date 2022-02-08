@@ -35,7 +35,8 @@ export interface RequiredProvider {
 	source: string;
 	version: string;
 }
-export type NamedRequiredProvider = named<RequiredProvider, providerName>;
+export interface NamedRequiredProvider
+	extends named<RequiredProvider, providerName> {}
 
 export class NamedRequiredProvider {
 	source: string;
@@ -130,7 +131,7 @@ export interface AwsBackend {
 	key: string;
 	region: string;
 }
-export type NamedAwsBackend = named<AwsBackend, "s3">;
+export interface NamedAwsBackend extends named<AwsBackend, "s3"> {}
 export const isAwsBackend = (
 	backend: namedTerraformBackend
 ): backend is named<AwsBackend, "s3"> => backend.name === "s3";
@@ -155,7 +156,7 @@ export interface GoogleBackend {
 	bucket: string;
 	prefix: string;
 }
-export type NamedGoogleBackend = named<GoogleBackend, "gcs">;
+export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
 export const isGoogleBackend = (
 	backend: namedTerraformBackend
 ): backend is named<GoogleBackend, "gcs"> => backend.name === "gcs";
