@@ -1,6 +1,6 @@
-import {awsProvider} from "../types/terraform";
+import {AwsProvider} from "../types/terraform";
 
-export default (aws: awsProvider) => {
+export default (aws: AwsProvider) => {
 	return [
 		{
 			aws: [aws]

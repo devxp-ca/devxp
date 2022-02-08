@@ -1,23 +1,23 @@
 import {DatabaseModel, generateSchema} from "./database";
 
 // ---------------------------------Variable---------------------------------- //
-export type variableType =
+export type VariableType =
 	| string
 	| number
 	| boolean
-	| variableType[]
-	| variable;
+	| VariableType[]
+	| Variable;
 
-export interface variableValidation {
+export interface VariableValidation {
 	condition: string;
 	error_message: string;
 }
 
-export interface variable {
-	type: variableType;
-	default?: variableType;
+export interface Variable {
+	type: VariableType;
+	default?: VariableType;
 	description?: string;
-	validation?: variableValidation[];
+	validation?: VariableType[];
 	sensative?: boolean;
 	nullable?: boolean;
 }
@@ -31,13 +31,13 @@ type named<Base, nameVal> = Base & {
 // -------------------------------Provider----------------------------------- //
 
 export type providerName = "google" | "aws";
-export interface requiredProvider {
+export interface RequiredProvider {
 	source: string;
 	version: string;
 }
-export type namedRequiredProvider = named<requiredProvider, providerName>;
+export interface NamedRequiredProvider extends named<RequiredProvider, providerName>{}
 
-export abstract class NamedRequiredProvider implements namedRequiredProvider {
+export class NamedRequiredProvider {
 	source: string;
 	version: string;
 	name: providerName;
@@ -48,24 +48,20 @@ export abstract class NamedRequiredProvider implements namedRequiredProvider {
 	}
 }
 
-export interface googleProvider extends named<requiredProvider, "google"> {
+export interface GoogleProvider extends named<RequiredProvider, "google"> {
 	project?: string;
 	region?: string;
 	zone?: string;
 	credentials?: string;
 }
 export const isGoogleProvider = (
-	provider: namedRequiredProvider
-): provider is googleProvider => provider.name === "google";
+	provider: NamedRequiredProvider
+): provider is GoogleProvider => provider.name === "google";
 
 export class GoogleProvider
 	extends NamedRequiredProvider
-	implements googleProvider, DatabaseModel<googleProvider>
+	implements GoogleProvider, DatabaseModel<GoogleProvider>
 {
-	project?: string;
-	region?: string;
-	zone?: string;
-	credentials?: string;
 	name: "google";
 	constructor(
 		source: string,
@@ -84,26 +80,23 @@ export class GoogleProvider
 	}
 
 	toSchema() {
-		return generateSchema<googleProvider>(this);
+		return generateSchema<GoogleProvider>(this);
 	}
 }
 
-export interface awsProvider extends named<requiredProvider, "aws"> {
+export interface AwsProvider extends named<RequiredProvider, "aws"> {
 	region: string;
 	access_key: string;
 	secret_key: string;
 }
 export const isAwsProvider = (
-	provider: namedRequiredProvider
-): provider is awsProvider => provider.name === "aws";
+	provider: NamedRequiredProvider
+): provider is AwsProvider => provider.name === "aws";
 
 export class AwsProvider
 	extends NamedRequiredProvider
-	implements awsProvider, DatabaseModel<awsProvider>
+	implements DatabaseModel<AwsProvider>
 {
-	region: string;
-	access_key: string;
-	secret_key: string;
 	name: "aws";
 	constructor(
 		source: string,
@@ -120,40 +113,40 @@ export class AwsProvider
 	}
 
 	toSchema() {
-		return generateSchema<awsProvider>(this);
+		return generateSchema<AwsProvider>(this);
 	}
 }
 
 // --------------------------------Backend----------------------------------- //
 
 export type backendName = "s3" | "gcs";
-export interface awsBackend {
+export interface AwsBackend {
 	bucket: string;
 
 	//Same as prefix
 	key: string;
 	region: string;
 }
-export type namedAwsBackend = named<awsBackend, "s3">;
+export type NamedAwsBackend = named<AwsBackend, "s3">;
 export const isAwsBackend = (
 	backend: namedTerraformBackend
-): backend is named<awsBackend, "s3"> => backend.name === "s3";
+): backend is named<AwsBackend, "s3"> => backend.name === "s3";
 
-export interface googleBackend {
+export interface GoogleBackend {
 	bucket: string;
 	prefix: string;
 }
-export type namedGoogleBackend = named<googleBackend, "gcs">;
+export type NamedGoogleBackend = named<GoogleBackend, "gcs">;
 export const isGoogleBackend = (
 	backend: namedTerraformBackend
-): backend is named<googleBackend, "gcs"> => backend.name === "gcs";
+): backend is named<GoogleBackend, "gcs"> => backend.name === "gcs";
 
-export type terraformBackend = awsBackend | googleBackend;
+export type terraformBackend = AwsBackend | GoogleBackend;
 export type namedTerraformBackend = named<terraformBackend, backendName>;
 
 // ----------------------------Terraform Root-------------------------------- //
 
-export interface terraform {
-	required_providers: requiredProvider[];
+export interface Terraform {
+	required_providers: RequiredProvider[];
 	backend: terraformBackend;
 }

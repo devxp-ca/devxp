@@ -1,6 +1,6 @@
-import {googleBackend} from "../types/terraform";
+import {GoogleBackend} from "../types/terraform";
 
-export default (google: googleBackend) => {
+export default (google: GoogleBackend) => {
 	return [
 		{
 			gcs: [google]

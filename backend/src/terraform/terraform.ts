@@ -1,11 +1,11 @@
 import {
 	isGoogleProvider,
-	namedRequiredProvider,
-	requiredProvider,
-	awsProvider as awsProviderType,
+	NamedRequiredProvider,
+	RequiredProvider,
+	AwsProvider as AwsProviderType,
 	namedTerraformBackend,
 	isGoogleBackend,
-	awsBackend as awsBackendType
+	AwsBackend as AwsBackendType
 } from "../types/terraform";
 import awsBackend from "./awsBackend";
 import awsProvider from "./awsProvider";
@@ -13,11 +13,11 @@ import googleBackend from "./googleBackend";
 import googleProvider from "./googleProvider";
 
 export const terraformBlock = (
-	providers: namedRequiredProvider[] | namedRequiredProvider
+	providers: NamedRequiredProvider[] | NamedRequiredProvider
 ) => {
 	const requiredProviders: {
-		aws?: requiredProvider;
-		google?: requiredProvider;
+		aws?: RequiredProvider;
+		google?: RequiredProvider;
 	} = {};
 
 	(Array.isArray(providers) ? providers : [providers]).forEach(
@@ -36,7 +36,7 @@ export const terraformBlock = (
 };
 
 export const rootBlock = (
-	providers: namedRequiredProvider[] | namedRequiredProvider,
+	providers: NamedRequiredProvider[] | NamedRequiredProvider,
 	backend: namedTerraformBackend
 ) => {
 	return {
@@ -48,7 +48,7 @@ export const rootBlock = (
 				}
 				//else if (isAwsProvider(provider)){
 				else {
-					return awsProvider(provider as awsProviderType);
+					return awsProvider(provider as AwsProviderType);
 				}
 			}
 		),
@@ -58,7 +58,7 @@ export const rootBlock = (
 			}
 			//else if (isAwsBackend(namedBackend)){
 			else {
-				return awsBackend(namedBackend as awsBackendType);
+				return awsBackend(namedBackend as AwsBackendType);
 			}
 		})
 	};

@@ -1,6 +1,6 @@
-import {googleProvider} from "../types/terraform";
+import {GoogleProvider} from "../types/terraform";
 
-export default (google: googleProvider) => {
+export default (google: GoogleProvider) => {
 	return [
 		{
 			google: [google]
