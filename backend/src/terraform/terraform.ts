@@ -2,9 +2,14 @@ import {
 	isGoogleProvider,
 	namedRequiredProvider,
 	requiredProvider,
-	awsProvider as awsProviderType
+	awsProvider as awsProviderType,
+	namedTerraformBackend,
+	isGoogleBackend,
+	awsBackend as awsBackendType
 } from "../types/terraform";
+import awsBackend from "./awsBackend";
 import awsProvider from "./awsProvider";
+import googleBackend from "./googleBackend";
 import googleProvider from "./googleProvider";
 
 export const terraformBlock = (
@@ -24,13 +29,15 @@ export const terraformBlock = (
 
 	return [
 		{
-			required_providers: [requiredProviders]
+			required_providers: [requiredProviders],
+			backend: []
 		}
 	];
 };
 
 export const rootBlock = (
-	providers: namedRequiredProvider[] | namedRequiredProvider
+	providers: namedRequiredProvider[] | namedRequiredProvider,
+	backend: namedTerraformBackend
 ) => {
 	return {
 		terraform: terraformBlock(providers),
@@ -44,6 +51,15 @@ export const rootBlock = (
 					return awsProvider(provider as awsProviderType);
 				}
 			}
-		)
+		),
+		backend: [backend].map(namedBackend => {
+			if (isGoogleBackend(namedBackend)) {
+				return googleBackend(namedBackend);
+			}
+			//else if (isAwsBackend(namedBackend)){
+			else {
+				return awsBackend(namedBackend as awsBackendType);
+			}
+		})
 	};
 };
