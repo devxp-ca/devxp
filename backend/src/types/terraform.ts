@@ -35,7 +35,7 @@ export interface RequiredProvider {
 	source: string;
 	version: string;
 }
-export interface NamedRequiredProvider extends named<RequiredProvider, providerName>{}
+export type NamedRequiredProvider = named<RequiredProvider, providerName>;
 
 export class NamedRequiredProvider {
 	source: string;
@@ -47,6 +47,8 @@ export class NamedRequiredProvider {
 		this.name = name;
 	}
 }
+
+// -- -- -- //
 
 export interface GoogleProvider extends named<RequiredProvider, "google"> {
 	project?: string;
@@ -84,6 +86,8 @@ export class GoogleProvider
 	}
 }
 
+// -- -- -- //
+
 export interface AwsProvider extends named<RequiredProvider, "aws"> {
 	region: string;
 	access_key: string;
@@ -119,7 +123,6 @@ export class AwsProvider
 
 // --------------------------------Backend----------------------------------- //
 
-export type backendName = "s3" | "gcs";
 export interface AwsBackend {
 	bucket: string;
 
@@ -132,15 +135,47 @@ export const isAwsBackend = (
 	backend: namedTerraformBackend
 ): backend is named<AwsBackend, "s3"> => backend.name === "s3";
 
+export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
+	name: "s3";
+	constructor(bucket: string, key: string, region: string) {
+		this.name = "s3";
+		this.bucket = bucket;
+		this.key = key;
+		this.region = region;
+	}
+
+	toSchema() {
+		return generateSchema<NamedAwsBackend>(this);
+	}
+}
+
+// -- -- -- //
+
 export interface GoogleBackend {
 	bucket: string;
 	prefix: string;
 }
-export type NamedGoogleBackend = named<GoogleBackend, "gcs">;
+export interface NamedGoogleBackend extends named<GoogleBackend, "gcs">{}
 export const isGoogleBackend = (
 	backend: namedTerraformBackend
 ): backend is named<GoogleBackend, "gcs"> => backend.name === "gcs";
 
+export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
+	name: "gcs";
+	constructor(bucket: string, prefix: string) {
+		this.name = "gcs";
+		this.bucket = bucket;
+		this.prefix = prefix;
+	}
+
+	toSchema() {
+		return generateSchema<NamedGoogleBackend>(this);
+	}
+}
+
+// -- -- -- //
+
+export type backendName = "s3" | "gcs";
 export type terraformBackend = AwsBackend | GoogleBackend;
 export type namedTerraformBackend = named<terraformBackend, backendName>;
 
