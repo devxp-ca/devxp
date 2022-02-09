@@ -82,3 +82,46 @@ should become:
 ```
 
 https://www.hcl2json.com/
+
+```ts
+console.log(
+	JSON.stringify(
+		rootBlock(
+			new AwsProvider(
+				"hashicorp/aws",
+				">= 2.7.0",
+				"uswest-1",
+				"ACCESS_KEY",
+				"SECRET_KEY"
+			),
+			new NamedAwsBackend(
+				"UNIQUE_BUCKET_NAME",
+				"terraform/state",
+				"uswest-1"
+			)
+		),
+		null,
+		2
+	)
+);
+
+console.log(
+	JSON.stringify(
+		rootBlock(
+			new GoogleProvider(
+				"hashicorp/gcs",
+				">= 2.7.0",
+				"devxp",
+				"uswest-1"
+			),
+			new NamedGoogleBackend(
+				"UNIQUE_BUCKET_NAME",
+				"terraform/state",
+				"uswest-1"
+			)
+		),
+		null,
+		2
+	)
+);
+```
