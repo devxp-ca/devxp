@@ -1,3 +1,9 @@
+/**
+ * This is the doc comment for index.ts
+ *
+ * Specify this is a module comment and rename it to my-module:
+ * @module index
+ */
 import RESTServer from "./server";
 import mainRouter from "./routes/index";
 import {mongoose} from "./database/connection";

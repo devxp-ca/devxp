@@ -11,5 +11,11 @@
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true
 	},
-	"include": ["./src/**/**/*"]
+	"include": ["./src/**/**/*"],
+	"typedocOptions": {
+		"entryPointStrategy": "expand",
+		"entryPoints": ["./src"],
+		"out": "docs",
+		"darkHighlightTheme": "dark-plus"
+	}
 }
