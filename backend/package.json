@@ -12,7 +12,7 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier --config .prettierrc.json \"src/**/*.ts\" --write",
         "prepare": "cd .. && husky install backend/.husky",
-        "docs": "typedoc"
+        "typedoc": "typedoc"
     },
     "repository": {
         "type": "git",
