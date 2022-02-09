@@ -1,7 +1,12 @@
 import RESTServer from "./server";
 import mainRouter from "./routes/index";
 import {mongoose} from "./database/connection";
-import {GoogleProvider, NamedGoogleBackend} from "./types/terraform";
+import {
+	AwsProvider,
+	GoogleProvider,
+	NamedAwsBackend,
+	NamedGoogleBackend
+} from "./types/terraform";
 import {rootBlock} from "./terraform/terraform";
 
 const server = new RESTServer();
@@ -14,13 +19,14 @@ server.route("/", mainRouter);
 console.log(
 	JSON.stringify(
 		rootBlock(
-			new GoogleProvider(
-				"hashicorp/gcs",
+			new AwsProvider(
+				"hashicorp/aws",
 				">= 2.7.0",
-				"devxp",
-				"uswest-1"
+				"uswest-1",
+				"ACCESS_KEY",
+				"SECRET_KEY"
 			),
-			new NamedGoogleBackend(
+			new NamedAwsBackend(
 				"UNIQUE_BUCKET_NAME",
 				"terraform/state",
 				"uswest-1"
