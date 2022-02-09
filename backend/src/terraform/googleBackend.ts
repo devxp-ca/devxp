@@ -3,14 +3,12 @@ import {GoogleBackend} from "../types/terraform";
 import {removeName} from "./util";
 
 export default (google: GoogleBackend) => {
-	return [
-		{
-			gcs: [removeName(google)].map(g => ({
-				bucket: g.bucket,
-				prefix: g.prefix
-			}))
-		}
-	];
+	return {
+		gcs: [removeName(google)].map(g => ({
+			bucket: g.bucket,
+			prefix: g.prefix
+		}))
+	};
 };
 
 export const toResource = (google: GoogleBackend) => {

@@ -27,7 +27,7 @@ console.log(
 			)
 		),
 		null,
-		4
+		2
 	)
 );
 
