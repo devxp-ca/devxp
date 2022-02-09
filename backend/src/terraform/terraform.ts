@@ -11,25 +11,14 @@ import awsBackend from "./awsBackend";
 import awsProvider from "./awsProvider";
 import googleBackend from "./googleBackend";
 import googleProvider from "./googleProvider";
+import {namedDestructure} from "./util";
 
 export const terraformBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider
 ) => {
-	const requiredProviders: {
-		aws?: RequiredProvider;
-		google?: RequiredProvider;
-	} = {};
-
-	(Array.isArray(providers) ? providers : [providers]).forEach(
-		namedProvider => {
-			const {name, ...provider} = namedProvider;
-			requiredProviders[name] = provider;
-		}
-	);
-
 	return [
 		{
-			required_providers: [requiredProviders],
+			required_providers: [namedDestructure(providers)],
 			backend: []
 		}
 	];

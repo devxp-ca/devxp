@@ -29,7 +29,7 @@ export interface Variable {
 
 // ---------------------------------Utility---------------------------------- //
 
-type named<Base, nameVal> = Base & {
+export type named<Base, nameVal> = Base & {
 	name: nameVal;
 };
 
