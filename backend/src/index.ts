@@ -1,6 +1,8 @@
 import RESTServer from "./server";
 import mainRouter from "./routes/index";
 import {mongoose} from "./database/connection";
+import {GoogleProvider, NamedGoogleBackend} from "./types/terraform";
+import {rootBlock} from "./terraform/terraform";
 
 const server = new RESTServer();
 server.serve("/");

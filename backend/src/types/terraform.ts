@@ -29,7 +29,7 @@ export interface Variable {
 
 // ---------------------------------Utility---------------------------------- //
 
-type named<Base, nameVal> = Base & {
+export type named<Base, nameVal> = Base & {
 	name: nameVal;
 };
 
@@ -171,6 +171,7 @@ export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 export interface GoogleBackend {
 	bucket: string;
 	prefix: string;
+	location: string;
 }
 export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
 export const isGoogleBackend = (
@@ -179,10 +180,11 @@ export const isGoogleBackend = (
 
 export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 	name: "gcs";
-	constructor(bucket: string, prefix: string) {
+	constructor(bucket: string, prefix: string, location: string) {
 		this.name = "gcs";
 		this.bucket = bucket;
 		this.prefix = prefix;
+		this.location = location;
 	}
 
 	toSchema() {

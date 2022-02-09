@@ -1,38 +1,49 @@
 import {
 	isGoogleProvider,
 	NamedRequiredProvider,
-	RequiredProvider,
 	AwsProvider as AwsProviderType,
 	namedTerraformBackend,
 	isGoogleBackend,
-	AwsBackend as AwsBackendType
+	AwsBackend as AwsBackendType,
+	RequiredProvider
 } from "../types/terraform";
-import awsBackend from "./awsBackend";
+import awsBackend, {toResource as backendToAwsResource} from "./awsBackend";
 import awsProvider from "./awsProvider";
-import googleBackend from "./googleBackend";
+import googleBackend, {
+	toResource as backendToGoogleResource
+} from "./googleBackend";
 import googleProvider from "./googleProvider";
+import {namedDestructure} from "./util";
 
 export const terraformBlock = (
-	providers: NamedRequiredProvider[] | NamedRequiredProvider
+	providers: NamedRequiredProvider[] | NamedRequiredProvider,
+	backend: namedTerraformBackend
 ) => {
-	const requiredProviders: {
-		aws?: RequiredProvider;
-		google?: RequiredProvider;
-	} = {};
-
-	(Array.isArray(providers) ? providers : [providers]).forEach(
-		namedProvider => {
-			const {name, ...provider} = namedProvider;
-			requiredProviders[name] = provider;
-		}
-	);
-
 	return [
 		{
-			required_providers: [requiredProviders],
-			backend: []
+			required_providers: [
+				namedDestructure(providers, (p: RequiredProvider) => ({
+					source: p.source,
+					version: p.version
+				}))
+			],
+			backend: [backend].map(namedBackend => {
+				if (isGoogleBackend(namedBackend)) {
+					return googleBackend(namedBackend);
+				}
+				//else if (isAwsBackend(namedBackend)){
+				else {
+					return awsBackend(namedBackend as AwsBackendType);
+				}
+			})
 		}
 	];
+};
+
+const buildResource = (backend: namedTerraformBackend) => {
+	return isGoogleBackend(backend)
+		? backendToGoogleResource(backend)
+		: backendToAwsResource(backend as AwsBackendType);
 };
 
 export const rootBlock = (
@@ -40,8 +51,8 @@ export const rootBlock = (
 	backend: namedTerraformBackend
 ) => {
 	return {
-		terraform: terraformBlock(providers),
-		providers: (Array.isArray(providers) ? providers : [providers]).map(
+		terraform: terraformBlock(providers, backend),
+		provider: (Array.isArray(providers) ? providers : [providers]).map(
 			provider => {
 				if (isGoogleProvider(provider)) {
 					return googleProvider(provider);
@@ -52,14 +63,6 @@ export const rootBlock = (
 				}
 			}
 		),
-		backend: [backend].map(namedBackend => {
-			if (isGoogleBackend(namedBackend)) {
-				return googleBackend(namedBackend);
-			}
-			//else if (isAwsBackend(namedBackend)){
-			else {
-				return awsBackend(namedBackend as AwsBackendType);
-			}
-		})
+		resource: [buildResource(backend)]
 	};
 };

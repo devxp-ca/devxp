@@ -6,6 +6,9 @@ export interface Config {
 	GITHUB_CLIENT_ID: string;
 	GITHUB_CLIENT_SECRET: string;
 	GITHUB_SCOPES: string[];
+	TERRAFORM: {
+		BACKEND_BUCKET: string;
+	};
 }
 
 const envCheck = <T>(env: T | undefined, name = "every") => {
@@ -40,6 +43,9 @@ const CONFIG: Config = {
 	PORT,
 	GITHUB_CLIENT_ID,
 	GITHUB_CLIENT_SECRET,
-	GITHUB_SCOPES: ["workflow", "repo"]
+	GITHUB_SCOPES: ["workflow", "repo"],
+	TERRAFORM: {
+		BACKEND_BUCKET: "terraform_backend_bucket"
+	}
 };
 export default CONFIG;

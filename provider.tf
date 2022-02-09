@@ -1,7 +1,10 @@
 
 terraform {
   required_providers {
-    google = ">= 3.3"
+    google = {
+      version = ">= 2.3"
+      source = "hashicorp/gcs"
+    }
   }
   backend "gcs" {
     bucket = "devxp_terraform_backend"
