@@ -11,15 +11,20 @@ export default function MainLandingVisual() {
 	//For the modal that pops up from the 'Get Started' button
 	const [openStartModal, setOpenStartModal] = React.useState(false);
 	const handleOpenStartModal = () => {
-		setOpenStartModal(true)
-	}
+		setOpenStartModal(true);
+	};
 	const handleCloseStartModal = () => {
-		setOpenStartModal(false)
-	}
+		setOpenStartModal(false);
+	};
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<GenericModal isOpen={openStartModal} handleClose={handleCloseStartModal} title={"Example"} bodyText={"text"} />
+			<GenericModal
+				isOpen={openStartModal}
+				handleClose={handleCloseStartModal}
+				title={"Example"}
+				bodyText={"text"}
+			/>
 			<Box
 				sx={{
 					width: "100%",
