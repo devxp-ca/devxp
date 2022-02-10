@@ -2,8 +2,8 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../lightTheme";
+import { ThemeProvider } from "@mui/material/styles";
+import { lightTheme } from "../lightTheme";
 
 import GenericModal from "./GenericModal";
 
@@ -16,14 +16,28 @@ export default function MainLandingVisual() {
 	const handleCloseStartModal = () => {
 		setOpenStartModal(false);
 	};
+	const startModalChildren = () => {
+		return (
+			<div style={{ display: 'flex', justifyContent: 'center'}}>
+				<Button
+					color="secondary"
+					variant="contained"
+					size="large"
+					sx={{ marginTop: 2 }}>
+					Sign Up
+				</Button>
+			</div>
+		)
+	}
 
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<GenericModal
 				isOpen={openStartModal}
 				handleClose={handleCloseStartModal}
-				title={"Example"}
-				bodyText={"text"}
+				title={"Example Title"}
+				bodyText={"Example text"}
+				children={startModalChildren()}
 			/>
 			<Box
 				sx={{
@@ -33,7 +47,7 @@ export default function MainLandingVisual() {
 					paddingTop: 40,
 					paddingBottom: 15
 				}}>
-				<Box sx={{width: "100%", textAlign: "center"}}>
+				<Box sx={{ width: "100%", textAlign: "center" }}>
 					<Typography variant="h1">DEV XP</Typography>
 					<Box
 						sx={{
@@ -51,7 +65,7 @@ export default function MainLandingVisual() {
 							color="secondary"
 							variant="contained"
 							size="large"
-							sx={{marginTop: 2}}>
+							sx={{ marginTop: 2 }}>
 							Get Started
 						</Button>
 					</Box>
