@@ -1,14 +1,25 @@
 import * as React from "react";
-import {useState} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import {ThemeProvider, useTheme} from "@mui/material/styles";
+import {ThemeProvider} from "@mui/material/styles";
 import {lightTheme} from "../lightTheme";
 
+import GenericModal from "./GenericModal";
+
 export default function MainLandingVisual() {
+	//For the modal that pops up from the 'Get Started' button
+	const [openStartModal, setOpenStartModal] = React.useState(false);
+	const handleOpenStartModal = () => {
+		setOpenStartModal(true)
+	}
+	const handleCloseStartModal = () => {
+		setOpenStartModal(false)
+	}
+
 	return (
 		<ThemeProvider theme={lightTheme}>
+			<GenericModal isOpen={openStartModal} handleClose={handleCloseStartModal} title={"Example"} bodyText={"text"} />
 			<Box
 				sx={{
 					width: "100%",
@@ -31,6 +42,7 @@ export default function MainLandingVisual() {
 							DevOps is hard -- We don't believe it has to be
 						</Typography>
 						<Button
+							onClick={handleOpenStartModal}
 							color="secondary"
 							variant="contained"
 							size="large"
