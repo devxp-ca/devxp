@@ -2,7 +2,7 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { lightTheme } from "../lightTheme";
+import {lightTheme} from "../lightTheme";
 
 const modalStyle = {
 	position: "absolute",
@@ -18,14 +18,14 @@ const modalStyle = {
 const titleBoxStyle = {
 	textAlign: "center",
 	bgcolor: lightTheme.palette.primary.main,
-	width: '100%',
-}
+	width: "100%"
+};
 
 const bodyStyle = {
-	width: '100%',
+	width: "100%",
 	padding: 2,
-	boxSizing: "border-box",
-}
+	boxSizing: "border-box"
+};
 
 interface modalProps {
 	isOpen: boolean;
@@ -40,21 +40,24 @@ export default function GenericModal({
 	handleClose,
 	title,
 	bodyText,
-	children,
+	children
 }: modalProps) {
 	return (
 		<div>
 			<Modal open={isOpen} onClose={handleClose}>
 				<Box sx={modalStyle}>
 					<Box sx={titleBoxStyle}>
-						<Typography variant="h6" component="h2" sx={{padding: 2}}>
+						<Typography
+							variant="h6"
+							component="h2"
+							sx={{padding: 2}}>
 							{title}
 						</Typography>
 					</Box>
 					<Box sx={bodyStyle}>
-						<Typography sx={{ mt: 2 }}>{bodyText}</Typography>
-						{children}	
-					</Box>	
+						<Typography sx={{mt: 2}}>{bodyText}</Typography>
+						{children}
+					</Box>
 				</Box>
 			</Modal>
 		</div>
