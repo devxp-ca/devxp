@@ -1,0 +1,17 @@
+name: Dockerfile Builds Successfully 💽⚙️
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout 🕵'
+      id: 'checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Build dockerfile 💽⚙️'
+      run: 'docker build .'
