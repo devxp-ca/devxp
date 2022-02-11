@@ -1,0 +1,25 @@
+name: Terraform Plans Successfully 🟪☂️
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hashicorp/setup-terraform@v1
+
+    - name: checkout 🕵'
+      id: 'checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Setup terraform 🟪'
+      run: 'terraform init'
+
+    - name: 'Initialize terraform env vars ☂️'
+      run: 'SHA="PLACEHOLDER" CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" GITHUB_CLIENT_ID="${{ secrets.OAUTH_GITHUB_CLIENT_ID }}" GITHUB_CLIENT_SECRET="${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}" ./createTerraformVarsFile.sh CONNECTION_STRING GITHUB_CLIENT_ID SHA GITHUB_CLIENT_SECRET'
+
+    - name: 'Terraform Plan 🚀'
+      run: 'terraform plan -lock=false'
