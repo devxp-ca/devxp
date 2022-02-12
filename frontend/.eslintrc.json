@@ -22,6 +22,7 @@
 		"sourceType": "module"
 	},
 	"plugins": ["react"],
+	"ignorePatterns": ["dist/*"],
 	"rules": {
 		"indent": ["error", "tab"],
 		"linebreak-style": ["error", "unix"],
