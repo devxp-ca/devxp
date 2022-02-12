@@ -12,6 +12,6 @@ apiV1Router.get("/", (_req, res) =>
 	})
 );
 
-apiV1Router.get("/getRepos", getRepoList)
+apiV1Router.get("/getRepos", getRepoList);
 
 export default apiV1Router;

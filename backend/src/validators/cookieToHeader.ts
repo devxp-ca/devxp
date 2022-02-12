@@ -6,8 +6,8 @@ import {Request, Response, NextFunction} from "express";
 // communication much easier
 export default [
 	(req: Request, _res: Response, next: NextFunction): void => {
-		if (!req.header("token") && req.cookies.github_auth_token) {
-			req.headers.token = String(req.cookies.github_auth_token);
+		if (!req.header("token") && req.cookies.token) {
+			req.headers.token = String(req.cookies.token);
 		}
 		next();
 	}

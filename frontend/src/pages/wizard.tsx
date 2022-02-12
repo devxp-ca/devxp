@@ -31,14 +31,19 @@ export default class Wizard extends React.Component<IProps, IState> {
 	}
 
 	componentDidMount() {
-		axios.get(`https://${CONFIG.BACKEND_URL}/api/v1/getRepos`).then(response => {
-			this.setState({
-				repoList: response.data.repoList
+		//TODO: add explicit type to "response"
+		axios
+			.get(`https://${CONFIG.BACKEND_URL}/api/v1/getRepos`)
+			.then(response => {
+				console.dir(response.data);
+				this.setState({
+					repoList: response.data.repos
+				});
+			})
+			.catch(error => {
+				/**TODO: Render an error component */
+				console.log(error);
 			});
-		}).catch(error => {
-			/**TODO: Render an error component */
-			console.log(error);
-		});
 	}
 	/**Populate the persistent drawer props.repos with the repoList */
 	render() {
@@ -46,7 +51,7 @@ export default class Wizard extends React.Component<IProps, IState> {
 			<ThemeProvider theme={lightTheme}>
 				<Container>
 					<Navbar />
-					<PersistentDrawer repos={this.state.repoList}/>
+					<PersistentDrawer repos={this.state.repoList} />
 					<Accordion
 						title="Linter Settings"
 						content={
