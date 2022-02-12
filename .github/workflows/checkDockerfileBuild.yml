@@ -6,6 +6,7 @@ on:
       - main
     paths:
     - 'backend/src/**'
+    - 'frontend/src/**'
 
 jobs:
   build:
