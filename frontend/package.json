@@ -2,16 +2,19 @@
 	"name": "dxaas-frontend",
 	"version": "1.0.0",
 	"description": "React frontend for DXaaS webapp",
-	"main": "src/index.js",
+	"main": "dist/index.js",
 	"scripts": {
 		"test": "echo 'Tests not setup' ; exit 1",
 		"dev": "webpack-dev-server --config ./webpack.config.js",
+		"dev:inject": "nodemon --watch 'dist/*' -e js,html --exec 'cp dist/* ../backend/public/'",
+		"dev:watch": "webpack --watch",
 		"build": "webpack --mode=production",
 		"lint": "eslint .",
 		"lint:fix": "eslint --fix",
 		"format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" --config ./.prettierrc.json",
 		"prepare": "cd .. && husky install frontend/.husky",
-		"typedoc": "typedoc"
+		"typedoc": "typedoc",
+		"dev:full": "../dev.sh"
 	},
 	"repository": {
 		"type": "git",
@@ -52,6 +55,7 @@
 		"file-loader": "^6.2.0",
 		"html-webpack-plugin": "^5.5.0",
 		"husky": "^7.0.4",
+		"nodemon": "^2.0.15",
 		"prettier": "^2.5.1",
 		"style-loader": "^3.3.1",
 		"ts-loader": "^9.2.6",
