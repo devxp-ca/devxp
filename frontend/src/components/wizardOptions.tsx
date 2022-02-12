@@ -23,6 +23,20 @@ export default function WizardOptions() {
 		setProviderValue((event.target as HTMLInputElement).value);
 	};
 
+	const [accessKeyValue, setAccessKeyValue] = React.useState("");
+	const handleChangeAccessKey = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setAccessKeyValue((event.target as HTMLInputElement).value);
+	};
+
+	const [secretKeyValue, setSecretKeyValue] = React.useState("");
+	const handleChangeSecretKey = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setSecretKeyValue((event.target as HTMLInputElement).value);
+	};
+
 	const handleSubmit = () => {
 		//implement 'send text object to backend' here
 		//confirmation modal
@@ -36,8 +50,8 @@ export default function WizardOptions() {
 			<Accordion
 				title="Terraform"
 				content={
-					<Grid container>
-						<Grid item>
+					<Grid container direction="column">
+						<Grid item sx={{padding: 2}}>
 							<FormControl>
 								<FormLabel>Provider</FormLabel>
 								<RadioGroup
@@ -66,6 +80,39 @@ export default function WizardOptions() {
 								</RadioGroup>
 							</FormControl>
 						</Grid>
+						{
+							//AWS Options
+							providerValue === "aws" && (
+								<Grid container direction="row">
+									<Grid item sx={{padding: 2}}>
+										<FormControl>
+											<FormLabel>Access Key</FormLabel>
+											<TextField
+												id="access-key"
+												name="access-key"
+												label="Access Key"
+												type="text"
+												value={accessKeyValue}
+												onChange={handleChangeAccessKey}
+											/>
+										</FormControl>
+									</Grid>
+									<Grid item sx={{padding: 2}}>
+										<FormControl>
+											<FormLabel>Secret Key</FormLabel>
+											<TextField
+												id="secret-key"
+												name="secret-key"
+												label="Secret Key"
+												type="text"
+												value={secretKeyValue}
+												onChange={handleChangeSecretKey}
+											/>
+										</FormControl>
+									</Grid>
+								</Grid>
+							)
+						}
 					</Grid>
 				}
 			/>
