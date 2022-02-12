@@ -7,7 +7,10 @@ import {removeName} from "./util";
 export interface NamedAwsBackend extends named<AwsBackend, "s3"> {}
 export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 	name: "s3";
-	constructor(bucket: string, key: string, region: string) {
+	constructor(bucket: string);
+	constructor(bucket: string, region: string);
+	constructor(bucket: string, key: string, region: string);
+	constructor(bucket: string, key = "terraform/state", region = "uswest-1") {
 		this.name = "s3";
 		this.bucket = bucket;
 		this.key = key;
