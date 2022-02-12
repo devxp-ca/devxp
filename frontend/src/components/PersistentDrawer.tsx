@@ -21,8 +21,8 @@ const DrawerHeader = styled("div")(({theme}) => ({
 	justifyContent: "center"
 }));
 
-export interface GithubRepo{
-	name: string
+export interface GithubRepo {
+	name: string;
 }
 
 //a functional component that returns a drawer which is anchored on the left of the screen

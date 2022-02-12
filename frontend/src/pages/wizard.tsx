@@ -14,40 +14,39 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
+import {CONFIG} from "../config";
 
 interface IProps {}
-interface IState {repoList: GithubRepo[];}
+interface IState {
+	repoList: GithubRepo[];
+}
 export default class Wizard extends React.Component<IProps, IState> {
-
 	/*Create a constructor, set the state of the constructor to an empty list.*/
 	constructor(props: IProps) {
 		super(props);
 		this.state = {
 			/*Create a state called "repoList" and set it to an empty list.*/
-			repoList: [],
-		}
+			repoList: []
+		};
 	}
 
 	componentDidMount() {
-
-		axios.get("TODO").then(
-			(response) => {
-				this.setState({
-					// TODO: Set the state of the repoList to the response data
-					//repoList: response.data
-				});
-			}
-		)
+		axios.get(`https://${CONFIG.BACKEND_URL}/api/v1/getRepos`).then(response => {
+			this.setState({
+				repoList: response.data.repoList
+			});
+		}).catch(error => {
+			/**TODO: Render an error component */
+			console.log(error);
+		});
 	}
-
+	/**Populate the persistent drawer props.repos with the repoList */
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
 				<Container>
 					<Navbar />
-					<PersistentDrawer
-						repos={[]}
-					/>
+					<PersistentDrawer repos={this.state.repoList}/>
 					<Accordion
 						title="Linter Settings"
 						content={

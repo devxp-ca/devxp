@@ -1,5 +1,6 @@
 // Imports
 import {Router} from "express";
+import {getRepoList} from "../controllers/getRepoList";
 
 const apiV1Router = Router();
 
@@ -10,5 +11,7 @@ apiV1Router.get("/", (_req, res) =>
 		healthy: true
 	})
 );
+
+apiV1Router.get("/getRepos", getRepoList)
 
 export default apiV1Router;
