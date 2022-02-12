@@ -35,10 +35,8 @@ export const callbackFromGithub = (req: Request, res: Response): void => {
 		.then(resp => {
 			//Ensure tokens are actually present in response from github
 			if ("access_token" in resp.data) {
-				//TODO: Redirect back to frontend
-				res.json({
-					token: resp.data.access_token
-				});
+				res.cookie("token", resp.data.access_token);
+				res.redirect("/wizard");
 			} else {
 				//This should never run, but just in case
 				return Promise.reject(
