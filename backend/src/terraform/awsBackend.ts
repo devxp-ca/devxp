@@ -2,18 +2,25 @@ import {model} from "mongoose";
 import CONFIG from "../config";
 import {DatabaseModel, generateSchema} from "../types/database";
 import {AwsBackend, named} from "../types/terraform";
-import {removeName} from "./util";
+import {generateId, removeName} from "./util";
 
 export interface NamedAwsBackend extends named<AwsBackend, "s3"> {}
 export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 	name: "s3";
-	constructor(bucket: string, key: string, region: string) {
+	constructor();
+	constructor(bucket: string);
+	constructor(bucket: string, region: string);
+	constructor(bucket: string, key: string, region: string);
+	constructor(
+		bucket = `terraform-state-${generateId(45)}`,
+		key = "terraform/state",
+		region = "uswest-1"
+	) {
 		this.name = "s3";
 		this.bucket = bucket;
 		this.key = key;
 		this.region = region;
 	}
-
 	toSchema() {
 		return generateSchema<NamedAwsBackend>(this);
 	}

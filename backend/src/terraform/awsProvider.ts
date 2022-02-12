@@ -9,20 +9,29 @@ import {removeName} from "./util";
 
 export interface AwsProvider extends named<RequiredProvider, "aws"> {
 	region: string;
-	access_key: string;
-	secret_key: string;
+	access_key?: string;
+	secret_key?: string;
 }
 export class AwsProvider
 	extends NamedRequiredProvider
 	implements DatabaseModel<AwsProvider>
 {
 	name: "aws";
+	constructor();
+	constructor(region: string);
 	constructor(
 		source: string,
 		version: string,
 		region: string,
 		access_key: string,
 		secret_key: string
+	);
+	constructor(
+		source = "hashicorp/aws",
+		version = ">= 2.7.0",
+		region = "uswest-1",
+		access_key?: string,
+		secret_key?: string
 	) {
 		super(source, version, "aws");
 		this.name = "aws";

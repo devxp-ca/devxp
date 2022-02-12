@@ -18,11 +18,16 @@ export class GoogleProvider
 	implements GoogleProvider, DatabaseModel<GoogleProvider>
 {
 	name: "google";
+
+	constructor();
+	constructor(project: string);
+	constructor(project: string, region: string);
+	constructor(project: string, region: string, zone: string);
 	constructor(
-		source: string,
-		version: string,
+		source = "hashicorp/gcs",
+		version = ">= 4.10.0",
 		project: string | null = null,
-		region: string | null = null,
+		region = "uswest-1",
 		zone: string | null = null,
 		credentials: string | null = null
 	) {
