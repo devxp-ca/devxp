@@ -1,24 +1,44 @@
+import {model} from "mongoose";
 import CONFIG from "../config";
-import {AwsBackend} from "../types/terraform";
+import {DatabaseModel, generateSchema} from "../types/database";
+import {AwsBackend, named} from "../types/terraform";
 import {removeName} from "./util";
 
-export default (aws: AwsBackend) => {
-	return {
-		s3: [removeName(aws)].map(a => ({
-			bucket: a.bucket,
-			key: a.key
-		}))
-	};
-};
+export interface NamedAwsBackend extends named<AwsBackend, "s3"> {}
+export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
+	name: "s3";
+	constructor(bucket: string, key: string, region: string) {
+		this.name = "s3";
+		this.bucket = bucket;
+		this.key = key;
+		this.region = region;
+	}
 
-export const toResource = (aws: AwsBackend) => {
-	const resource: any = {
-		aws_s3_bucket: [{}]
-	};
-	resource.aws_s3_bucket[0][CONFIG.TERRAFORM.BACKEND_BUCKET] = [
-		{
-			bucket: aws.bucket
-		}
-	];
-	return resource;
-};
+	toSchema() {
+		return generateSchema<NamedAwsBackend>(this);
+	}
+	toModel() {
+		return model("AwsBackend", this.toSchema());
+	}
+
+	toResource() {
+		const resource: any = {
+			aws_s3_bucket: [{}]
+		};
+		resource.aws_s3_bucket[0][CONFIG.TERRAFORM.BACKEND_BUCKET] = [
+			{
+				bucket: this.bucket
+			}
+		];
+		return resource;
+	}
+
+	toJSON() {
+		return {
+			s3: [removeName(this)].map(a => ({
+				bucket: a.bucket,
+				key: a.key
+			}))
+		};
+	}
+}

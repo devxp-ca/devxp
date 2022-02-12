@@ -1,18 +1,16 @@
 import {
 	isGoogleProvider,
 	NamedRequiredProvider,
-	AwsProvider as AwsProviderType,
 	namedTerraformBackend,
 	isGoogleBackend,
 	AwsBackend as AwsBackendType,
 	RequiredProvider
 } from "../types/terraform";
-import awsBackend, {toResource as backendToAwsResource} from "./awsBackend";
-import awsProvider from "./awsProvider";
-import googleBackend, {
-	toResource as backendToGoogleResource
-} from "./googleBackend";
-import googleProvider from "./googleProvider";
+import {NamedAwsBackend} from "./awsBackend";
+import {AwsProvider} from "./awsProvider";
+import {NamedGoogleBackend} from "./googleBackend";
+import {GoogleProvider} from "./googleProvider";
+
 import {namedDestructure} from "./util";
 
 export const terraformBlock = (
@@ -27,23 +25,11 @@ export const terraformBlock = (
 					version: p.version
 				}))
 			],
-			backend: [backend].map(namedBackend => {
-				if (isGoogleBackend(namedBackend)) {
-					return googleBackend(namedBackend);
-				}
-				//else if (isAwsBackend(namedBackend)){
-				else {
-					return awsBackend(namedBackend as AwsBackendType);
-				}
-			})
+			backend: [backend].map(namedBackend =>
+				(namedBackend as NamedAwsBackend | NamedGoogleBackend).toJSON()
+			)
 		}
 	];
-};
-
-const buildResource = (backend: namedTerraformBackend) => {
-	return isGoogleBackend(backend)
-		? backendToGoogleResource(backend)
-		: backendToAwsResource(backend as AwsBackendType);
 };
 
 export const rootBlock = (
@@ -53,16 +39,10 @@ export const rootBlock = (
 	return {
 		terraform: terraformBlock(providers, backend),
 		provider: (Array.isArray(providers) ? providers : [providers]).map(
-			provider => {
-				if (isGoogleProvider(provider)) {
-					return googleProvider(provider);
-				}
-				//else if (isAwsProvider(provider)){
-				else {
-					return awsProvider(provider as AwsProviderType);
-				}
-			}
+			provider => (provider as AwsProvider | GoogleProvider).toJSON()
 		),
-		resource: [buildResource(backend)]
+		resource: [
+			(backend as NamedAwsBackend | NamedGoogleBackend).toResource()
+		]
 	};
 };
