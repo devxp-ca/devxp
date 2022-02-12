@@ -7,7 +7,14 @@ import {removeName} from "./util";
 export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
 export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 	name: "gcs";
-	constructor(bucket: string, prefix: string, location: string) {
+	constructor(bucket: string);
+	constructor(bucket: string, location: string);
+	constructor(bucket: string, prefix: string, location: string);
+	constructor(
+		bucket: string,
+		prefix = "terraform/state",
+		location = "uswest-1"
+	) {
 		this.name = "gcs";
 		this.bucket = bucket;
 		this.prefix = prefix;
