@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+    - 'backend/src/**'
 
 jobs:
   build:
@@ -27,7 +29,7 @@ jobs:
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
     - name: 'Build Docker image and upload to GCCR ⚙️'
-      run: 'gcloud auth configure-docker --project ${{ secrets.PROJECT_ID }} && docker build . && docker tag $( docker image list -q | head -n1 ) gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}:${{ steps.sha.outputs.sha_short }} && docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ secrets.SERVICE }}:${{ steps.sha.outputs.sha_short }}'
+      run: 'PROJECT_ID=${{ secrets.PROJECT_ID }} SERVICE=${{ secrets.SERVICE }} SHA=${{ steps.sha.outputs.sha_short }} ./build.sh'
 
 
   deploy:
