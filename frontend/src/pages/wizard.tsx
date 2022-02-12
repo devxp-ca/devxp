@@ -80,7 +80,15 @@ export default class Wizard extends React.Component<IProps, IState> {
 											control={
 												<Checkbox defaultChecked />
 											}
-											label="Use Tabs"
+											label={
+												<div>
+													<Tooltip title="Checking this box will ensure the linter uses tabs">
+														<Typography>
+															Use tabs
+														</Typography>
+													</Tooltip>
+												</div>
+											}
 										/>
 										<TextField
 											InputLabelProps={{
