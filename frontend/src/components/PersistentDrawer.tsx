@@ -21,8 +21,12 @@ const DrawerHeader = styled("div")(({theme}) => ({
 	justifyContent: "center"
 }));
 
+export interface GithubRepo{
+	name: string
+}
+
 //a functional component that returns a drawer which is anchored on the left of the screen
-export default function PersistentDrawer(props: {repos: string[]}) {
+export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
 	const theme = useTheme();
 
 	return (
@@ -40,14 +44,14 @@ export default function PersistentDrawer(props: {repos: string[]}) {
 					<Typography variant="h6">Repositories</Typography>
 				</DrawerHeader>
 				<Divider />
-				{props.repos.map((repo: string) => (
+				{props.repos.map((repo: GithubRepo) => (
 					<Box>
 						<List>
 							<ListItem button>
 								<ListItemIcon>
 									<AddCircleIcon />
 								</ListItemIcon>
-								<ListItemText primary={repo} />
+								<ListItemText primary={repo.name} />
 							</ListItem>
 						</List>
 						<Divider />

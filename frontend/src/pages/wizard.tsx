@@ -4,7 +4,7 @@ import Accordion from "../components/Accordion";
 import Typography from "@mui/material/Typography";
 import Footer from "../components/Footer";
 import Container from "@mui/material/Container";
-import PersistentDrawer from "../components/PersistentDrawer";
+import PersistentDrawer, {GithubRepo} from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../lightTheme";
 import FormGroup from "@mui/material/FormGroup";
@@ -13,17 +13,40 @@ import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
+import axios from "axios";
 
 interface IProps {}
-interface IState {}
+interface IState {repoList: GithubRepo[];}
 export default class Wizard extends React.Component<IProps, IState> {
+
+	/*Create a constructor, set the state of the constructor to an empty list.*/
+	constructor(props: IProps) {
+		super(props);
+		this.state = {
+			/*Create a state called "repoList" and set it to an empty list.*/
+			repoList: [],
+		}
+	}
+
+	componentDidMount() {
+
+		axios.get("TODO").then(
+			(response) => {
+				this.setState({
+					// TODO: Set the state of the repoList to the response data
+					//repoList: response.data
+				});
+			}
+		)
+	}
+
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
 				<Container>
 					<Navbar />
 					<PersistentDrawer
-						repos={["Project 1", "Project 2", "Project 3"]}
+						repos={[]}
 					/>
 					<Accordion
 						title="Linter Settings"
