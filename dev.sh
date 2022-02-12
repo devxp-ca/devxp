@@ -7,7 +7,7 @@ npm run dev:watch &
 npm run dev:inject &
 
 cd "$DIR/backend"
-npm run dev
+npm run dev &
 
-trap "trap - TERM && kill -- -$$" INT TERM EXIT
+trap "trap - TERM && kill -- -$$ 2>/dev/null" INT TERM EXIT
 wait
