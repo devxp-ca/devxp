@@ -14,8 +14,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Slider from "@mui/material/Slider";
 
+import GenericModal from "./GenericModal";
+
 export default function WizardOptions() {
 	//TODO: find some way to condense this clunky data setting
+	//OPTION STATES
 	const [providerValue, setProviderValue] = React.useState("");
 	const handleChangeProvider = (
 		event: React.ChangeEvent<HTMLInputElement>
@@ -37,15 +40,47 @@ export default function WizardOptions() {
 		setSecretKeyValue((event.target as HTMLInputElement).value);
 	};
 
+	//SUBMIT MODAL THINGS
+	const [openSubmitModal, setOpenSubmitModal] = React.useState(false);
+	const handleOpenSubmitModal = () => {
+		setOpenSubmitModal(true);
+	};
+	const handleCloseSubmitModal = () => {
+		setOpenSubmitModal(false);
+	};
+	const submitModalChildren = () => {
+		return (
+			<div style={{display: "flex", justifyContent: "center"}}>
+				<Button
+					color="secondary"
+					variant="contained"
+					size="large"
+					sx={{marginTop: 2}}
+					onClick={handleSubmit}>
+					Confirm
+				</Button>
+			</div>
+		);
+	};
+
 	const handleSubmit = () => {
+		setOpenSubmitModal(false);
 		//implement 'send text object to backend' here
-		//confirmation modal
 		//format text
 		//send it to backend
 	};
 
 	return (
 		<div>
+			<GenericModal
+				isOpen={openSubmitModal}
+				handleClose={handleCloseSubmitModal}
+				title={"Are you sure you want to submit?"}
+				bodyText={
+					"Once confirmed, we will push a pull request to a temporary branch on your repository for review"
+				}
+				children={submitModalChildren()}
+			/>
 			{/* <Accordion title="CI/CD" content="Settings go here" /> */}
 			<Accordion
 				title="Terraform"
@@ -123,7 +158,7 @@ export default function WizardOptions() {
 					size="large"
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
-					onClick={handleSubmit}>
+					onClick={handleOpenSubmitModal}>
 					Submit
 				</Button>
 			</Box>
