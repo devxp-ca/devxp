@@ -14,7 +14,10 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import CheckIcon from "@mui/icons-material/Check";
 import {CONFIG} from "../config";
+import {Box} from "@mui/system";
 
 interface IProps {}
 interface IState {
@@ -45,7 +48,7 @@ export default class Wizard extends React.Component<IProps, IState> {
 				console.log(error);
 			});
 	}
-	/**Populate the persistent drawer props.repos with the repoList */
+	/**TODO: Make the submit button at the bottom of the page commit the file with confirmation first*/
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
@@ -117,6 +120,16 @@ export default class Wizard extends React.Component<IProps, IState> {
 						content="Settings go here"
 					/>
 					<Accordion title="CI/CD" content="Settings go here" />
+					<Box textAlign="center" sx={{padding: 3}}>
+						<Button
+							variant="contained"
+							color="success"
+							size="large"
+							startIcon={<CheckIcon />}
+							aria-label="submit to repo">
+							Submit
+						</Button>
+					</Box>
 					<Footer />
 				</Container>
 			</ThemeProvider>
