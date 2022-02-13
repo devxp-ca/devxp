@@ -7,6 +7,9 @@ import {lightTheme} from "../lightTheme";
 
 import GenericModal from "./GenericModal";
 
+import Backsplash from "../assets/memories.gif";
+import titleImage from "../assets/devxp-title.png";
+
 export default function MainLandingVisual() {
 	//For the modal that pops up from the 'Get Started' button
 	const [openStartModal, setOpenStartModal] = React.useState(false);
@@ -42,22 +45,33 @@ export default function MainLandingVisual() {
 			<Box
 				sx={{
 					width: "100%",
-					backgroundColor: "gray",
+					backgroundImage: `url(${Backsplash})`,
 					marginTop: 3,
-					paddingTop: 40,
-					paddingBottom: 15
+					paddingTop: 45,
+					paddingBottom: 15,
+					backgroundSize: "contain",
+					backgroundRepeat: "no-repeat"
 				}}>
 				<Box sx={{width: "100%", textAlign: "center"}}>
-					<Typography variant="h1">DEV XP</Typography>
 					<Box
 						sx={{
 							width: "100%",
-							backgroundColor: "rgba(255, 255, 255, 0.5)",
-							paddingTop: 4,
-							paddingBottom: 4,
+							height: 70,
+							backgroundImage: `url(${titleImage})`,
+							backgroundPosition: "center",
+							backgroundSize: "contain",
+							backgroundRepeat: "no-repeat",
+							marginBottom: 2
+						}}></Box>
+					<Box
+						sx={{
+							width: "100%",
+							backgroundColor: "rgba(0, 0, 0, 0.75)",
+							paddingTop: 3,
+							paddingBottom: 3,
 							textAlign: "center"
 						}}>
-						<Typography variant="h5">
+						<Typography variant="h5" color="white">
 							DevOps is hard -- We don't believe it has to be
 						</Typography>
 						<Button
