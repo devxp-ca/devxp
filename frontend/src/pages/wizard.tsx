@@ -8,6 +8,7 @@ import {lightTheme} from "../lightTheme";
 import axios from "axios";
 import {CONFIG} from "../config";
 import WizardOptions from "../components/wizardOptions";
+import Grid from "@mui/material/Grid";
 
 interface IProps {}
 interface IState {
@@ -44,12 +45,21 @@ export default class Wizard extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<Container>
-					<Navbar />
+				<div style={{display: "flex"}}>
 					<PersistentDrawer repos={this.state.repoList} />
-					<WizardOptions />
-					<Footer />
-				</Container>
+					<div
+						style={{
+							width: "100%",
+							paddingLeft: 30,
+							paddingRight: 30
+						}}>
+						<Grid container direction="column">
+							<Navbar />
+							<WizardOptions />
+							<Footer />
+						</Grid>
+					</div>
+				</div>
 			</ThemeProvider>
 		);
 	}
