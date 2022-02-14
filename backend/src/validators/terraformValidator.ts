@@ -6,8 +6,7 @@ export const terraformValidator = [
 	body("repo")
 		.exists()
 		.trim()
-		.escape()
-		.matches(/^[A-Za-z0-9_.-]+$/),
+		.matches(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/),
 	body("tool")
 		.exists()
 		.trim()

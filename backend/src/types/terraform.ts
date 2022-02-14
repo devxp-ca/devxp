@@ -5,11 +5,7 @@ import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
-import {
-	DatabaseModel,
-	generateSchema,
-	generateSchemaInternals
-} from "./database";
+import {DatabaseModel, generateSchemaInternals} from "./database";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =

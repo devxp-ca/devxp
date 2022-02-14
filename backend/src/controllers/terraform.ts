@@ -1,12 +1,20 @@
-import {Response} from "express";
-import {Request} from "express-validator/src/base";
+import {Request, Response} from "express";
+import createCommit from "../githubapi/createCommit";
+import createTree from "../githubapi/createTree";
+import getCommitFromUrl from "../githubapi/getCommitFromUrl";
+import getHead from "../githubapi/getHead";
+import getTreeFromUrl from "../githubapi/getTreeFromUrl";
+import postBlob from "../githubapi/postBlob";
+import updateHead from "../githubapi/updateHead";
+import {getModeNumber} from "../githubapi/util";
 import {NamedAwsBackend} from "../terraform/awsBackend";
 import {AwsProvider} from "../terraform/awsProvider";
 import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
-import {rootBlock} from "../terraform/terraform";
+import {rootBlockSplitBackend} from "../terraform/terraform";
+import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
@@ -15,6 +23,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		type: "ec2" | "gce";
 	})[];
 	const repo = req.body.repo as string;
+	const token = req.headers?.token as string;
 
 	const resources = resourcesRaw.map(resource => {
 		if (resource.type == "ec2") {
@@ -28,13 +37,64 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		}
 	});
 
-	res.json(
-		rootBlock(
-			provider === "aws" ? new AwsProvider() : new GoogleProvider(),
-			provider === "aws"
-				? new NamedAwsBackend()
-				: new NamedGoogleBackend(),
-			resources
-		)
+	const [root, backend] = rootBlockSplitBackend(
+		provider === "aws" ? new AwsProvider() : new GoogleProvider(),
+		provider === "aws" ? new NamedAwsBackend() : new NamedGoogleBackend(),
+		resources
 	);
+
+	getHead(token, repo, "main")
+		.then(async head => {
+			//Create the new file data on the server
+			const blobRoot = await postBlob(
+				token,
+				repo,
+				JSON.stringify(root, null, 2) + "\n"
+			);
+			const blobBackend = await postBlob(
+				token,
+				repo,
+				JSON.stringify(backend, null, 2) + "\n"
+			);
+
+			//Grab the latest commit at the head pointer
+			const commit = await getCommitFromUrl(token, head.url);
+
+			//Grab the tree referenced by the commit
+			const tree = await getTreeFromUrl(token, commit.treeUrl);
+
+			//Create a new tree within that one
+			const newTree = await createTree(token, repo, tree.sha, [
+				{
+					path: "terraform.tf.json",
+					mode: getModeNumber("blob"),
+					type: "blob",
+					sha: blobRoot.sha,
+					url: blobRoot.url
+				},
+				{
+					path: "backend.tf.json",
+					mode: getModeNumber("blob"),
+					type: "blob",
+					sha: blobBackend.sha,
+					url: blobBackend.url
+				}
+			]);
+
+			//Create a new commit referencing the new tree
+			const newCommit = await createCommit(
+				token,
+				repo,
+				newTree.sha,
+				head.sha,
+				"DevXP: Initialized Terraform"
+			);
+
+			//Update the HEAD pointer to the new commit
+			return updateHead(token, repo, newCommit.commitSha, "main");
+		})
+		.then(ref => {
+			res.json({ref});
+		})
+		.catch(internalErrorHandler(req, res));
 };

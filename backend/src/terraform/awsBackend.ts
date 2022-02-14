@@ -16,8 +16,6 @@ export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 		key = "terraform/state",
 		region = "us-west-2"
 	) {
-		console.log(bucket, key, region);
-
 		this.name = "s3";
 		this.bucket = bucket;
 		this.key = key;

@@ -47,3 +47,25 @@ export const rootBlock = (
 		]
 	};
 };
+
+export const rootBlockSplitBackend = (
+	providers: NamedRequiredProvider[] | NamedRequiredProvider,
+	backend: namedTerraformBackend,
+	resources: (Ec2 | Gce)[] = []
+) => {
+	const root = rootBlock(providers, backend, resources);
+	const backendBlock = root.terraform[0].backend;
+	const noBackend = root.terraform[0].required_providers;
+
+	(root.terraform as any) = [{required_providers: noBackend}];
+	return [
+		root,
+		{
+			terraform: [
+				{
+					backend: backendBlock
+				}
+			]
+		}
+	];
+};

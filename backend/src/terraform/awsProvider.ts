@@ -29,7 +29,7 @@ export class AwsProvider
 	constructor(
 		source = "hashicorp/aws",
 		version = ">= 2.7.0",
-		region = "uswest-1",
+		region = "us-west-2",
 		access_key?: string,
 		secret_key?: string
 	) {
