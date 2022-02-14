@@ -96,6 +96,44 @@ export type backendName = "s3" | "gcs";
 export type terraformBackend = AwsBackend | GoogleBackend;
 export type namedTerraformBackend = named<terraformBackend, backendName>;
 
+// ----------------------------------EC2------------------------------------- //
+
+//TODO: Extend list of AMIs
+export type amiType =
+	//Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type 64-bit x86
+	| "ami-0341aeea105412b57"
+
+	//Ubuntu Server 20.04 LTS 64-bit x86
+	| "ami-0892d3c7ee96c0bf7"
+
+	//macOS Monterey 12.2
+	| "ami-0faefa03f7ddcd657"
+
+	//Microsoft Windows Server 2019 Base with Containers
+	| "ami-0ab399fb9d53c302f";
+
+//TODO: Extend list of instance types
+export type ec2InstanceType =
+	//1 CPU 1gB RAM
+	| "t2.micro"
+
+	//1 CPU 2gB RAM
+	| "t2.small"
+
+	//2 CPU 4gB RAM
+	| "t2.medium"
+
+	//2 CPU 8gB RAM
+	| "t2.large"
+
+	//4 CPU 16gB RAM
+	| "t2.xlarge";
+
+export interface Ec2 {
+	ami: amiType;
+	instance_type: ec2InstanceType;
+}
+
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {
