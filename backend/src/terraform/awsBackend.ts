@@ -14,8 +14,10 @@ export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 	constructor(
 		bucket = `terraform-state-${generateId(45)}`,
 		key = "terraform/state",
-		region = "uswest-1"
+		region = "us-west-2"
 	) {
+		console.log(bucket, key, region);
+
 		this.name = "s3";
 		this.bucket = bucket;
 		this.key = key;
@@ -44,7 +46,8 @@ export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 		return {
 			s3: [removeName(this)].map(a => ({
 				bucket: a.bucket,
-				key: a.key
+				key: a.key,
+				region: a.region
 			}))
 		};
 	}

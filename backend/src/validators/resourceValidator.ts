@@ -3,12 +3,13 @@ import {CustomValidator} from "express-validator";
 export const resourceTypes = /^(ec2|gce)$/;
 
 const hasAllKeys = (obj: any, keys: string[]) => {
+	let retVal = true;
 	keys.forEach(key => {
 		if (!(key in obj)) {
-			return false;
+			retVal = false;
 		}
 	});
-	return true;
+	return retVal;
 };
 
 const resourceValidator: CustomValidator = (resource: any) => {
@@ -23,10 +24,13 @@ const resourceValidator: CustomValidator = (resource: any) => {
 			return false;
 		}
 	} else if (resource.type === "gce") {
-		if (!hasAllKeys(resource, ["id", "machine_type"])) {
+		if (!hasAllKeys(resource, ["id", "machine_type", "disk_image"])) {
 			return false;
 		}
 		if (!/^[a-zA-Z][0-9]-[a-zA-Z0-9-]+$/.test(resource.machine_type)) {
+			return false;
+		}
+		if (!/^[a-zA-Z0-9-]+$/.test(resource.disk_image)) {
 			return false;
 		}
 		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {

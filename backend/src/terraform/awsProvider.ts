@@ -50,7 +50,17 @@ export class AwsProvider
 
 	toJSON() {
 		return {
-			aws: [removeName(this)]
+			aws: [removeName(this)].map(withSource => {
+				if (!("source" in withSource)) {
+					return withSource;
+				}
+				const {source, ...withVersion} = withSource;
+				if (!("version" in withVersion)) {
+					return withVersion;
+				}
+				const {version, ...json} = withVersion;
+				return json;
+			})
 		};
 	}
 }

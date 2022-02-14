@@ -6,13 +6,20 @@ export interface Gce {
 	id: string;
 	machine_type: machineType;
 	zone: string;
+	disk_image: string;
 }
 export class Gce implements Gce, DatabaseModel<Gce> {
-	constructor(id: string, machine_type: machineType);
-	constructor(id: string, machine_type: machineType, zone = "uswest-1") {
+	constructor(id: string, machine_type: machineType, disk_image: string);
+	constructor(
+		id: string,
+		machine_type: machineType,
+		disk_image: string,
+		zone = "uswest-1"
+	) {
 		this.id = id;
 		this.machine_type = machine_type;
 		this.zone = zone;
+		this.disk_image = disk_image;
 	}
 
 	toSchema() {
@@ -29,7 +36,15 @@ export class Gce implements Gce, DatabaseModel<Gce> {
 			{
 				name: this.id,
 				machine_type: this.machine_type,
-				zone: this.zone
+				zone: this.zone,
+				network_interface: {
+					network: "default"
+				},
+				boot_disk: {
+					initialize_params: {
+						image: this.disk_image
+					}
+				}
 			}
 		];
 

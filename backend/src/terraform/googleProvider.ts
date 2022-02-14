@@ -24,7 +24,7 @@ export class GoogleProvider
 	constructor(project: string, region: string);
 	constructor(project: string, region: string, zone: string);
 	constructor(
-		source = "hashicorp/gcs",
+		source = "hashicorp/google",
 		version = ">= 4.10.0",
 		project: string | null = null,
 		region = "uswest-1",
@@ -49,7 +49,17 @@ export class GoogleProvider
 
 	toJSON() {
 		return {
-			google: [removeName(this)]
+			google: [removeName(this)].map(withSource => {
+				if (!("source" in withSource)) {
+					return withSource;
+				}
+				const {source, ...withVersion} = withSource;
+				if (!("version" in withVersion)) {
+					return withVersion;
+				}
+				const {version, ...json} = withVersion;
+				return json;
+			})
 		};
 	}
 }
