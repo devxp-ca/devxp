@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import PersistentDrawer, {GithubRepo} from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../lightTheme";
@@ -45,9 +45,9 @@ export default class Wizard extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<div style={{display: "flex"}}>
+				<Box style={{display: "flex"}}>
 					<PersistentDrawer repos={this.state.repoList} />
-					<div
+					<Box
 						style={{
 							width: "100%",
 							paddingLeft: 30,
@@ -58,8 +58,8 @@ export default class Wizard extends React.Component<IProps, IState> {
 							<WizardOptions />
 							<Footer />
 						</Grid>
-					</div>
-				</div>
+					</Box>
+				</Box>
 			</ThemeProvider>
 		);
 	}
