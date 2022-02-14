@@ -1,6 +1,7 @@
 // Imports
 import {Router} from "express";
 import {getRepoList} from "../controllers/getRepoList";
+import postSettings from "../controllers/postSettings";
 
 const apiV1Router = Router();
 
@@ -13,5 +14,7 @@ apiV1Router.get("/", (_req, res) =>
 );
 
 apiV1Router.get("/getRepos", getRepoList);
+
+apiV1Router.post("/settings", postSettings);
 
 export default apiV1Router;

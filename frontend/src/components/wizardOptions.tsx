@@ -1,6 +1,6 @@
 import React from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
-import Accordion from "../components/Accordion";
 import {Box} from "@mui/system";
 import CheckIcon from "@mui/icons-material/Check";
 import Grid from "@mui/material/Grid";
@@ -14,9 +14,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Slider from "@mui/material/Slider";
 import HelpIcon from "@mui/icons-material/Help";
-import MouseOverPopover from "../components/MouseOverPopover";
 
+import Accordion from "../components/Accordion";
+import MouseOverPopover from "../components/MouseOverPopover";
 import GenericModal from "./GenericModal";
+import {CONFIG} from "../config";
 
 export default function WizardOptions() {
 	//TODO: find some way to condense this clunky data setting
@@ -61,18 +63,39 @@ export default function WizardOptions() {
 					onClick={handleSubmit}>
 					Confirm
 				</Button>
+				<div id="succesfulSettingSubmissionTest"></div>
 			</div>
 		);
 	};
 
 	const handleSubmit = () => {
-		setOpenSubmitModal(false);
-		const data = {
-			provider: providerValue,
-			accessKey: accessKeyValue,
-			secretKey: secretKeyValue
+		// setOpenSubmitModal(false);
+		/* TODO: get settings from component state? */
+		const settings = {
+			repo_name: "REPO",
+			tool: "terraform",
+			settings: {
+				provider: "aws",
+				resources: [
+					{
+						type: "ec2",
+						id: "myEc2Instance",
+						ami: "ami-0341aeea105412b57",
+						instance_type: "t2.micro"
+					}
+				]
+			}
 		};
-		//call backend method with data
+		//Send configuration to backend
+		axios
+			.post(`https://${CONFIG.BACKEND_URL}/api/v1/settings`, settings)
+			.then(response => {
+				console.log(response.data);
+			})
+			.catch(error => {
+				/**TODO: Render an error component */
+				console.log(error);
+			});
 	};
 
 	return (
