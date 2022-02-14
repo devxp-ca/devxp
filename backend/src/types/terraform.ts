@@ -129,6 +129,22 @@ export type ec2InstanceType =
 	//4 CPU 16gB RAM
 	| "t2.xlarge";
 
+// ----------------------------------GCE------------------------------------- //
+
+//TODO: Add more machine types
+export type machineType =
+	//1 cpu 614mB ram
+	| "f1-micro"
+
+	//1 cpu 3.75gB RAM
+	| "n1-standard-1"
+
+	//2 cpu 8GB Ram
+	| "e2-standard-2"
+
+	//4 cpu 16GB Ram
+	| "e2-standard-8";
+
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {
