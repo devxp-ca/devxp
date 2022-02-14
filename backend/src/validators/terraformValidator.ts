@@ -1,5 +1,6 @@
 import {body, header} from "express-validator";
 import {validationErrorHandler} from "../types/errorHandler";
+import resourceValidator, {resourceTypes} from "./resourceValidator";
 
 export const terraformValidator = [
 	body("repo")
@@ -18,8 +19,12 @@ export const terraformValidator = [
 		.exists()
 		.trim()
 		.escape()
-		.matches(/^(aws|google|azure)$/),
+		.matches(/^(aws|google|azure)$/)
+		.withMessage("Provider must be aws, google, or azure at this time"),
 	body("settings.resources").optional().isArray().default([]),
+	body("settings.resources.*.*").trim().escape(),
+	body("settings.resources.*.type").exists().matches(resourceTypes),
+	body("settings.resources.*").isObject().custom(resourceValidator),
 	header("token").exists().trim().escape(),
 	validationErrorHandler
 ];
