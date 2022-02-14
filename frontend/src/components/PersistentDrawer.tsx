@@ -2,13 +2,10 @@ import * as React from "react";
 import {styled, useTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import {FormControl, RadioGroup, FormControlLabel} from "@mui/material";
+import Radio from "@mui/material/Radio";
 import {lightTheme} from "../lightTheme";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 
@@ -25,14 +22,19 @@ export interface GithubRepo {
 	name: string;
 }
 
-//a functional component that returns a drawer which is anchored on the left of the screen
+/** a functional component that returns a drawer which is anchored on the left of the screen */
 export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
 	const theme = useTheme();
+	const [value, setValue] = React.useState("false");
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setValue((event.target as HTMLInputElement).value);
+	};
 
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Drawer
-				variant="permanent"
+				variant="persistent"
 				anchor="left"
 				open={true}
 				sx={{
@@ -46,14 +48,25 @@ export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
 				<Divider />
 				{props.repos.map((repo: GithubRepo) => (
 					<Box>
-						<List>
-							<ListItem button>
-								<ListItemIcon>
-									<AddCircleIcon />
-								</ListItemIcon>
-								<ListItemText primary={repo.name} />
-							</ListItem>
-						</List>
+						<FormControl required={true}>
+							<RadioGroup
+								aria-labelledby="Repository List"
+								name="Repository List"
+								value={value}
+								onChange={handleChange}
+								row={true}>
+								<FormControlLabel
+									value={repo.name}
+									control={
+										<Radio
+											size="small"
+											sx={{padding: 1, ml: 3}}
+										/>
+									}
+									label={repo.name}
+								/>
+							</RadioGroup>
+						</FormControl>
 						<Divider />
 					</Box>
 				))}

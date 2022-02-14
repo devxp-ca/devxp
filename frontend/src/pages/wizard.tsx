@@ -13,6 +13,7 @@ interface IProps {}
 interface IState {
 	repoList: GithubRepo[];
 }
+
 export default class Wizard extends React.Component<IProps, IState> {
 	/*Create a constructor, set the state of the constructor to an empty list.*/
 	constructor(props: IProps) {
@@ -39,6 +40,7 @@ export default class Wizard extends React.Component<IProps, IState> {
 			});
 	}
 	/**TODO: Make the submit button at the bottom of the page commit the file with confirmation first*/
+	/** <PersistentDrawer repos={this.state.repoList} /> */
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
