@@ -13,6 +13,8 @@ import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Slider from "@mui/material/Slider";
+import HelpIcon from "@mui/icons-material/Help";
+import MouseOverPopover from "../components/MouseOverPopover";
 
 import GenericModal from "./GenericModal";
 
@@ -65,9 +67,12 @@ export default function WizardOptions() {
 
 	const handleSubmit = () => {
 		setOpenSubmitModal(false);
-		//implement 'send text object to backend' here
-		//format text
-		//send it to backend
+		const data = {
+			provider: providerValue,
+			accessKey: accessKeyValue,
+			secretKey: secretKeyValue
+		};
+		//call backend method with data
 	};
 
 	return (
@@ -88,7 +93,19 @@ export default function WizardOptions() {
 					<Grid container direction="column">
 						<Grid item sx={{padding: 2}}>
 							<FormControl>
-								<FormLabel>Provider</FormLabel>
+								<FormLabel>
+									<Grid container direction="row">
+										Provider
+										<MouseOverPopover
+											icon={
+												<HelpIcon
+													sx={{paddingLeft: 1}}
+												/>
+											}
+											popOverInfo="Select the provider you have a cloud services account with"
+										/>
+									</Grid>
+								</FormLabel>
 								<RadioGroup
 									name="Provider"
 									value={providerValue}
@@ -121,11 +138,25 @@ export default function WizardOptions() {
 								<Grid container direction="row">
 									<Grid item sx={{padding: 2}}>
 										<FormControl>
-											<FormLabel>Access Key</FormLabel>
+											<FormLabel>
+												<Grid container direction="row">
+													Access Key
+													<MouseOverPopover
+														icon={
+															<HelpIcon
+																sx={{
+																	paddingLeft: 1
+																}}
+															/>
+														}
+														popOverInfo="Description of where to find it"
+													/>
+												</Grid>
+											</FormLabel>
 											<TextField
 												id="access-key"
 												name="access-key"
-												label="Access Key"
+												label=""
 												type="text"
 												value={accessKeyValue}
 												onChange={handleChangeAccessKey}
@@ -134,11 +165,25 @@ export default function WizardOptions() {
 									</Grid>
 									<Grid item sx={{padding: 2}}>
 										<FormControl>
-											<FormLabel>Secret Key</FormLabel>
+											<FormLabel>
+												<Grid container direction="row">
+													Secret Key
+													<MouseOverPopover
+														icon={
+															<HelpIcon
+																sx={{
+																	paddingLeft: 1
+																}}
+															/>
+														}
+														popOverInfo="Description of where to find it"
+													/>
+												</Grid>
+											</FormLabel>
 											<TextField
 												id="secret-key"
 												name="secret-key"
-												label="Secret Key"
+												label=""
 												type="text"
 												value={secretKeyValue}
 												onChange={handleChangeSecretKey}
