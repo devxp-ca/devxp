@@ -129,11 +129,6 @@ export type ec2InstanceType =
 	//4 CPU 16gB RAM
 	| "t2.xlarge";
 
-export interface Ec2 {
-	ami: amiType;
-	instance_type: ec2InstanceType;
-}
-
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {
