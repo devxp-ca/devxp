@@ -1,13 +1,12 @@
 import {
-	isGoogleProvider,
 	NamedRequiredProvider,
 	namedTerraformBackend,
-	isGoogleBackend,
-	AwsBackend as AwsBackendType,
 	RequiredProvider
 } from "../types/terraform";
 import {NamedAwsBackend} from "./awsBackend";
 import {AwsProvider} from "./awsProvider";
+import {Ec2} from "./ec2";
+import {Gce} from "./gce";
 import {NamedGoogleBackend} from "./googleBackend";
 import {GoogleProvider} from "./googleProvider";
 
@@ -34,7 +33,8 @@ export const terraformBlock = (
 
 export const rootBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
-	backend: namedTerraformBackend
+	backend: namedTerraformBackend,
+	resources: (Ec2 | Gce)[] = []
 ) => {
 	return {
 		terraform: terraformBlock(providers, backend),
@@ -42,7 +42,30 @@ export const rootBlock = (
 			provider => (provider as AwsProvider | GoogleProvider).toJSON()
 		),
 		resource: [
-			(backend as NamedAwsBackend | NamedGoogleBackend).toResource()
+			(backend as NamedAwsBackend | NamedGoogleBackend).toResource(),
+			...resources.map(r => r.toJSON())
 		]
 	};
+};
+
+export const rootBlockSplitBackend = (
+	providers: NamedRequiredProvider[] | NamedRequiredProvider,
+	backend: namedTerraformBackend,
+	resources: (Ec2 | Gce)[] = []
+) => {
+	const root = rootBlock(providers, backend, resources);
+	const backendBlock = root.terraform[0].backend;
+	const noBackend = root.terraform[0].required_providers;
+
+	(root.terraform as any) = [{required_providers: noBackend}];
+	return [
+		root,
+		{
+			terraform: [
+				{
+					backend: backendBlock
+				}
+			]
+		}
+	];
 };

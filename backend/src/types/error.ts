@@ -1,7 +1,4 @@
-import {
-	ValidationError as ExpressValidationError,
-	Result as ExpressResult
-} from "express-validator";
+import {ValidationError as ExpressValidationError} from "express-validator";
 
 // Point of this file is to create some predefined error
 // types so that our API returns consistantly structured
@@ -110,27 +107,16 @@ export class UnauthorizedError extends BaseErrorImpl {
 export class ValidationError extends BaseErrorImpl {
 	nestedErrors: ValidationError[];
 
-	constructor(
-		err: ExpressValidationError | ExpressResult<ExpressValidationError>,
-		path: string
-	) {
+	constructor(err: ExpressValidationError[], path: string) {
 		super(
 			"Validation error",
 			path,
 			422,
-			String(
-				"msg" in err
-					? err.msg
-					: "An error occured validating a parameter"
-			)
+			`${err[0].msg}: Parameter '${err[0].param}' was recieved as: ${err[0].value} `
 		);
 
 		this.nestedErrors =
-			"param" in err && err.param === "_error"
-				? (err.nestedErrors as ExpressValidationError[]).map(
-						nestedErr => new ValidationError(nestedErr, path)
-				  )
-				: [];
+			err.length > 1 ? err.map(e => new ValidationError([e], path)) : [];
 	}
 
 	toArray(array: BaseError[] = []): BaseError[] {

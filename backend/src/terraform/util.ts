@@ -13,11 +13,11 @@ export const namedDestructure = <Base>(
 	filter: (base: Base) => Base = (base: Base) => base
 ) => {
 	const destructuredBase: {
-		aws?: Base[];
-		google?: Base[];
+		aws?: Base;
+		google?: Base;
 	} = {};
 	(Array.isArray(namedBase) ? namedBase : [namedBase]).forEach(base => {
-		destructuredBase[base.name] = [filter(removeName<Base>(base))];
+		destructuredBase[base.name] = filter(removeName<Base>(base));
 	});
 	return destructuredBase;
 };

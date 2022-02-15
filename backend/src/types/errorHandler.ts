@@ -22,7 +22,7 @@ export const internalErrorHandler: ErrorHandler =
 		);
 	};
 
-export const authorizationErrorHandler: ValidationErrorHandler = (
+export const validationErrorHandler: ValidationErrorHandler = (
 	req: Request,
 	res: Response,
 	next: NextFunction
@@ -31,7 +31,12 @@ export const authorizationErrorHandler: ValidationErrorHandler = (
 	if (!errors.isEmpty()) {
 		return res
 			.status(422)
-			.json(new ValidationError(errors, req.originalUrl).toResponse());
+			.json(
+				new ValidationError(
+					errors.array(),
+					req.originalUrl
+				).toResponse()
+			);
 	}
 	next();
 };
