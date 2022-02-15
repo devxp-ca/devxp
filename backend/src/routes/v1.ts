@@ -15,7 +15,7 @@ apiV1Router.get("/", (_req, res) =>
 );
 
 //Repository information
-apiV1Router.get("/getRepos", getRepoList);
+apiV1Router.get("/repo", getRepoList);
 
 apiV1Router.post("/settings", settingsValidator, postSettings);
 

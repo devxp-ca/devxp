@@ -28,16 +28,16 @@ export default class Wizard extends React.Component<IProps, IState> {
 	componentDidMount() {
 		//TODO: add explicit type to "response"
 		axios
-			.get(`https://${CONFIG.BACKEND_URL}/api/v1/getRepos`)
-			.then(response => {
+			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
+			.then((response: any) => {
 				console.dir(response.data);
 				this.setState({
 					repoList: response.data.repos
 				});
 			})
-			.catch(error => {
+			.catch((error: any) => {
 				/**TODO: Render an error component */
-				console.log(error);
+				console.error(error);
 			});
 	}
 	/**TODO: Make the submit button at the bottom of the page commit the file with confirmation first*/

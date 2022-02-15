@@ -71,7 +71,7 @@ export default function WizardOptions() {
 		setOpenSubmitModal(false);
 		/* TODO: get settings from component state? */
 		const settings = {
-			repo_name: "REPO",
+			repo: "dexp-ca/devxp-test-repo",
 			tool: "terraform",
 			settings: {
 				provider: "aws",
@@ -87,7 +87,10 @@ export default function WizardOptions() {
 		};
 		//Send settings to backend
 		axios
-			.post(`https://${CONFIG.BACKEND_URL}/api/v1/settings`, settings)
+			.post(
+				`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				settings
+			)
 			.then(response => {
 				console.log(response.data);
 				/* TODO: Bring up success modal */
