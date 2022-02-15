@@ -3,19 +3,27 @@ import {DatabaseModel, generateSchema} from "../types/database";
 import {machineType} from "../types/terraform";
 
 export interface Gce {
+	project: string;
 	id: string;
 	machine_type: machineType;
 	zone: string;
 	disk_image: string;
 }
 export class Gce implements Gce, DatabaseModel<Gce> {
-	constructor(id: string, machine_type: machineType, disk_image: string);
 	constructor(
+		project: string,
+		id: string,
+		machine_type: machineType,
+		disk_image: string
+	);
+	constructor(
+		project: string,
 		id: string,
 		machine_type: machineType,
 		disk_image: string,
-		zone = "uswest-1"
+		zone = "us-west1-a"
 	) {
+		this.project = project;
 		this.id = id;
 		this.machine_type = machine_type;
 		this.zone = zone;
@@ -44,12 +52,26 @@ export class Gce implements Gce, DatabaseModel<Gce> {
 					initialize_params: {
 						image: this.disk_image
 					}
-				}
+				},
+				project: this.project
 			}
 		];
 
-		return {
-			google_compute_instance: [resource]
-		};
+		const requiredService: any = {};
+		requiredService[`${this.id}-service`] = [
+			{
+				disable_on_destroy: false,
+				service: "compute.googleapis.com"
+			}
+		];
+
+		return [
+			{
+				google_compute_instance: [resource]
+			},
+			{
+				google_project_service: [requiredService]
+			}
+		];
 	}
 }

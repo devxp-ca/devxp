@@ -43,7 +43,7 @@ export const rootBlock = (
 		),
 		resource: [
 			(backend as NamedAwsBackend | NamedGoogleBackend).toResource(),
-			...resources.map(r => r.toJSON())
+			...resources.map(r => r.toJSON()).flat()
 		]
 	};
 };

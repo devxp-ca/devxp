@@ -7,16 +7,23 @@ import {generateId, removeName} from "./util";
 export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
 export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 	name: "gcs";
-	constructor();
-	constructor(bucket: string);
-	constructor(bucket: string, location: string);
-	constructor(bucket: string, prefix: string, location: string);
+	constructor(project: string);
+	constructor(project: string, bucket: string);
+	constructor(project: string, bucket: string, location: string);
 	constructor(
+		project: string,
+		bucket: string,
+		prefix: string,
+		location: string
+	);
+	constructor(
+		project: string,
 		bucket = `terraform-state-${generateId(45)}`,
 		prefix = "terraform/state",
-		location = "uswest-1"
+		location = "us-west1"
 	) {
 		this.name = "gcs";
+		this.project = project;
 		this.bucket = bucket;
 		this.prefix = prefix;
 		this.location = location;
@@ -36,7 +43,8 @@ export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 		resource.google_storage_bucket[0][CONFIG.TERRAFORM.BACKEND_BUCKET] = [
 			{
 				location: this.location,
-				name: this.bucket
+				name: this.bucket,
+				project: this.project
 			}
 		];
 		return resource;

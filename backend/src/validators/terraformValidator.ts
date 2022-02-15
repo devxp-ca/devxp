@@ -21,6 +21,12 @@ export const settingsValidator = [
 		.escape()
 		.matches(/^(aws|google|azure)$/)
 		.withMessage("Provider must be aws, google, or azure at this time"),
+	body("settings.project")
+		.if(body("tool").equals("terraform"))
+		.if(body("settings.provider").equals("google"))
+		.exists()
+		.trim()
+		.escape(),
 	body("settings.resources")
 		.if(body("tool").equals("terraform"))
 		.optional()

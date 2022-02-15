@@ -70,6 +70,28 @@ export default function WizardOptions() {
 	const handleSubmit = () => {
 		setOpenSubmitModal(false);
 		/* TODO: get settings from component state? */
+
+		/*
+
+			GOOGLE VERSION
+
+			const settings = {
+				repo: "devxp-ca/devxp-test-repo",
+				tool: "terraform",
+				settings: {
+					provider: "google",
+					project: "devxp-test-project",		//This field is required for Google, not AWS
+					resources: [{
+						type: "gce",
+						id: "my-gce-instance",			//Note with google capital letters are not allowed
+						disk_image: "ubuntu-2004-focal-v20220204",
+						machine_type: "f1-micro"
+					}]
+				}
+			}
+
+		*/
+
 		const settings = {
 			repo: "devxp-ca/devxp-test-repo",
 			tool: "terraform",
