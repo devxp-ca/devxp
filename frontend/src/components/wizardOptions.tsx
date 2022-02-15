@@ -71,7 +71,7 @@ export default function WizardOptions() {
 		setOpenSubmitModal(false);
 		/* TODO: get settings from component state? */
 		const settings = {
-			repo: "dexp-ca/devxp-test-repo",
+			repo: "devxp-ca/devxp-test-repo",
 			tool: "terraform",
 			settings: {
 				provider: "aws",
