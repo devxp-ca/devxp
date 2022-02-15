@@ -19,6 +19,11 @@ import {TerraformResource} from "../types/terraform";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
+
+	//Only needed for google
+	const project =
+		provider === "google" ? (req.body.settings?.project as string) : "";
+
 	const resourcesRaw = req.body.settings?.resources as (TerraformResource & {
 		type: "ec2" | "gce";
 	})[];
@@ -33,13 +38,15 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		//else if(resource.type == "gce"){
 		else {
 			const gce: Gce = resource as Gce;
-			return new Gce(gce.id, gce.machine_type, gce.disk_image);
+			return new Gce(project, gce.id, gce.machine_type, gce.disk_image);
 		}
 	});
 
 	const [root, backend] = rootBlockSplitBackend(
-		provider === "aws" ? new AwsProvider() : new GoogleProvider(),
-		provider === "aws" ? new NamedAwsBackend() : new NamedGoogleBackend(),
+		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
+		provider === "aws"
+			? new NamedAwsBackend()
+			: new NamedGoogleBackend(project),
 		resources
 	);
 

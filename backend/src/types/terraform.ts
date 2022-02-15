@@ -83,6 +83,7 @@ export interface GoogleBackend {
 	bucket: string;
 	prefix: string;
 	location: string;
+	project: string;
 }
 export const isGoogleBackend = (
 	backend: namedTerraformBackend

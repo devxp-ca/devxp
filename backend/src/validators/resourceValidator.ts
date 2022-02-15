@@ -33,6 +33,9 @@ const resourceValidator: CustomValidator = (resource: any) => {
 		if (!/^[a-zA-Z0-9-]+$/.test(resource.disk_image)) {
 			return false;
 		}
+		if (!/^[a-z]([-a-z0-9]*[a-z0-9])?$/.test(resource.id)) {
+			return false;
+		}
 		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
 			return false;
 		}
