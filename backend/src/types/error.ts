@@ -1,7 +1,4 @@
-import {
-	ValidationError as ExpressValidationError,
-	Result as ExpressResult
-} from "express-validator";
+import {ValidationError as ExpressValidationError} from "express-validator";
 
 // Point of this file is to create some predefined error
 // types so that our API returns consistantly structured
