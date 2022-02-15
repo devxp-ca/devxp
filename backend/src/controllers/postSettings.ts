@@ -3,5 +3,10 @@ import {internalErrorHandler} from "../types/errorHandler";
 
 export default (req: Request, res: Response) => {
 	console.dir(req);
-	res.json(req.body);
+	if (req.body.tool == "terraform") {
+		/* TODO: Use existing code to write terraform file */
+	} else {
+		/* TODO: support more tools */
+	}
+	res.sendStatus(200);
 };

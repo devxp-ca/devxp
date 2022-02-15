@@ -63,13 +63,12 @@ export default function WizardOptions() {
 					onClick={handleSubmit}>
 					Confirm
 				</Button>
-				<div id="succesfulSettingSubmissionTest"></div>
 			</div>
 		);
 	};
 
 	const handleSubmit = () => {
-		// setOpenSubmitModal(false);
+		setOpenSubmitModal(false);
 		/* TODO: get settings from component state? */
 		const settings = {
 			repo_name: "REPO",
@@ -86,11 +85,12 @@ export default function WizardOptions() {
 				]
 			}
 		};
-		//Send configuration to backend
+		//Send settings to backend
 		axios
 			.post(`https://${CONFIG.BACKEND_URL}/api/v1/settings`, settings)
 			.then(response => {
 				console.log(response.data);
+				/* TODO: Bring up success modal */
 			})
 			.catch(error => {
 				/**TODO: Render an error component */
