@@ -29,7 +29,7 @@ export class AwsProvider
 	constructor(
 		source = "hashicorp/aws",
 		version = ">= 2.7.0",
-		region = "uswest-1",
+		region = "us-west-2",
 		access_key?: string,
 		secret_key?: string
 	) {
@@ -50,7 +50,17 @@ export class AwsProvider
 
 	toJSON() {
 		return {
-			aws: [removeName(this)]
+			aws: [removeName(this)].map(withSource => {
+				if (!("source" in withSource)) {
+					return withSource;
+				}
+				const {source, ...withVersion} = withSource;
+				if (!("version" in withVersion)) {
+					return withVersion;
+				}
+				const {version, ...json} = withVersion;
+				return json;
+			})
 		};
 	}
 }

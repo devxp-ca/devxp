@@ -1,13 +1,11 @@
 import {Model, model, Schema} from "mongoose";
 import {NamedAwsBackend} from "../terraform/awsBackend";
 import {AwsProvider} from "../terraform/awsProvider";
+import {Ec2} from "../terraform/ec2";
+import {Gce} from "../terraform/gce";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
-import {
-	DatabaseModel,
-	generateSchema,
-	generateSchemaInternals
-} from "./database";
+import {DatabaseModel, generateSchemaInternals} from "./database";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -144,6 +142,16 @@ export type machineType =
 
 	//4 cpu 16GB Ram
 	| "e2-standard-8";
+
+export type source_image =
+	| "ubuntu-2004-focal-v20220204"
+	| "centos-stream-8-v20220128"
+	| "windows-server-2019-dc-v20220210"
+	| "fedora-coreos-35-20220116-3-0-gcp-x86-64";
+
+// ---------------------------------MISC------------------------------------- //
+
+export type TerraformResource = Ec2 | Gce;
 
 // ----------------------------Terraform Root-------------------------------- //
 
