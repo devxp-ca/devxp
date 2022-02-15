@@ -145,12 +145,14 @@ export default function WizardOptions() {
 										value="google"
 										control={<Radio size="small" />}
 										label="Google"
+										disabled={true}
 									/>
 									<FormControlLabel
 										key="other"
 										value="other"
 										control={<Radio size="small" />}
 										label="Azure"
+										disabled={true}
 									/>
 								</RadioGroup>
 							</FormControl>

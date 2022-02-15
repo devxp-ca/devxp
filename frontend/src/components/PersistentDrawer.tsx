@@ -29,6 +29,7 @@ export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue((event.target as HTMLInputElement).value);
+		console.dir(value);
 	};
 
 	return (
