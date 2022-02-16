@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Box from "@mui/material/Box";
@@ -13,20 +13,26 @@ import Grid from "@mui/material/Grid";
 interface IProps {}
 interface IState {
 	repoList: GithubRepo[];
+	//selectedRepo: string;
 }
 
-export default class Wizard extends React.Component<IProps, IState> {
-	/*Create a constructor, set the state of the constructor to an empty list.*/
-	constructor(props: IProps) {
-		super(props);
-		this.state = {
-			/*Create a state called "repoList" and set it to an empty list.*/
-			repoList: []
-		};
-	}
+//make two test repos
+let testRepo1: GithubRepo = {
+	name: "testRepo1",
+	full_name: "Test/testRepo1"
+};
+let testRepo2: GithubRepo = {
+	name: "testRepo2",
+	full_name: "Test/testRepo2"
+};
+let repos: GithubRepo[] = [testRepo1, testRepo2];
 
-	componentDidMount() {
-		//TODO: add explicit type to "response"
+export default function Wizard() {
+	const [repoList, setRepoList] = React.useState([]);
+	//const [selectedRepo, setSelectedRepo] = React.useState("");
+
+	//refactor the componentDidMount to a useEffect React hook
+	React.useEffect(() => {
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
 			.then((response: any) => {
@@ -39,28 +45,27 @@ export default class Wizard extends React.Component<IProps, IState> {
 				/**TODO: Render an error component */
 				console.error(error);
 			});
-	}
+	}, []);
+
 	/**TODO: Make the submit button at the bottom of the page commit the file with confirmation first*/
 	/** <PersistentDrawer repos={this.state.repoList} /> */
-	render() {
-		return (
-			<ThemeProvider theme={lightTheme}>
-				<Box style={{display: "flex"}}>
-					<PersistentDrawer repos={this.state.repoList} />
-					<Box
-						style={{
-							width: "100%",
-							paddingLeft: 30,
-							paddingRight: 30
-						}}>
-						<Grid container direction="column">
-							<Navbar />
-							<WizardOptions />
-							<Footer />
-						</Grid>
-					</Box>
+	return (
+		<ThemeProvider theme={lightTheme}>
+			<Box style={{display: "flex"}}>
+				<PersistentDrawer repos={repos} />
+				<Box
+					style={{
+						width: "100%",
+						paddingLeft: 30,
+						paddingRight: 30
+					}}>
+					<Grid container direction="column">
+						<Navbar />
+						<WizardOptions />
+						<Footer />
+					</Grid>
 				</Box>
-			</ThemeProvider>
-		);
-	}
+			</Box>
+		</ThemeProvider>
+	);
 }
