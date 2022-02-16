@@ -20,6 +20,7 @@ const DrawerHeader = styled("div")(({theme}) => ({
 
 export interface GithubRepo {
 	name: string;
+	full_name: string;
 }
 
 /** a functional component that returns a drawer which is anchored on the left of the screen */
@@ -27,7 +28,7 @@ export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
 	const theme = useTheme();
 	const [value, setValue] = React.useState("false");
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const setSelectedRepo = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue((event.target as HTMLInputElement).value);
 		console.dir(event.target.value);
 	};
@@ -54,10 +55,10 @@ export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
 								aria-labelledby="Repository List"
 								name="Repository List"
 								value={value}
-								onChange={handleChange}
+								onChange={setSelectedRepo}
 								row={true}>
 								<FormControlLabel
-									value={repo.name}
+									value={repo.full_name}
 									control={
 										<Radio
 											size="small"
