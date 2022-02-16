@@ -10,11 +10,6 @@ import {CONFIG} from "../config";
 import WizardOptions from "../components/wizardOptions";
 import Grid from "@mui/material/Grid";
 
-interface IProps {}
-interface IState {
-	repoList: GithubRepo[];
-}
-
 export default function Wizard() {
 	const [repoList, setRepoList] = React.useState([]);
 
@@ -32,8 +27,6 @@ export default function Wizard() {
 			});
 	}, []);
 
-	/**TODO: Make the submit button at the bottom of the page commit the file with confirmation first*/
-	/** <PersistentDrawer repos={this.state.repoList} /> */
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
