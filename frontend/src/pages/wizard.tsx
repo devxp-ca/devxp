@@ -13,33 +13,18 @@ import Grid from "@mui/material/Grid";
 interface IProps {}
 interface IState {
 	repoList: GithubRepo[];
-	//selectedRepo: string;
 }
-
-//make two test repos
-let testRepo1: GithubRepo = {
-	name: "testRepo1",
-	full_name: "Test/testRepo1"
-};
-let testRepo2: GithubRepo = {
-	name: "testRepo2",
-	full_name: "Test/testRepo2"
-};
-let repos: GithubRepo[] = [testRepo1, testRepo2];
 
 export default function Wizard() {
 	const [repoList, setRepoList] = React.useState([]);
-	//const [selectedRepo, setSelectedRepo] = React.useState("");
 
-	//refactor the componentDidMount to a useEffect React hook
+	//this is the same as componentDidMount
 	React.useEffect(() => {
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
 			.then((response: any) => {
 				console.dir(response.data);
-				this.setState({
-					repoList: response.data.repos
-				});
+				setRepoList(response.data);
 			})
 			.catch((error: any) => {
 				/**TODO: Render an error component */
@@ -52,7 +37,7 @@ export default function Wizard() {
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
-				<PersistentDrawer repos={repos} />
+				<PersistentDrawer repos={repoList} />
 				<Box
 					style={{
 						width: "100%",
