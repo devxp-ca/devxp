@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 export default function MouseOverPopover(props: {
 	text?: React.ReactNode;
 	icon?: JSX.Element;
-	popOverInfo: React.ReactNode;
+	popOverInfo: JSX.Element;
 }) {
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 

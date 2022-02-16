@@ -30,18 +30,30 @@ export default function WizardOptions() {
 		setProviderValue((event.target as HTMLInputElement).value);
 	};
 
-	const [accessKeyValue, setAccessKeyValue] = React.useState("");
-	const handleChangeAccessKey = (
+	const [resourceTypeValue, setResourceTypeValue] = React.useState("");
+	const handleChangeResourceType = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		setAccessKeyValue((event.target as HTMLInputElement).value);
+		setResourceTypeValue((event.target as HTMLInputElement).value);
 	};
 
-	const [secretKeyValue, setSecretKeyValue] = React.useState("");
-	const handleChangeSecretKey = (
+	const [instanceNameValue, setInstanceNameValue] = React.useState("");
+	const handleChangeInstanceName = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		setSecretKeyValue((event.target as HTMLInputElement).value);
+		setInstanceNameValue((event.target as HTMLInputElement).value);
+	};
+
+	const [amiValue, setAmiValue] = React.useState("");
+	const handleChangeAmi = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setAmiValue((event.target as HTMLInputElement).value);
+	};
+
+	const [instanceTypeValue, setInstanceTypeValue] = React.useState("");
+	const handleChangeInstanceType = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setInstanceTypeValue((event.target as HTMLInputElement).value);
 	};
 
 	//SUBMIT MODAL THINGS
@@ -96,13 +108,13 @@ export default function WizardOptions() {
 			repo: "devxp-ca/devxp-test-repo",
 			tool: "terraform",
 			settings: {
-				provider: "aws",
+				provider: providerValue,
 				resources: [
 					{
-						type: "ec2",
-						id: "myEc2Instance",
-						ami: "ami-0341aeea105412b57",
-						instance_type: "t2.micro"
+						type: resourceTypeValue,
+						id: instanceNameValue,
+						ami: amiValue,
+						instance_type: instanceTypeValue
 					}
 				]
 			}
@@ -150,7 +162,13 @@ export default function WizardOptions() {
 													sx={{paddingLeft: 1}}
 												/>
 											}
-											popOverInfo="Select the provider you have a cloud services account with"
+											popOverInfo={
+												<div>
+													Select the provider you have
+													a cloud services account
+													with
+												</div>
+											}
 										/>
 									</Grid>
 								</FormLabel>
@@ -185,39 +203,159 @@ export default function WizardOptions() {
 						{
 							//AWS Options
 							providerValue === "aws" && (
-								<Grid container direction="row">
-									<Grid item sx={{padding: 2}}>
-										<FormControl>
-											<FormLabel>
-												<Grid container direction="row">
-													Access Key
-													<MouseOverPopover
-														icon={
-															<HelpIcon
-																sx={{
-																	paddingLeft: 1
-																}}
-															/>
-														}
-														popOverInfo="Description of where to find it"
-													/>
-												</Grid>
-											</FormLabel>
-											<TextField
-												id="access-key"
-												name="access-key"
-												label=""
-												type="text"
-												value={accessKeyValue}
-												onChange={handleChangeAccessKey}
-											/>
-										</FormControl>
+								<Grid container direction="column">
+									<Grid container direction="row">
+										<Grid item sx={{padding: 2}}>
+											<FormControl>
+												<FormLabel>
+													<Grid
+														container
+														direction="row">
+														Resource Type
+														<MouseOverPopover
+															icon={
+																<HelpIcon
+																	sx={{
+																		paddingLeft: 1
+																	}}
+																/>
+															}
+															popOverInfo={
+																<div>
+																	Choose the
+																	type of
+																	resource
+																	that you
+																	want
+																	terraform to
+																	spin up
+																</div>
+															}
+														/>
+													</Grid>
+												</FormLabel>
+												{/*TO DO: Move options shared between providers outside amazon only and make their values change depending on provider instead?*/}
+												<Select
+													name="resource-type"
+													value={resourceTypeValue}
+													onChange={
+														handleChangeResourceType
+													}>
+													<MenuItem
+														key="ec2"
+														value="ec2">
+														EC2
+													</MenuItem>
+												</Select>
+											</FormControl>
+										</Grid>
+										<Grid item sx={{padding: 2}}>
+											<FormControl>
+												<FormLabel>
+													<Grid
+														container
+														direction="row">
+														Instance Name
+														<MouseOverPopover
+															icon={
+																<HelpIcon
+																	sx={{
+																		paddingLeft: 1
+																	}}
+																/>
+															}
+															popOverInfo={
+																<div>
+																	Give this
+																	particular
+																	instance a
+																	name so it's
+																	identifiable
+																	-- can be
+																	whatever you
+																	like
+																</div>
+															}
+														/>
+													</Grid>
+												</FormLabel>
+												<TextField
+													id="instance-name"
+													name="instance-name"
+													label=""
+													type="text"
+													value={instanceNameValue}
+													onChange={
+														handleChangeInstanceName
+													}
+												/>
+											</FormControl>
+										</Grid>
+										<Grid item sx={{padding: 2}}>
+											<FormControl>
+												<FormLabel>
+													<Grid
+														container
+														direction="row">
+														Instance OS
+														<MouseOverPopover
+															icon={
+																<HelpIcon
+																	sx={{
+																		paddingLeft: 1
+																	}}
+																/>
+															}
+															popOverInfo={
+																<div>
+																	Choose the
+																	type of OS
+																	you want
+																	this
+																	instance to
+																	run
+																</div>
+															}
+														/>
+													</Grid>
+												</FormLabel>
+												{/*TO DO: Move options shared between providers outside amazon only and make their values change depending on provider instead?*/}
+												<Select
+													name="instance-os"
+													value={amiValue}
+													onChange={handleChangeAmi}>
+													<MenuItem
+														key="amazon-linux"
+														value="ami-0341aeea105412b57">
+														Amazon Linux 2 AMI (HVM)
+													</MenuItem>
+													<MenuItem
+														key="ubuntu"
+														value="ami-0892d3c7ee96c0bf7">
+														Ubuntu Server 20.04 LTS
+														64-bit x86
+													</MenuItem>
+													<MenuItem
+														key="macOS"
+														value="ami-0faefa03f7ddcd657">
+														MacOS Monterey 12.2
+													</MenuItem>
+													<MenuItem
+														key="windows"
+														value="ami-0ab399fb9d53c302f">
+														Microsoft Windows Server
+														2019 Base with
+														Containers
+													</MenuItem>
+												</Select>
+											</FormControl>
+										</Grid>
 									</Grid>
 									<Grid item sx={{padding: 2}}>
 										<FormControl>
 											<FormLabel>
 												<Grid container direction="row">
-													Secret Key
+													Instance Hardware
 													<MouseOverPopover
 														icon={
 															<HelpIcon
@@ -226,18 +364,90 @@ export default function WizardOptions() {
 																}}
 															/>
 														}
-														popOverInfo="Description of where to find it"
+														popOverInfo={
+															<div>
+																<p>
+																	Choose the
+																	computing
+																	power you
+																	want this
+																	instance to
+																	have:
+																</p>
+																<p>
+																	Micro - 1
+																	CPU 1gB RAM
+																</p>
+																<p>
+																	Small - 1
+																	CPU 2gB RAM
+																</p>
+																<p>
+																	Medium - 2
+																	CPU 4gB RAM
+																</p>
+																<p>
+																	Large - 2
+																	CPU 8gB RAM
+																</p>
+																<p>
+																	Extra-Large
+																	- 4 CPU 16gB
+																	RAM
+																</p>
+															</div>
+														}
 													/>
 												</Grid>
 											</FormLabel>
-											<TextField
-												id="secret-key"
-												name="secret-key"
-												label=""
-												type="text"
-												value={secretKeyValue}
-												onChange={handleChangeSecretKey}
-											/>
+											<RadioGroup
+												name="Instance Hardware"
+												value={instanceTypeValue}
+												onChange={
+													handleChangeInstanceType
+												}
+												row>
+												<FormControlLabel
+													key="1"
+													value="t2.micro"
+													control={
+														<Radio size="small" />
+													}
+													label="Micro"
+												/>
+												<FormControlLabel
+													key="2"
+													value="t2.small"
+													control={
+														<Radio size="small" />
+													}
+													label="Small"
+												/>
+												<FormControlLabel
+													key="3"
+													value="t2.medium"
+													control={
+														<Radio size="small" />
+													}
+													label="Medium"
+												/>
+												<FormControlLabel
+													key="4"
+													value="t2.large"
+													control={
+														<Radio size="small" />
+													}
+													label="Large"
+												/>
+												<FormControlLabel
+													key="5"
+													value="t2.xlarge"
+													control={
+														<Radio size="small" />
+													}
+													label="Extra-Large"
+												/>
+											</RadioGroup>
 										</FormControl>
 									</Grid>
 								</Grid>
