@@ -58,11 +58,16 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				repo,
 				JSON.stringify(root, null, 2) + "\n"
 			);
+
+			/*
+				Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
+
 			const blobBackend = await postBlob(
 				token,
 				repo,
 				JSON.stringify(backend, null, 2) + "\n"
 			);
+			*/
 
 			//Grab the latest commit at the head pointer
 			const commit = await getCommitFromUrl(token, head.url);
@@ -78,7 +83,10 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 					type: "blob",
 					sha: blobRoot.sha,
 					url: blobRoot.url
-				},
+				}
+
+				/*
+				Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
 				{
 					path: "backend.tf.json",
 					mode: getModeNumber("blob"),
@@ -86,6 +94,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 					sha: blobBackend.sha,
 					url: blobBackend.url
 				}
+				*/
 			]);
 
 			//Create a new commit referencing the new tree
