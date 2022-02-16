@@ -24,7 +24,7 @@ export default function Wizard() {
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
 			.then((response: any) => {
 				console.dir(response.data);
-				setRepoList(response.data);
+				setRepoList(response.data.repos);
 			})
 			.catch((error: any) => {
 				/**TODO: Render an error component */
