@@ -57,14 +57,40 @@ export default function WizardOptions() {
 	};
 
 	//SUBMIT MODAL THINGS
-	const [openSubmitModal, setOpenSubmitModal] = React.useState(false);
+	const [openModal, setOpenModal] = React.useState(false);
+	const [modalText, setModalText] = React.useState({
+		isSubmitModal: true,
+		title: "",
+		body: ""
+	});
 	const handleOpenSubmitModal = () => {
-		setOpenSubmitModal(true);
+		setModalText({
+			isSubmitModal: true,
+			title: "Are you sure you want to submit?",
+			body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
+		});
+		setOpenModal(true);
 	};
-	const handleCloseSubmitModal = () => {
-		setOpenSubmitModal(false);
+	const handleOpenSuccessModal = () => {
+		setModalText({
+			isSubmitModal: false,
+			title: "Success",
+			body: "Your changes have been successfully pushed to your repository"
+		});
+		setOpenModal(true);
 	};
-	const submitModalChildren = () => {
+	const handleOpenFailModal = () => {
+		setModalText({
+			isSubmitModal: false,
+			title: "Submission Failed",
+			body: "Something went wrong, please make sure all the fields are filled out and try again"
+		});
+		setOpenModal(true);
+	};
+	const handleCloseModal = () => {
+		setOpenModal(false);
+	};
+	const modalChildren = () => {
 		return (
 			<div style={{display: "flex", justifyContent: "center"}}>
 				<Button
@@ -72,15 +98,19 @@ export default function WizardOptions() {
 					variant="contained"
 					size="large"
 					sx={{marginTop: 2}}
-					onClick={handleSubmit}>
-					Confirm
+					onClick={
+						modalText.isSubmitModal
+							? handleSubmit
+							: handleCloseModal
+					}>
+					{modalText.isSubmitModal ? "Confirm" : "Ok"}
 				</Button>
 			</div>
 		);
 	};
 
 	const handleSubmit = () => {
-		setOpenSubmitModal(false);
+		setOpenModal(false);
 		/* TODO: get settings from component state? */
 
 		/*
@@ -127,24 +157,22 @@ export default function WizardOptions() {
 			)
 			.then(response => {
 				console.log(response.data);
-				/* TODO: Bring up success modal */
+				handleOpenSuccessModal();
 			})
 			.catch(error => {
-				/**TODO: Render an error component */
 				console.log(error);
+				handleOpenFailModal();
 			});
 	};
 
 	return (
 		<div>
 			<GenericModal
-				isOpen={openSubmitModal}
-				handleClose={handleCloseSubmitModal}
-				title={"Are you sure you want to submit?"}
-				bodyText={
-					"Once confirmed, we will push a pull request to a temporary branch on your repository for review"
-				}
-				children={submitModalChildren()}
+				isOpen={openModal}
+				handleClose={handleCloseModal}
+				title={modalText.title}
+				bodyText={modalText.body}
+				children={modalChildren()}
 			/>
 			{/* <Accordion title="CI/CD" content="Settings go here" /> */}
 			<Accordion
