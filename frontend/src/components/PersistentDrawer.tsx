@@ -24,13 +24,16 @@ export interface GithubRepo {
 }
 
 /** a functional component that returns a drawer which is anchored on the left of the screen */
-export default function PersistentDrawer(props: {repos: GithubRepo[]}) {
+export default function PersistentDrawer(props: {
+	repos: GithubRepo[];
+	shareRepo: (repo_full_name: string) => void;
+}) {
 	const theme = useTheme();
 	const [value, setValue] = React.useState("false");
 
 	const setSelectedRepo = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue((event.target as HTMLInputElement).value);
-		console.dir(event.target.value);
+		props.shareRepo(event.target.value);
 	};
 
 	return (

@@ -12,6 +12,12 @@ import Grid from "@mui/material/Grid";
 
 export default function Wizard() {
 	const [repoList, setRepoList] = React.useState([]);
+	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+
+	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
+		setSelectedRepo(repo_full_name);
+		console.dir(repo_full_name);
+	};
 
 	//this is the same as componentDidMount
 	React.useEffect(() => {
@@ -30,7 +36,10 @@ export default function Wizard() {
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
-				<PersistentDrawer repos={repoList} />
+				<PersistentDrawer
+					repos={repoList}
+					shareRepo={setSelectedRepoFromDrawer}
+				/>
 				<Box
 					style={{
 						width: "100%",
@@ -39,7 +48,7 @@ export default function Wizard() {
 					}}>
 					<Grid container direction="column">
 						<Navbar />
-						<WizardOptions />
+						<WizardOptions selectedRepo={selectedRepo} />
 						<Footer />
 					</Grid>
 				</Box>

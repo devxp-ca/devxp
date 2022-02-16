@@ -20,7 +20,7 @@ import MouseOverPopover from "../components/MouseOverPopover";
 import GenericModal from "./GenericModal";
 import {CONFIG} from "../config";
 
-export default function WizardOptions() {
+export default function WizardOptions(props: {selectedRepo: string}) {
 	//TODO: find some way to condense this clunky data setting
 	//OPTION STATES
 	const [providerValue, setProviderValue] = React.useState("");
@@ -135,7 +135,7 @@ export default function WizardOptions() {
 		*/
 
 		const settings = {
-			repo: "devxp-ca/devxp-test-repo",
+			repo: props.selectedRepo,
 			tool: "terraform",
 			settings: {
 				provider: providerValue,
