@@ -51,7 +51,8 @@ export const settingsValidator = [
 		.optional()
 		.trim()
 		.escape()
-		.matches(/^[a-zA-Z-_]$/),
+		.isLength({min: 1})
+		.matches(/^[a-zA-Z-_]+$/),
 	body("settings.resources.*")
 		.if(body("tool").equals("terraform"))
 		.isObject()
