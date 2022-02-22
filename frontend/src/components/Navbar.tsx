@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import LoginWithGithub from "./loginWithGithub";
 import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../style/lightTheme";
+import {lightTheme} from "../style/themes";
 
 export default function Navbar() {
 	return (
