@@ -22,8 +22,8 @@ export default function Navbar() {
 								color="inherit">
 								Wiki
 							</Button>
-							<Button href="/wizard" color="inherit">
-								Wizard
+							<Button href="/toolManager" color="inherit">
+								Tool Manager
 							</Button>
 							{/*<Button href="/about" color="inherit">
 								About

@@ -7,10 +7,10 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
 import axios from "axios";
 import {CONFIG} from "../config";
-import WizardOptions from "../components/wizardOptions";
+import ToolManagerOptions from "../components/toolManagerOptions";
 import Grid from "@mui/material/Grid";
 
-export default function Wizard() {
+export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
 
@@ -48,7 +48,7 @@ export default function Wizard() {
 					}}>
 					<Grid container direction="column">
 						<Navbar />
-						<WizardOptions selectedRepo={selectedRepo} />
+						<ToolManagerOptions selectedRepo={selectedRepo} />
 						<Footer />
 					</Grid>
 				</Box>

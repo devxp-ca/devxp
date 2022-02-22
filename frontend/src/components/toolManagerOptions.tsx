@@ -15,12 +15,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Slider from "@mui/material/Slider";
 import HelpIcon from "@mui/icons-material/Help";
 
-import Accordion from "../components/Accordion";
-import MouseOverPopover from "../components/MouseOverPopover";
+import Accordion from "./Accordion";
+import MouseOverPopover from "./MouseOverPopover";
 import GenericModal from "./GenericModal";
 import {CONFIG} from "../config";
 
-export default function WizardOptions(props: {selectedRepo: string}) {
+export default function ToolManagerOptions(props: {selectedRepo: string}) {
 	//TODO: find some way to condense this clunky data setting
 	//OPTION STATES
 	const [providerValue, setProviderValue] = React.useState("");
