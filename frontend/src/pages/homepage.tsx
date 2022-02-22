@@ -4,7 +4,7 @@ import MainLandingVisual from "../components/mainLandingVisual";
 import Footer from "../components/Footer";
 import Container from "@mui/material/Container";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/lightTheme";
 
 interface IProps {}
 interface IState {}

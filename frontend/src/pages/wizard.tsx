@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import Box from "@mui/material/Box";
 import PersistentDrawer, {GithubRepo} from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/lightTheme";
 import axios from "axios";
 import {CONFIG} from "../config";
 import WizardOptions from "../components/wizardOptions";

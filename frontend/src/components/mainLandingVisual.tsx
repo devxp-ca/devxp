@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/lightTheme";
 
 import {CONFIG} from "../config";
 
@@ -43,7 +43,7 @@ export default function MainLandingVisual() {
 							textAlign: "center"
 						}}>
 						<Typography variant="h5" color="white">
-							Empowering developers by making DevOps simple
+							Empowering developers by making DevOps simple.
 						</Typography>
 						<Button
 							onClick={() =>

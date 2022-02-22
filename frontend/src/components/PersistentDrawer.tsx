@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import {FormControl, RadioGroup, FormControlLabel} from "@mui/material";
 import Radio from "@mui/material/Radio";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/lightTheme";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 
 const DrawerHeader = styled("div")(({theme}) => ({
