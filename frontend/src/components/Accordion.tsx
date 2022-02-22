@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/themes";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 //props.content will likely have to be changed some sort of array in order to accommodate fill the accordion with settings

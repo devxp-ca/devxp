@@ -3,45 +3,16 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/themes";
 
-import GenericModal from "./GenericModal";
+import {CONFIG} from "../config";
 
 import Backsplash from "../assets/memories.gif";
 import titleImage from "../assets/devxp-title.png";
 
 export default function MainLandingVisual() {
-	//For the modal that pops up from the 'Get Started' button
-	const [openStartModal, setOpenStartModal] = React.useState(false);
-	const handleOpenStartModal = () => {
-		setOpenStartModal(true);
-	};
-	const handleCloseStartModal = () => {
-		setOpenStartModal(false);
-	};
-	const startModalChildren = () => {
-		return (
-			<div style={{display: "flex", justifyContent: "center"}}>
-				<Button
-					color="secondary"
-					variant="contained"
-					size="large"
-					sx={{marginTop: 2}}>
-					Sign Up
-				</Button>
-			</div>
-		);
-	};
-
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<GenericModal
-				isOpen={openStartModal}
-				handleClose={handleCloseStartModal}
-				title={"Example Title"}
-				bodyText={"Example text"}
-				children={startModalChildren()}
-			/>
 			<Box
 				sx={{
 					width: "100%",
@@ -72,10 +43,12 @@ export default function MainLandingVisual() {
 							textAlign: "center"
 						}}>
 						<Typography variant="h5" color="white">
-							DevOps is hard -- We don't believe it has to be
+							Empowering developers by making DevOps simple.
 						</Typography>
 						<Button
-							onClick={handleOpenStartModal}
+							onClick={() =>
+								(window.location.href = `https://${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`)
+							}
 							color="secondary"
 							variant="contained"
 							size="large"

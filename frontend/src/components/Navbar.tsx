@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import LoginWithGithub from "./loginWithGithub";
 import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../lightTheme";
+import {lightTheme} from "../style/themes";
 
 export default function Navbar() {
 	return (
@@ -17,8 +17,13 @@ export default function Navbar() {
 							<Button href="/" color="inherit">
 								Home
 							</Button>
-							<Button href="/wizard" color="inherit">
-								Wizard
+							<Button
+								href="https://github.com/devxp-ca/devxp/wiki"
+								color="inherit">
+								Wiki
+							</Button>
+							<Button href="/toolManager" color="inherit">
+								Tool Manager
 							</Button>
 							{/*<Button href="/about" color="inherit">
 								About

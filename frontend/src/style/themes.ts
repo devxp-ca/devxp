@@ -25,3 +25,15 @@ export const lightTheme = createTheme({
 		}
 	}
 });
+
+export const darkTheme = createTheme({
+	palette: {
+		mode: "dark",
+		primary: {
+			main: "#679062"
+		},
+		secondary: {
+			main: "#85cb6b"
+		}
+	}
+});
