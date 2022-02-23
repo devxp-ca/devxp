@@ -20,6 +20,22 @@ import MouseOverPopover from "./MouseOverPopover";
 import GenericModal from "./GenericModal";
 import {CONFIG} from "../config";
 
+export interface BackendError {
+	timestamp: Date;
+
+	//HTTP Status
+	status: number;
+
+	//Error type / high level description
+	error: string;
+
+	//Path which created error
+	path: string;
+
+	//Detailed error message
+	message?: string;
+}
+
 export default function ToolManagerOptions(props: {selectedRepo: string}) {
 	//TODO: find some way to condense this clunky data setting
 	//OPTION STATES
@@ -79,11 +95,13 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 		});
 		setOpenModal(true);
 	};
-	const handleOpenFailModal = () => {
+	const handleOpenFailModal = (errors: BackendError[]) => {
 		setModalText({
 			isSubmitModal: false,
 			title: "Submission Failed",
-			body: "Something went wrong, please make sure all the fields are filled out and try again"
+			body:
+				errors[0]?.message ??
+				"Something went wrong, please make sure all the fields are filled out and try again"
 		});
 		setOpenModal(true);
 	};
@@ -161,7 +179,7 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 			})
 			.catch(error => {
 				console.log(error);
-				handleOpenFailModal();
+				handleOpenFailModal(error.data?.errors ?? []);
 			});
 	};
 
