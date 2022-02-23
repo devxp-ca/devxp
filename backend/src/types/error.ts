@@ -1,4 +1,5 @@
 import {ValidationError as ExpressValidationError} from "express-validator";
+import hash from "object-hash";
 
 // Point of this file is to create some predefined error
 // types so that our API returns consistantly structured
@@ -60,8 +61,18 @@ export class BaseErrorImpl implements BaseError {
 	}
 
 	toResponse(array?: BaseError[]): ErrorResponse {
+		const shas: Record<string, string> = {};
 		return {
-			errors: this.toArray(array).map(err => err.serialize())
+			errors: this.toArray(array)
+				.map(err => err.serialize())
+				.filter(err => {
+					const sha = hash(err);
+					if (!(sha in shas)) {
+						shas[sha] = sha;
+						return true;
+					}
+					return false;
+				})
 		};
 	}
 
@@ -124,8 +135,18 @@ export class ValidationError extends BaseErrorImpl {
 	}
 
 	toResponse(array?: BaseError[]): ErrorResponse {
+		const shas: Record<string, string> = {};
 		return {
-			errors: this.toArray(array).map(err => err.serialize())
+			errors: this.toArray(array)
+				.map(err => err.serialize())
+				.filter(err => {
+					const sha = hash(err);
+					if (!(sha in shas)) {
+						shas[sha] = sha;
+						return true;
+					}
+					return false;
+				})
 		};
 	}
 }
