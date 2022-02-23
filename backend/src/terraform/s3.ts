@@ -1,6 +1,7 @@
 import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
 import {acl} from "../types/terraform";
+import {jsonRoot} from "./util";
 
 export interface S3 {
 	acl: acl;
@@ -20,21 +21,14 @@ export class S3 implements S3, DatabaseModel<S3> {
 	}
 
 	toJSON() {
-		const resource: any = {};
-		resource[this.id] = [
-			{
-				acl: this.acl,
-				bucket: this.id,
-				versioning: [
-					{
-						enabled: true
-					}
-				]
-			}
-		];
-
-		return {
-			aws_s3_bucket: [resource]
-		};
+		return jsonRoot("aws_s3_bucket", this.id, {
+			acl: this.acl,
+			bucket: this.id,
+			versioning: [
+				{
+					enabled: true
+				}
+			]
+		});
 	}
 }
