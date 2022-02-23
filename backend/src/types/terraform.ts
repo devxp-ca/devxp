@@ -5,6 +5,7 @@ import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
+import {S3} from "../terraform/s3";
 import {DatabaseModel, generateSchemaInternals} from "./database";
 
 // ---------------------------------Variable---------------------------------- //
@@ -150,9 +151,13 @@ export type source_image =
 	| "windows-server-2019-dc-v20220210"
 	| "fedora-coreos-35-20220116-3-0-gcp-x86-64";
 
+// ----------------------------------S3-------------------------------------- //
+
+export type acl = "private" | "public-read" | "public-read-write";
+
 // ---------------------------------MISC------------------------------------- //
 
-export type TerraformResource = Ec2 | Gce;
+export type TerraformResource = Ec2 | Gce | S3;
 
 // ----------------------------Terraform Root-------------------------------- //
 

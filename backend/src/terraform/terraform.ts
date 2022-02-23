@@ -1,12 +1,11 @@
 import {
 	NamedRequiredProvider,
 	namedTerraformBackend,
-	RequiredProvider
+	RequiredProvider,
+	TerraformResource
 } from "../types/terraform";
 import {NamedAwsBackend} from "./awsBackend";
 import {AwsProvider} from "./awsProvider";
-import {Ec2} from "./ec2";
-import {Gce} from "./gce";
 import {NamedGoogleBackend} from "./googleBackend";
 import {GoogleProvider} from "./googleProvider";
 
@@ -34,7 +33,7 @@ export const terraformBlock = (
 export const rootBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
 	backend: namedTerraformBackend,
-	resources: (Ec2 | Gce)[] = []
+	resources: TerraformResource[] = []
 ) => {
 	return {
 		terraform: terraformBlock(providers, backend),
@@ -51,7 +50,7 @@ export const rootBlock = (
 export const rootBlockSplitBackend = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
 	backend: namedTerraformBackend,
-	resources: (Ec2 | Gce)[] = []
+	resources: TerraformResource[] = []
 ) => {
 	const root = rootBlock(providers, backend, resources);
 	const backendBlock = root.terraform[0].backend;
