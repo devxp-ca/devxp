@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import Button from "@mui/material/Button";
 import {Box} from "@mui/system";
 import CheckIcon from "@mui/icons-material/Check";
@@ -177,9 +177,9 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 				console.log(response.data);
 				handleOpenSuccessModal();
 			})
-			.catch(error => {
-				console.log(error);
-				handleOpenFailModal(error.data?.errors ?? []);
+			.catch((error: AxiosError) => {
+				console.dir(error.response.data);
+				handleOpenFailModal(error.response?.data?.errors ?? []);
 			});
 	};
 
