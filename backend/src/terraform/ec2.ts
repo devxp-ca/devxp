@@ -1,6 +1,7 @@
 import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
 import {ec2InstanceType, amiType} from "../types/terraform";
+import {jsonRoot} from "./util";
 
 export interface Ec2 {
 	ami: amiType;
@@ -22,17 +23,9 @@ export class Ec2 implements Ec2, DatabaseModel<Ec2> {
 	}
 
 	toJSON() {
-		//TODO: Generalize this as an inherited method
-		const resource: any = {};
-		resource[this.id] = [
-			{
-				ami: this.ami,
-				instance_type: this.instance_type
-			}
-		];
-
-		return {
-			aws_instance: [resource]
-		};
+		return jsonRoot("aws_instance", this.id, {
+			ami: this.ami,
+			instance_type: this.instance_type
+		});
 	}
 }

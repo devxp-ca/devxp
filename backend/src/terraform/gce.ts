@@ -1,6 +1,7 @@
 import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
 import {machineType} from "../types/terraform";
+import {jsonRoot} from "./util";
 
 export interface Gce {
 	project: string;
@@ -66,12 +67,24 @@ export class Gce implements Gce, DatabaseModel<Gce> {
 		];
 
 		return [
-			{
-				google_compute_instance: [resource]
-			},
-			{
-				google_project_service: [requiredService]
-			}
+			jsonRoot("google_compute_instance", this.id, {
+				name: this.id,
+				machine_type: this.machine_type,
+				zone: this.zone,
+				network_interface: {
+					network: "default"
+				},
+				boot_disk: {
+					initialize_params: {
+						image: this.disk_image
+					}
+				},
+				project: this.project
+			}),
+			jsonRoot("google_project_service", `${this.id}-service`, {
+				disable_on_destroy: false,
+				service: "compute.googleapis.com"
+			})
 		];
 	}
 }

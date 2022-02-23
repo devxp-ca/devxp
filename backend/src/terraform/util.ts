@@ -30,3 +30,12 @@ export const generateId = (length: number) => {
 	}
 	return id;
 };
+
+export const jsonRoot = (name: string, id: string, content: object) => {
+	const json: Record<string, any> = {};
+	const internal: Record<string, any> = {};
+	internal[id] = [content];
+
+	json[name] = [internal];
+	return json;
+};

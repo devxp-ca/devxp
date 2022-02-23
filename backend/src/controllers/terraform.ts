@@ -13,6 +13,7 @@ import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
+import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
@@ -25,22 +26,32 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		provider === "google" ? (req.body.settings?.project as string) : "";
 
 	const resourcesRaw = req.body.settings?.resources as (TerraformResource & {
-		type: "ec2" | "gce";
+		type: "ec2" | "gce" | "s3";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
 
+	let flag = false;
+
 	const resources = resourcesRaw.map(resource => {
-		if (resource.type == "ec2") {
+		if (resource.type === "ec2") {
 			const ec2: Ec2 = resource as Ec2;
 			return new Ec2(ec2.ami, ec2.instance_type, ec2.id);
-		}
-		//else if(resource.type == "gce"){
-		else {
+		} else if (resource.type === "gce") {
 			const gce: Gce = resource as Gce;
 			return new Gce(project, gce.id, gce.machine_type, gce.disk_image);
+		} else if (resource.type === "s3") {
+			const s3: S3 = resource as S3;
+			return new S3(s3.id, s3.acl);
+		} else {
+			flag = true;
 		}
-	});
+	}) as TerraformResource[];
+
+	if (flag) {
+		internalErrorHandler(req, res)(new Error("Unknown resource type"));
+		return;
+	}
 
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
