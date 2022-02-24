@@ -23,7 +23,7 @@ export default function LoginWithGithub() {
 			setIsLoggedIn(false);
 			// Maybe: remove the access_token from the cookies
 			const cookies = new Cookies();
-			cookies.remove("access_token");
+			cookies.remove("access_token", {path: "/", domain: ""});
 		} else {
 			// set the state to logged in
 			setIsLoggedIn(true);
