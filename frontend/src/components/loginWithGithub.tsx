@@ -7,10 +7,15 @@ import {Cookies} from "react-cookie";
 
 export default function LoginWithGithub() {
 	//inside of the useState hook, check to see if the access_token is set in the cookies. If it is, then the user is already logged in.
-	const cookies = new Cookies();
-	const access_token = cookies.get("access_token");
-	const hasCookie = Boolean(access_token);
-	const [isLoggedIn, setIsLoggedIn] = React.useState(hasCookie);
+	const [isLoggedIn, setIsLoggedIn] = React.useState(() => {
+		const cookies = new Cookies();
+		const access_token = cookies.get("access_token");
+		if (access_token) {
+			return true;
+		} else {
+			return false;
+		}
+	});
 
 	const handleLogin = () => {
 		if (isLoggedIn) {
