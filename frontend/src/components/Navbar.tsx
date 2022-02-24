@@ -6,8 +6,37 @@ import Button from "@mui/material/Button";
 import LoginWithGithub from "./loginWithGithub";
 import {ThemeProvider} from "@mui/material/styles";
 import {lightTheme} from "../style/themes";
+import {Cookies} from "react-cookie";
+import {CONFIG} from "../config";
 
 export default function Navbar() {
+	const [isLoggedIn, setIsLoggedIn] = React.useState(() => {
+		const cookies = new Cookies();
+		const token = cookies.get("token");
+		console.dir(token);
+		if (token) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	const handleLogin = () => {
+		if (isLoggedIn) {
+			// set the state to logged out
+			setIsLoggedIn(false);
+			// Maybe: remove the access_token from the cookies
+			const cookies = new Cookies();
+			cookies.remove("token", {path: "/", domain: ""});
+			window.location.href = "/";
+		} else {
+			// set the state to logged in
+			setIsLoggedIn(true);
+			// call the API to get the user's profile
+			window.location.href = `https://${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`;
+		}
+	};
+
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box sx={{flexGrow: 1, marginTop: 5}}>
@@ -22,19 +51,18 @@ export default function Navbar() {
 								color="inherit">
 								Wiki
 							</Button>
-							<Button href="/toolManager" color="inherit">
-								Tool Manager
-							</Button>
-							{/*<Button href="/about" color="inherit">
-								About
-							</Button>
-							<Button href="/contact" color="inherit">
-								Contact
-							</Button>*/}
+							{isLoggedIn ? (
+								<Button href="/toolManager" color="inherit">
+									Tool Manager
+								</Button>
+							) : null}
 						</Box>
 						<Box sx={{flexGrow: 1}} />
 						<Box sx={{display: {xs: "flex", md: "flex"}}}>
-							<LoginWithGithub />
+							<LoginWithGithub
+								isLoggedIn={isLoggedIn}
+								handleLogin={handleLogin}
+							/>
 						</Box>
 					</Toolbar>
 				</AppBar>
