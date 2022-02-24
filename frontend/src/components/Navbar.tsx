@@ -13,7 +13,6 @@ export default function Navbar() {
 	const [isLoggedIn, setIsLoggedIn] = React.useState(() => {
 		const cookies = new Cookies();
 		const token = cookies.get("token");
-		console.dir(token);
 		if (token) {
 			return true;
 		} else {
@@ -25,14 +24,15 @@ export default function Navbar() {
 		if (isLoggedIn) {
 			// set the state to logged out
 			setIsLoggedIn(false);
-			// Maybe: remove the access_token from the cookies
+			//remove the access_token from the cookies
 			const cookies = new Cookies();
 			cookies.remove("token", {path: "/", domain: ""});
+			// redirect to the homepage
 			window.location.href = "/";
 		} else {
 			// set the state to logged in
 			setIsLoggedIn(true);
-			// call the API to get the user's profile
+			// call the API to login with github
 			window.location.href = `https://${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`;
 		}
 	};
