@@ -37,40 +37,59 @@ export interface BackendError {
 }
 
 export default function ToolManagerOptions(props: {selectedRepo: string}) {
-	//TODO: find some way to condense this clunky data setting
-	//OPTION STATES
-	const [providerValue, setProviderValue] = React.useState("");
-	const handleChangeProvider = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setProviderValue((event.target as HTMLInputElement).value);
+	//OPTION STATES AND REDUCER
+	const initialOptionState = {
+		providerValue: "",
+		resourceTypeValue: "",
+		instanceNameValue: "",
+		amiValue: "",
+		instanceTypeValue: ""
 	};
 
-	const [resourceTypeValue, setResourceTypeValue] = React.useState("");
-	const handleChangeResourceType = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setResourceTypeValue((event.target as HTMLInputElement).value);
-	};
+	const [optionState, dispatch] = React.useReducer(
+		optionsReducer,
+		initialOptionState
+	);
 
-	const [instanceNameValue, setInstanceNameValue] = React.useState("");
-	const handleChangeInstanceName = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setInstanceNameValue((event.target as HTMLInputElement).value);
-	};
+	const {
+		providerValue,
+		resourceTypeValue,
+		instanceNameValue,
+		amiValue,
+		instanceTypeValue
+	} = optionState;
 
-	const [amiValue, setAmiValue] = React.useState("");
-	const handleChangeAmi = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setAmiValue((event.target as HTMLInputElement).value);
-	};
-
-	const [instanceTypeValue, setInstanceTypeValue] = React.useState("");
-	const handleChangeInstanceType = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setInstanceTypeValue((event.target as HTMLInputElement).value);
-	};
+	function optionsReducer(state: any, action: any) {
+		switch (action.type) {
+			case "provider":
+				return {
+					...state,
+					providerValue: action.payload
+				};
+			case "resourceType":
+				return {
+					...state,
+					resourceTypeValue: action.payload
+				};
+			case "instanceName":
+				return {
+					...state,
+					instanceNameValue: action.payload
+				};
+			case "ami":
+				return {
+					...state,
+					amiValue: action.payload
+				};
+			case "instanceType":
+				return {
+					...state,
+					instanceTypeValue: action.payload
+				};
+			default:
+				return state;
+		}
+	}
 
 	//SUBMIT MODAL THINGS
 	const [openModal, setOpenModal] = React.useState(false);
@@ -221,7 +240,16 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 								<RadioGroup
 									name="Provider"
 									value={providerValue}
-									onChange={handleChangeProvider}
+									onChange={(
+										event: React.ChangeEvent<HTMLInputElement>
+									) =>
+										dispatch({
+											type: "provider",
+											payload: (
+												event.target as HTMLInputElement
+											).value
+										})
+									}
 									row>
 									<FormControlLabel
 										key="aws"
@@ -284,8 +312,15 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 												<Select
 													name="resource-type"
 													value={resourceTypeValue}
-													onChange={
-														handleChangeResourceType
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) =>
+														dispatch({
+															type: "resourceType",
+															payload: (
+																event.target as HTMLInputElement
+															).value
+														})
 													}>
 													<MenuItem
 														key="ec2"
@@ -331,8 +366,15 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 													label=""
 													type="text"
 													value={instanceNameValue}
-													onChange={
-														handleChangeInstanceName
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) =>
+														dispatch({
+															type: "instanceName",
+															payload: (
+																event.target as HTMLInputElement
+															).value
+														})
 													}
 												/>
 											</FormControl>
@@ -369,7 +411,16 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 												<Select
 													name="instance-os"
 													value={amiValue}
-													onChange={handleChangeAmi}>
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) =>
+														dispatch({
+															type: "ami",
+															payload: (
+																event.target as HTMLInputElement
+															).value
+														})
+													}>
 													<MenuItem
 														key="amazon-linux"
 														value="ami-0341aeea105412b57">
@@ -449,8 +500,15 @@ export default function ToolManagerOptions(props: {selectedRepo: string}) {
 											<RadioGroup
 												name="Instance Hardware"
 												value={instanceTypeValue}
-												onChange={
-													handleChangeInstanceType
+												onChange={(
+													event: React.ChangeEvent<HTMLInputElement>
+												) =>
+													dispatch({
+														type: "instanceType",
+														payload: (
+															event.target as HTMLInputElement
+														).value
+													})
 												}
 												row>
 												<FormControlLabel
