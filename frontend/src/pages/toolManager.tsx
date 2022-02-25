@@ -2,21 +2,30 @@ import * as React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Box from "@mui/material/Box";
-import PersistentDrawer, {GithubRepo} from "../components/PersistentDrawer";
+import PersistentDrawer from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
 import axios from "axios";
 import {CONFIG} from "../config";
-import ToolManagerOptions from "../components/toolManagerOptions";
+import ToolManagerCard from "../components/toolManagerCard";
+import TerraformManager from "../components/terraformManager";
 import Grid from "@mui/material/Grid";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
 	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
 		console.dir(repo_full_name);
+	};
+
+	const setSelectedToolCardCallback = (tool_name: string) => {
+		const callback = () => {
+			setSelectedTool(tool_name);
+		};
+		return callback;
 	};
 
 	//this is the same as componentDidMount
@@ -48,7 +57,24 @@ export default function ToolManager() {
 					}}>
 					<Grid container direction="column">
 						<Navbar />
-						<ToolManagerOptions selectedRepo={selectedRepo} />
+						{selectedTool == "none" && (
+							<Grid
+								container
+								direction="row"
+								sx={{paddingTop: 5}}>
+								<ToolManagerCard
+									onClick={setSelectedToolCardCallback(
+										"terraform"
+									)}
+								/>
+							</Grid>
+						)}
+						{selectedTool == "terraform" && (
+							<TerraformManager
+								selectedRepo={selectedRepo}
+								backButton={setSelectedToolCardCallback("none")}
+							/>
+						)}
 						<Footer />
 					</Grid>
 				</Box>
