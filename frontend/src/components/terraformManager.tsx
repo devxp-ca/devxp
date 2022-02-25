@@ -3,7 +3,10 @@ import Button from "@mui/material/Button";
 import {Box} from "@mui/system";
 import Grid from "@mui/material/Grid";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import TerraformOptions from "../components/terraformOptions";
+import TerraformOptions, {
+	terraformDataSettings
+} from "../components/terraformOptions";
+import TerraformInstanceCard from "../components/terraformInstanceCard";
 import Card from "@mui/material/Card";
 import {CardActionArea} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,6 +21,35 @@ export default function TerraformManager(props: {
 
 	const selectedNewInstanceCallback = () => {
 		setSelectNewInstance(true);
+	};
+
+	// returns a static example for now -- Create terraformInstanceCards with terraformDataSettings
+	const getPreviousInstances = () => {
+		const tempData: terraformDataSettings = {
+			repo: "test",
+			tool: "terraform",
+			settings: {
+				provider: "aws",
+				resources: [
+					{
+						type: "ec2",
+						id: "TEST-NAME",
+						ami: "ami-0892d3c7ee96c0bf7",
+						instance_type: "t2.medium"
+					}
+				]
+			}
+		};
+
+		return (
+			<Grid item>
+				<TerraformInstanceCard
+					cardData={tempData}
+					cardSize={defaultCardSize}
+					selectedRepo={props.selectedRepo}
+				/>
+			</Grid>
+		);
 	};
 
 	return (
@@ -55,7 +87,8 @@ export default function TerraformManager(props: {
 						)}
 					</Card>
 				</Grid>
-				{/* Populate previous instances here - Create terraformCards */}
+				{/* Populate previous instances here */}
+				{getPreviousInstances()}
 			</Grid>
 		</Box>
 	);

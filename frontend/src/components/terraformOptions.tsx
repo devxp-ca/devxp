@@ -35,20 +35,46 @@ export interface BackendError {
 	message?: string;
 }
 
-// NOTE: instanceNameForModify is used when modifying existing instances
+export interface terraformDataSettings {
+	repo: string;
+	tool: string;
+	settings: {
+		provider: string;
+		resources: [
+			{
+				type: string;
+				id: string;
+				ami: string;
+				instance_type: string;
+			}
+		];
+	};
+}
+
 export default function TerraformOptions(props: {
 	selectedRepo: string;
-	instanceNameForModify?: string;
+	instanceDataForModify?: terraformDataSettings; //used when modifying existing instances
 }) {
-	const isModifyingInstance = Boolean(props.instanceNameForModify);
+	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
-	//OPTION STATES AND REDUCER
+	//OPTION STATES AND REDUCER -- pre-populate options if modifying
 	const initialOptionState = {
-		providerValue: "",
-		resourceTypeValue: "",
-		instanceNameValue: "",
-		amiValue: "",
-		instanceTypeValue: "",
+		providerValue: isModifyingInstance
+			? props.instanceDataForModify.settings.provider ?? ""
+			: "",
+		resourceTypeValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].type ?? ""
+			: "",
+		instanceNameValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].id ?? ""
+			: "",
+		amiValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].ami ?? ""
+			: "",
+		instanceTypeValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].instance_type ??
+			  ""
+			: "",
 		numberOfInstancesValue: 1
 	};
 
@@ -160,7 +186,7 @@ export default function TerraformOptions(props: {
 
 	const handleSubmit = () => {
 		setOpenModal(false);
-		/*
+		/* TODO add/figure out terraformDataSettings variables that account for all providers/servies, some will be optional etc.
 
 			GOOGLE VERSION
 
@@ -183,7 +209,7 @@ export default function TerraformOptions(props: {
 
 		/* TODO: Implement modify an instance, pass bool+instance name to backend? Will have to avoid duplicate instance names */
 		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
-		const settings = {
+		const settings: terraformDataSettings = {
 			repo: props.selectedRepo,
 			tool: "terraform",
 			settings: {
@@ -198,6 +224,7 @@ export default function TerraformOptions(props: {
 				]
 			}
 		};
+
 		//Sends settings to backend
 		axios
 			.post(
