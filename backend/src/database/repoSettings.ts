@@ -26,17 +26,6 @@ export const terraformSettingsSchema = new Schema({
 	resources: [terraformResourceSchema]
 });
 
-export const saveTerraformSettings = (
-	repo: string,
-	settings: terraformSettings
-) => {
-	RepoSettings.updateOne(
-		{repo: repo},
-		{repo: repo, terraformSettings: settings},
-		{upsert: true}
-	);
-};
-
 //================================ Repo ====================================//
 
 export const repoSettingsSchema = new Schema({

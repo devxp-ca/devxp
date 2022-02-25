@@ -19,6 +19,18 @@ export default function ToolManager() {
 	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
 		console.dir(repo_full_name);
+		axios
+			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				headers: {
+					repo: repo_full_name
+				}
+			})
+			.then((response: any) => {
+				console.dir(response.data);
+			})
+			.catch((error: any) => {
+				console.error(error);
+			});
 	};
 
 	const setSelectedToolCardCallback = (tool_name: string) => {
