@@ -35,14 +35,21 @@ export interface BackendError {
 	message?: string;
 }
 
-export default function TerraformOptions(props: {selectedRepo: string}) {
+// NOTE: instanceNameForModify is used when modifying existing instances
+export default function TerraformOptions(props: {
+	selectedRepo: string;
+	instanceNameForModify?: string;
+}) {
+	const isModifyingInstance = Boolean(props.instanceNameForModify);
+
 	//OPTION STATES AND REDUCER
 	const initialOptionState = {
 		providerValue: "",
 		resourceTypeValue: "",
 		instanceNameValue: "",
 		amiValue: "",
-		instanceTypeValue: ""
+		instanceTypeValue: "",
+		numberOfInstancesValue: 1
 	};
 
 	const [optionState, dispatch] = React.useReducer(
@@ -55,7 +62,8 @@ export default function TerraformOptions(props: {selectedRepo: string}) {
 		resourceTypeValue,
 		instanceNameValue,
 		amiValue,
-		instanceTypeValue
+		instanceTypeValue,
+		numberOfInstancesValue
 	} = optionState;
 
 	function optionsReducer(state: any, action: any) {
@@ -84,6 +92,11 @@ export default function TerraformOptions(props: {selectedRepo: string}) {
 				return {
 					...state,
 					instanceTypeValue: action.payload
+				};
+			case "numberOfInstances":
+				return {
+					...state,
+					numberOfInstancesValue: action.payload
 				};
 			default:
 				return state;
@@ -147,29 +160,29 @@ export default function TerraformOptions(props: {selectedRepo: string}) {
 
 	const handleSubmit = () => {
 		setOpenModal(false);
-		/* TODO: get settings from component state? */
-
 		/*
 
-            GOOGLE VERSION
+			GOOGLE VERSION
 
-            const settings = {
-                repo: "devxp-ca/devxp-test-repo",
-                tool: "terraform",
-                settings: {
-                    provider: "google",
-                    project: "devxp-test-project",		//This field is required for Google, not AWS
-                    resources: [{
-                        type: "gce",
-                        id: "my-gce-instance",			//Note with google capital letters are not allowed
-                        disk_image: "ubuntu-2004-focal-v20220204",
-                        machine_type: "f1-micro"
-                    }]
-                }
-            }
+			const settings = {
+				repo: "devxp-ca/devxp-test-repo",
+				tool: "terraform",
+				settings: {
+					provider: "google",
+					project: "devxp-test-project",		//This field is required for Google, not AWS
+					resources: [{
+						type: "gce",
+						id: "my-gce-instance",			//Note with google capital letters are not allowed
+						disk_image: "ubuntu-2004-focal-v20220204",
+						machine_type: "f1-micro"
+					}]
+				}
+			}
 
-        */
+		*/
 
+		/* TODO: Implement modify an instance, pass bool+instance name to backend? Will have to avoid duplicate instance names */
+		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
 		const settings = {
 			repo: props.selectedRepo,
 			tool: "terraform",
@@ -185,7 +198,7 @@ export default function TerraformOptions(props: {selectedRepo: string}) {
 				]
 			}
 		};
-		//Send settings to backend
+		//Sends settings to backend
 		axios
 			.post(
 				`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
@@ -440,24 +453,24 @@ export default function TerraformOptions(props: {selectedRepo: string}) {
 															instance to have:
 														</p>
 														<p>
-															Micro - 1 CPU 1gB
+															Micro - 1 CPU 1GB
 															RAM
 														</p>
 														<p>
-															Small - 1 CPU 2gB
+															Small - 1 CPU 2GB
 															RAM
 														</p>
 														<p>
-															Medium - 2 CPU 4gB
+															Medium - 2 CPU 4GB
 															RAM
 														</p>
 														<p>
-															Large - 2 CPU 8gB
+															Large - 2 CPU 8GB
 															RAM
 														</p>
 														<p>
 															Extra-Large - 4 CPU
-															16gB RAM
+															16GB RAM
 														</p>
 													</div>
 												}
@@ -514,6 +527,58 @@ export default function TerraformOptions(props: {selectedRepo: string}) {
 						</Grid>
 					)
 				}
+				<FormControl>
+					<Grid
+						container
+						direction="row"
+						alignItems="center"
+						sx={{paddingTop: 2}}
+						justifyContent="center">
+						<Grid item>
+							<FormLabel>
+								<Grid container direction="row">
+									Number of Instances
+									<MouseOverPopover
+										icon={
+											<HelpIcon
+												sx={{
+													paddingLeft: 1,
+													paddingRight: 1
+												}}
+											/>
+										}
+										popOverInfo={
+											<div>
+												Allows you to spin up any number
+												of instances with the same
+												settings chosen above
+											</div>
+										}
+									/>
+								</Grid>
+							</FormLabel>
+						</Grid>
+						<Grid item>
+							<TextField
+								id="number-of-instances"
+								name="number-of-instances"
+								label=""
+								type="number"
+								value={numberOfInstancesValue}
+								onChange={(
+									event: React.ChangeEvent<HTMLInputElement>
+								) =>
+									dispatch({
+										type: "numberOfInstances",
+										payload: (
+											event.target as HTMLInputElement
+										).value
+									})
+								}
+							/>
+						</Grid>
+					</Grid>
+				</FormControl>
 			</Grid>
 			<Box textAlign="center" sx={{paddingTop: 3}}>
 				<Button
