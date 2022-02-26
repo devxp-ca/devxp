@@ -4,29 +4,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {lightTheme} from "../style/themes";
 
-const modalStyle = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: 400,
-	bgcolor: "white",
-	boxShadow: 24,
-	zIndex: 100
-};
-
-const titleBoxStyle = {
-	textAlign: "center",
-	bgcolor: lightTheme.palette.primary.main,
-	width: "100%"
-};
-
-const bodyStyle = {
-	width: "100%",
-	padding: 2,
-	boxSizing: "border-box"
-};
-
 interface modalProps {
 	isOpen: boolean;
 	handleClose: () => void;
@@ -42,6 +19,31 @@ export default function GenericModal({
 	bodyText,
 	children
 }: modalProps) {
+	const currentTheme = lightTheme;
+
+	const modalStyle = {
+		position: "absolute",
+		top: "50%",
+		left: "50%",
+		transform: "translate(-50%, -50%)",
+		width: 400,
+		bgcolor: "white",
+		boxShadow: 24,
+		zIndex: 100
+	};
+
+	const titleBoxStyle = {
+		textAlign: "center",
+		bgcolor: currentTheme.palette.primary.main,
+		width: "100%"
+	};
+
+	const bodyStyle = {
+		width: "100%",
+		padding: 2,
+		boxSizing: "border-box"
+	};
+
 	return (
 		<div>
 			<Modal open={isOpen} onClose={handleClose}>

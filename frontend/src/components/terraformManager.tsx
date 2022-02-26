@@ -11,11 +11,13 @@ import Card from "@mui/material/Card";
 import {CardActionArea} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
+import {lightTheme} from "../style/themes";
 
 export default function TerraformManager(props: {
 	selectedRepo: string;
 	backButton: () => void;
 }) {
+	const currentTheme = lightTheme;
 	const defaultCardSize = 250;
 	const [selectedNewInstance, setSelectNewInstance] = React.useState(false);
 
@@ -69,17 +71,39 @@ export default function TerraformManager(props: {
 				{/* New Terraform Instance */}
 				<Grid item>
 					<Card>
-						<CardActionArea onClick={selectedNewInstanceCallback}>
-							{!selectedNewInstance && (
-								<AddIcon
+						{!selectedNewInstance && (
+							<CardActionArea
+								onClick={selectedNewInstanceCallback}
+								sx={{
+									"&:hover": {
+										backgroundColor: `${currentTheme.palette.success.main}50`
+									}
+								}}>
+								<Grid
+									container
+									justifyContent="center"
+									alignItems="center"
 									sx={{
-										width: defaultCardSize,
+										width: defaultCardSize / 2,
 										height: defaultCardSize,
-										opacity: 0.5
-									}}
-								/>
-							)}
-						</CardActionArea>
+										border: `1px solid ${currentTheme.palette.success.main}`,
+										borderRadius: 1
+									}}>
+									<Grid item>
+										<AddIcon
+											sx={{
+												width: 75,
+												height: 75,
+												opacity: 1,
+												color: currentTheme.palette
+													.success.main
+											}}
+										/>
+									</Grid>
+								</Grid>
+							</CardActionArea>
+						)}
+
 						{selectedNewInstance && (
 							<TerraformOptions
 								selectedRepo={props.selectedRepo}
