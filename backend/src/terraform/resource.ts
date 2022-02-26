@@ -1,7 +1,7 @@
 import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
 
-export abstract class Terraform<Resource> implements DatabaseModel<Resource> {
+export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 	id: string;
 	name: string;
 	type: string;
@@ -13,7 +13,7 @@ export abstract class Terraform<Resource> implements DatabaseModel<Resource> {
 	}
 
 	toSchema() {
-		return generateSchema<Resource>(this as unknown as Resource);
+		return generateSchema<Specific>(this as unknown as Specific);
 	}
 	toModel() {
 		return model(this.type, this.toSchema());

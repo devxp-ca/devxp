@@ -1,8 +1,8 @@
 import {jsonRoot} from "./util";
-import {Terraform} from "./resource";
+import {Resource} from "./resource";
 
 export interface IamUser {}
-export class IamUser extends Terraform<IamUser> implements IamUser {
+export class IamUser extends Resource<IamUser> implements IamUser {
 	constructor(id: string) {
 		super(id, "IamUser");
 	}
