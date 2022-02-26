@@ -1,16 +1,11 @@
 import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
-import {jsonRoot} from "./util";
 
-export interface Terraform<Resource> {
+export abstract class Terraform<Resource> implements DatabaseModel<Resource> {
 	id: string;
 	name: string;
 	type: string;
-	toJSON: () => Record<string, any>;
-}
-export abstract class Terraform<Resource>
-	implements Terraform<Resource>, DatabaseModel<Resource>
-{
+
 	constructor(id: string, type: string, name?: string) {
 		this.id = id;
 		this.type = type;
@@ -23,4 +18,6 @@ export abstract class Terraform<Resource>
 	toModel() {
 		return model(this.type, this.toSchema());
 	}
+
+	abstract toJSON(): Record<string, any>;
 }

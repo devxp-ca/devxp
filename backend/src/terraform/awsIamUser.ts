@@ -1,22 +1,11 @@
-import {model} from "mongoose";
-import {DatabaseModel, generateSchema} from "../types/database";
 import {jsonRoot} from "./util";
+import {Terraform} from "./resource";
 
-export interface IamUser {
-	id: string;
-}
-export class IamUser implements IamUser, DatabaseModel<IamUser> {
+export interface IamUser {}
+export class IamUser extends Terraform<IamUser> implements IamUser {
 	constructor(id: string) {
-		this.id = id;
+		super(id, "IamUser");
 	}
-
-	toSchema() {
-		return generateSchema<IamUser>(this);
-	}
-	toModel() {
-		return model("IamUser", this.toSchema());
-	}
-
 	toJSON() {
 		return [
 			jsonRoot("aws_iam_user", this.id, {
