@@ -22,7 +22,7 @@ const DrawerHeader = styled("div")(({theme}) => ({
 const DrawerFooter = styled("div")(({theme}) => ({
 	display: "flex",
 	alignItems: "center",
-	padding: 2,
+	padding: 5,
 	justifyContent: "center"
 }));
 
