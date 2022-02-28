@@ -10,6 +10,12 @@ declare module "@mui/material/styles" {
 			secondary: {
 				main: string;
 			};
+			info: {
+				main: string;
+			};
+			success: {
+				main: string;
+			};
 		};
 	}
 }
@@ -22,6 +28,12 @@ export const lightTheme = createTheme({
 		},
 		secondary: {
 			main: "#3d5afe"
+		},
+		info: {
+			main: "#3d5afe"
+		},
+		success: {
+			main: "#a8e371"
 		}
 	}
 });
@@ -34,6 +46,12 @@ export const darkTheme = createTheme({
 		},
 		secondary: {
 			main: "#85cb6b"
+		},
+		info: {
+			main: "#3d5afe"
+		},
+		success: {
+			main: "#8ee364"
 		}
 	}
 });
