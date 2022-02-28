@@ -36,6 +36,7 @@ export default function PersistentDrawer(props: {
 	repos: GithubRepo[];
 	shareRepo: (repo_full_name: string) => void;
 	repoPages: number;
+	handleChange: (event: React.ChangeEvent<unknown>, page: number) => void;
 }) {
 	const theme = useTheme();
 	const [value, setValue] = React.useState("false");
@@ -89,6 +90,7 @@ export default function PersistentDrawer(props: {
 						count={props.repoPages}
 						size="small"
 						color="primary"
+						onChange={props.handleChange}
 					/>
 				</DrawerFooter>
 			</Drawer>

@@ -15,11 +15,11 @@ export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
 	const [repoPages, setRepoPages] = React.useState<number>(1);
+	const [selectedPage, setSelectedPage] = React.useState<number>(1);
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
 	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
-		console.dir(repo_full_name);
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -41,18 +41,15 @@ export default function ToolManager() {
 		return callback;
 	};
 
-	//this is the same as componentDidMount
+	const handlePageChange = (
+		event: React.ChangeEvent<unknown>,
+		page: number
+	) => {
+		setSelectedPage(page);
+	};
+
+	//on mount
 	React.useEffect(() => {
-		//api call to get repos
-		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
-			.then((response: any) => {
-				setRepoList(response.data.repos);
-			})
-			.catch((error: any) => {
-				/**TODO: Render an error component */
-				console.error(error);
-			});
 		//api call to get number of pages of repos
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PAGES_PATH}`)
@@ -65,6 +62,22 @@ export default function ToolManager() {
 			});
 	}, []);
 
+	//on page change
+	React.useEffect(() => {
+		//api call to get number of pages of repos
+		axios
+			.get(
+				`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}?page=${selectedPage}`
+			)
+			.then((response: any) => {
+				setRepoPages(response.data.lastPageNumber);
+			})
+			.catch((error: any) => {
+				//TODO: Render an error component
+				console.error(error);
+			});
+	}, [selectedPage]);
+
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
@@ -72,6 +85,7 @@ export default function ToolManager() {
 					repos={repoList}
 					shareRepo={setSelectedRepoFromDrawer}
 					repoPages={repoPages}
+					handleChange={handlePageChange}
 				/>
 				<Box
 					style={{
