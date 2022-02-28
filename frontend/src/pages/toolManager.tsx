@@ -14,6 +14,7 @@ import Grid from "@mui/material/Grid";
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+	const [repoPages, setRepoPages] = React.useState<number>(1);
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
 	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
@@ -42,14 +43,24 @@ export default function ToolManager() {
 
 	//this is the same as componentDidMount
 	React.useEffect(() => {
+		//api call to get repos
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
 			.then((response: any) => {
-				console.dir(response.data);
 				setRepoList(response.data.repos);
 			})
 			.catch((error: any) => {
 				/**TODO: Render an error component */
+				console.error(error);
+			});
+		//api call to get number of pages of repos
+		axios
+			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}/repoPages`)
+			.then((response: any) => {
+				setRepoPages(response.data.lastPageNumber);
+			})
+			.catch((error: any) => {
+				//TODO: Render an error component
 				console.error(error);
 			});
 	}, []);
@@ -60,6 +71,7 @@ export default function ToolManager() {
 				<PersistentDrawer
 					repos={repoList}
 					shareRepo={setSelectedRepoFromDrawer}
+					repoPages={repoPages}
 				/>
 				<Box
 					style={{

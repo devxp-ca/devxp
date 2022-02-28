@@ -8,6 +8,7 @@ import {FormControl, RadioGroup, FormControlLabel} from "@mui/material";
 import Radio from "@mui/material/Radio";
 import {lightTheme} from "../style/themes";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import Pagination from "@mui/material/Pagination";
 
 const DrawerHeader = styled("div")(({theme}) => ({
 	display: "flex",
@@ -15,6 +16,13 @@ const DrawerHeader = styled("div")(({theme}) => ({
 	padding: theme.spacing(0, 1),
 	// necessary for content to be below app bar
 	...theme.mixins.toolbar,
+	justifyContent: "center"
+}));
+
+const DrawerFooter = styled("div")(({theme}) => ({
+	display: "flex",
+	alignItems: "center",
+	padding: theme.spacing(0, 1),
 	justifyContent: "center"
 }));
 
@@ -27,6 +35,7 @@ export interface GithubRepo {
 export default function PersistentDrawer(props: {
 	repos: GithubRepo[];
 	shareRepo: (repo_full_name: string) => void;
+	repoPages: number;
 }) {
 	const theme = useTheme();
 	const [value, setValue] = React.useState("false");
@@ -75,6 +84,13 @@ export default function PersistentDrawer(props: {
 						<Divider />
 					</Box>
 				))}
+				<DrawerFooter>
+					<Pagination
+						count={props.repoPages}
+						size="small"
+						color="primary"
+					/>
+				</DrawerFooter>
 			</Drawer>
 		</ThemeProvider>
 	);
