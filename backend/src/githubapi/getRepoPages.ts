@@ -2,8 +2,8 @@ import axios from "axios";
 import {GithubRepo, isGithubRepo} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 
-export default (token: string): Promise<GithubRepo[]> =>
-	new Promise<GithubRepo[]>((resolve, reject) => {
+export default (token: string): Promise<number> =>
+	new Promise<number>((resolve, reject) => {
 		//we want to get the total number of pages of repos
 		//so that in the frontend we can click the page buttons and have the correct number of pages
 		let lastPageNumber = 1;
@@ -29,6 +29,7 @@ export default (token: string): Promise<GithubRepo[]> =>
 						);
 					}
 				}
+				resolve(lastPageNumber);
 				console.dir(lastPageNumber);
 			})
 			.catch(reject);
