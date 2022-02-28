@@ -34,7 +34,7 @@ export default function ToolManager() {
 			});
 		//api call to get number of pages of repos
 		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}/repoPages`)
+			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PAGES_PATH}`)
 			.then((response: any) => {
 				setRepoPages(response.data.lastPageNumber);
 			})
