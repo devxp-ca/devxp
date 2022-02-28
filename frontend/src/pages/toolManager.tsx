@@ -64,7 +64,7 @@ export default function ToolManager() {
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
 			.then((response: any) => {
-				setRepoPages(response.data.lastPageNumber);
+				setRepoList(response.data.repos);
 			})
 			.catch((error: any) => {
 				//TODO: Render an error component
@@ -80,7 +80,7 @@ export default function ToolManager() {
 				`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}?page=${selectedPage}`
 			)
 			.then((response: any) => {
-				setRepoPages(response.data.lastPageNumber);
+				setRepoList(response.data.repos);
 			})
 			.catch((error: any) => {
 				//TODO: Render an error component
