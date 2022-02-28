@@ -22,6 +22,7 @@ export default (token: string): Promise<GithubRepo[]> =>
 					const lastPageRegex = /<(.*)>; rel="last"/;
 					const lastPageMatch = linkHeader.match(lastPageRegex);
 					if (lastPageMatch != null) {
+						console.dir(lastPageMatch);
 						//if there is a match, extract the last page number
 						lastPageNumber = parseInt(
 							lastPageMatch[1].split("=")[1]
