@@ -2,6 +2,7 @@
 import {Router} from "express";
 import {getRepoList} from "../controllers/getRepoList";
 import postSettings from "../controllers/postSettings";
+import {getNumRepoPages} from "../controllers/getRepoPages";
 import {settingsValidator} from "../validators/terraformValidator";
 
 const apiV1Router = Router();
@@ -16,6 +17,9 @@ apiV1Router.get("/", (_req, res) =>
 
 //Repository information
 apiV1Router.get("/repo", getRepoList);
+
+//Number of pages of repos
+apiV1Router.get("/repoPages", getNumRepoPages);
 
 apiV1Router.post("/settings", settingsValidator, postSettings);
 
