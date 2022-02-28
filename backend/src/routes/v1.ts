@@ -1,8 +1,8 @@
 // Imports
 import {Router} from "express";
 import {getRepoList} from "../controllers/getRepoList";
-import postSettings from "../controllers/postSettings";
 import {getNumRepoPages} from "../controllers/getRepoPages";
+import {postSettings, getSettings} from "../controllers/settings";
 import {settingsValidator} from "../validators/terraformValidator";
 
 const apiV1Router = Router();
@@ -22,6 +22,7 @@ apiV1Router.get("/repo", getRepoList);
 apiV1Router.get("/repoPages", getNumRepoPages);
 
 apiV1Router.post("/settings", settingsValidator, postSettings);
+apiV1Router.get("/settings", getSettings);
 
 //Edit terraform settings
 //apiV1Router.patch("/terraform", TODO);
