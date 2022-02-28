@@ -1,5 +1,4 @@
 import axios from "axios";
-import {GithubRepo, isGithubRepo} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 
 export default (token: string): Promise<number> =>
