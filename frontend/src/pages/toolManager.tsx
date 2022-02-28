@@ -60,11 +60,21 @@ export default function ToolManager() {
 				//TODO: Render an error component
 				console.error(error);
 			});
+		//api call to get repos
+		axios
+			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
+			.then((response: any) => {
+				setRepoPages(response.data.lastPageNumber);
+			})
+			.catch((error: any) => {
+				//TODO: Render an error component
+				console.error(error);
+			});
 	}, []);
 
 	//on page change
 	React.useEffect(() => {
-		//api call to get number of pages of repos
+		//api call to get repos per page
 		axios
 			.get(
 				`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}?page=${selectedPage}`
