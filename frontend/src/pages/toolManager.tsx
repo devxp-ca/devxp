@@ -55,7 +55,9 @@ export default function ToolManager() {
 		//api call to get number of pages of repos
 		//this sets the state of repoPages (which is the total number of page buttons to display in the drawer)
 		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PAGES_PATH}`)
+			.get(
+				`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PAGES_PATH}?per_page=20`
+			)
 			.then((response: any) => {
 				setRepoPages(response.data.lastPageNumber);
 			})
