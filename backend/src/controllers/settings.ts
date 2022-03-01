@@ -10,7 +10,14 @@ export const postSettings = (req: Request, res: Response) => {
 			{repo: req.body.repo},
 			{repo: req.body.repo, terraformSettings: req.body.settings},
 			{upsert: true}
-		);
+		)
+			.then(result => {
+				console.log(result);
+			})
+			.catch(err => {
+				internalErrorHandler(req, res)(err);
+			});
+
 		createTerraformSettings(req, res);
 	} else {
 		res.status(404).json(
