@@ -46,6 +46,7 @@ export default function ToolManager() {
 		page: number
 	) => {
 		setSelectedPage(page);
+		console.dir(page);
 	};
 
 	//on mount
