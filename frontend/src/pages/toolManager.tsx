@@ -53,6 +53,7 @@ export default function ToolManager() {
 	//on mount
 	React.useEffect(() => {
 		//api call to get number of pages of repos
+		//this sets the state of repoPages (which is the total number of page buttons to display in the drawer)
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PAGES_PATH}`)
 			.then((response: any) => {
@@ -64,7 +65,7 @@ export default function ToolManager() {
 			});
 		//api call to get repos
 		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
+			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}?per_page=20`)
 			.then((response: any) => {
 				setRepoList(response.data.repos);
 			})
@@ -79,7 +80,7 @@ export default function ToolManager() {
 		//api call to get repos per page
 		axios
 			.get(
-				`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}?page=${selectedPage}`
+				`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}?per_page=20&page=${selectedPage}`
 			)
 			.then((response: any) => {
 				setRepoList(response.data.repos);

@@ -88,7 +88,7 @@ export default function PersistentDrawer(props: {
 				))}
 				<DrawerFooter>
 					<Pagination
-						count={3} //{props.repoPages}
+						count={props.repoPages}
 						page={props.currentPage}
 						size="small"
 						color="primary"
