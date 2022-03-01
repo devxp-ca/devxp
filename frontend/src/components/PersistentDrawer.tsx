@@ -36,6 +36,7 @@ export default function PersistentDrawer(props: {
 	repos: GithubRepo[];
 	shareRepo: (repo_full_name: string) => void;
 	repoPages: number;
+	currentPage: number;
 	handleChange: (event: React.ChangeEvent<unknown>, page: number) => void;
 }) {
 	const theme = useTheme();
@@ -87,7 +88,8 @@ export default function PersistentDrawer(props: {
 				))}
 				<DrawerFooter>
 					<Pagination
-						count={props.repoPages}
+						count={3} //{props.repoPages}
+						page={props.currentPage}
 						size="small"
 						color="primary"
 						onChange={props.handleChange}

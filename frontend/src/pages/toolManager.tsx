@@ -14,8 +14,10 @@ import Grid from "@mui/material/Grid";
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+
 	const [repoPages, setRepoPages] = React.useState<number>(1);
 	const [selectedPage, setSelectedPage] = React.useState<number>(1);
+
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
 	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
@@ -46,7 +48,6 @@ export default function ToolManager() {
 		page: number
 	) => {
 		setSelectedPage(page);
-		console.dir(page);
 	};
 
 	//on mount
@@ -96,6 +97,7 @@ export default function ToolManager() {
 					repos={repoList}
 					shareRepo={setSelectedRepoFromDrawer}
 					repoPages={repoPages}
+					currentPage={selectedPage}
 					handleChange={handlePageChange}
 				/>
 				<Box
