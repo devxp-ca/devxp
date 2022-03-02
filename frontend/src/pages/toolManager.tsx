@@ -52,17 +52,6 @@ export default function ToolManager() {
 
 	//on mount
 	React.useEffect(() => {
-		//api call to get number of pages of repos
-		//this sets the state of repoPages (which is the total number of page buttons to display in the drawer)
-		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PAGES_PATH}`)
-			.then((response: any) => {
-				setRepoPages(response.data.lastPageNumber);
-			})
-			.catch((error: any) => {
-				//TODO: Render an error component
-				console.error(error);
-			});
 		//api call to get repos
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
@@ -75,28 +64,12 @@ export default function ToolManager() {
 			});
 	}, []);
 
-	//on page change
-	React.useEffect(() => {
-		//api call to get repos per page
-		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
-			.then((response: any) => {
-				setRepoList(response.data.repos);
-			})
-			.catch((error: any) => {
-				//TODO: Render an error component
-				console.error(error);
-			});
-	}, [selectedPage]);
-
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
 				<PersistentDrawer
 					repos={repoList}
 					shareRepo={setSelectedRepoFromDrawer}
-					repoPages={repoPages}
-					currentPage={selectedPage}
 					handleChange={handlePageChange}
 				/>
 				<Box

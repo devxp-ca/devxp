@@ -19,13 +19,6 @@ const DrawerHeader = styled("div")(({theme}) => ({
 	justifyContent: "center"
 }));
 
-const DrawerFooter = styled("div")(({theme}) => ({
-	display: "flex",
-	alignItems: "center",
-	padding: 5,
-	justifyContent: "center"
-}));
-
 export interface GithubRepo {
 	name: string;
 	full_name: string;
@@ -35,8 +28,6 @@ export interface GithubRepo {
 export default function PersistentDrawer(props: {
 	repos: GithubRepo[];
 	shareRepo: (repo_full_name: string) => void;
-	repoPages: number;
-	currentPage: number;
 	handleChange: (event: React.ChangeEvent<unknown>, page: number) => void;
 }) {
 	const theme = useTheme();
@@ -86,15 +77,6 @@ export default function PersistentDrawer(props: {
 						<Divider />
 					</Box>
 				))}
-				<DrawerFooter>
-					<Pagination
-						count={props.repoPages}
-						page={props.currentPage}
-						size="small"
-						color="primary"
-						onChange={props.handleChange}
-					/>
-				</DrawerFooter>
 			</Drawer>
 		</ThemeProvider>
 	);
