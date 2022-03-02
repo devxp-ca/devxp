@@ -2,7 +2,6 @@ import * as React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Box from "@mui/material/Box";
-import PersistentDrawer from "../components/PersistentDrawer";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
 import axios from "axios";
@@ -10,17 +9,20 @@ import {CONFIG} from "../config";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
 import Grid from "@mui/material/Grid";
+import SelectRepoModal from "../components/SelectRepoModal";
+import Button from "@mui/material/Button";
+import {Autocomplete} from "@mui/material";
+import TextField from "@mui/material/TextField";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-
-	const [repoPages, setRepoPages] = React.useState<number>(1);
-	const [selectedPage, setSelectedPage] = React.useState<number>(1);
+	const [isRepoSelected, setIsRepoSelected] = React.useState(false);
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
-	const setSelectedRepoFromDrawer = (repo_full_name: string) => {
+	const setSelectedRepoFromModal = (repo_full_name: string) => {
+		console.dir(repo_full_name);
 		setSelectedRepo(repo_full_name);
 		axios
 			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
@@ -43,14 +45,7 @@ export default function ToolManager() {
 		return callback;
 	};
 
-	const handlePageChange = (
-		event: React.ChangeEvent<unknown>,
-		page: number
-	) => {
-		setSelectedPage(page);
-	};
-
-	//on mount
+	//on mount, get the list of repos
 	React.useEffect(() => {
 		//api call to get repos
 		axios
@@ -64,14 +59,18 @@ export default function ToolManager() {
 			});
 	}, []);
 
+	const [openModal, setOpenModal] = React.useState(true);
+
+	const handleCloseModal = (event: any, reason: any) => {
+		if (reason !== "backdropClick") {
+			setOpenModal(false);
+			setIsRepoSelected(true);
+		}
+	};
+
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
-				<PersistentDrawer
-					repos={repoList}
-					shareRepo={setSelectedRepoFromDrawer}
-					handleChange={handlePageChange}
-				/>
 				<Box
 					style={{
 						width: "100%",
@@ -80,6 +79,49 @@ export default function ToolManager() {
 					}}>
 					<Grid container direction="column">
 						<Navbar />
+						{!isRepoSelected && (
+							<SelectRepoModal
+								isOpen={openModal}
+								handleClose={handleCloseModal}
+								title="Select a Repo"
+								bodyText="In order to continue, please select a repo"
+								children={[
+									<Autocomplete
+										sx={{padding: "3px"}}
+										id="repo-select"
+										options={repoList}
+										getOptionLabel={(option: any) =>
+											option.full_name
+										}
+										style={{width: 300}}
+										renderInput={(params: any) => (
+											<TextField
+												{...params}
+												label="Repository"
+												variant="outlined"
+											/>
+										)}
+										onChange={(event: any, value: any) => {
+											setSelectedRepoFromModal(
+												value.full_name
+											);
+										}}
+									/>,
+									<Button
+										variant="contained"
+										color="primary"
+										onClick={() => {
+											setOpenModal(false);
+											setIsRepoSelected(true);
+											setSelectedRepoFromModal(
+												selectedRepo
+											);
+										}}>
+										Submit
+									</Button>
+								]}
+							/>
+						)}
 						{selectedTool == "none" && (
 							<Grid
 								container
