@@ -1,6 +1,7 @@
 import axios from "axios";
 import {GithubCommit, isGithubCommit} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
+import {arr} from "../util";
 
 export default (
 	token: string,
@@ -15,9 +16,7 @@ export default (
 				`${GITHUB_BASE_URL}/repos/${repo}/git/commits`,
 				{
 					message,
-					parents: Array.isArray(parentsSha)
-						? parentsSha
-						: [parentsSha],
+					parents: arr(parentsSha),
 					tree: treeSha
 				},
 				createGithubHeader(token)

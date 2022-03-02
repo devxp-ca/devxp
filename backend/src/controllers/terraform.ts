@@ -36,13 +36,13 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 	const resources = resourcesRaw.map(resource => {
 		if (resource.type === "ec2") {
 			const ec2: Ec2 = resource as Ec2;
-			return new Ec2(ec2.ami, ec2.instance_type, ec2.id);
+			return new Ec2(ec2.ami, ec2.instance_type, ec2.id, ec2.autoIam);
 		} else if (resource.type === "gce") {
 			const gce: Gce = resource as Gce;
 			return new Gce(project, gce.id, gce.machine_type, gce.disk_image);
 		} else if (resource.type === "s3") {
 			const s3: S3 = resource as S3;
-			return new S3(s3.id, s3.acl);
+			return new S3(s3.id, s3.autoIam, s3.acl);
 		} else {
 			flag = true;
 		}

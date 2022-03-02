@@ -1,25 +1,21 @@
-import {model} from "mongoose";
-import {DatabaseModel, generateSchema} from "../types/database";
 import {ec2InstanceType, amiType} from "../types/terraform";
 import {jsonRoot} from "./util";
+import {AwsResource} from "./resource";
 
 export interface Ec2 {
 	ami: amiType;
 	instance_type: ec2InstanceType;
-	id: string;
 }
-export class Ec2 implements Ec2, DatabaseModel<Ec2> {
-	constructor(ami: amiType, instance_type: ec2InstanceType, id: string) {
+export class Ec2 extends AwsResource<Ec2> implements Ec2 {
+	constructor(
+		ami: amiType,
+		instance_type: ec2InstanceType,
+		id: string,
+		autoIam?: boolean
+	) {
+		super(id, "Ec2", autoIam);
 		this.ami = ami;
 		this.instance_type = instance_type;
-		this.id = id;
-	}
-
-	toSchema() {
-		return generateSchema<Ec2>(this);
-	}
-	toModel() {
-		return model("Ec2", this.toSchema());
 	}
 
 	toJSON() {
@@ -27,5 +23,22 @@ export class Ec2 implements Ec2, DatabaseModel<Ec2> {
 			ami: this.ami,
 			instance_type: this.instance_type
 		});
+	}
+
+	getPolicyDocument() {
+		return [
+			AwsResource.policyStatement(
+				[
+					"ec2:RunInstances",
+					"ec2:AssociateIamInstanceProfile",
+					"ec2:ReplaceIamInstanceProfileAssociation"
+				],
+				"arn:aws:ec2:::*"
+			),
+			AwsResource.policyStatement(
+				"iam:PassRole",
+				`\${aws_instance.${this.id}.arn}`
+			)
+		];
 	}
 }

@@ -54,6 +54,12 @@ export const settingsValidator = [
 		.isLength({min: 1})
 		.matches(resourceTypes)
 		.withMessage("Invalid resource type"),
+	body("settings.resources.*.autoIam")
+		.if(body("tool").equals("terraform"))
+		.optional()
+		.isBoolean()
+		.default(false)
+		.withMessage("Invalid autoIam boolean"),
 	body("settings.resources.*.id")
 		.if(body("tool").equals("terraform"))
 		.optional()

@@ -1,23 +1,14 @@
-import {model} from "mongoose";
-import {DatabaseModel, generateSchema} from "../types/database";
 import {acl} from "../types/terraform";
 import {jsonRoot} from "./util";
+import {AwsResource} from "./resource";
 
 export interface S3 {
 	acl: acl;
-	id: string;
 }
-export class S3 implements S3, DatabaseModel<S3> {
-	constructor(id: string, acl: acl = "private") {
-		this.id = id;
-		this.acl = acl;
-	}
-
-	toSchema() {
-		return generateSchema<S3>(this);
-	}
-	toModel() {
-		return model("S3", this.toSchema());
+export class S3 extends AwsResource<S3> implements S3 {
+	constructor(id: string, autoIam?: boolean, acl?: acl) {
+		super(id, "S3", autoIam);
+		this.acl = acl ?? "private";
 	}
 
 	toJSON() {
@@ -30,5 +21,18 @@ export class S3 implements S3, DatabaseModel<S3> {
 				}
 			]
 		});
+	}
+
+	getPolicyDocument() {
+		return [
+			AwsResource.policyStatement(
+				"s3:ListAllMyBuckets",
+				"arn:aws:s3:::*"
+			),
+			AwsResource.policyStatement(
+				"s3:*",
+				`\${aws_s3_bucket.${this.id}.arn}`
+			)
+		];
 	}
 }
