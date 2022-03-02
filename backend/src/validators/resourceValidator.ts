@@ -12,6 +12,22 @@ const hasAllKeys = (obj: any, keys: string[]) => {
 	return retVal;
 };
 
+export const uniquenessValidator: CustomValidator = (resources: any) => {
+	const hash: Record<string, boolean> = {};
+	let flag = true;
+	if (Array.isArray(resources)) {
+		resources.forEach(resource => {
+			if ("id" in resource) {
+				if (resource.id in hash) {
+					flag = false;
+				}
+				hash[resource.id] = true;
+			}
+		});
+	}
+	return flag;
+};
+
 const resourceValidator: CustomValidator = (resource: any) => {
 	if (resource.type === "ec2") {
 		if (!hasAllKeys(resource, ["ami", "instance_type", "id"])) {
