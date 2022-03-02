@@ -24,6 +24,9 @@ export class IamUser extends Resource<IamUser> implements IamUser {
 						policy_arn: `\${aws_iam_policy.${policy}.arn}`
 					}
 				);
+			}),
+			jsonRoot("aws_iam_access_key", `${this.id}_access_key`, {
+				user: `\${aws_iam_user.${this.id}.name}`
 			})
 		];
 	}
