@@ -8,7 +8,8 @@ export default (token: string): Promise<GithubRepo[]> =>
 		let repoList: GithubRepo[] = [];
 		let pageNum = 1;
 
-		while (true) {
+		let flag = true;
+		while (flag) {
 			try {
 				//api call
 				const resp = await axios.get(
@@ -40,10 +41,12 @@ export default (token: string): Promise<GithubRepo[]> =>
 					) {
 						repoList = [...repoList, ...repos];
 					} else {
+						flag = false;
 						reject(new Error("Invalid response from github"));
 						break;
 					}
 				} else {
+					flag = false;
 					reject(new Error("Invalid response from github"));
 					break;
 				}
@@ -51,6 +54,7 @@ export default (token: string): Promise<GithubRepo[]> =>
 				//find out if there is a next page
 				//get the link header
 				const linkHeader = resp.headers.link;
+
 				//get the last page number
 				if (linkHeader != null) {
 					//if there is a link header, extract the last page number
@@ -59,10 +63,17 @@ export default (token: string): Promise<GithubRepo[]> =>
 					if (nextPageMatch != null) {
 						pageNum += 1;
 					} else {
+						flag = false;
 						resolve(repoList);
+						break;
 					}
+				} else {
+					flag = false;
+					resolve(repoList);
+					break;
 				}
 			} catch (err) {
+				flag = false;
 				reject(err);
 				break;
 			}
