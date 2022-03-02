@@ -10,11 +10,16 @@ export class IamUser extends Resource<IamUser> implements IamUser {
 		super(id, "IamUser");
 		this.policy = arr(policy);
 	}
+
+	//Returns an array of resource blocks
 	toJSON() {
 		return [
+			//The iam user block itself
 			jsonRoot("aws_iam_user", this.id, {
 				name: this.id
 			}),
+
+			//The attachment policy resource blocks
 			...this.policy.map((policy, i) => {
 				return jsonRoot(
 					"aws_iam_user_policy_attachment",
@@ -25,6 +30,8 @@ export class IamUser extends Resource<IamUser> implements IamUser {
 					}
 				);
 			}),
+
+			//The programmatic access key resource block
 			jsonRoot("aws_iam_access_key", `${this.id}_access_key`, {
 				user: `\${aws_iam_user.${this.id}.name}`
 			})
