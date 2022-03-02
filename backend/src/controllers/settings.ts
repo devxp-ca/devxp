@@ -32,8 +32,33 @@ export const getSettings = (req: Request, res: Response) => {
 		(err: Error, settings: any) => {
 			if (err) {
 				internalErrorHandler(req, res)(err);
+			} else if (!settings) {
+				res.status(404).json(
+					new NotFoundError(
+						String(req.headers.repo),
+						req.originalUrl
+					).toResponse()
+				);
 			} else {
-				res.json(settings);
+				if (
+					"terraformSettings" in settings &&
+					"resources" in settings.terraformSettings
+				) {
+					const json = settings.terraformSettings.toJSON();
+					delete json._id;
+					json.resources = json.resources.map((resource: any) => {
+						delete resource._id;
+						return resource;
+					});
+					res.json({
+						settings: json
+					});
+				} else {
+					internalErrorHandler(
+						req,
+						res
+					)(new Error("Corrupted database entry"));
+				}
 			}
 		}
 	);
