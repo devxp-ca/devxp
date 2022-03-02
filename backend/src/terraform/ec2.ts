@@ -18,6 +18,7 @@ export class Ec2 extends AwsResource<Ec2> implements Ec2 {
 		this.instance_type = instance_type;
 	}
 
+	//Returns a resource block
 	toJSON() {
 		return jsonRoot("aws_instance", this.id, {
 			ami: this.ami,
@@ -25,6 +26,9 @@ export class Ec2 extends AwsResource<Ec2> implements Ec2 {
 		});
 	}
 
+	//An array of policy statements for IAM
+	//These need to be researched from
+	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	getPolicyDocument() {
 		return [
 			AwsResource.policyStatement(

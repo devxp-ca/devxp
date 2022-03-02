@@ -11,6 +11,7 @@ export class S3 extends AwsResource<S3> implements S3 {
 		this.acl = acl ?? "private";
 	}
 
+	//Returns a resource block
 	toJSON() {
 		return jsonRoot("aws_s3_bucket", this.id, {
 			acl: this.acl,
@@ -23,6 +24,9 @@ export class S3 extends AwsResource<S3> implements S3 {
 		});
 	}
 
+	//An array of policy statements for IAM
+	//These need to be researched from
+	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	getPolicyDocument() {
 		return [
 			AwsResource.policyStatement(

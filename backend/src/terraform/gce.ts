@@ -29,8 +29,10 @@ export class Gce extends Resource<Gce> implements Gce {
 		this.disk_image = disk_image;
 	}
 
+	//Returns an array of resource blocks
 	toJSON() {
 		return [
+			//The compute instance itself
 			jsonRoot("google_compute_instance", this.id, {
 				name: this.id,
 				machine_type: this.machine_type,
@@ -45,6 +47,7 @@ export class Gce extends Resource<Gce> implements Gce {
 				},
 				project: this.project
 			}),
+			//The resource block calling for google cloud to enable the compute service
 			jsonRoot("google_project_service", `${this.id}-service`, {
 				disable_on_destroy: false,
 				service: "compute.googleapis.com"

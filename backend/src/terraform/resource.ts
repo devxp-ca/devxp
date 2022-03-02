@@ -28,13 +28,19 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 	abstract toJSON(): Record<string, any>;
 }
 
+//Inherits from Resource
+//Adds support for automatic AWS IAM generation
+//TODO: Add a GCP version of this class
 export abstract class AwsResource<Specific> extends Resource<Specific> {
 	constructor(id: string, type: string, autoIam = false, name?: string) {
 		super(id, type, autoIam, name);
 		this.allowsIam = true;
 	}
 
+	//Must be implemented by children
 	abstract getPolicyDocument(): PolicyStatement[];
+
+	//Helper method for generating policy statements
 	static policyStatement(
 		actions: string | string[],
 		resources: string | string[]

@@ -1,6 +1,9 @@
 import {body, header} from "express-validator";
 import {validationErrorHandler} from "../types/errorHandler";
-import resourceValidator, {resourceTypes} from "./resourceValidator";
+import resourceValidator, {
+	resourceTypes,
+	uniquenessValidator
+} from "./resourceValidator";
 
 export const settingsValidator = [
 	body("repo")
@@ -42,7 +45,9 @@ export const settingsValidator = [
 		.if(body("tool").equals("terraform"))
 		.optional()
 		.isArray()
-		.default([]),
+		.default([])
+		.custom(uniquenessValidator)
+		.withMessage("Resource IDs must be unique"),
 	body("settings.resources.*.*")
 		.if(body("tool").equals("terraform"))
 		.trim()
