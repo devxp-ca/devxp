@@ -7,7 +7,10 @@ export default (token: string): Promise<GithubRepo[]> =>
 	new Promise<GithubRepo[]>((resolve, reject) => {
 		//api call
 		axios
-			.get(`${GITHUB_BASE_URL}/user/repos`, createGithubHeader(token))
+			.get(
+				`${GITHUB_BASE_URL}/user/repos?per_page=20`,
+				createGithubHeader(token)
+			)
 			.then(resp => {
 				if (Array.isArray(resp.data)) {
 					//Extract relavent info

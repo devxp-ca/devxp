@@ -7,7 +7,10 @@ export default (token: string): Promise<number> =>
 		//so that in the frontend we can click the page buttons and have the correct number of pages
 		let lastPageNumber = 1;
 		axios
-			.get(`${GITHUB_BASE_URL}/user/repos`, createGithubHeader(token)) //get the first page of repos
+			.get(
+				`${GITHUB_BASE_URL}/user/repos?per_page=20`,
+				createGithubHeader(token)
+			) //get the first page of repos
 			.then(resp => {
 				//check resp.headers.link for rel="last"
 				//once we have the link, extract the page number using a regex
