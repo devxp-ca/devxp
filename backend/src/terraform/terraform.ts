@@ -10,6 +10,7 @@ import {NamedGoogleBackend} from "./googleBackend";
 import {GoogleProvider} from "./googleProvider";
 
 import {namedDestructure} from "./util";
+import {arr} from "../util";
 
 export const terraformBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
@@ -37,8 +38,8 @@ export const rootBlock = (
 ) => {
 	return {
 		terraform: terraformBlock(providers, backend),
-		provider: (Array.isArray(providers) ? providers : [providers]).map(
-			provider => (provider as AwsProvider | GoogleProvider).toJSON()
+		provider: arr(providers).map(provider =>
+			(provider as AwsProvider | GoogleProvider).toJSON()
 		),
 		resource: [
 			(backend as NamedAwsBackend | NamedGoogleBackend).toResource(),

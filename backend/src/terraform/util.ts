@@ -1,4 +1,5 @@
 import {named, providerName} from "../types/terraform";
+import {arr} from "../util";
 
 export const removeName = <Base>(namedBase: named<Base, any> | Base): Base => {
 	if (!("name" in namedBase)) {
@@ -16,7 +17,7 @@ export const namedDestructure = <Base>(
 		aws?: Base;
 		google?: Base;
 	} = {};
-	(Array.isArray(namedBase) ? namedBase : [namedBase]).forEach(base => {
+	arr(namedBase).forEach(base => {
 		destructuredBase[base.name] = filter(removeName<Base>(base));
 	});
 	return destructuredBase;
@@ -31,7 +32,11 @@ export const generateId = (length: number) => {
 	return id;
 };
 
-export const jsonRoot = (name: string, id: string, content: object) => {
+export const jsonRoot = (
+	name: string,
+	id: string,
+	content: object | object[]
+) => {
 	const json: Record<string, any> = {};
 	const internal: Record<string, any> = {};
 	internal[id] = [content];

@@ -1,6 +1,7 @@
 import axios from "axios";
 import {GithubTree, GithubTreeNode, isGithubTree} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
+import {arr} from "../util";
 
 export default (
 	token: string,
@@ -14,7 +15,7 @@ export default (
 				`${GITHUB_BASE_URL}/repos/${repo}/git/trees`,
 				{
 					base_tree: treeSha,
-					tree: Array.isArray(tree) ? tree : [tree]
+					tree: arr(tree)
 				},
 				createGithubHeader(token)
 			)
