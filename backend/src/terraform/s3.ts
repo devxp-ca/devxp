@@ -6,9 +6,9 @@ export interface S3 {
 	acl: acl;
 }
 export class S3 extends AwsResource<S3> implements S3 {
-	constructor(id: string, acl: acl = "private") {
-		super(id, "S3");
-		this.acl = acl;
+	constructor(id: string, autoIam?: boolean, acl?: acl) {
+		super(id, "S3", autoIam);
+		this.acl = acl ?? "private";
 	}
 
 	toJSON() {

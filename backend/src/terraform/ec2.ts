@@ -7,8 +7,13 @@ export interface Ec2 {
 	instance_type: ec2InstanceType;
 }
 export class Ec2 extends AwsResource<Ec2> implements Ec2 {
-	constructor(ami: amiType, instance_type: ec2InstanceType, id: string) {
-		super(id, "Ec2");
+	constructor(
+		ami: amiType,
+		instance_type: ec2InstanceType,
+		id: string,
+		autoIam?: boolean
+	) {
+		super(id, "Ec2", autoIam);
 		this.ami = ami;
 		this.instance_type = instance_type;
 	}

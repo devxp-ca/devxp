@@ -8,11 +8,14 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 	id: string;
 	name: string;
 	type: string;
+	autoIam: boolean;
+	allowsIam?: boolean;
 
-	constructor(id: string, type: string, name?: string) {
+	constructor(id: string, type: string, autoIam = false, name?: string) {
 		this.id = id;
 		this.type = type;
 		this.name = name ?? id;
+		this.autoIam = autoIam;
 	}
 
 	toSchema() {
@@ -26,6 +29,11 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 }
 
 export abstract class AwsResource<Specific> extends Resource<Specific> {
+	constructor(id: string, type: string, autoIam = false, name?: string) {
+		super(id, type, autoIam, name);
+		this.allowsIam = true;
+	}
+
 	abstract getPolicyDocument(): PolicyStatement[];
 	static policyStatement(
 		actions: string | string[],
@@ -40,18 +48,10 @@ export abstract class AwsResource<Specific> extends Resource<Specific> {
 
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	toPolicyDocument(statement?: PolicyStatement[]) {
-		return {
-			data: [
-				jsonRoot(
-					"aws_iam_policy_document",
-					`${this.id}_policy_document`,
-					[
-						{
-							statement: statement ?? this.getPolicyDocument()
-						}
-					]
-				)
-			]
-		};
+		return [
+			jsonRoot("aws_iam_policy_document", `${this.id}_policy_document`, {
+				statement: statement ?? this.getPolicyDocument()
+			})
+		];
 	}
 }
