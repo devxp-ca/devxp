@@ -3,6 +3,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {lightTheme} from "../style/themes";
+import Grid from "@mui/material/Grid";
 
 interface modalProps {
 	isOpen: boolean;
@@ -56,10 +57,12 @@ export default function SelectRepoModal({
 							{title}
 						</Typography>
 					</Box>
-					<Box sx={bodyStyle}>
-						<Typography sx={{mt: 2}}>{bodyText}</Typography>
+					<Grid container direction="column" sx={bodyStyle}>
+						<Typography sx={{m: 2, justifyContent: "center"}}>
+							{bodyText}
+						</Typography>
 						{children}
-					</Box>
+					</Grid>
 				</Box>
 			</Modal>
 		</div>

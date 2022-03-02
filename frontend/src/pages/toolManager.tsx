@@ -84,7 +84,7 @@ export default function ToolManager() {
 								isOpen={openModal}
 								handleClose={handleCloseModal}
 								title="Select a Repo"
-								bodyText="In order to continue, please select a repo"
+								bodyText="In order to continue, please select a repository"
 								children={[
 									<Autocomplete
 										sx={{padding: "3px"}}
@@ -93,7 +93,6 @@ export default function ToolManager() {
 										getOptionLabel={(option: any) =>
 											option.full_name
 										}
-										style={{width: 300}}
 										renderInput={(params: any) => (
 											<TextField
 												{...params}
