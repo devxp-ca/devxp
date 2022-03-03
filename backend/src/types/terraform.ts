@@ -9,7 +9,6 @@ import {S3} from "../terraform/s3";
 import {DatabaseModel, generateSchemaInternals} from "./database";
 import {arr} from "../util";
 import {IamUser} from "../terraform/awsIamUser";
-import {Resource} from "../terraform/resource";
 import {GlacierVault} from "../terraform/glacierVault";
 
 // ---------------------------------Variable---------------------------------- //

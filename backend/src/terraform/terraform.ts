@@ -12,7 +12,7 @@ import {GoogleProvider} from "./googleProvider";
 import {namedDestructure} from "./util";
 import {arr} from "../util";
 import {IamUser} from "./awsIamUser";
-import {ResourceWithIam, Resource} from "./resource";
+import {ResourceWithIam} from "./resource";
 
 export const terraformBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,

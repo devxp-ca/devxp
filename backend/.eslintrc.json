@@ -15,7 +15,8 @@
         "prettier/prettier": 1,
         "@typescript-eslint/no-empty-interface": "off",
         "no-async-promise-executor": "off",
-        "no-constant-condition": "off"
+        "no-constant-condition": "off",
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "globals": {
         "_": "readonly"

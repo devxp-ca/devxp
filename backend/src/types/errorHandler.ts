@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {InternalError, NotFoundError, ValidationError} from "../types/error";
+import {InternalError, ValidationError} from "../types/error";
 import {validationResult} from "express-validator";
 
 export type ErrorHandler = (
