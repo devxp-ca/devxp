@@ -14,8 +14,10 @@ import TerraformOptions, {
 import Grid from "@mui/material/Grid";
 import SelectRepoModal from "../components/SelectRepoModal";
 import Button from "@mui/material/Button";
-import {Autocomplete} from "@mui/material";
+import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
+import MouseOverPopover from "../components/MouseOverPopover";
+import HelpIcon from "@mui/icons-material/Help";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
@@ -27,21 +29,29 @@ export default function ToolManager() {
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
 	const setSelectedRepoFromModal = (repo_full_name: string) => {
-		console.dir(repo_full_name);
-		setSelectedRepo(repo_full_name);
-		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
-				headers: {
-					repo: repo_full_name
-				}
-			})
-			.then((response: any) => {
-				setSelectedRepoData(response.data);
-				console.dir(response.data);
-			})
-			.catch((error: any) => {
-				console.error(error);
-			});
+		// If the selected repo is the empty string, then we don't have a repo selected
+		// and we should not set the selected repo, we should also ensure the modal stays open
+		if (repo_full_name === "") {
+			setIsRepoSelected(false);
+			setOpenModal(true);
+		} else {
+			// Otherwise, we have a repo selected and we should set the selected repo
+			console.dir(repo_full_name);
+			setSelectedRepo(repo_full_name);
+			axios
+				.get(`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+					headers: {
+						repo: repo_full_name
+					}
+				})
+				.then((response: any) => {
+					setSelectedRepoData(response.data);
+					console.dir(response.data);
+				})
+				.catch((error: any) => {
+					console.error(error);
+				});
+		}
 	};
 
 	const setSelectedToolCardCallback = (tool_name: string) => {
@@ -85,6 +95,31 @@ export default function ToolManager() {
 					}}>
 					<Grid container direction="column">
 						<Navbar />
+						<Grid
+							container
+							direction="row"
+							justifyContent="space-between"
+							columns={2}
+							sx={{mt: 2, mb: -6}}>
+							<Grid item>
+								<Typography variant="h5">
+									Current Repo:{" "}
+									{isRepoSelected ? selectedRepo : "None"}
+								</Typography>
+							</Grid>
+							<Grid item>
+								<Button
+									sx={{ml: 2, mb: 2}}
+									variant="contained"
+									color="primary"
+									onClick={() => {
+										setOpenModal(true);
+										setIsRepoSelected(false);
+									}}>
+									Change Repository
+								</Button>
+							</Grid>
+						</Grid>
 						{!isRepoSelected && (
 							<SelectRepoModal
 								isOpen={openModal}
