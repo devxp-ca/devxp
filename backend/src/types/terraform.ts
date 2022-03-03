@@ -9,7 +9,7 @@ import {S3} from "../terraform/s3";
 import {DatabaseModel, generateSchemaInternals} from "./database";
 import {arr} from "../util";
 import {IamUser} from "../terraform/awsIamUser";
-import {Resource} from "../terraform/resource";
+import {GlacierVault} from "../terraform/glacierVault";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -160,7 +160,7 @@ export type acl = "private" | "public-read" | "public-read-write";
 
 // ---------------------------------MISC------------------------------------- //
 
-export type TerraformResource = Ec2 | Gce | S3 | IamUser;
+export type TerraformResource = Ec2 | Gce | S3 | IamUser | GlacierVault;
 
 export interface PolicyStatement {
 	actions: string[];

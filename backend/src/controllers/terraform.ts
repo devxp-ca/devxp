@@ -11,6 +11,7 @@ import {NamedAwsBackend} from "../terraform/awsBackend";
 import {AwsProvider} from "../terraform/awsProvider";
 import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
+import {GlacierVault} from "../terraform/glacierVault";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
 import {S3} from "../terraform/s3";
@@ -26,7 +27,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		provider === "google" ? (req.body.settings?.project as string) : "";
 
 	const resourcesRaw = req.body.settings?.resources as (TerraformResource & {
-		type: "ec2" | "gce" | "s3";
+		type: "ec2" | "gce" | "s3" | "glacierVault";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -42,7 +43,10 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			return new Gce(project, gce.id, gce.machine_type, gce.disk_image);
 		} else if (resource.type === "s3") {
 			const s3: S3 = resource as S3;
-			return new S3(s3.id, s3.autoIam, s3.acl);
+			return new S3(s3.id, s3.autoIam);
+		} else if (resource.type === "glacierVault") {
+			const glacierVault: GlacierVault = resource as GlacierVault;
+			return new GlacierVault(glacierVault.id, glacierVault.autoIam);
 		} else {
 			flag = true;
 		}

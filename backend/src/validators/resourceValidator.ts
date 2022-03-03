@@ -68,6 +68,13 @@ const resourceValidator: CustomValidator = (resource: any) => {
 		if (!/^[a-z][-a-z0-9]*[a-z0-9]$/.test(resource.id)) {
 			return false;
 		}
+	} else if (resource.type === "glacierVault") {
+		if (!hasAllKeys(resource, ["id"])) {
+			return false;
+		}
+		if (!/^[a-z][-a-z0-9]*[a-z0-9]$/.test(resource.id)) {
+			return false;
+		}
 	}
 
 	return true;

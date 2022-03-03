@@ -31,14 +31,14 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 //Inherits from Resource
 //Adds support for automatic AWS IAM generation
 //TODO: Add a GCP version of this class
-export abstract class AwsResource<Specific> extends Resource<Specific> {
+export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 	constructor(id: string, type: string, autoIam = false, name?: string) {
 		super(id, type, autoIam, name);
 		this.allowsIam = true;
 	}
 
 	//Must be implemented by children
-	abstract getPolicyDocument(): PolicyStatement[];
+	abstract getPolicyDocument(): PolicyStatement[] | PolicyStatement;
 
 	//Helper method for generating policy statements
 	static policyStatement(
@@ -55,9 +55,13 @@ export abstract class AwsResource<Specific> extends Resource<Specific> {
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	toPolicyDocument(statement?: PolicyStatement[]) {
 		return [
-			jsonRoot("aws_iam_policy_document", `${this.id}_policy_document`, {
-				statement: statement ?? this.getPolicyDocument()
-			})
+			jsonRoot(
+				"aws_iam_policy_document",
+				`${this.id}_iam_policy_document`,
+				{
+					statement: statement ?? arr(this.getPolicyDocument())
+				}
+			)
 		];
 	}
 }
