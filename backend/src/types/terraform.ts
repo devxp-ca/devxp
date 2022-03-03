@@ -10,6 +10,8 @@ import {DatabaseModel, generateSchemaInternals} from "./database";
 import {arr} from "../util";
 import {IamUser} from "../terraform/awsIamUser";
 import {GlacierVault} from "../terraform/glacierVault";
+import {Resource} from "../terraform/resource";
+import {lambdaFunction} from "../terraform/lambdaFunction";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -187,9 +189,41 @@ export type runtime =
 	| "provided"
 	| "provided.al2";
 
+export function isRuntime(test: string): test is runtime {
+	// There must be a better way to do this
+	const runtimeValues = [
+		"nodejs",
+		"nodejs4.3",
+		"nodejs6.10",
+		"nodejs8.10",
+		"nodejs10.x",
+		"nodejs12.x",
+		"nodejs14.x",
+		"java8",
+		"java8.al2",
+		"java11",
+		"python2.7",
+		"python3.6",
+		"python3.7",
+		"python3.8",
+		"python3.9",
+		"dotnetcore1.0",
+		"dotnetcore2.0",
+		"dotnetcore2.1",
+		"dotnetcore3.1",
+		"nodejs4.3-edge",
+		"go1.x",
+		"ruby2.5",
+		"ruby2.7",
+		"provided",
+		"provided.al2"
+	];
+	return runtimeValues.includes(test);
+}
+
 // ---------------------------------MISC------------------------------------- //
 
-export type TerraformResource = Ec2 | Gce | S3 | IamUser | GlacierVault;
+export type TerraformResource = Ec2 | Gce | S3 | IamUser | GlacierVault | lambdaFunction;
 
 export interface PolicyStatement {
 	actions: string[];
