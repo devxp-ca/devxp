@@ -1,12 +1,12 @@
 import {ec2InstanceType, amiType} from "../types/terraform";
 import {jsonRoot} from "./util";
-import {AwsResource} from "./resource";
+import {ResourceWithIam} from "./resource";
 
 export interface Ec2 {
 	ami: amiType;
 	instance_type: ec2InstanceType;
 }
-export class Ec2 extends AwsResource<Ec2> implements Ec2 {
+export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	constructor(
 		ami: amiType,
 		instance_type: ec2InstanceType,
@@ -31,7 +31,7 @@ export class Ec2 extends AwsResource<Ec2> implements Ec2 {
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	getPolicyDocument() {
 		return [
-			AwsResource.policyStatement(
+			ResourceWithIam.policyStatement(
 				[
 					"ec2:RunInstances",
 					"ec2:AssociateIamInstanceProfile",
@@ -39,7 +39,7 @@ export class Ec2 extends AwsResource<Ec2> implements Ec2 {
 				],
 				"arn:aws:ec2:::*"
 			),
-			AwsResource.policyStatement(
+			ResourceWithIam.policyStatement(
 				"iam:PassRole",
 				`\${aws_instance.${this.id}.arn}`
 			)

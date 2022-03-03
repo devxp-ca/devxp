@@ -12,7 +12,7 @@ import {GoogleProvider} from "./googleProvider";
 import {namedDestructure} from "./util";
 import {arr} from "../util";
 import {IamUser} from "./awsIamUser";
-import {AwsResource, Resource} from "./resource";
+import {ResourceWithIam, Resource} from "./resource";
 
 export const terraformBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
@@ -60,7 +60,7 @@ export const rootBlock = (
 						];
 						data = [
 							...data,
-							(r as AwsResource<any>).toPolicyDocument()
+							(r as ResourceWithIam<any>).toPolicyDocument()
 						];
 					}
 					return json;
