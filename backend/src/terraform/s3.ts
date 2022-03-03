@@ -6,8 +6,8 @@ export interface S3 {
 	acl: acl;
 }
 export class S3 extends ResourceWithIam<S3> implements S3 {
-	constructor(id: string, autoIam?: boolean, acl?: acl) {
-		super(id, "S3", autoIam);
+	constructor(id: string, autoIam?: boolean, acl?: acl, name?: string) {
+		super(id, "S3", autoIam, name);
 		this.acl = acl ?? "private";
 	}
 
@@ -15,7 +15,7 @@ export class S3 extends ResourceWithIam<S3> implements S3 {
 	toJSON() {
 		return jsonRoot("aws_s3_bucket", this.id, {
 			acl: this.acl,
-			bucket: this.id,
+			bucket: this.name,
 			versioning: [
 				{
 					enabled: true
