@@ -2,25 +2,16 @@ import {acl} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {ResourceWithIam} from "./resource";
 
-export interface S3 {
-	acl: acl;
-}
+export interface S3 {}
 export class S3 extends ResourceWithIam<S3> implements S3 {
-	constructor(id: string, autoIam?: boolean, acl?: acl, name?: string) {
+	constructor(id: string, autoIam?: boolean, name?: string) {
 		super(id, "S3", autoIam, name);
-		this.acl = acl ?? "private";
 	}
 
 	//Returns a resource block
 	toJSON() {
 		return jsonRoot("aws_s3_bucket", this.id, {
-			acl: this.acl,
-			bucket: this.name,
-			versioning: [
-				{
-					enabled: true
-				}
-			]
+			bucket: this.name
 		});
 	}
 

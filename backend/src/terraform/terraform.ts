@@ -11,7 +11,7 @@ import {GoogleProvider} from "./googleProvider";
 
 import {namedDestructure} from "./util";
 import {arr} from "../util";
-import {IamUser} from "./awsIamUser";
+import {IamUserForId} from "./awsIamUser";
 import {ResourceWithIam} from "./resource";
 
 export const terraformBlock = (
@@ -49,15 +49,12 @@ export const rootBlock = (
 			(backend as NamedAwsBackend | NamedGoogleBackend).toResource(),
 			...resources
 				.map(r => {
-					let json = [r.toJSON()];
+					let json = [r.toJSON()].flat();
 					if (r.allowsIam) {
 						json = [
 							...json,
-							new IamUser(
-								`${r.id}_iam`,
-								`${r.id}_policy_document`
-							).toJSON()
-						];
+							new IamUserForId(r.id).toJSON()
+						].flat();
 						data = [
 							...data,
 							(r as ResourceWithIam<any>).toPolicyDocument()

@@ -43,7 +43,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			return new Gce(project, gce.id, gce.machine_type, gce.disk_image);
 		} else if (resource.type === "s3") {
 			const s3: S3 = resource as S3;
-			return new S3(s3.id, s3.autoIam, s3.acl);
+			return new S3(s3.id, s3.autoIam);
 		} else if (resource.type === "glacierVault") {
 			const glacierVault: GlacierVault = resource as GlacierVault;
 			return new GlacierVault(glacierVault.id, glacierVault.autoIam);

@@ -55,9 +55,13 @@ export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	toPolicyDocument(statement?: PolicyStatement[]) {
 		return [
-			jsonRoot("aws_iam_policy_document", `${this.id}_policy_document`, {
-				statement: statement ?? arr(this.getPolicyDocument())
-			})
+			jsonRoot(
+				"aws_iam_policy_document",
+				`${this.id}_iam_policy_document`,
+				{
+					statement: statement ?? arr(this.getPolicyDocument())
+				}
+			)
 		];
 	}
 }
