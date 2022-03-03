@@ -14,6 +14,7 @@ import {Gce} from "../terraform/gce";
 import {GlacierVault} from "../terraform/glacierVault";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
+import {lambdaFunction} from "../terraform/lambdaFunction";
 import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
@@ -27,7 +28,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		provider === "google" ? (req.body.settings?.project as string) : "";
 
 	const resourcesRaw = req.body.settings?.resources as (TerraformResource & {
-		type: "ec2" | "gce" | "s3" | "glacierVault";
+		type: "ec2" | "gce" | "s3" | "glacierVault" | "lambdaFunction";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -47,6 +48,14 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		} else if (resource.type === "glacierVault") {
 			const glacierVault: GlacierVault = resource as GlacierVault;
 			return new GlacierVault(glacierVault.id, glacierVault.autoIam);
+		} else if (resource.type === "lambdaFunction") {
+			const lambdaFunc: lambdaFunction = resource as lambdaFunction;
+			return new lambdaFunction(
+				lambdaFunc.id,
+				lambdaFunc.functionName,
+				lambdaFunc.filename,
+				lambdaFunc.runtime
+			);
 		} else {
 			flag = true;
 		}
