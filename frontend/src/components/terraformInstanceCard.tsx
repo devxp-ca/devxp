@@ -83,6 +83,7 @@ export default function TerraformInstanceCard(props: {
 				<TerraformOptions
 					selectedRepo={props.selectedRepo}
 					instanceDataForModify={props.cardData}
+					globalProvider={props.cardData.settings.provider}
 				/>
 			)}
 		</Card>

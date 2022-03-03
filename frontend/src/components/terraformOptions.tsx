@@ -54,14 +54,17 @@ export interface terraformDataSettings {
 export default function TerraformOptions(props: {
 	selectedRepo: string;
 	instanceDataForModify?: terraformDataSettings; //used when modifying existing instances
+	globalProvider: string;
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
 	//OPTION STATES AND REDUCER -- pre-populate options if modifying
+	//TODO: will have to change these to not rely on [0] array, may need to be passed as pieces of terraformDataSettings for each card
 	const initialOptionState = {
 		providerValue: isModifyingInstance
-			? props.instanceDataForModify.settings.provider ?? ""
-			: "",
+			? props.instanceDataForModify.settings.provider ??
+			  props.globalProvider
+			: props.globalProvider,
 		resourceTypeValue: isModifyingInstance
 			? props.instanceDataForModify.settings.resources[0].type ?? ""
 			: "",
@@ -251,58 +254,6 @@ export default function TerraformOptions(props: {
 				children={modalChildren()}
 			/>
 			<Grid container direction="column">
-				<Grid>
-					<FormControl>
-						<FormLabel>
-							<Grid container direction="row">
-								Provider
-								<MouseOverPopover
-									icon={<HelpIcon sx={{paddingLeft: 1}} />}
-									popOverInfo={
-										<div>
-											Select the provider you have a cloud
-											services account with
-										</div>
-									}
-								/>
-							</Grid>
-						</FormLabel>
-						<RadioGroup
-							name="Provider"
-							value={providerValue}
-							onChange={(
-								event: React.ChangeEvent<HTMLInputElement>
-							) =>
-								dispatch({
-									type: "provider",
-									payload: (event.target as HTMLInputElement)
-										.value
-								})
-							}
-							row>
-							<FormControlLabel
-								key="aws"
-								value="aws"
-								control={<Radio size="small" />}
-								label="Amazon"
-							/>
-							<FormControlLabel
-								key="google"
-								value="google"
-								control={<Radio size="small" />}
-								label="Google"
-								disabled={true}
-							/>
-							<FormControlLabel
-								key="other"
-								value="other"
-								control={<Radio size="small" />}
-								label="Azure"
-								disabled={true}
-							/>
-						</RadioGroup>
-					</FormControl>
-				</Grid>
 				{
 					//AWS Options
 					providerValue === "aws" && (

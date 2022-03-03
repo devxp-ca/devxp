@@ -8,6 +8,9 @@ import axios from "axios";
 import {CONFIG} from "../config";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
+import TerraformOptions, {
+	terraformDataSettings
+} from "../components/terraformOptions";
 import Grid from "@mui/material/Grid";
 import SelectRepoModal from "../components/SelectRepoModal";
 import Button from "@mui/material/Button";
@@ -18,6 +21,8 @@ export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
 	const [isRepoSelected, setIsRepoSelected] = React.useState(false);
+	const [selectedRepoData, setSelectedRepoData] =
+		React.useState<terraformDataSettings>(null);
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
@@ -31,6 +36,7 @@ export default function ToolManager() {
 				}
 			})
 			.then((response: any) => {
+				setSelectedRepoData(response.data);
 				console.dir(response.data);
 			})
 			.catch((error: any) => {
@@ -137,6 +143,7 @@ export default function ToolManager() {
 							<TerraformManager
 								selectedRepo={selectedRepo}
 								backButton={setSelectedToolCardCallback("none")}
+								repoData={selectedRepoData}
 							/>
 						)}
 						<Footer />
