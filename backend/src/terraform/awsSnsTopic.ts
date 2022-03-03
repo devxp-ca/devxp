@@ -3,8 +3,8 @@ import {Resource} from "./resource";
 
 export interface SnsTopic {}
 export class SnsTopic extends Resource<SnsTopic> implements SnsTopic {
-	constructor(id: string, autoIam?: boolean) {
-		super(id, "SnsTopic", autoIam);
+	constructor(id: string) {
+		super(id, "SnsTopic");
 	}
 
 	//Returns a resource block

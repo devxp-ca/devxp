@@ -38,7 +38,7 @@ export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 	}
 
 	//Must be implemented by children
-	abstract getPolicyDocument(): PolicyStatement[];
+	abstract getPolicyDocument(): PolicyStatement[] | PolicyStatement;
 
 	//Helper method for generating policy statements
 	static policyStatement(
@@ -56,7 +56,7 @@ export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 	toPolicyDocument(statement?: PolicyStatement[]) {
 		return [
 			jsonRoot("aws_iam_policy_document", `${this.id}_policy_document`, {
-				statement: statement ?? this.getPolicyDocument()
+				statement: statement ?? arr(this.getPolicyDocument())
 			})
 		];
 	}
