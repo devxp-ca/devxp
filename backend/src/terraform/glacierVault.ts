@@ -7,8 +7,8 @@ export class GlacierVault
 	extends ResourceWithIam<GlacierVault>
 	implements GlacierVault
 {
-	constructor(id: string, autoIam?: boolean) {
-		super(id, "GlacierVault", autoIam);
+	constructor(id: string, autoIam?: boolean, name?: string) {
+		super(id, "GlacierVault", autoIam, name);
 	}
 
 	//Returns a resource block
