@@ -1,14 +1,14 @@
 import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 
-export interface awsSubnet {
+export interface AwsSubnet {
 	vpc: string;
 	cidr_block: string;
 	map_public_ip_on_launch: boolean;
 	availability_zone: string;
 }
 
-export class awsSubnet extends Resource<awsSubnet> implements awsSubnet {
+export class AwsSubnet extends Resource<AwsSubnet> implements AwsSubnet {
 	constructor(
 		vpc: string,
 		cidr_block: string,
