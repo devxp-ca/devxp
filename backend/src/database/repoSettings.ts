@@ -11,7 +11,7 @@ export interface terraformResource {
 
 export interface terraformSettings {
 	provider: string;
-	resources: [terraformResource];
+	resources: terraformResource[];
 }
 
 export const terraformResourceSchema = new Schema({

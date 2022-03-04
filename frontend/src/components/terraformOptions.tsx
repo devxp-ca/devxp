@@ -40,14 +40,12 @@ export interface terraformDataSettings {
 	tool: string;
 	settings: {
 		provider: string;
-		resources: [
-			{
-				type: string;
-				id: string;
-				ami: string;
-				instance_type: string;
-			}
-		];
+		resources: {
+			type: string;
+			id: string;
+			ami: string;
+			instance_type: string;
+		}[];
 	};
 }
 
