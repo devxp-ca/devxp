@@ -240,6 +240,13 @@ export interface PolicyStatement {
 	resources: string[];
 }
 
+export interface TerraformJson {
+	provider: Record<string, any>[];
+	data: Record<string, any>[];
+	terraform: Record<string, any>[];
+	resource: Record<string, any>[];
+}
+
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {

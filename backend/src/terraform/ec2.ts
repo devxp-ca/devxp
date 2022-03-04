@@ -1,4 +1,4 @@
-import {ec2InstanceType, amiType} from "../types/terraform";
+import {ec2InstanceType, amiType, TerraformJson} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {ResourceWithIam} from "./resource";
 
@@ -50,7 +50,9 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		amazon: ["*AmazonLinux*", ["585441382316"]]
 	};
 
-	postProcess(json: Record<string, any>) {
+	postProcess(json: TerraformJson): TerraformJson {
+		json = super.postProcess(json);
+
 		if (/^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami)) {
 			const os = this.ami.slice(5).toLowerCase();
 
