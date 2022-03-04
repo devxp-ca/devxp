@@ -20,16 +20,20 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 	//Returns a resource block
 	toJSON() {
+		const ami = /^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami)
+			? `\${data.aws_ami.${this.ami.slice(5).toLowerCase()}_latest.id}`
+			: this.ami;
+
 		return jsonRoot("aws_instance", this.id, {
-			ami: this.ami,
+			ami,
 			instance_type: this.instance_type
 		});
 	}
 
 	static latestAmiMap: Record<string, [string, string[]]> = {
 		ubuntu: [
-			"ubuntu/images/hvm-ssd/ubuntu-focal-20.04-arm64*",
-			["099720109477", "333957572119", "679593333241"]
+			"ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64*",
+			["099720109477"]
 		],
 		windows: ["*Windows Server*", ["374168611083", "679593333241"]],
 		amazon: ["*AmazonLinux*", ["585441382316"]]
@@ -44,7 +48,7 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 					...json.data,
 					jsonRoot("aws_ami", `${os}_latest`, {
 						most_recent: true,
-						owner: Ec2.latestAmiMap[os][1],
+						owners: Ec2.latestAmiMap[os][1],
 						filter: [
 							{
 								name: "name",

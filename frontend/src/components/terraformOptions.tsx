@@ -386,12 +386,12 @@ export default function TerraformOptions(props: {
 											}>
 											<MenuItem
 												key="amazon-linux"
-												value="ami-0341aeea105412b57">
+												value="AUTO_AMAZON">
 												Amazon Linux 2 AMI (HVM)
 											</MenuItem>
 											<MenuItem
 												key="ubuntu"
-												value="ami-0892d3c7ee96c0bf7">
+												value="AUTO_UBUNTU">
 												Ubuntu Server 20.04 LTS 64-bit
 												x86
 											</MenuItem>
@@ -402,8 +402,8 @@ export default function TerraformOptions(props: {
 											</MenuItem>
 											<MenuItem
 												key="windows"
-												value="ami-0ab399fb9d53c302f">
-												Microsoft Windows Server 2019
+												value="AUTO_WINDOWS">
+												Microsoft Windows Server 2022
 												Base with Containers
 											</MenuItem>
 										</Select>

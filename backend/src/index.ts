@@ -15,11 +15,11 @@ server.serve("/about");
 server.serve("/contact");
 server.route("/", mainRouter);
 
-import {testToFileAws} from "./util";
-import {Ec2} from "./terraform/ec2";
-testToFileAws("/home/brennan/aws_test/devxp.tf.json", [
-	new Ec2("ami-0faefa03f7ddcd657", "t2.medium", "myinstance", true)
-]);
+// import {testToFileAws} from "./util";
+// import {Ec2} from "./terraform/ec2";
+// testToFileAws("/home/brennan/aws_test/devxp.tf.json", [
+// 	new Ec2("AUTO_UBUNTU", "t2.medium", "myinstance", true)
+// ]);
 
 mongoose.connection.on(
 	"error",
