@@ -20,14 +20,25 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 	//Returns a resource block
 	toJSON() {
-		const ami = /^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami)
+		const isAutoAmi = /^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami);
+		const ami = isAutoAmi
 			? `\${data.aws_ami.${this.ami.slice(5).toLowerCase()}_latest.id}`
 			: this.ami;
 
-		return jsonRoot("aws_instance", this.id, {
+		const json: any = {
 			ami,
 			instance_type: this.instance_type
-		});
+		};
+
+		if (isAutoAmi) {
+			json.lifecycle = [
+				{
+					ignore_changes: ["ami"]
+				}
+			];
+		}
+
+		return jsonRoot("aws_instance", this.id, json);
 	}
 
 	static latestAmiMap: Record<string, [string, string[]]> = {
