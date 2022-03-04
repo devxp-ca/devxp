@@ -39,9 +39,17 @@ const resourceValidator: CustomValidator = (resource: any) => {
 			return false;
 		}
 		if (!/^ami-[0-9a-zA-Z]+$/.test(resource.ami)) {
-			return false;
+			if (!/^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(resource.ami)) {
+				return false;
+			}
 		}
-		if (!/^t2.[a-zA-Z]+$/.test(resource.instance_type)) {
+
+		//MAC Must use mac1.metal instance type
+		if (resource.ami === "ami-0faefa03f7ddcd657") {
+			if (!(resource.instance_type === "mac1.metal")) {
+				return false;
+			}
+		} else if (!/^t2.[a-zA-Z]+$/.test(resource.instance_type)) {
 			return false;
 		}
 		if (!validId(resource.id)) {

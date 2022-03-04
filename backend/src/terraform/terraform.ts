@@ -40,7 +40,7 @@ export const rootBlock = (
 ) => {
 	let data: any = [];
 
-	return {
+	let json = {
 		terraform: terraformBlock(providers, backend),
 		provider: arr(providers).map(provider =>
 			(provider as AwsProvider | GoogleProvider).toJSON()
@@ -66,6 +66,12 @@ export const rootBlock = (
 		],
 		data: data.flat()
 	};
+
+	// Allow each resource to apply post processing
+	resources.forEach(r => {
+		json = r.postProcess(json);
+	});
+	return json;
 };
 
 export const rootBlockSplitBackend = (

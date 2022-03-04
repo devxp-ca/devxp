@@ -25,6 +25,10 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 		return model(this.type, this.toSchema());
 	}
 
+	postProcess(json: any) {
+		return json;
+	}
+
 	abstract toJSON(): Record<string, any>;
 }
 
