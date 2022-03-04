@@ -154,6 +154,7 @@ export default function ToolManager() {
 											setOpenModal(false);
 											setIsRepoSelected(true);
 											setSelectedRepoFromModal(
+												//"local/debug"
 												selectedRepo
 											);
 										}}>

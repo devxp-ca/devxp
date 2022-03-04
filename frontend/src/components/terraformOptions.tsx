@@ -469,36 +469,63 @@ export default function TerraformOptions(props: {
 											})
 										}
 										row>
-										<FormControlLabel
-											key="1"
-											value="t2.micro"
-											control={<Radio size="small" />}
-											label="Micro"
-										/>
-										<FormControlLabel
-											key="2"
-											value="t2.small"
-											control={<Radio size="small" />}
-											label="Small"
-										/>
-										<FormControlLabel
-											key="3"
-											value="t2.medium"
-											control={<Radio size="small" />}
-											label="Medium"
-										/>
-										<FormControlLabel
-											key="4"
-											value="t2.large"
-											control={<Radio size="small" />}
-											label="Large"
-										/>
-										<FormControlLabel
-											key="5"
-											value="t2.xlarge"
-											control={<Radio size="small" />}
-											label="Extra-Large"
-										/>
+										{optionState.am ===
+										"ami-0faefa03f7ddcd657" ? (
+											//If the ami image selected is MAC, the instance MUST be mac1.metal
+											<>
+												<FormControlLabel
+													key="1"
+													value="mac1.metal"
+													control={
+														<Radio size="small" />
+													}
+													label="Mac Hardware"
+												/>
+											</>
+										) : (
+											<>
+												<FormControlLabel
+													key="1"
+													value="t2.micro"
+													control={
+														<Radio size="small" />
+													}
+													label="Micro"
+												/>
+												<FormControlLabel
+													key="2"
+													value="t2.small"
+													control={
+														<Radio size="small" />
+													}
+													label="Small"
+												/>
+												<FormControlLabel
+													key="3"
+													value="t2.medium"
+													control={
+														<Radio size="small" />
+													}
+													label="Medium"
+												/>
+												<FormControlLabel
+													key="4"
+													value="t2.large"
+													control={
+														<Radio size="small" />
+													}
+													label="Large"
+												/>
+												<FormControlLabel
+													key="5"
+													value="t2.xlarge"
+													control={
+														<Radio size="small" />
+													}
+													label="Extra-Large"
+												/>
+											</>
+										)}
 									</RadioGroup>
 								</FormControl>
 							</Grid>
