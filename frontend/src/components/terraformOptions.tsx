@@ -467,7 +467,7 @@ export default function TerraformOptions(props: {
 											})
 										}
 										row>
-										{optionState.am ===
+										{optionState.amiValue ===
 										"ami-0faefa03f7ddcd657" ? (
 											//If the ami image selected is MAC, the instance MUST be mac1.metal
 											<>
