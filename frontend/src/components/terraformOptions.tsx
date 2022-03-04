@@ -386,12 +386,12 @@ export default function TerraformOptions(props: {
 											}>
 											<MenuItem
 												key="amazon-linux"
-												value="ami-0341aeea105412b57">
+												value="AUTO_AMAZON">
 												Amazon Linux 2 AMI (HVM)
 											</MenuItem>
 											<MenuItem
 												key="ubuntu"
-												value="ami-0892d3c7ee96c0bf7">
+												value="AUTO_UBUNTU">
 												Ubuntu Server 20.04 LTS 64-bit
 												x86
 											</MenuItem>
@@ -402,8 +402,8 @@ export default function TerraformOptions(props: {
 											</MenuItem>
 											<MenuItem
 												key="windows"
-												value="ami-0ab399fb9d53c302f">
-												Microsoft Windows Server 2019
+												value="AUTO_WINDOWS">
+												Microsoft Windows Server 2022
 												Base with Containers
 											</MenuItem>
 										</Select>
@@ -469,36 +469,63 @@ export default function TerraformOptions(props: {
 											})
 										}
 										row>
-										<FormControlLabel
-											key="1"
-											value="t2.micro"
-											control={<Radio size="small" />}
-											label="Micro"
-										/>
-										<FormControlLabel
-											key="2"
-											value="t2.small"
-											control={<Radio size="small" />}
-											label="Small"
-										/>
-										<FormControlLabel
-											key="3"
-											value="t2.medium"
-											control={<Radio size="small" />}
-											label="Medium"
-										/>
-										<FormControlLabel
-											key="4"
-											value="t2.large"
-											control={<Radio size="small" />}
-											label="Large"
-										/>
-										<FormControlLabel
-											key="5"
-											value="t2.xlarge"
-											control={<Radio size="small" />}
-											label="Extra-Large"
-										/>
+										{optionState.am ===
+										"ami-0faefa03f7ddcd657" ? (
+											//If the ami image selected is MAC, the instance MUST be mac1.metal
+											<>
+												<FormControlLabel
+													key="1"
+													value="mac1.metal"
+													control={
+														<Radio size="small" />
+													}
+													label="Mac Hardware"
+												/>
+											</>
+										) : (
+											<>
+												<FormControlLabel
+													key="1"
+													value="t2.micro"
+													control={
+														<Radio size="small" />
+													}
+													label="Micro"
+												/>
+												<FormControlLabel
+													key="2"
+													value="t2.small"
+													control={
+														<Radio size="small" />
+													}
+													label="Small"
+												/>
+												<FormControlLabel
+													key="3"
+													value="t2.medium"
+													control={
+														<Radio size="small" />
+													}
+													label="Medium"
+												/>
+												<FormControlLabel
+													key="4"
+													value="t2.large"
+													control={
+														<Radio size="small" />
+													}
+													label="Large"
+												/>
+												<FormControlLabel
+													key="5"
+													value="t2.xlarge"
+													control={
+														<Radio size="small" />
+													}
+													label="Extra-Large"
+												/>
+											</>
+										)}
 									</RadioGroup>
 								</FormControl>
 							</Grid>

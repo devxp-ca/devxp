@@ -115,7 +115,10 @@ export type amiType =
 	| "ami-0faefa03f7ddcd657"
 
 	//Microsoft Windows Server 2019 Base with Containers
-	| "ami-0ab399fb9d53c302f";
+	| "ami-0ab399fb9d53c302f"
+	| "AUTO_UBUNTU"
+	| "AUTO_Amazon"
+	| "AUTO_WINDOWS";
 
 //TODO: Extend list of instance types
 export type ec2InstanceType =
@@ -223,12 +226,25 @@ export function isRuntime(test: string): test is runtime {
 
 // ---------------------------------MISC------------------------------------- //
 
-export type TerraformResource = Ec2 | Gce | S3 | IamUser | GlacierVault | lambdaFunction;
+export type TerraformResource =
+	| Ec2
+	| Gce
+	| S3
+	| IamUser
+	| GlacierVault
+	| lambdaFunction;
 
 export interface PolicyStatement {
 	actions: string[];
 	effect: string;
 	resources: string[];
+}
+
+export interface TerraformJson {
+	provider: Record<string, any>[];
+	data: Record<string, any>[];
+	terraform: Record<string, any>[];
+	resource: Record<string, any>[];
 }
 
 // ----------------------------Terraform Root-------------------------------- //

@@ -2,6 +2,7 @@ import {
 	NamedRequiredProvider,
 	namedTerraformBackend,
 	RequiredProvider,
+	TerraformJson,
 	TerraformResource
 } from "../types/terraform";
 import {NamedAwsBackend} from "./awsBackend";
@@ -38,9 +39,7 @@ export const rootBlock = (
 	backend: namedTerraformBackend,
 	resources: TerraformResource[] = []
 ) => {
-	let data: any = [];
-
-	return {
+	let json: TerraformJson = {
 		terraform: terraformBlock(providers, backend),
 		provider: arr(providers).map(provider =>
 			(provider as AwsProvider | GoogleProvider).toJSON()
@@ -50,22 +49,24 @@ export const rootBlock = (
 			...resources
 				.map(r => {
 					let json = [r.toJSON()].flat();
-					if (r.allowsIam) {
+					if (r.allowsIam && r.autoIam) {
 						json = [
 							...json,
 							new IamUserForId(r.id).toJSON()
 						].flat();
-						data = [
-							...data,
-							(r as ResourceWithIam<any>).toPolicyDocument()
-						];
 					}
 					return json;
 				})
 				.flat()
 		],
-		data: data.flat()
+		data: []
 	};
+
+	// Allow each resource to apply post processing
+	resources.forEach(r => {
+		json = r.postProcess(json);
+	});
+	return json;
 };
 
 export const rootBlockSplitBackend = (

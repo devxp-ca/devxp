@@ -2,7 +2,7 @@ import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
 import {jsonRoot} from "./util";
 import {arr} from "../util";
-import {PolicyStatement} from "../types/terraform";
+import {PolicyStatement, TerraformJson} from "../types/terraform";
 
 export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 	id: string;
@@ -23,6 +23,10 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 	}
 	toModel() {
 		return model(this.type, this.toSchema());
+	}
+
+	postProcess(json: TerraformJson): TerraformJson {
+		return json;
 	}
 
 	abstract toJSON(): Record<string, any>;
@@ -50,6 +54,15 @@ export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 			effect: "Allow",
 			resources: arr(resources)
 		} as PolicyStatement;
+	}
+
+	postProcess(json: TerraformJson): TerraformJson {
+		json = super.postProcess(json);
+
+		if (this.autoIam) {
+			json.data = [...json.data, this.toPolicyDocument()];
+		}
+		return json;
 	}
 
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
