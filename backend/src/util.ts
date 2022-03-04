@@ -1,4 +1,6 @@
 import fs from "fs";
+import {NamedAwsBackend} from "./terraform/awsBackend";
+import {AwsProvider} from "./terraform/awsProvider";
 import {rootBlockSplitBackend} from "./terraform/terraform";
 import {
 	NamedRequiredProvider,
@@ -24,3 +26,7 @@ export const testToFile = (
 		flag: "w"
 	});
 };
+export const testToFileAws = (
+	filename: string,
+	resources: TerraformResource[] = []
+) => testToFile(filename, new AwsProvider(), new NamedAwsBackend(), resources);
