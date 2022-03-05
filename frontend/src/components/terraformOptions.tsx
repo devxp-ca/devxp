@@ -137,7 +137,7 @@ export default function TerraformOptions(props: {
 			}
 
 		*/
-		/* TODO: Implement modify an instance, pass bool+instance name to backend? Will have to avoid duplicate instance names */
+
 		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
 		const settings: terraformDataSettings = {
 			repo: props.selectedRepo,
@@ -495,14 +495,13 @@ export default function TerraformOptions(props: {
 					</Grid>
 				</FormControl>
 			</Grid>
-			{/*change to add button that sends info back and resets square */}
 			<Box textAlign="center" sx={{paddingTop: 3}}>
 				<Button
 					variant="contained"
 					color="success"
 					size="large"
 					startIcon={<CheckIcon />}
-					aria-label="submit to repo"
+					aria-label="add changes"
 					onClick={addChanges}>
 					{isModifyingInstance
 						? "Add Instance Changes"

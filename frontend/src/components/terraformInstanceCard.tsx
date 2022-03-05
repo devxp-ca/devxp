@@ -27,7 +27,6 @@ export default function TerraformInstanceCard(props: {
 		setSelectEditInstance(true);
 	};
 
-	//method with data callback and setEditInstance to false, add isModifying boolean for changing
 	const passNewDataCallback = (
 		data: terraformDataSettings,
 		isModifying: Boolean,

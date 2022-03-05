@@ -22,6 +22,7 @@ import {lightTheme} from "../style/themes";
 import axios, {AxiosError} from "axios";
 import GenericModal from "./GenericModal";
 import {CONFIG} from "../config";
+import CheckIcon from "@mui/icons-material/Check";
 
 export interface BackendError {
 	timestamp: Date;
@@ -109,36 +110,11 @@ export default function TerraformManager(props: {
 			};
 			setUpdatedConfigurations(tempData);
 			setSelectNewInstance(false);
-
-			//remove after testing
-			setCurrentlySavedConfigurations(tempData);
 		} else {
 			//no previous configs so add the whole thing
 			setUpdatedConfigurations(newInstanceOrSettings);
 			setSelectNewInstance(false);
-
-			//remove after testing
-			setCurrentlySavedConfigurations(newInstanceOrSettings);
 		}
-	};
-
-	const handleSubmit = () => {
-		setOpenModal(false);
-		axios
-			.post(
-				`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-				updatedConfigurations
-			)
-			.then(response => {
-				console.log(response.data);
-				//Was having concurrency issues(?) with this, may need something extra if not working
-				setCurrentlySavedConfigurations(updatedConfigurations);
-				handleOpenSuccessModal();
-			})
-			.catch((error: AxiosError) => {
-				console.dir(error.response.data);
-				handleOpenFailModal(error.response?.data?.errors ?? []);
-			});
 	};
 
 	//expands a single resource into a full terraformDataSettings with one resource slot
@@ -244,6 +220,25 @@ export default function TerraformManager(props: {
 				))}
 			</Grid>
 		);
+	};
+
+	const handleSubmit = () => {
+		setOpenModal(false);
+		axios
+			.post(
+				`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				updatedConfigurations
+			)
+			.then(response => {
+				console.log(response.data);
+				//Was having concurrency issues(?) with this, may need something extra if not working
+				setCurrentlySavedConfigurations(updatedConfigurations);
+				handleOpenSuccessModal();
+			})
+			.catch((error: AxiosError) => {
+				console.dir(error.response.data);
+				handleOpenFailModal(error.response?.data?.errors ?? []);
+			});
 	};
 
 	//SUBMIT MODAL THINGS
@@ -369,6 +364,17 @@ export default function TerraformManager(props: {
 				</FormControl>
 			</Grid>
 			{getCards()}
+			<Box textAlign="center" sx={{paddingTop: 3}}>
+				<Button
+					variant="contained"
+					color="success"
+					size="large"
+					startIcon={<CheckIcon />}
+					aria-label="submit to repo"
+					onClick={handleOpenSubmitModal}>
+					Submit To Repo
+				</Button>
+			</Box>
 		</Box>
 	);
 }
