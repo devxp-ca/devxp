@@ -73,25 +73,24 @@ export default function TerraformManager(props: {
 	const [currentlySavedConfigurations, setCurrentlySavedConfigurations] =
 		React.useState<terraformDataSettings>(props.repoData);
 	const [updatedConfigurations, setUpdatedConfigurations] =
-		React.useState<terraformDataSettings>(null);
+		React.useState<terraformDataSettings>(props.repoData);
 	//TODO: does not check for properly filled settings -- may want this in the future?
 	const changeConfigurationsCallback = (
 		newInstanceOrSettings: terraformDataSettings,
 		isModifyingInstance: Boolean,
 		cardNum: number
 	) => {
-		if (Boolean(currentlySavedConfigurations)) {
+		if (Boolean(updatedConfigurations)) {
 			let justResources = newInstanceOrSettings.settings.resources;
 
 			if (!isModifyingInstance) {
 				//add new instance via concat resources to front of array
 				justResources = justResources.concat(
-					currentlySavedConfigurations.settings.resources
+					updatedConfigurations.settings.resources
 				);
 			} else {
-				//TODO: There might be issues with index based removal?
 				//if modifying -- search + replace old setting, places most recently edited at front (best fit for duplicating already existing instances?)
-				currentlySavedConfigurations.settings.resources.forEach(
+				updatedConfigurations.settings.resources.forEach(
 					(element, index) => {
 						if (index != cardNum) {
 							justResources.push(element);
@@ -101,20 +100,19 @@ export default function TerraformManager(props: {
 			}
 
 			const tempData: terraformDataSettings = {
-				repo: currentlySavedConfigurations.repo,
-				tool: currentlySavedConfigurations.tool,
+				repo: updatedConfigurations.repo,
+				tool: updatedConfigurations.tool,
 				settings: {
-					provider: currentlySavedConfigurations.settings.provider,
+					provider: updatedConfigurations.settings.provider,
 					resources: justResources
 				}
 			};
 			setUpdatedConfigurations(tempData);
-			setSelectNewInstance(false);
 		} else {
 			//no previous configs so add the whole thing
 			setUpdatedConfigurations(newInstanceOrSettings);
-			setSelectNewInstance(false);
 		}
+		setSelectNewInstance(false);
 	};
 
 	//expands a single resource into a full terraformDataSettings with one resource slot
@@ -144,7 +142,7 @@ export default function TerraformManager(props: {
 		//array of terraformDataSettings with only one resource per index, used for tile generation
 		//expanding these to keep consistenty with the terraformDataSettings interface (instead of chopping it up)
 		const prevInstanceSettings = expandPreviousSettings(
-			currentlySavedConfigurations
+			updatedConfigurations
 		);
 
 		return (
