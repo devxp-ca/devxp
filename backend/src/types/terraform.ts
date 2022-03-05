@@ -250,9 +250,14 @@ export interface TerraformJson {
 export interface AwsRoute {
 	gateway_id: string;
 	cidr_block: string;
-	ipv6_cidr_block?: string;
-	egress_only_gateway_id?: string;
-	instance_id?: string; //ec2
+}
+
+export interface Firewall {
+	type: "egress" | "ingress";
+	from_port: number | "icmp";
+	to_port: number | "icmp";
+	protocol: string;
+	cidr_blocks?: string[];
 }
 
 // ----------------------------Terraform Root-------------------------------- //

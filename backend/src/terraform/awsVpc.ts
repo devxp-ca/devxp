@@ -2,6 +2,7 @@ import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 import {AwsSubnet} from "./awsSubnet";
 import {AwsInternetGateway} from "./AwsInternetGateway";
+import {AwsRouteTable} from "./AwsRouteTable";
 
 export interface AwsVpc {
 	cidr_block: string;
@@ -40,7 +41,8 @@ export class AwsVpc extends Resource<AwsVpc> implements AwsVpc {
 				new AwsInternetGateway(
 					`${this.id}_internetgateway`,
 					this.id
-				).toJSON()
+				).toJSON(),
+				new AwsRouteTable(`${this.id}_routetable`, this.id).toJSON()
 			];
 		}
 
