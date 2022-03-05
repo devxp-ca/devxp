@@ -28,30 +28,22 @@ export default function ToolManager() {
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
-	const setSelectedRepoFromModal = (repo_full_name: string) => {
-		// If the selected repo is the empty string, then we don't have a repo selected
-		// and we should not set the selected repo, we should also ensure the modal stays open
-		if (repo_full_name === "") {
-			setIsRepoSelected(false);
-			setOpenModal(true);
-		} else {
-			// Otherwise, we have a repo selected and we should set the selected repo
-			console.dir(repo_full_name);
-			setSelectedRepo(repo_full_name);
-			axios
-				.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
-					headers: {
-						repo: repo_full_name
-					}
-				})
-				.then((response: any) => {
-					setSelectedRepoData(response.data);
-					console.dir(response.data);
-				})
-				.catch((error: any) => {
-					console.error(error);
-				});
-		}
+	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
+		setSelectedRepo(repo_full_name);
+		setIsRepoSelected(true);
+		axios
+			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				headers: {
+					repo: repo_full_name
+				}
+			})
+			.then((response: any) => {
+				setSelectedRepoData(response.data);
+				console.dir(response.data);
+			})
+			.catch((error: any) => {
+				console.error(error);
+			});
 	};
 
 	const setSelectedToolCardCallback = (tool_name: string) => {
@@ -108,61 +100,28 @@ export default function ToolManager() {
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Button
-									sx={{ml: 2, mb: 2}}
-									variant="contained"
-									color="primary"
-									onClick={() => {
-										setOpenModal(true);
-										setIsRepoSelected(false);
-									}}>
-									Change Repository
-								</Button>
+								<Autocomplete
+									sx={{padding: "3px", width: "300px"}}
+									id="repo-select"
+									options={repoList}
+									getOptionLabel={(option: any) =>
+										option.full_name
+									}
+									renderInput={(params: any) => (
+										<TextField
+											{...params}
+											label="Select A Repo"
+											variant="outlined"
+										/>
+									)}
+									onChange={(event: any, value: any) => {
+										setSelectedRepoFromAutocomplete(
+											value.full_name
+										);
+									}}
+								/>
 							</Grid>
 						</Grid>
-						{!isRepoSelected && (
-							<SelectRepoModal
-								isOpen={openModal}
-								handleClose={handleCloseModal}
-								title="Select a Repo"
-								bodyText="In order to continue, please select a repository"
-								children={[
-									<Autocomplete
-										sx={{padding: "3px"}}
-										id="repo-select"
-										options={repoList}
-										getOptionLabel={(option: any) =>
-											option.full_name
-										}
-										renderInput={(params: any) => (
-											<TextField
-												{...params}
-												label="Repository"
-												variant="outlined"
-											/>
-										)}
-										onChange={(event: any, value: any) => {
-											setSelectedRepoFromModal(
-												value.full_name
-											);
-										}}
-									/>,
-									<Button
-										variant="contained"
-										color="primary"
-										onClick={() => {
-											setOpenModal(false);
-											setIsRepoSelected(true);
-											setSelectedRepoFromModal(
-												//"local/debug"
-												selectedRepo
-											);
-										}}>
-										Submit
-									</Button>
-								]}
-							/>
-						)}
 						{selectedTool == "none" && (
 							<Grid
 								container
@@ -178,6 +137,7 @@ export default function ToolManager() {
 						{selectedTool == "terraform" && (
 							<TerraformManager
 								selectedRepo={selectedRepo}
+								isRepoSelected={isRepoSelected}
 								backButton={setSelectedToolCardCallback("none")}
 								repoData={selectedRepoData}
 							/>

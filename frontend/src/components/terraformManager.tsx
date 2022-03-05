@@ -42,6 +42,7 @@ export interface BackendError {
 
 export default function TerraformManager(props: {
 	selectedRepo: string;
+	isRepoSelected: boolean;
 	repoData: terraformDataSettings;
 	backButton: () => void;
 }) {
@@ -252,13 +253,24 @@ export default function TerraformManager(props: {
 		title: "",
 		body: ""
 	});
+	const [openAlertDialog, setOpenAlertDialog] = React.useState(false);
 	const handleOpenSubmitModal = () => {
-		setModalText({
-			isSubmitModal: true,
-			title: "Are you sure you want to submit?",
-			body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
-		});
-		setOpenModal(true);
+		//check to see if isRepoSelected is true, if not, prompt user to select a repo
+		if (props.isRepoSelected) {
+			setModalText({
+				isSubmitModal: true,
+				title: "Are you sure you want to submit?",
+				body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
+			});
+			setOpenModal(true);
+		} else {
+			setModalText({
+				isSubmitModal: false,
+				title: "Please select a repository",
+				body: "You must select a repository before submitting"
+			});
+			setOpenModal(true);
+		}
 	};
 	const handleOpenSuccessModal = () => {
 		setModalText({
