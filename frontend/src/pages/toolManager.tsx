@@ -39,7 +39,7 @@ export default function ToolManager() {
 			console.dir(repo_full_name);
 			setSelectedRepo(repo_full_name);
 			axios
-				.get(`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 					headers: {
 						repo: repo_full_name
 					}
@@ -65,7 +65,7 @@ export default function ToolManager() {
 	React.useEffect(() => {
 		//api call to get repos
 		axios
-			.get(`https://${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
+			.get(`${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
 			.then((response: any) => {
 				setRepoList(response.data.repos);
 			})

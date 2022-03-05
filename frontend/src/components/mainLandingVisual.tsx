@@ -47,7 +47,7 @@ export default function MainLandingVisual() {
 						</Typography>
 						<Button
 							onClick={() =>
-								(window.location.href = `https://${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`)
+								(window.location.href = `${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`)
 							}
 							color="secondary"
 							variant="contained"

@@ -7,7 +7,7 @@ export interface Config {
 }
 
 export const CONFIG: Config = {
-	BACKEND_URL: "devxp.ca",
+	BACKEND_URL: window.location.origin,
 	AUTH_PATH: "/auth",
 	REPO_PATH: "/api/v1/repo",
 	REPO_PAGES_PATH: "/api/v1/repoPages",

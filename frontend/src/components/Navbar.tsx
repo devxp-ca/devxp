@@ -33,7 +33,7 @@ export default function Navbar() {
 			// set the state to logged in
 			setIsLoggedIn(true);
 			// call the API to login with github
-			window.location.href = `https://${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`;
+			window.location.href = `${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`;
 		}
 	};
 

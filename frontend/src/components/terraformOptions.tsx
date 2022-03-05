@@ -228,10 +228,7 @@ export default function TerraformOptions(props: {
 
 		//Sends settings to backend
 		axios
-			.post(
-				`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-				settings
-			)
+			.post(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, settings)
 			.then(response => {
 				console.log(response.data);
 				handleOpenSuccessModal();
