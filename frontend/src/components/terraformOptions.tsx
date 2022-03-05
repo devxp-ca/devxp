@@ -1,5 +1,4 @@
 import React from "react";
-import axios, {AxiosError} from "axios";
 import Button from "@mui/material/Button";
 import {Box} from "@mui/system";
 import CheckIcon from "@mui/icons-material/Check";
@@ -15,25 +14,6 @@ import MenuItem from "@mui/material/MenuItem";
 import HelpIcon from "@mui/icons-material/Help";
 
 import MouseOverPopover from "./MouseOverPopover";
-import GenericModal from "./GenericModal";
-import {CONFIG} from "../config";
-import Typography from "@mui/material/Typography";
-
-export interface BackendError {
-	timestamp: Date;
-
-	//HTTP Status
-	status: number;
-
-	//Error type / high level description
-	error: string;
-
-	//Path which created error
-	path: string;
-
-	//Detailed error message
-	message?: string;
-}
 
 export interface terraformDataSettings {
 	repo: string;
@@ -53,6 +33,12 @@ export default function TerraformOptions(props: {
 	selectedRepo: string;
 	instanceDataForModify?: terraformDataSettings; //used when modifying existing instances
 	globalProvider: string;
+	addNewDataCallback: (
+		newData: terraformDataSettings,
+		isModifyingInstance: Boolean,
+		cardNum: number
+	) => void;
+	cardIndex: number;
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
@@ -130,63 +116,7 @@ export default function TerraformOptions(props: {
 		}
 	}
 
-	//SUBMIT MODAL THINGS
-	const [openModal, setOpenModal] = React.useState(false);
-	const [modalText, setModalText] = React.useState({
-		isSubmitModal: true,
-		title: "",
-		body: ""
-	});
-	const handleOpenSubmitModal = () => {
-		setModalText({
-			isSubmitModal: true,
-			title: "Are you sure you want to submit?",
-			body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
-		});
-		setOpenModal(true);
-	};
-	const handleOpenSuccessModal = () => {
-		setModalText({
-			isSubmitModal: false,
-			title: "Success",
-			body: "Your changes have been successfully pushed to your repository"
-		});
-		setOpenModal(true);
-	};
-	const handleOpenFailModal = (errors: BackendError[]) => {
-		setModalText({
-			isSubmitModal: false,
-			title: "Submission Failed",
-			body:
-				errors[0]?.message ??
-				"Something went wrong, please make sure all the fields are filled out and try again"
-		});
-		setOpenModal(true);
-	};
-	const handleCloseModal = () => {
-		setOpenModal(false);
-	};
-	const modalChildren = () => {
-		return (
-			<div style={{display: "flex", justifyContent: "center"}}>
-				<Button
-					color="secondary"
-					variant="contained"
-					size="large"
-					sx={{marginTop: 2}}
-					onClick={
-						modalText.isSubmitModal
-							? handleSubmit
-							: handleCloseModal
-					}>
-					{modalText.isSubmitModal ? "Confirm" : "Ok"}
-				</Button>
-			</div>
-		);
-	};
-
-	const handleSubmit = () => {
-		setOpenModal(false);
+	const addChanges = () => {
 		/* TODO add/figure out terraformDataSettings variables that account for all providers/servies, some will be optional etc.
 
 			GOOGLE VERSION
@@ -208,7 +138,6 @@ export default function TerraformOptions(props: {
 
 		*/
 
-		/* TODO: Implement modify an instance, pass bool+instance name to backend? Will have to avoid duplicate instance names */
 		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
 		const settings: terraformDataSettings = {
 			repo: props.selectedRepo,
@@ -225,29 +154,15 @@ export default function TerraformOptions(props: {
 				]
 			}
 		};
-
-		//Sends settings to backend
-		axios
-			.post(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, settings)
-			.then(response => {
-				console.log(response.data);
-				handleOpenSuccessModal();
-			})
-			.catch((error: AxiosError) => {
-				console.dir(error.response.data);
-				handleOpenFailModal(error.response?.data?.errors ?? []);
-			});
+		props.addNewDataCallback(
+			settings,
+			isModifyingInstance,
+			props.cardIndex
+		);
 	};
 
 	return (
 		<Box sx={{padding: 4}}>
-			<GenericModal
-				isOpen={openModal}
-				handleClose={handleCloseModal}
-				title={modalText.title}
-				bodyText={modalText.body}
-				children={modalChildren()}
-			/>
 			<Grid container direction="column">
 				{
 					//AWS Options
@@ -586,9 +501,11 @@ export default function TerraformOptions(props: {
 					color="success"
 					size="large"
 					startIcon={<CheckIcon />}
-					aria-label="submit to repo"
-					onClick={handleOpenSubmitModal}>
-					Submit
+					aria-label="add changes"
+					onClick={addChanges}>
+					{isModifyingInstance
+						? "Add Instance Changes"
+						: "Add Instance(s)"}
 				</Button>
 			</Box>
 		</Box>

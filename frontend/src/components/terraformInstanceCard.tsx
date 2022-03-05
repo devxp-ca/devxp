@@ -13,21 +13,34 @@ export default function TerraformInstanceCard(props: {
 	selectedRepo: string;
 	cardData: terraformDataSettings;
 	cardSize: number;
+	addNewDataCallback: (
+		newData: terraformDataSettings,
+		isModifyingInstance: Boolean,
+		cardNum: number
+	) => void;
+	cardIndex: number;
 }) {
 	const currentTheme = lightTheme;
 	const [selectedEditInstance, setSelectEditInstance] = React.useState(false);
-	const [cardExpandedStyle, setCardExpandedStyle] = React.useState(false);
 
 	const selectedEditInstanceCallback = () => {
 		setSelectEditInstance(true);
-		setCardExpandedStyle(true);
+	};
+
+	const passNewDataCallback = (
+		data: terraformDataSettings,
+		isModifying: Boolean,
+		cardNum: number
+	) => {
+		setSelectEditInstance(false);
+		props.addNewDataCallback(data, isModifying, cardNum);
 	};
 
 	/* TODO: Improve style/text, multiple cards open at same time? Maybe we should restrict */
 	return (
 		<Card
 			sx={
-				cardExpandedStyle
+				selectedEditInstance
 					? {minWidth: props.cardSize}
 					: {width: props.cardSize, height: props.cardSize}
 			}>
@@ -84,6 +97,8 @@ export default function TerraformInstanceCard(props: {
 					selectedRepo={props.selectedRepo}
 					instanceDataForModify={props.cardData}
 					globalProvider={props.cardData.settings.provider}
+					addNewDataCallback={passNewDataCallback}
+					cardIndex={props.cardIndex}
 				/>
 			)}
 		</Card>
