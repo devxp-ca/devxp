@@ -222,6 +222,12 @@ export default function TerraformManager(props: {
 
 	const handleSubmit = () => {
 		setOpenModal(false);
+
+		//Dirty fix
+		updatedConfigurations.tool = updatedConfigurations.tool ?? "terraform";
+		updatedConfigurations.repo =
+			updatedConfigurations.repo ?? props.selectedRepo;
+
 		axios
 			.post(
 				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
