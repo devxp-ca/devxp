@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 import createCommit from "../githubapi/createCommit";
 import createTree from "../githubapi/createTree";
+import createBranch from "../githubapi/createBranch";
 import getCommitFromUrl from "../githubapi/getCommitFromUrl";
 import getHead from "../githubapi/getHead";
 import getTreeFromUrl from "../githubapi/getTreeFromUrl";
@@ -19,8 +20,6 @@ import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
-
-import createBranch from "../githubapi/createBranch";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";

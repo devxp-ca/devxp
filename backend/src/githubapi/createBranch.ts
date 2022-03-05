@@ -1,15 +1,7 @@
 /* eslint-disable prettier/prettier */
 import axios from "axios";
-import {
-	GithubTree,
-	GithubTreeNode,
-	isGithubTree,
-	GithubBranch,
-	isGithubBranch
-} from "../types/github";
+import {GithubBranch, isGithubBranch} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
-import {arr} from "../util";
-import {isDataView} from "util/types";
 
 export default (
 	ref: string,
