@@ -19,6 +19,25 @@ import HelpIcon from "@mui/icons-material/Help";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import {lightTheme} from "../style/themes";
+import axios, {AxiosError} from "axios";
+import GenericModal from "./GenericModal";
+import {CONFIG} from "../config";
+
+export interface BackendError {
+	timestamp: Date;
+
+	//HTTP Status
+	status: number;
+
+	//Error type / high level description
+	error: string;
+
+	//Path which created error
+	path: string;
+
+	//Detailed error message
+	message?: string;
+}
 
 export default function TerraformManager(props: {
 	selectedRepo: string;
@@ -27,7 +46,7 @@ export default function TerraformManager(props: {
 }) {
 	const currentTheme = lightTheme;
 	const defaultCardSize = 250;
-	const [selectedNewInstance, setSelectNewInstance] = React.useState(false);
+
 	const savedProvider = Boolean(props.repoData)
 		? props.repoData.settings.provider
 		: "";
@@ -40,10 +59,89 @@ export default function TerraformManager(props: {
 		setSelectedProvider((event.target as HTMLInputElement).value);
 	};
 
+	//for the + button
+	const [selectedNewInstance, setSelectNewInstance] = React.useState(false);
 	const selectedNewInstanceCallback = () => {
-		setSelectNewInstance(true);
+		if (selectedProvider == "") {
+			setSelectNewInstance(false);
+		} else {
+			setSelectNewInstance(true);
+		}
 	};
 
+	const [currentlySavedConfigurations, setCurrentlySavedConfigurations] =
+		React.useState<terraformDataSettings>(props.repoData);
+	const [updatedConfigurations, setUpdatedConfigurations] =
+		React.useState<terraformDataSettings>(null);
+	//TODO: does not check for properly filled settings -- may want this in the future?
+	const changeConfigurationsCallback = (
+		newInstanceOrSettings: terraformDataSettings,
+		isModifyingInstance: Boolean,
+		cardNum: number
+	) => {
+		if (Boolean(currentlySavedConfigurations)) {
+			let justResources = newInstanceOrSettings.settings.resources;
+
+			if (!isModifyingInstance) {
+				//add new instance via concat resources to front of array
+				justResources = justResources.concat(
+					currentlySavedConfigurations.settings.resources
+				);
+			} else {
+				//TODO: There might be issues with index based removal?
+				//if modifying -- search + replace old setting, places most recently edited at front (best fit for duplicating already existing instances?)
+				currentlySavedConfigurations.settings.resources.forEach(
+					(element, index) => {
+						if (index != cardNum) {
+							justResources.push(element);
+						}
+					}
+				);
+			}
+
+			const tempData: terraformDataSettings = {
+				repo: currentlySavedConfigurations.repo,
+				tool: currentlySavedConfigurations.tool,
+				settings: {
+					provider: currentlySavedConfigurations.settings.provider,
+					resources: justResources
+				}
+			};
+			setUpdatedConfigurations(tempData);
+			setSelectNewInstance(false);
+
+			//remove after testing
+			setCurrentlySavedConfigurations(tempData);
+		} else {
+			//no previous configs so add the whole thing
+			setUpdatedConfigurations(newInstanceOrSettings);
+			setSelectNewInstance(false);
+
+			//remove after testing
+			setCurrentlySavedConfigurations(newInstanceOrSettings);
+		}
+	};
+
+	const handleSubmit = () => {
+		setOpenModal(false);
+		axios
+			.post(
+				`https://${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				updatedConfigurations
+			)
+			.then(response => {
+				console.log(response.data);
+				//Was having concurrency issues(?) with this, may need something extra if not working
+				setCurrentlySavedConfigurations(updatedConfigurations);
+				handleOpenSuccessModal();
+			})
+			.catch((error: AxiosError) => {
+				console.dir(error.response.data);
+				handleOpenFailModal(error.response?.data?.errors ?? []);
+			});
+	};
+
+	//expands a single resource into a full terraformDataSettings with one resource slot
 	const expandPreviousSettings = (
 		prevSettings: terraformDataSettings
 	): terraformDataSettings[] => {
@@ -69,7 +167,9 @@ export default function TerraformManager(props: {
 	const getCards = () => {
 		//array of terraformDataSettings with only one resource per index, used for tile generation
 		//expanding these to keep consistenty with the terraformDataSettings interface (instead of chopping it up)
-		const prevInstanceSettings = expandPreviousSettings(props.repoData);
+		const prevInstanceSettings = expandPreviousSettings(
+			currentlySavedConfigurations
+		);
 
 		return (
 			<Grid container spacing={4}>
@@ -117,21 +217,28 @@ export default function TerraformManager(props: {
 							</CardActionArea>
 						)}
 						{/* TODO: bug: changing provider when option box is already opened doesn't refresh options*/}
-						{selectedNewInstance && (
+						{/* if provider is blank the + button will not work -- may need to communicate this more */}
+						{selectedNewInstance && selectedProvider != "" && (
 							<TerraformOptions
 								selectedRepo={props.selectedRepo}
 								globalProvider={selectedProvider}
+								addNewDataCallback={
+									changeConfigurationsCallback
+								}
+								cardIndex={0}
 							/>
 						)}
 					</Card>
 				</Grid>
 				{/* Populate previous instances here */}
-				{prevInstanceSettings.map(cardSettings => (
+				{prevInstanceSettings.map((cardSettings, index) => (
 					<Grid item>
 						<TerraformInstanceCard
 							cardData={cardSettings}
 							cardSize={defaultCardSize}
 							selectedRepo={props.selectedRepo}
+							addNewDataCallback={changeConfigurationsCallback}
+							cardIndex={index}
 						/>
 					</Grid>
 				))}
@@ -139,9 +246,71 @@ export default function TerraformManager(props: {
 		);
 	};
 
+	//SUBMIT MODAL THINGS
+	const [openModal, setOpenModal] = React.useState(false);
+	const [modalText, setModalText] = React.useState({
+		isSubmitModal: true,
+		title: "",
+		body: ""
+	});
+	const handleOpenSubmitModal = () => {
+		setModalText({
+			isSubmitModal: true,
+			title: "Are you sure you want to submit?",
+			body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
+		});
+		setOpenModal(true);
+	};
+	const handleOpenSuccessModal = () => {
+		setModalText({
+			isSubmitModal: false,
+			title: "Success",
+			body: "Your changes have been successfully pushed to your repository"
+		});
+		setOpenModal(true);
+	};
+	const handleOpenFailModal = (errors: BackendError[]) => {
+		setModalText({
+			isSubmitModal: false,
+			title: "Submission Failed",
+			body:
+				errors[0]?.message ??
+				"Something went wrong, please make sure all the fields are filled out and try again"
+		});
+		setOpenModal(true);
+	};
+	const handleCloseModal = () => {
+		setOpenModal(false);
+	};
+	const modalChildren = () => {
+		return (
+			<div style={{display: "flex", justifyContent: "center"}}>
+				<Button
+					color="secondary"
+					variant="contained"
+					size="large"
+					sx={{marginTop: 2}}
+					onClick={
+						modalText.isSubmitModal
+							? handleSubmit
+							: handleCloseModal
+					}>
+					{modalText.isSubmitModal ? "Confirm" : "Ok"}
+				</Button>
+			</div>
+		);
+	};
+
 	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
 	return (
 		<Box sx={{width: "100%"}}>
+			<GenericModal
+				isOpen={openModal}
+				handleClose={handleCloseModal}
+				title={modalText.title}
+				bodyText={modalText.body}
+				children={modalChildren()}
+			/>
 			<Grid container direction="row" alignItems={"center"}>
 				<Typography sx={{paddingTop: 4, marginBottom: 3}} variant="h4">
 					Terraform
