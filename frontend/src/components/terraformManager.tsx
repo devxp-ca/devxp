@@ -226,8 +226,7 @@ export default function TerraformManager(props: {
 
 		//Dirty fix
 		updatedConfigurations.tool = updatedConfigurations.tool ?? "terraform";
-		updatedConfigurations.repo =
-			updatedConfigurations.repo ?? props.selectedRepo;
+		updatedConfigurations.repo = props.selectedRepo;
 
 		axios
 			.post(
