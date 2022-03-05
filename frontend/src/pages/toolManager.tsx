@@ -68,15 +68,6 @@ export default function ToolManager() {
 			});
 	}, []);
 
-	const [openModal, setOpenModal] = React.useState(true);
-
-	const handleCloseModal = (event: any, reason: any) => {
-		if (reason !== "backdropClick") {
-			setOpenModal(false);
-			setIsRepoSelected(true);
-		}
-	};
-
 	return (
 		<ThemeProvider theme={lightTheme}>
 			<Box style={{display: "flex"}}>
