@@ -247,6 +247,14 @@ export interface TerraformJson {
 	resource: Record<string, any>[];
 }
 
+export interface AwsRoute {
+	gateway_id: string;
+	cidr_block: string;
+	ipv6_cidr_block?: string;
+	egress_only_gateway_id?: string;
+	instance_id?: string; //ec2
+}
+
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {
