@@ -29,7 +29,7 @@ export class AwsSubnet extends Resource<AwsSubnet> implements AwsSubnet {
 	toJSON() {
 		return [
 			jsonRoot("aws_subnet", this.id, {
-				vpc: this.vpc,
+				vpc_id: `\${aws_vpc.${this.vpc}.id}`,
 				cidr_block: this.cidr_block,
 				map_public_ip_on_launch: this.map_public_ip_on_launch,
 				availability_zone: this.availability_zone
