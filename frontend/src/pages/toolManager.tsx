@@ -68,18 +68,6 @@ export default function ToolManager() {
 			});
 	}, []);
 
-	/*Create a list of test repos to populate the autocomplete*/
-	const repoListTest = [
-		{
-			name: "test1",
-			full_name: "user/test1"
-		},
-		{
-			name: "test2",
-			full_name: "user/test2"
-		}
-	];
-
 	const [openModal, setOpenModal] = React.useState(true);
 
 	const handleCloseModal = (event: any, reason: any) => {
@@ -116,7 +104,7 @@ export default function ToolManager() {
 								<Autocomplete
 									sx={{padding: "3px", width: "300px"}}
 									id="repo-select"
-									options={repoListTest}
+									options={repoList}
 									getOptionLabel={(option: any) =>
 										option.full_name
 									}
