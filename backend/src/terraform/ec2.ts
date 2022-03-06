@@ -10,6 +10,7 @@ export interface Ec2 {
 	eip: number;
 	subnet?: string;
 	securityGroups?: string[] | string;
+	iam_instance_profile?: string;
 }
 export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	constructor(
@@ -19,7 +20,8 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		autoIam?: boolean,
 		eip?: number,
 		subnet?: string,
-		securityGroups?: string[] | string
+		securityGroups?: string[] | string,
+		iam_instance_profile?: string
 	) {
 		super(id, "Ec2", autoIam);
 		this.ami = ami;
@@ -27,6 +29,7 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		this.eip = eip ?? 0;
 		this.subnet = subnet;
 		this.securityGroups = securityGroups;
+		this.iam_instance_profile = iam_instance_profile;
 	}
 
 	//Returns a resource block
@@ -58,6 +61,10 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 			json.vpc_security_group_ids = arr(this.securityGroups).map(
 				g => `\${aws_security_group.${g}.id}`
 			);
+		}
+
+		if (this.iam_instance_profile) {
+			json.iam_instance_profile = `\${aws_iam_instance_profile.${this.iam_instance_profile}.name}`;
 		}
 
 		let output = [jsonRoot("aws_instance", this.id, json)];

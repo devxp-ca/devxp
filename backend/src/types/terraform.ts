@@ -18,6 +18,9 @@ import {AwsSecurityGroup} from "../terraform/AwsSecurityGroup";
 import {Eip} from "../terraform/Eip";
 import {SnsTopic} from "../terraform/awsSnsTopic";
 import {AwsSubnet} from "../terraform/awsSubnet";
+import {AwsIamInstanceProfile} from "../terraform/AwsIamInstanceProfile";
+import {AwsIamRolePolicyAttachment} from "../terraform/awsIamRolePolicyAttachment";
+import {IamRole} from "../terraform/iamRole";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -245,7 +248,10 @@ export type TerraformResource =
 	| AwsSecurityGroup
 	| SnsTopic
 	| AwsSubnet
-	| Eip;
+	| Eip
+	| AwsIamInstanceProfile
+	| AwsIamRolePolicyAttachment
+	| IamRole;
 
 export interface PolicyStatement {
 	actions: string[];
