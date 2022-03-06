@@ -2,6 +2,11 @@ import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 import {Firewall} from "../types/terraform";
 
+const removeType = (f: any) => {
+	delete f.type;
+	return f;
+};
+
 export interface AwsSecurityGroup {
 	vpc: string;
 	firewalls: Firewall[];
@@ -26,8 +31,12 @@ export class AwsSecurityGroup
 		return jsonRoot("aws_security_group", this.id, {
 			vpc_id: `\${aws_vpc.${this.vpc}.id}`,
 			name: this.name,
-			ingress: this.firewalls.filter(f => f.type === "ingress"),
-			egress: this.firewalls.filter(f => f.type === "egress")
+			ingress: this.firewalls
+				.filter(f => f.type === "ingress")
+				.map(removeType),
+			egress: this.firewalls
+				.filter(f => f.type === "egress")
+				.map(removeType)
 		});
 	}
 }

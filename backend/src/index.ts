@@ -23,7 +23,7 @@ import {AwsSecurityGroup} from "./terraform/AwsSecurityGroup";
 const vpc = "my_vpc_for_devxp";
 const cidr = "10.0.0.0/24";
 
-testToFileAws("/home/brennan/aws_test/devxp.tf.json", [
+testToFileAws("/home/brennan/aws_test/devxp.tf", [
 	new Ec2("AUTO_UBUNTU", "t2.medium", "myinstance", true, true),
 	new AwsVpc(cidr, true, vpc),
 	new AwsSecurityGroup(`securitygroup_for_devp`, vpc, [

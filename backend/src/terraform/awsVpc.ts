@@ -44,8 +44,14 @@ export class AwsVpc extends Resource<AwsVpc> implements AwsVpc {
 				new AwsInternetGateway(gatewayId, this.id).toJSON(),
 				new AwsRouteTable(`${this.id}_routetable`, this.id, [
 					{
-						cidr_block: this.cidr_block,
-						gateway_id: gatewayId
+						//cidr_block: this.cidr_block,
+						//TODO: ALlow this to be configurable
+						//This is the collection of EXTERNAL ips which
+						//our INTERNAL resources are allowed to access
+						//ex a database should only be able to access an Ec2
+						//instance, not the internet
+						cidr_block: "0.0.0.0/0",
+						gateway_id: `\${aws_internet_gateway.${gatewayId}.id}`
 					}
 				]).toJSON()
 			];
