@@ -1,21 +1,28 @@
 import {ec2InstanceType, amiType, TerraformJson} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {ResourceWithIam} from "./resource";
+import {Eip} from "./Eip";
 
 export interface Ec2 {
 	ami: amiType;
 	instance_type: ec2InstanceType;
+	eip: boolean;
+	subnet?: string;
 }
 export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	constructor(
 		ami: amiType,
 		instance_type: ec2InstanceType,
 		id: string,
-		autoIam?: boolean
+		autoIam?: boolean,
+		eip?: boolean,
+		subnet?: string
 	) {
 		super(id, "Ec2", autoIam);
 		this.ami = ami;
 		this.instance_type = instance_type;
+		this.eip = eip ?? false;
+		this.subnet = subnet;
 	}
 
 	//Returns a resource block
@@ -38,7 +45,22 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 			];
 		}
 
-		return jsonRoot("aws_instance", this.id, json);
+		if (this.subnet) {
+			json.subnet_id = `\${aws_subnet.${this.subnet}.id}`;
+		}
+
+		let output = [jsonRoot("aws_instance", this.id, json)];
+
+		if (this.eip) {
+			output = [
+				...output,
+
+				//TODO: Check for VPC
+				new Eip(`${this.id}_eip`, this.id, false)
+			];
+		}
+
+		return output;
 	}
 
 	static latestAmiMap: Record<string, [string, string[]]> = {
