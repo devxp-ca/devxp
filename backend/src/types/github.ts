@@ -112,4 +112,13 @@ export const isGithubCommit = (object: any): object is GithubCommit =>
 	"treeUrl" in object &&
 	noNullProps(object);
 
+export interface GithubBranch {
+	sha: string;
+	type: string;
+	url: string;
+}
+
+export const isGithubBranch = (object: any): object is GithubBranch =>
+	"sha" in object && "type" in object && "url" in object;
+
 /* eslint-enable @typescript-eslint/no-explicit-any */
