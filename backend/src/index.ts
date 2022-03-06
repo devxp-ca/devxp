@@ -21,12 +21,21 @@ import {AwsVpc} from "./terraform/awsVpc";
 import {AwsSecurityGroup} from "./terraform/AwsSecurityGroup";
 
 const vpc = "my_vpc_for_devxp";
+const securityGroup = "securitygroup_for_devp";
 const cidr = "10.0.0.0/24";
 
 testToFileAws("/home/brennan/aws_test/devxp.tf", [
-	new Ec2("AUTO_UBUNTU", "t2.medium", "myinstance", true, true),
+	new Ec2(
+		"AUTO_UBUNTU",
+		"t2.medium",
+		"myinstance",
+		false,
+		true,
+		`${vpc}_subnet`,
+		securityGroup
+	),
 	new AwsVpc(cidr, true, vpc),
-	new AwsSecurityGroup(`securitygroup_for_devp`, vpc, [
+	new AwsSecurityGroup(securityGroup, vpc, [
 		{
 			type: "ingress",
 			from_port: 433,

@@ -2,12 +2,14 @@ import {ec2InstanceType, amiType, TerraformJson} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {ResourceWithIam} from "./resource";
 import {Eip} from "./Eip";
+import {arr} from "../util";
 
 export interface Ec2 {
 	ami: amiType;
 	instance_type: ec2InstanceType;
 	eip: boolean;
 	subnet?: string;
+	securityGroups?: string[] | string;
 }
 export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	constructor(
@@ -16,13 +18,15 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		id: string,
 		autoIam?: boolean,
 		eip?: boolean,
-		subnet?: string
+		subnet?: string,
+		securityGroups?: string[] | string
 	) {
 		super(id, "Ec2", autoIam);
 		this.ami = ami;
 		this.instance_type = instance_type;
 		this.eip = eip ?? false;
 		this.subnet = subnet;
+		this.securityGroups = securityGroups;
 	}
 
 	//Returns a resource block
@@ -47,6 +51,13 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 		if (this.subnet) {
 			json.subnet_id = `\${aws_subnet.${this.subnet}.id}`;
+			json.associate_public_ip_address = true;
+		}
+
+		if (this.securityGroups) {
+			json.vpc_security_group_ids = arr(this.securityGroups).map(
+				g => `\${aws_security_group.${g}.id}`
+			);
 		}
 
 		let output = [jsonRoot("aws_instance", this.id, json)];
