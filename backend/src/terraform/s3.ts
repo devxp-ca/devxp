@@ -1,4 +1,3 @@
-import {acl} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {ResourceWithIam} from "./resource";
 

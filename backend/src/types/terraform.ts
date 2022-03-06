@@ -10,7 +10,6 @@ import {DatabaseModel, generateSchemaInternals} from "./database";
 import {arr} from "../util";
 import {IamUser} from "../terraform/awsIamUser";
 import {GlacierVault} from "../terraform/glacierVault";
-import {Resource} from "../terraform/resource";
 import {lambdaFunction} from "../terraform/lambdaFunction";
 
 // ---------------------------------Variable---------------------------------- //

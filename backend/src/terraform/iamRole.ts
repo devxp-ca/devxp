@@ -1,6 +1,5 @@
 import {jsonRoot} from "./util";
 import {Resource} from "./resource";
-import {arr} from "../util";
 
 export interface IamRole {}
 export class IamRole extends Resource<IamRole> implements IamRole {
