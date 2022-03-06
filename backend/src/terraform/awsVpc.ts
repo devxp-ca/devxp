@@ -3,7 +3,6 @@ import {Resource} from "./resource";
 import {AwsSubnet} from "./awsSubnet";
 import {AwsInternetGateway} from "./AwsInternetGateway";
 import {AwsRouteTable} from "./AwsRouteTable";
-import {AwsRoute} from "../types/terraform";
 
 export interface AwsVpc {
 	cidr_block: string;

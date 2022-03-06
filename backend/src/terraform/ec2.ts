@@ -7,7 +7,7 @@ import {arr} from "../util";
 export interface Ec2 {
 	ami: amiType;
 	instance_type: ec2InstanceType;
-	eip: boolean;
+	eip: number;
 	subnet?: string;
 	securityGroups?: string[] | string;
 }
@@ -17,14 +17,14 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		instance_type: ec2InstanceType,
 		id: string,
 		autoIam?: boolean,
-		eip?: boolean,
+		eip?: number,
 		subnet?: string,
 		securityGroups?: string[] | string
 	) {
 		super(id, "Ec2", autoIam);
 		this.ami = ami;
 		this.instance_type = instance_type;
-		this.eip = eip ?? false;
+		this.eip = eip ?? 0;
 		this.subnet = subnet;
 		this.securityGroups = securityGroups;
 	}
@@ -62,12 +62,11 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 		let output = [jsonRoot("aws_instance", this.id, json)];
 
-		if (this.eip) {
+		if (this.eip > 0) {
 			output = [
 				...output,
 
-				//TODO: Check for VPC
-				new Eip(`${this.id}_eip`, this.id, false)
+				new Eip(`${this.id}_eip`, this.id, this.eip === 2)
 			];
 		}
 
@@ -88,8 +87,17 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 		if (/^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami)) {
 			const os = this.ami.slice(5).toLowerCase();
-
 			if ("data" in json && Array.isArray(json.data)) {
+				for (let i = 0; i < json.data.length; i++) {
+					if (
+						"aws_ami" in json.data[i] &&
+						Array.isArray(json.data[i].aws_ami) &&
+						json.data[i].aws_ami.length > 0 &&
+						`${os}_latest` in json.data[i].aws_ami[0]
+					) {
+						return json;
+					}
+				}
 				json.data = [
 					...json.data,
 					jsonRoot("aws_ami", `${os}_latest`, {
