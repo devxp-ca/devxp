@@ -3,6 +3,7 @@ import {Resource} from "./resource";
 import {AwsSubnet} from "./awsSubnet";
 import {AwsInternetGateway} from "./AwsInternetGateway";
 import {AwsRouteTable} from "./AwsRouteTable";
+import {AwsRoute} from "../types/terraform";
 
 export interface AwsVpc {
 	cidr_block: string;
@@ -12,14 +13,14 @@ export interface AwsVpc {
 export class AwsVpc extends Resource<AwsVpc> implements AwsVpc {
 	constructor(
 		cidr_block: string,
-		internetGateway: boolean,
+		internet: boolean,
 		id: string,
 		autoIam?: boolean,
 		name?: string
 	) {
 		super(id, "awsVpc", autoIam, name);
 		this.cidr_block = cidr_block;
-		this.internet = internetGateway;
+		this.internet = internet;
 	}
 
 	//Returns an array of resource blocks
@@ -36,16 +37,20 @@ export class AwsVpc extends Resource<AwsVpc> implements AwsVpc {
 			})
 		];
 		if (this.internet) {
+			const gatewayId = `${this.id}_internetgateway`;
+
 			json = [
 				...json,
-				new AwsInternetGateway(
-					`${this.id}_internetgateway`,
-					this.id
-				).toJSON(),
-				new AwsRouteTable(`${this.id}_routetable`, this.id).toJSON()
+				new AwsInternetGateway(gatewayId, this.id).toJSON(),
+				new AwsRouteTable(`${this.id}_routetable`, this.id, [
+					{
+						cidr_block: this.cidr_block,
+						gateway_id: gatewayId
+					}
+				]).toJSON()
 			];
 		}
 
-		return json;
+		return json.flat();
 	}
 }

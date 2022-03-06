@@ -11,6 +11,13 @@ import {arr} from "../util";
 import {IamUser} from "../terraform/awsIamUser";
 import {GlacierVault} from "../terraform/glacierVault";
 import {lambdaFunction} from "../terraform/lambdaFunction";
+import {AwsVpc} from "../terraform/awsVpc";
+import {AwsInternetGateway} from "../terraform/AwsInternetGateway";
+import {AwsRouteTable} from "../terraform/AwsRouteTable";
+import {AwsSecurityGroup} from "../terraform/AwsSecurityGroup";
+import {Eip} from "../terraform/Eip";
+import {SnsTopic} from "../terraform/awsSnsTopic";
+import {AwsSubnet} from "../terraform/awsSubnet";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -231,7 +238,14 @@ export type TerraformResource =
 	| S3
 	| IamUser
 	| GlacierVault
-	| lambdaFunction;
+	| lambdaFunction
+	| AwsVpc
+	| AwsInternetGateway
+	| AwsRouteTable
+	| AwsSecurityGroup
+	| SnsTopic
+	| AwsSubnet
+	| Eip;
 
 export interface PolicyStatement {
 	actions: string[];
@@ -258,6 +272,42 @@ export interface Firewall {
 	protocol: string;
 	cidr_blocks?: string[];
 }
+
+/*
+
+//TODO: Refactor away from using attributes as blocks
+//https://stackoverflow.com/questions/69079945/terraform-inappropriate-value-for-attribute-ingress-while-creating-sg
+export const AwsRouteWithDefaults = (
+	cidr_block: string,
+	id: string
+) => ({
+	gateway_id: id,
+	cidr_block: cidr_block,
+	egress_only_gateway_id: "",
+	instance_id: "",
+	ipv6_cidr_block: "",
+	nat_gateway_id:  "",
+	network_interface_id: "",
+	transit_gateway_id: "",
+	vpc_endpoint_id: "",
+	vpc_peering_connection_id: "",
+	destination_prefix_list_id: ""
+})
+
+//TODO: Refactor away from using attributes as blocks
+//https://stackoverflow.com/questions/69079945/terraform-inappropriate-value-for-attribute-ingress-while-creating-sg
+export const FirewallWithDefaults = (firewall: Firewall) => ({
+	from_port: firewall.from_port,
+	to_port: firewall.to_port,
+	protocol: firewall.protocol,
+	cidr_blocks: firewall.cidr_blocks,
+	description: "",
+	ipv6_cidr_blocks: ["::/0"],
+	prefix_list_ids: [],
+	security_groups: [],
+	self: false
+})
+*/
 
 // ----------------------------Terraform Root-------------------------------- //
 
