@@ -5,18 +5,23 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import {CardActionArea} from "@mui/material";
 
-export default function ToolManagerCard(props: {onClick: () => void}) {
+export default function ToolManagerCard(props: {
+	onClick: () => void;
+	title: string;
+	desc: string;
+	image: string;
+	color: string;
+}) {
 	return (
 		<Card sx={{maxWidth: 345}}>
 			<CardActionArea onClick={props.onClick}>
-				<CardMedia component="img" height="200" />
-				<CardContent>
+				<CardMedia component="img" image={props.image} />
+				<CardContent sx={{backgroundColor: `${props.color}50`}}>
 					<Typography gutterBottom variant="h5" component="div">
-						Terraform
+						{props.title}
 					</Typography>
 					<Typography variant="body2" color="text.secondary">
-						An infrastructure as code tool that can manage all your
-						cloud resource needs
+						{props.desc}
 					</Typography>
 				</CardContent>
 			</CardActionArea>

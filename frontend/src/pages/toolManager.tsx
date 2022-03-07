@@ -12,12 +12,10 @@ import TerraformOptions, {
 	terraformDataSettings
 } from "../components/terraformOptions";
 import Grid from "@mui/material/Grid";
-import SelectRepoModal from "../components/SelectRepoModal";
-import Button from "@mui/material/Button";
 import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
-import MouseOverPopover from "../components/MouseOverPopover";
-import HelpIcon from "@mui/icons-material/Help";
+
+import terraformPNG from "../assets/Terraform_Vertical.png";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
@@ -131,6 +129,10 @@ export default function ToolManager() {
 									onClick={setSelectedToolCardCallback(
 										"terraform"
 									)}
+									title="Terraform"
+									desc="An infrastructure as code tool that can manage all your cloud resource needs"
+									image={terraformPNG}
+									color="#844FBA"
 								/>
 							</Grid>
 						)}
