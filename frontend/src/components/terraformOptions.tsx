@@ -146,7 +146,7 @@ export default function TerraformOptions(props: {
 				id:
 					i == 0
 						? instanceNameValue
-						: `${instanceNameValue}_${String.fromCharCode(96 + i)}`,
+						: `${instanceNameValue}-${String.fromCharCode(96 + i)}`,
 				ami: amiValue,
 				instance_type: instanceTypeValue
 			});
