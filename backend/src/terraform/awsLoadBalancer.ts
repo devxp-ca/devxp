@@ -34,7 +34,7 @@ export class AwsLoadBalancer
 		instances: Ec2[] = [],
 
 		enable_http2 = false,
-		enable_deletion_protection = true,
+		enable_deletion_protection = false,
 
 		autoIam?: boolean,
 		name?: string
