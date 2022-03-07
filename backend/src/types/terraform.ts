@@ -23,6 +23,7 @@ import {AwsIamRolePolicyAttachment} from "../terraform/awsIamRolePolicyAttachmen
 import {IamRole} from "../terraform/iamRole";
 import {AwsRoute as AwsRouteResource} from "../terraform/AwsRoute";
 import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
+import {DynamoDb} from "../terraform/DynamoDb";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -174,7 +175,16 @@ export type source_image =
 
 export type acl = "private" | "public-read" | "public-read-write";
 
-// ----------------------------------LambdaFunction-------------------------------------- //
+// -------------------------------DynamoDb----------------------------------- //
+
+export type billing_mode = "PROVISIONED" | "PAY_PER_REQUEST";
+export interface db_attribute {
+	name: string;
+	type: "S" | "N" | "B";
+	isHash?: boolean;
+}
+
+// ----------------------------LambdaFunction-------------------------------- //
 
 export type runtime =
 	| "nodejs"
@@ -255,7 +265,8 @@ export type TerraformResource =
 	| AwsIamRolePolicyAttachment
 	| IamRole
 	| AwsVpcEndpoint
-	| AwsRouteResource;
+	| AwsRouteResource
+	| DynamoDb;
 
 export interface PolicyStatement {
 	actions: string[];
@@ -282,42 +293,6 @@ export interface Firewall {
 	protocol: string;
 	cidr_blocks?: string[];
 }
-
-/*
-
-//TODO: Refactor away from using attributes as blocks
-//https://stackoverflow.com/questions/69079945/terraform-inappropriate-value-for-attribute-ingress-while-creating-sg
-export const AwsRouteWithDefaults = (
-	cidr_block: string,
-	id: string
-) => ({
-	gateway_id: id,
-	cidr_block: cidr_block,
-	egress_only_gateway_id: "",
-	instance_id: "",
-	ipv6_cidr_block: "",
-	nat_gateway_id:  "",
-	network_interface_id: "",
-	transit_gateway_id: "",
-	vpc_endpoint_id: "",
-	vpc_peering_connection_id: "",
-	destination_prefix_list_id: ""
-})
-
-//TODO: Refactor away from using attributes as blocks
-//https://stackoverflow.com/questions/69079945/terraform-inappropriate-value-for-attribute-ingress-while-creating-sg
-export const FirewallWithDefaults = (firewall: Firewall) => ({
-	from_port: firewall.from_port,
-	to_port: firewall.to_port,
-	protocol: firewall.protocol,
-	cidr_blocks: firewall.cidr_blocks,
-	description: "",
-	ipv6_cidr_blocks: ["::/0"],
-	prefix_list_ids: [],
-	security_groups: [],
-	self: false
-})
-*/
 
 // ----------------------------Terraform Root-------------------------------- //
 

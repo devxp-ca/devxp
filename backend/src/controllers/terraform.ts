@@ -9,6 +9,7 @@ import updateHead from "../githubapi/updateHead";
 import {getModeNumber} from "../githubapi/util";
 import {NamedAwsBackend} from "../terraform/awsBackend";
 import {AwsProvider} from "../terraform/awsProvider";
+import {DynamoDb} from "../terraform/DynamoDb";
 import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
 import {GlacierVault} from "../terraform/glacierVault";
@@ -28,7 +29,13 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		provider === "google" ? (req.body.settings?.project as string) : "";
 
 	const resourcesRaw = req.body.settings?.resources as (TerraformResource & {
-		type: "ec2" | "gce" | "s3" | "glacierVault" | "lambdaFunction";
+		type:
+			| "ec2"
+			| "gce"
+			| "s3"
+			| "glacierVault"
+			| "lambdaFunction"
+			| "dynamoDb";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -48,6 +55,13 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		} else if (resource.type === "glacierVault") {
 			const glacierVault: GlacierVault = resource as GlacierVault;
 			return new GlacierVault(glacierVault.id, glacierVault.autoIam);
+		} else if (resource.type === "dynamoDb") {
+			const dynamoDb: DynamoDb = resource as DynamoDb;
+			return new DynamoDb(
+				dynamoDb.id,
+				dynamoDb.attributes,
+				dynamoDb.autoIam
+			);
 		} else if (resource.type === "lambdaFunction") {
 			const lambdaFunc: lambdaFunction = resource as lambdaFunction;
 			return new lambdaFunction(

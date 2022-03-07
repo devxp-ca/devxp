@@ -1,7 +1,7 @@
 import {CustomValidator} from "express-validator";
 import {isRuntime} from "../types/terraform";
 
-export const resourceTypes = /^(ec2|gce|s3|lambdaFunc)$/;
+export const resourceTypes = /^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb)$/;
 
 const validId = (id: string): boolean => {
 	return /^[a-z]([-a-z0-9]*[a-z0-9])?$/.test(id);
@@ -107,6 +107,27 @@ const resourceValidator: CustomValidator = (resource: any) => {
 		}
 		if (!/^[a-z][-a-z0-9]*[a-z0-9]$/.test(resource.id)) {
 			return false;
+		}
+	} else if (resource.type === "dynamoDb") {
+		if (!hasAllKeys(resource, ["id", "attributes"])) {
+			return false;
+		}
+		if (!/^[a-z][-a-z0-9]*[a-z0-9]$/.test(resource.id)) {
+			return false;
+		}
+		if (!Array.isArray(resource.attributes)) {
+			return false;
+		}
+		for (let i = 0; i < resource.attributes.length; i++) {
+			if (!hasAllKeys(resource.attributes[i], ["name", "type"])) {
+				return false;
+			}
+			if (typeof resource.attributes[i].name !== "string") {
+				return false;
+			}
+			if (!/^(S|N|B)$/.test(resource.attributes[i].type)) {
+				return false;
+			}
 		}
 	}
 
