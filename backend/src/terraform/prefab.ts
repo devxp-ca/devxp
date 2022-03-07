@@ -7,9 +7,67 @@ import {AwsVpc} from "./awsVpc";
 //import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
 import {DynamoDb} from "./DynamoDb";
 import {Ec2} from "./ec2";
+import {Gce} from "./gce";
 import {GlacierVault} from "./glacierVault";
 import {IamRole} from "./iamRole";
+import {lambdaFunction} from "./lambdaFunction";
 import {S3} from "./s3";
+
+export type PrefabSupports = Ec2 | S3 | GlacierVault | DynamoDb;
+
+export const splitForPrefab = (
+	resources: TerraformResource[]
+): [Gce[], lambdaFunction[], PrefabSupports[]] => {
+	let gce: Gce[] = [];
+	let lambda: lambdaFunction[] = [];
+	let prefabSupports: PrefabSupports[] = [];
+
+	resources.forEach(r => {
+		if (r.type === "gce") {
+			gce = [...gce, r as Gce];
+		} else if (r.type === "lambdaFunction") {
+			lambda = [...lambda, r as lambdaFunction];
+		} else {
+			prefabSupports = [...prefabSupports, r as PrefabSupports];
+		}
+	});
+
+	return [gce, lambda, prefabSupports];
+};
+
+export const prefabNetworkFromArr = (
+	resources: PrefabSupports[],
+	rules: {
+		ssh?: boolean;
+		sshCidr?: string[];
+		allEgress?: boolean;
+		allIngress?: boolean;
+		webEgress?: boolean;
+		webIngress?: boolean;
+		webCidr?: string[];
+	},
+	vpc_cidr = "10.0.0.0/16",
+	public_cidr = "10.0.0.0/24",
+	private_cidr = "10.0.128.0/24",
+	vpc = "devxp_vpc",
+	securityGroup = "devxp_security_group"
+) =>
+	prefabNetwork(
+		{
+			ec2: resources.filter(r => r.type === "ec2") as Ec2[],
+			s3: resources.filter(r => r.type === "s3") as S3[],
+			dynamo: resources.filter(r => r.type === "dynamoDb") as DynamoDb[],
+			glacier: resources.filter(
+				r => r.type === "glacierVault"
+			) as GlacierVault[]
+		},
+		rules,
+		vpc_cidr,
+		public_cidr,
+		private_cidr,
+		vpc,
+		securityGroup
+	);
 
 export const prefabNetwork = (
 	resources: {

@@ -16,6 +16,11 @@ import {GlacierVault} from "../terraform/glacierVault";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
 import {lambdaFunction} from "../terraform/lambdaFunction";
+import {
+	prefabNetworkFromArr,
+	PrefabSupports,
+	splitForPrefab
+} from "../terraform/prefab";
 import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
@@ -80,12 +85,22 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		return;
 	}
 
+	const [gce, lambda, networkedResources] = splitForPrefab(resources);
+
+	const network =
+		networkedResources.length > 0 && provider === "aws"
+			? prefabNetworkFromArr(networkedResources, {
+					allEgress: true,
+					allIngress: true
+			  })
+			: networkedResources;
+
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
 		provider === "aws"
 			? new NamedAwsBackend()
 			: new NamedGoogleBackend(project),
-		resources
+		[...gce, ...lambda, ...network]
 	);
 
 	getHead(token, repo, "main")
