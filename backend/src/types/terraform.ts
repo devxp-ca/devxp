@@ -224,6 +224,10 @@ export interface db_attribute {
 	isHash?: boolean;
 }
 
+// ------------------------------RDS Dataase--------------------------------- //
+
+export type rds_engine = "mysql" | "mariadb" | "postgresql" | "oracle";
+
 // ----------------------------LambdaFunction-------------------------------- //
 
 export type runtime =
