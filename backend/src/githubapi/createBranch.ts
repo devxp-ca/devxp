@@ -34,15 +34,13 @@ export default (
 					reject(new Error("Invalid response from github"));
 				}
 			})
-			.catch(err => {
-				errCache = err;
+			.catch(async err => {
 				//Maybe the branch exists so we should try to retrieve it
-				return getHead(token, repo, branchName);
-
-				//TODO: Refactor this
-			})
-			.then(head => resolve(head as GithubBranch))
-			.catch(() => {
-				reject(errCache);
+				try {
+					const head = await getHead(token, repo, branchName);
+					resolve(head as GithubBranch);
+				} catch {
+					reject(err);
+				}
 			});
 	});
