@@ -161,6 +161,10 @@ export default function TerraformOptions(props: {
 		);
 	};
 
+	const deleteInstance = () => {
+		props.addNewDataCallback(null, isModifyingInstance, props.cardIndex);
+	};
+
 	return (
 		<Box sx={{padding: 4}}>
 			<Grid container direction="column">
@@ -496,17 +500,30 @@ export default function TerraformOptions(props: {
 				</FormControl>
 			</Grid>
 			<Box textAlign="center" sx={{paddingTop: 3}}>
-				<Button
-					variant="contained"
-					color="success"
-					size="large"
-					startIcon={<CheckIcon />}
-					aria-label="add changes"
-					onClick={addChanges}>
-					{isModifyingInstance
-						? "Add Instance Changes"
-						: "Add Instance(s)"}
-				</Button>
+				<Grid>
+					<Button
+						variant="contained"
+						color="success"
+						size="large"
+						startIcon={<CheckIcon />}
+						aria-label="add changes"
+						onClick={addChanges}>
+						{isModifyingInstance
+							? "Add Instance Changes"
+							: "Add Instance(s)"}
+					</Button>
+					{isModifyingInstance && (
+						<Button
+							sx={{marginLeft: 3}}
+							variant="contained"
+							color="error"
+							size="large"
+							aria-label="delete"
+							onClick={deleteInstance}>
+							{"Delete"}
+						</Button>
+					)}
+				</Grid>
 			</Box>
 		</Box>
 	);
