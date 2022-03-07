@@ -20,6 +20,7 @@ import {Ec2} from "./terraform/ec2";
 import {prefabNetwork} from "./terraform/prefab";
 import {S3} from "./terraform/s3";
 import {GlacierVault} from "./terraform/glacierVault";
+import {DynamoDb} from "./terraform/DynamoDb";
 
 testToFileAws(
 	"/home/brennan/aws_test/devxp.tf",
@@ -38,7 +39,14 @@ testToFileAws(
 				"devxp_test_vault",
 				false,
 				"devxp-test-vault"
-			)
+			),
+			dynamo: new DynamoDb("devxp_test_dynamo_db", [
+				{
+					name: "field1",
+					type: "S",
+					isHash: true
+				}
+			])
 		},
 		{
 			ssh: true,

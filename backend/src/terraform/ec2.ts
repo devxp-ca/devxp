@@ -130,6 +130,7 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	//An array of policy statements for IAM
 	//These need to be researched from
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
+	//https://asecure.cloud/l/iam/
 	getPolicyDocument() {
 		return [
 			ResourceWithIam.policyStatement(

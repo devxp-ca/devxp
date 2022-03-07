@@ -181,6 +181,8 @@ export type billing_mode = "PROVISIONED" | "PAY_PER_REQUEST";
 export interface db_attribute {
 	name: string;
 	type: "S" | "N" | "B";
+
+	//TODO: Add sort key
 	isHash?: boolean;
 }
 

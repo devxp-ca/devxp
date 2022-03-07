@@ -1,5 +1,5 @@
 import {CustomValidator} from "express-validator";
-import {isRuntime} from "../types/terraform";
+import {db_attribute, isRuntime} from "../types/terraform";
 
 export const resourceTypes = /^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb)$/;
 
@@ -128,6 +128,11 @@ const resourceValidator: CustomValidator = (resource: any) => {
 			if (!/^(S|N|B)$/.test(resource.attributes[i].type)) {
 				return false;
 			}
+		}
+		if (
+			resource.attributes.filter((a: db_attribute) => a.isHash).length < 1
+		) {
+			return false;
 		}
 	}
 

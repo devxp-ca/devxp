@@ -4,7 +4,8 @@ import {AwsIamInstanceProfile} from "./AwsIamInstanceProfile";
 import {AwsIamRolePolicyAttachment} from "./awsIamRolePolicyAttachment";
 import {AwsSecurityGroup} from "./AwsSecurityGroup";
 import {AwsVpc} from "./awsVpc";
-import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
+//import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
+import {DynamoDb} from "./DynamoDb";
 import {Ec2} from "./ec2";
 import {GlacierVault} from "./glacierVault";
 import {IamRole} from "./iamRole";
@@ -15,6 +16,7 @@ export const prefabNetwork = (
 		ec2?: Ec2[] | Ec2;
 		s3?: S3[] | S3;
 		glacier?: GlacierVault[] | GlacierVault;
+		dynamo?: DynamoDb[] | DynamoDb;
 	},
 	rules: {
 		ssh?: boolean;
@@ -39,6 +41,8 @@ export const prefabNetwork = (
 				ec2.id,
 				ec2.autoIam,
 				2,
+
+				//TODO: Find a way to put this in the private subnet
 				`${vpc}_subnet_public`,
 				//`${vpc}_subnet_private`,
 				securityGroup
@@ -50,8 +54,11 @@ export const prefabNetwork = (
 	const vaults = arr(resources.glacier ?? []).map(
 		(vault: GlacierVault) => new GlacierVault(vault.id, true)
 	);
+	const dbs = arr(resources.dynamo ?? []).map(
+		(db: DynamoDb) => new DynamoDb(db.id, db.attributes, true, db.name)
+	);
 
-	const policies = [...buckets, ...vaults].map(
+	const policies = [...buckets, ...vaults, ...dbs].map(
 		bucket => `${bucket.id}_iam_policy0`
 	);
 	const iamRoles = instances.map(
@@ -159,6 +166,7 @@ export const prefabNetwork = (
 		...instances,
 		...buckets,
 		...vaults,
+		...dbs,
 		...instanceProfiles,
 		...iamRoles,
 		...attachments,

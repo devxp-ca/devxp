@@ -21,11 +21,12 @@ export class DynamoDb extends ResourceWithIam<DynamoDb> implements DynamoDb {
 		return jsonRoot("aws_dynamodb_table", this.id, {
 			name: this.name,
 			hash_key: this.attributes.filter(a => a.isHash)[0]?.name,
+			billing_mode: "PAY_PER_REQUEST",
 			ttl: {
 				attribute_name: "TimeToExist",
-				enabled: false
+				enabled: true
 			},
-			attributes: this.attributes.map(a => {
+			attribute: this.attributes.map(a => {
 				if ("isHash" in a) {
 					delete a.isHash;
 				}
@@ -34,10 +35,37 @@ export class DynamoDb extends ResourceWithIam<DynamoDb> implements DynamoDb {
 		});
 	}
 
+	//https://asecure.cloud/l/iam/
 	getPolicyDocument() {
-		return ResourceWithIam.policyStatement(
-			["dynamodb:DescribeTable", "dynamodb:Query", "dynamodb:Scan"],
-			`\${aws_dynamodb_table.${this.id}.arn}`
-		);
+		return [
+			ResourceWithIam.policyStatement(
+				[
+					"dynamodb:DescribeTable",
+					"dynamodb:Query",
+					"dynamodb:Scan",
+					"dynamodb:BatchGet*",
+					"dynamodb:DescribeStream",
+					"dynamodb:DescribeTable",
+					"dynamodb:Get*",
+					"dynamodb:Query",
+					"dynamodb:Scan",
+					"dynamodb:BatchWrite*",
+					"dynamodb:CreateTable",
+					"dynamodb:Delete*",
+					"dynamodb:Update*",
+					"dynamodb:PutItem"
+				],
+				`\${aws_dynamodb_table.${this.id}.arn}`
+			),
+			ResourceWithIam.policyStatement(
+				[
+					"dynamodb:List*",
+					"dynamodb:DescribeReservedCapacity*",
+					"dynamodb:DescribeLimits",
+					"dynamodb:DescribeTimeToLive"
+				],
+				`*`
+			)
+		];
 	}
 }
