@@ -1,11 +1,12 @@
 import {jsonRoot} from "./util";
 import {Resource} from "./resource";
+import {awsZone, char} from "../types/terraform";
 
 export interface AwsSubnet {
 	vpc: string;
 	cidr_block: string;
 	map_public_ip_on_launch: boolean;
-	availability_zone: string;
+	availability_zone: `${awsZone}${char}`;
 }
 
 export class AwsSubnet extends Resource<AwsSubnet> implements AwsSubnet {
@@ -14,7 +15,7 @@ export class AwsSubnet extends Resource<AwsSubnet> implements AwsSubnet {
 		cidr_block: string,
 		map_public_ip_on_launch: boolean,
 		id: string,
-		availability_zone = "us-west-2a",
+		availability_zone: `${awsZone}${char}` = "us-west-2a",
 		autoIam?: boolean,
 		name?: string
 	) {

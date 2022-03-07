@@ -1,11 +1,11 @@
-import {machineType} from "../types/terraform";
+import {machineType, gcpZone} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 
 export interface Gce {
 	project: string;
 	machine_type: machineType;
-	zone: string;
+	zone: gcpZone;
 	disk_image: string;
 }
 export class Gce extends Resource<Gce> implements Gce {
@@ -20,7 +20,7 @@ export class Gce extends Resource<Gce> implements Gce {
 		id: string,
 		machine_type: machineType,
 		disk_image: string,
-		zone = "us-west1-a"
+		zone: gcpZone = "us-west1-a"
 	) {
 		super(id, "Gce");
 		this.project = project;

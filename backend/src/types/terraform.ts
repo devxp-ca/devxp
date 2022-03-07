@@ -296,6 +296,39 @@ export interface Firewall {
 	cidr_blocks?: string[];
 }
 
+export type char =
+	| "a"
+	| "b"
+	| "c"
+	| "d"
+	| "e"
+	| "f"
+	| "g"
+	| "h"
+	| "i"
+	| "j"
+	| "k"
+	| "l"
+	| "m"
+	| "n"
+	| "o"
+	| "p"
+	| "q"
+	| "r"
+	| "s"
+	| "t"
+	| "u"
+	| "v"
+	| "w"
+	| "x"
+	| "y"
+	| "z";
+export type digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+export type countryCode = "us" | "af" | "ap" | "ca" | "eu" | "me" | "sa";
+export type awsZone = `${countryCode}-${string}-${digit}`;
+export type gcpRegion = `${string}-${string}${digit}`;
+export type gcpZone = `${string}-${string}${digit}-${char}`;
+
 // ----------------------------Terraform Root-------------------------------- //
 
 export interface Terraform {

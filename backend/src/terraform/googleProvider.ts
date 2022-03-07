@@ -3,14 +3,16 @@ import {DatabaseModel, generateSchema} from "../types/database";
 import {
 	named,
 	NamedRequiredProvider,
-	RequiredProvider
+	RequiredProvider,
+	gcpZone,
+	gcpRegion
 } from "../types/terraform";
 import {removeName} from "./util";
 
 export interface GoogleProvider extends named<RequiredProvider, "google"> {
 	project: string;
-	region?: string;
-	zone?: string;
+	region?: gcpRegion;
+	zone?: gcpZone;
 	credentials?: string;
 }
 export class GoogleProvider
@@ -20,14 +22,14 @@ export class GoogleProvider
 	name: "google";
 
 	constructor(project: string);
-	constructor(project: string, region: string);
-	constructor(project: string, region: string, zone: string);
+	constructor(project: string, region: gcpRegion);
+	constructor(project: string, region: gcpRegion, zone: gcpZone);
 	constructor(
 		project: string,
 		source = "hashicorp/google",
 		version = ">= 4.10.0",
-		region = "us-west1",
-		zone: string | null = null,
+		region: gcpRegion = "us-west1",
+		zone: gcpZone | null = null,
 		credentials: string | null = null
 	) {
 		super(source, version, "google");
