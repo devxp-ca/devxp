@@ -25,11 +25,6 @@ export const testToFile = (
 		resources
 	);
 
-	/*
-	fs.writeFileSync(`${filename}.json`, JSON.stringify(root, null, 2), {
-		flag: "w"
-	});
-	*/
 	fs.writeFileSync(filename, jsonToHcl(root), {
 		flag: "w"
 	});
@@ -82,7 +77,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Remove incorrect block as attribute styles
 	hcl = hcl.replace(
-		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute) = {/g,
+		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action) = {/g,
 		(_match, $1) => `${$1} {`
 	);
 
