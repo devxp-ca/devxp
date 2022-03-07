@@ -31,6 +31,30 @@ export const settingsValidator = [
 		.isLength({min: 1})
 		.matches(/^(aws|google|azure)$/)
 		.withMessage("Provider must be aws, google, or azure at this time"),
+	body("settings.secure")
+		.if(body("tool").equals("terraform"))
+		.optional()
+		.isBoolean()
+		.default(false)
+		.withMessage("secure flag must be boolean"),
+	body("settings.allowSsh")
+		.if(body("tool").equals("terraform"))
+		.optional()
+		.isBoolean()
+		.default(false)
+		.withMessage("allowSsh flag must be boolean"),
+	body("settings.allowIngressWeb")
+		.if(body("tool").equals("terraform"))
+		.optional()
+		.isBoolean()
+		.default(false)
+		.withMessage("allowIngressWeb flag must be boolean"),
+	body("settings.allowEgressWeb")
+		.if(body("tool").equals("terraform"))
+		.optional()
+		.isBoolean()
+		.default(false)
+		.withMessage("allowEgressWeb flag must be boolean"),
 	body("settings.project")
 		.if(body("tool").equals("terraform"))
 		.if(body("settings.provider").equals("google"))

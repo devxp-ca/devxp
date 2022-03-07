@@ -16,11 +16,7 @@ import {GlacierVault} from "../terraform/glacierVault";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
 import {lambdaFunction} from "../terraform/lambdaFunction";
-import {
-	prefabNetworkFromArr,
-	PrefabSupports,
-	splitForPrefab
-} from "../terraform/prefab";
+import {prefabNetworkFromArr, splitForPrefab} from "../terraform/prefab";
 import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
@@ -28,6 +24,11 @@ import {TerraformResource} from "../types/terraform";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
+
+	const secure = req.body.secure ?? false;
+	const allowSsh = req.body.allowSsh ?? false;
+	const allowEgressWeb = req.body.allowEgressWeb ?? false;
+	const allowIngressWeb = req.body.allowIngressWeb ?? false;
 
 	//Only needed for google
 	const project =
@@ -90,8 +91,11 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 	const network =
 		networkedResources.length > 0 && provider === "aws"
 			? prefabNetworkFromArr(networkedResources, {
-					allEgress: true,
-					allIngress: true
+					allEgress: !secure,
+					allIngress: !secure,
+					ssh: secure && allowSsh,
+					webEgress: secure && allowEgressWeb,
+					webIngress: secure && allowIngressWeb
 			  })
 			: networkedResources;
 
