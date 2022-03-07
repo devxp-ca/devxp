@@ -10,7 +10,11 @@ import {
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import HCL from "js-hcl-parser";
+//import HCL from "js-hcl-parser";
+//import * as HCL from 'js-hcl-parser';
+
+/* eslint-disable @typescript-eslint/no-var-requires */
+const HCL = require("js-hcl-parser");
 
 export const arr = <T>(data: T | T[]) => (Array.isArray(data) ? data : [data]);
 
