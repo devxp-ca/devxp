@@ -139,19 +139,24 @@ export default function TerraformOptions(props: {
 		*/
 
 		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
+		let resourceArray = [];
+		for (let i = 0; i < numberOfInstancesValue; i++) {
+			resourceArray.push({
+				type: resourceTypeValue,
+				id:
+					i == 0
+						? instanceNameValue
+						: `${instanceNameValue}_${String.fromCharCode(96 + i)}`,
+				ami: amiValue,
+				instance_type: instanceTypeValue
+			});
+		}
 		const settings: terraformDataSettings = {
 			repo: props.selectedRepo,
 			tool: "terraform",
 			settings: {
 				provider: providerValue,
-				resources: [
-					{
-						type: resourceTypeValue,
-						id: instanceNameValue,
-						ami: amiValue,
-						instance_type: instanceTypeValue
-					}
-				]
+				resources: resourceArray
 			}
 		};
 		props.addNewDataCallback(
