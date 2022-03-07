@@ -328,8 +328,9 @@ export type char =
 export type digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 export type countryCode = "us" | "af" | "ap" | "ca" | "eu" | "me" | "sa";
 export type awsZone = `${countryCode}-${string}-${digit}`;
+export type awsRegion = `${awsZone}${char}`;
 export type gcpRegion = `${string}-${string}${digit}`;
-export type gcpZone = `${string}-${string}${digit}-${char}`;
+export type gcpZone = `${gcpRegion}-${char}`;
 
 export type load_balancer_type = "application" | "gateway" | "network";
 

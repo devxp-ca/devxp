@@ -53,8 +53,9 @@ export const prefabNetworkFromArr = (
 		webCidr?: string[];
 	},
 	vpc_cidr = "10.0.0.0/16",
-	public_cidr = "10.0.0.0/24",
-	private_cidr = "10.0.128.0/24",
+	public_cidr = "10.0.0.0/25",
+	public_cidr_2 = "10.0.128.0/25",
+	private_cidr = "10.0.128.0/25",
 	vpc = "devxp_vpc",
 	securityGroup = "devxp_security_group"
 ) =>
@@ -75,6 +76,7 @@ export const prefabNetworkFromArr = (
 		rules,
 		vpc_cidr,
 		public_cidr,
+		public_cidr_2,
 		private_cidr,
 		vpc,
 		securityGroup
@@ -98,8 +100,9 @@ export const prefabNetwork = (
 		webCidr?: string[];
 	},
 	vpc_cidr = "10.0.0.0/16",
-	public_cidr = "10.0.0.0/24",
-	private_cidr = "10.0.128.0/24",
+	public_cidr = "10.0.0.0/25",
+	public_cidr_2 = "10.0.128.0/25",
+	private_cidr = "10.0.128.0/25",
 	vpc = "devxp_vpc",
 	securityGroup = "devxp_security_group"
 ): TerraformResource[] => {
@@ -113,7 +116,7 @@ export const prefabNetwork = (
 				2,
 
 				//TODO: Find a way to put this in the private subnet
-				`${vpc}_subnet_public`,
+				`${vpc}_subnet_public0`,
 				//`${vpc}_subnet_private`,
 				securityGroup
 			)
@@ -135,18 +138,18 @@ export const prefabNetwork = (
 				lb.type,
 				true,
 				[securityGroup],
-				`${vpc}_subnet_public`,
+				[`${vpc}_subnet_public0`, `${vpc}_subnet_public1`],
 				lb.protocol,
 				lb.port,
 				instances,
 				lb.enable_http2,
 				lb.enable_deletion_protection,
-				true,
+				false,
 				lb.name
 			)
 	);
 
-	const policies = [...buckets, ...vaults, ...dbs, ...lbs].map(
+	const policies = [...buckets, ...vaults, ...dbs].map(
 		bucket => `${bucket.id}_iam_policy0`
 	);
 	const iamRoles = instances.map(
@@ -265,8 +268,9 @@ export const prefabNetwork = (
 		new AwsVpc(
 			vpc_cidr,
 			private_cidr,
-			public_cidr,
+			[public_cidr, public_cidr_2],
 			vpc,
+			["us-west-2a", "us-west-2b"],
 			false,
 			undefined,
 			true

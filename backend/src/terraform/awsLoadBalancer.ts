@@ -1,5 +1,5 @@
 import {jsonRoot} from "./util";
-import {ResourceWithIam} from "./resource";
+import {Resource} from "./resource";
 import {load_balancer_type} from "../types/terraform";
 import {arr} from "../util";
 import {Ec2} from "./ec2";
@@ -9,7 +9,7 @@ export interface AwsLoadBalancer {
 	internal: boolean;
 	type: load_balancer_type;
 	securityGroups: string[];
-	subnet: string;
+	subnet: string[];
 	protocol: string;
 	port: number;
 	instances: Ec2[];
@@ -17,7 +17,7 @@ export interface AwsLoadBalancer {
 	enable_deletion_protection: boolean;
 }
 export class AwsLoadBalancer
-	extends ResourceWithIam<AwsLoadBalancer>
+	extends Resource<AwsLoadBalancer>
 	implements AwsLoadBalancer
 {
 	constructor(
@@ -27,7 +27,7 @@ export class AwsLoadBalancer
 		type: load_balancer_type,
 		internal: boolean,
 		securityGroups: string[] | string,
-		subnet: string,
+		subnet: string | string[],
 		protocol = "HTTP",
 		port = 80,
 
@@ -45,7 +45,7 @@ export class AwsLoadBalancer
 		this.type = type;
 		this.internal = internal;
 		this.securityGroups = arr(securityGroups);
-		this.subnet = subnet;
+		this.subnet = arr(subnet);
 		this.protocol = protocol;
 		this.port = port;
 		this.instances = instances;
@@ -62,12 +62,12 @@ export class AwsLoadBalancer
 				security_groups: this.securityGroups.map(
 					g => `\${aws_security_group.${g}.id}`
 				),
-				subnets: `\${aws_subnet.${this.subnet}.id}`,
+				subnets: this.subnet.map(s => `\${aws_subnet.${s}.id}`),
 				enable_http2: this.enable_http2,
 				enable_deletion_protection: this.enable_deletion_protection
 			}),
 			jsonRoot("aws_lb_target_group", `${this.id}_target`, {
-				name: `${this.id}_target`,
+				name: `${this.name}-target`,
 				port: this.port,
 				protocol: this.protocol,
 				vpc_id: `\${aws_vpc.${this.vpc}.id}`
@@ -93,9 +93,5 @@ export class AwsLoadBalancer
 				)
 			)
 		];
-	}
-
-	getPolicyDocument() {
-		return [];
 	}
 }

@@ -15,46 +15,43 @@ server.serve("/about");
 server.serve("/contact");
 server.route("/", mainRouter);
 
-// import {testToFileAws} from "./util";
-// import {Ec2} from "./terraform/ec2";
-// import {prefabNetwork} from "./terraform/prefab";
-// import {S3} from "./terraform/s3";
-// import {GlacierVault} from "./terraform/glacierVault";
-// import {DynamoDb} from "./terraform/DynamoDb";
+import {testToFileAws} from "./util";
+import {Ec2} from "./terraform/ec2";
+import {prefabNetwork} from "./terraform/prefab";
+import {AwsLoadBalancer} from "./terraform/awsLoadBalancer";
 
-// testToFileAws(
-// 	"/home/brennan/aws_test/devxp.tf",
-// 	prefabNetwork(
-// 		{
-// 			ec2: [new Ec2("AUTO_UBUNTU", "t2.micro", "instance_a", true)],
-// 			s3: [
-// 				new S3(
-// 					"devxp_test_bucket_a",
-// 					false,
-// 					false,
-// 					"devxp-test-bucket-a"
-// 				)
-// 			],
-// 			glacier: new GlacierVault(
-// 				"devxp_test_vault",
-// 				false,
-// 				"devxp-test-vault"
-// 			),
-// 			dynamo: new DynamoDb("devxp_test_dynamo_db", [
-// 				{
-// 					name: "field1",
-// 					type: "S",
-// 					isHash: true
-// 				}
-// 			])
-// 		},
-// 		{
-// 			ssh: true,
-// 			webEgress: true,
-// 			webIngress: true
-// 		}
-// 	)
-// );
+testToFileAws(
+	"/home/brennan/aws_test/devxp.tf",
+	prefabNetwork(
+		{
+			ec2: [
+				new Ec2("AUTO_UBUNTU", "t2.micro", "instance_a", true),
+				new Ec2("AUTO_UBUNTU", "t2.micro", "instance_b", true),
+				new Ec2("AUTO_UBUNTU", "t2.micro", "instance_c", true)
+			],
+			load_balancer: new AwsLoadBalancer(
+				`http_load_balancer`,
+				"TBD",
+				"application",
+				true,
+				"TBD",
+				"TBD",
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				"http-load-balancer"
+			)
+		},
+		{
+			ssh: true,
+			webEgress: true,
+			webIngress: true
+		}
+	)
+);
 
 mongoose.connection.on(
 	"error",

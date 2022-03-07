@@ -90,18 +90,27 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		return;
 	}
 
+	/* eslint-disable prefer-const */
 	let [gce, lambda, networkedResources] = splitForPrefab(resources);
+	/* eslint-enable prefer-const */
 
 	if (autoLoadBalance) {
 		networkedResources = [
 			...networkedResources,
 			new AwsLoadBalancer(
-				`http-load-balancer`,
+				`http_load_balancer`,
 				"TBD",
 				"application",
 				true,
 				"TBD",
-				"TBD"
+				"TBD",
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				"http-load-balancer"
 			)
 		];
 	}
