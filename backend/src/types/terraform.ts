@@ -24,6 +24,7 @@ import {IamRole} from "../terraform/iamRole";
 import {AwsRoute as AwsRouteResource} from "../terraform/AwsRoute";
 import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
 import {DynamoDb} from "../terraform/DynamoDb";
+import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -268,7 +269,8 @@ export type TerraformResource =
 	| IamRole
 	| AwsVpcEndpoint
 	| AwsRouteResource
-	| DynamoDb;
+	| DynamoDb
+	| AwsLoadBalancer;
 
 export interface PolicyStatement {
 	actions: string[];
@@ -328,6 +330,8 @@ export type countryCode = "us" | "af" | "ap" | "ca" | "eu" | "me" | "sa";
 export type awsZone = `${countryCode}-${string}-${digit}`;
 export type gcpRegion = `${string}-${string}${digit}`;
 export type gcpZone = `${string}-${string}${digit}-${char}`;
+
+export type load_balancer_type = "application" | "gateway" | "network";
 
 // ----------------------------Terraform Root-------------------------------- //
 

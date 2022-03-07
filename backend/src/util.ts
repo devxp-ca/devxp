@@ -25,11 +25,6 @@ export const testToFile = (
 		resources
 	);
 
-	/*
-	fs.writeFileSync(`${filename}.json`, JSON.stringify(root, null, 2), {
-		flag: "w"
-	});
-	*/
 	fs.writeFileSync(filename, jsonToHcl(root), {
 		flag: "w"
 	});

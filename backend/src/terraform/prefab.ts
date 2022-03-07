@@ -2,6 +2,7 @@ import {Firewall, TerraformResource} from "../types/terraform";
 import {arr} from "../util";
 import {AwsIamInstanceProfile} from "./AwsIamInstanceProfile";
 import {AwsIamRolePolicyAttachment} from "./awsIamRolePolicyAttachment";
+import {AwsLoadBalancer} from "./awsLoadBalancer";
 import {AwsSecurityGroup} from "./AwsSecurityGroup";
 import {AwsVpc} from "./awsVpc";
 //import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
@@ -13,7 +14,12 @@ import {IamRole} from "./iamRole";
 import {lambdaFunction} from "./lambdaFunction";
 import {S3} from "./s3";
 
-export type PrefabSupports = Ec2 | S3 | GlacierVault | DynamoDb;
+export type PrefabSupports =
+	| Ec2
+	| S3
+	| GlacierVault
+	| DynamoDb
+	| AwsLoadBalancer;
 
 export const splitForPrefab = (
 	resources: TerraformResource[]
@@ -61,7 +67,10 @@ export const prefabNetworkFromArr = (
 			) as DynamoDb[],
 			glacier: resources.filter(
 				r => r.type.toLowerCase() === "glaciervault"
-			) as GlacierVault[]
+			) as GlacierVault[],
+			load_balancer: resources.filter(
+				r => r.type.toLowerCase() === "awsloadbalancer"
+			) as AwsLoadBalancer[]
 		},
 		rules,
 		vpc_cidr,
@@ -77,6 +86,7 @@ export const prefabNetwork = (
 		s3?: S3[] | S3;
 		glacier?: GlacierVault[] | GlacierVault;
 		dynamo?: DynamoDb[] | DynamoDb;
+		load_balancer?: AwsLoadBalancer[] | AwsLoadBalancer;
 	},
 	rules: {
 		ssh?: boolean;
@@ -117,8 +127,26 @@ export const prefabNetwork = (
 	const dbs = arr(resources.dynamo ?? []).map(
 		(db: DynamoDb) => new DynamoDb(db.id, db.attributes, true, db.name)
 	);
+	const lbs = arr(resources.load_balancer ?? []).map(
+		(lb: AwsLoadBalancer) =>
+			new AwsLoadBalancer(
+				lb.id,
+				vpc,
+				lb.type,
+				true,
+				[securityGroup],
+				`${vpc}_subnet_public`,
+				lb.protocol,
+				lb.port,
+				instances,
+				lb.enable_http2,
+				lb.enable_deletion_protection,
+				true,
+				lb.name
+			)
+	);
 
-	const policies = [...buckets, ...vaults, ...dbs].map(
+	const policies = [...buckets, ...vaults, ...dbs, ...lbs].map(
 		bucket => `${bucket.id}_iam_policy0`
 	);
 	const iamRoles = instances.map(
@@ -243,6 +271,7 @@ export const prefabNetwork = (
 			undefined,
 			true
 		),
-		new AwsSecurityGroup(securityGroup, vpc, firewalls)
+		new AwsSecurityGroup(securityGroup, vpc, firewalls),
+		...lbs
 	];
 };
