@@ -8,11 +8,6 @@ import {
 	TerraformResource
 } from "./types/terraform";
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-//import HCL from "js-hcl-parser";
-//import * as HCL from 'js-hcl-parser';
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 const HCL = require("js-hcl-parser");
 
