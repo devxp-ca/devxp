@@ -6,6 +6,7 @@ import {AwsSecurityGroup} from "./AwsSecurityGroup";
 import {AwsVpc} from "./awsVpc";
 import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
 import {Ec2} from "./ec2";
+import {GlacierVault} from "./glacierVault";
 import {IamRole} from "./iamRole";
 import {S3} from "./s3";
 
@@ -13,6 +14,7 @@ export const prefabNetwork = (
 	resources: {
 		ec2?: Ec2[] | Ec2;
 		s3?: S3[] | S3;
+		glacier?: GlacierVault[] | GlacierVault;
 	},
 	rules: {
 		ssh?: boolean;
@@ -45,7 +47,13 @@ export const prefabNetwork = (
 	const buckets = arr(resources.s3 ?? []).map(
 		(bucket: S3) => new S3(bucket.id, true, true, bucket.name)
 	);
-	const policies = buckets.map(bucket => `${bucket.id}_iam_policy0`);
+	const vaults = arr(resources.glacier ?? []).map(
+		(vault: GlacierVault) => new GlacierVault(vault.id, true)
+	);
+
+	const policies = [...buckets, ...vaults].map(
+		bucket => `${bucket.id}_iam_policy0`
+	);
 	const iamRoles = instances.map(
 		ec2 => new IamRole(`${ec2.id}_iam_role`, "ec2.amazonaws.com")
 	);
@@ -150,6 +158,7 @@ export const prefabNetwork = (
 	return [
 		...instances,
 		...buckets,
+		...vaults,
 		...instanceProfiles,
 		...iamRoles,
 		...attachments,

@@ -19,6 +19,7 @@ import {testToFileAws} from "./util";
 import {Ec2} from "./terraform/ec2";
 import {prefabNetwork} from "./terraform/prefab";
 import {S3} from "./terraform/s3";
+import {GlacierVault} from "./terraform/glacierVault";
 
 testToFileAws(
 	"/home/brennan/aws_test/devxp.tf",
@@ -32,7 +33,12 @@ testToFileAws(
 					false,
 					"devxp-test-bucket-a"
 				)
-			]
+			],
+			glacier: new GlacierVault(
+				"devxp_test_vault",
+				false,
+				"devxp-test-vault"
+			)
 		},
 		{
 			ssh: true,

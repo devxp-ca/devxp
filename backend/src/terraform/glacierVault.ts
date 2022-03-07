@@ -34,16 +34,20 @@ export class GlacierVault
 	//These need to be researched from
 	//https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_examples.html
 	getPolicyDocument() {
-		return ResourceWithIam.policyStatement(
-			[
-				"glacier:InitiateJob",
-				"glacier:GetJobOutput",
-				"glacier:UploadArchive",
-				"glacier:InitiateMultipartUpload",
-				"glacier:AbortMultipartUpload",
-				"glacier:CompleteMultipartUpload"
-			],
-			`\${aws_glacier_vault.${this.id}.arn}`
-		);
+		return [
+			ResourceWithIam.policyStatement(
+				[
+					"glacier:InitiateJob",
+					"glacier:GetJobOutput",
+					"glacier:UploadArchive",
+					"glacier:InitiateMultipartUpload",
+					"glacier:AbortMultipartUpload",
+					"glacier:CompleteMultipartUpload",
+					"glacier:DescribeVault"
+				],
+				`\${aws_glacier_vault.${this.id}.arn}`
+			),
+			ResourceWithIam.policyStatement(["glacier:ListVaults"], "*")
+		];
 	}
 }
