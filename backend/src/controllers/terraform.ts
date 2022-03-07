@@ -131,7 +131,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			// Create a new branch to post our commit to
 			const branchName = "DevXP-Configuration";
 			const newBranch = await createBranch(
-				`refs/heads/${branchName}`,
+				branchName,
 				token,
 				repo,
 				head.sha
