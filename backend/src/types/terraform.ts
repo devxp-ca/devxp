@@ -133,7 +133,8 @@ export type amiType =
 	| "AUTO_Amazon"
 	| "AUTO_WINDOWS";
 
-//TODO: Extend list of instance types
+//Check here for information about these types:
+//https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html
 export type ec2InstanceType =
 	//1 CPU 1gB RAM
 	| "t2.micro"
@@ -148,7 +149,25 @@ export type ec2InstanceType =
 	| "t2.large"
 
 	//4 CPU 16gB RAM
-	| "t2.xlarge";
+	| "t2.xlarge"
+
+	//Compute optimized
+	| "c3.2xlarge"
+
+	//Compute optimitzed extra
+	| "c3.8xlarge"
+
+	//Storage Optimized
+	| "d3.2xlarge"
+
+	//Storage Optimized extra
+	| "d3.8xlarge"
+
+	//Memory Optimized
+	| "r3.2xlarge"
+
+	//Memory Optimized extra
+	| "r3.8xlarge";
 
 // ----------------------------------GCE------------------------------------- //
 

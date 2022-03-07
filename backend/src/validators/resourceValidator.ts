@@ -49,7 +49,7 @@ const resourceValidator: CustomValidator = (resource: any) => {
 			if (!(resource.instance_type === "mac1.metal")) {
 				return false;
 			}
-		} else if (!/^t2.[a-zA-Z]+$/.test(resource.instance_type)) {
+		} else if (!/^[tcagimr][0-9].[a-zA-Z]+$/.test(resource.instance_type)) {
 			return false;
 		}
 		if (!validId(resource.id)) {
