@@ -23,9 +23,9 @@ export const splitForPrefab = (
 	let prefabSupports: PrefabSupports[] = [];
 
 	resources.forEach(r => {
-		if (r.type === "gce") {
+		if (r.type.toLowerCase() === "gce") {
 			gce = [...gce, r as Gce];
-		} else if (r.type === "lambdaFunction") {
+		} else if (r.type.toLowerCase() === "lambdafunction") {
 			lambda = [...lambda, r as lambdaFunction];
 		} else {
 			prefabSupports = [...prefabSupports, r as PrefabSupports];
@@ -54,11 +54,13 @@ export const prefabNetworkFromArr = (
 ) =>
 	prefabNetwork(
 		{
-			ec2: resources.filter(r => r.type === "ec2") as Ec2[],
-			s3: resources.filter(r => r.type === "s3") as S3[],
-			dynamo: resources.filter(r => r.type === "dynamoDb") as DynamoDb[],
+			ec2: resources.filter(r => r.type.toLowerCase() === "ec2") as Ec2[],
+			s3: resources.filter(r => r.type.toLowerCase() === "s3") as S3[],
+			dynamo: resources.filter(
+				r => r.type.toLowerCase() === "dynamodb"
+			) as DynamoDb[],
 			glacier: resources.filter(
-				r => r.type === "glacierVault"
+				r => r.type.toLowerCase() === "glaciervault"
 			) as GlacierVault[]
 		},
 		rules,

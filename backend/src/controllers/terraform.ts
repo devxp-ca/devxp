@@ -21,14 +21,15 @@ import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
+import {jsonToHcl} from "../util";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
 
-	const secure = req.body.secure ?? false;
-	const allowSsh = req.body.allowSsh ?? false;
-	const allowEgressWeb = req.body.allowEgressWeb ?? false;
-	const allowIngressWeb = req.body.allowIngressWeb ?? false;
+	const secure = req.body.settings.secure ?? false;
+	const allowSsh = req.body.settings.allowSsh ?? false;
+	const allowEgressWeb = req.body.settings.allowEgressWeb ?? false;
+	const allowIngressWeb = req.body.settings.allowIngressWeb ?? false;
 
 	//Only needed for google
 	const project =
@@ -113,7 +114,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			const blobRoot = await postBlob(
 				token,
 				repo,
-				JSON.stringify(root, null, 2) + "\n"
+				jsonToHcl(root) + "\n"
 			);
 
 			/*
@@ -122,7 +123,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			const blobBackend = await postBlob(
 				token,
 				repo,
-				JSON.stringify(backend, null, 2) + "\n"
+				jsonToHcl(backend) + "\n"
 			);
 			*/
 
@@ -135,7 +136,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			//Create a new tree within that one
 			const newTree = await createTree(token, repo, tree.sha, [
 				{
-					path: "terraform.tf.json",
+					path: "terraform.tf",
 					mode: getModeNumber("blob"),
 					type: "blob",
 					sha: blobRoot.sha,
@@ -145,7 +146,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				/*
 				Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
 				{
-					path: "backend.tf.json",
+					path: "backend.tf",
 					mode: getModeNumber("blob"),
 					type: "blob",
 					sha: blobBackend.sha,
