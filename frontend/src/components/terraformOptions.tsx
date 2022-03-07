@@ -139,19 +139,24 @@ export default function TerraformOptions(props: {
 		*/
 
 		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
+		let resourceArray = [];
+		for (let i = 0; i < numberOfInstancesValue; i++) {
+			resourceArray.push({
+				type: resourceTypeValue,
+				id:
+					i == 0
+						? instanceNameValue
+						: `${instanceNameValue}_${String.fromCharCode(96 + i)}`,
+				ami: amiValue,
+				instance_type: instanceTypeValue
+			});
+		}
 		const settings: terraformDataSettings = {
 			repo: props.selectedRepo,
 			tool: "terraform",
 			settings: {
 				provider: providerValue,
-				resources: [
-					{
-						type: resourceTypeValue,
-						id: instanceNameValue,
-						ami: amiValue,
-						instance_type: instanceTypeValue
-					}
-				]
+				resources: resourceArray
 			}
 		};
 		props.addNewDataCallback(
@@ -159,6 +164,10 @@ export default function TerraformOptions(props: {
 			isModifyingInstance,
 			props.cardIndex
 		);
+	};
+
+	const deleteInstance = () => {
+		props.addNewDataCallback(null, isModifyingInstance, props.cardIndex);
 	};
 
 	return (
@@ -496,17 +505,30 @@ export default function TerraformOptions(props: {
 				</FormControl>
 			</Grid>
 			<Box textAlign="center" sx={{paddingTop: 3}}>
-				<Button
-					variant="contained"
-					color="success"
-					size="large"
-					startIcon={<CheckIcon />}
-					aria-label="add changes"
-					onClick={addChanges}>
-					{isModifyingInstance
-						? "Add Instance Changes"
-						: "Add Instance(s)"}
-				</Button>
+				<Grid>
+					<Button
+						variant="contained"
+						color="success"
+						size="large"
+						startIcon={<CheckIcon />}
+						aria-label="add changes"
+						onClick={addChanges}>
+						{isModifyingInstance
+							? "Add Instance Changes"
+							: "Add Instance(s)"}
+					</Button>
+					{isModifyingInstance && (
+						<Button
+							sx={{marginLeft: 3}}
+							variant="contained"
+							color="error"
+							size="large"
+							aria-label="delete"
+							onClick={deleteInstance}>
+							{"Delete"}
+						</Button>
+					)}
+				</Grid>
 			</Box>
 		</Box>
 	);

@@ -82,7 +82,12 @@ export default function TerraformManager(props: {
 		cardNum: number
 	) => {
 		if (Boolean(updatedConfigurations)) {
-			let justResources = newInstanceOrSettings.settings.resources;
+			//if newInstanceOrSetting is null it's deleting an instance
+			// TODO: needs to delete from DB? unless submitting new settings already does that
+			let justResources =
+				newInstanceOrSettings !== null
+					? newInstanceOrSettings.settings.resources
+					: [];
 
 			if (!isModifyingInstance) {
 				//add new instance via concat resources to front of array
@@ -226,8 +231,7 @@ export default function TerraformManager(props: {
 
 		//Dirty fix
 		updatedConfigurations.tool = updatedConfigurations.tool ?? "terraform";
-		updatedConfigurations.repo =
-			updatedConfigurations.repo ?? props.selectedRepo;
+		updatedConfigurations.repo = props.selectedRepo;
 
 		axios
 			.post(

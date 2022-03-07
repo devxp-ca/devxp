@@ -30,6 +30,7 @@ export default function ToolManager() {
 
 	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
+		console.dir(repo_full_name);
 		setIsRepoSelected(true);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
@@ -66,15 +67,6 @@ export default function ToolManager() {
 				console.error(error);
 			});
 	}, []);
-
-	const [openModal, setOpenModal] = React.useState(true);
-
-	const handleCloseModal = (event: any, reason: any) => {
-		if (reason !== "backdropClick") {
-			setOpenModal(false);
-			setIsRepoSelected(true);
-		}
-	};
 
 	return (
 		<ThemeProvider theme={lightTheme}>
@@ -117,6 +109,14 @@ export default function ToolManager() {
 									onChange={(event: any, value: any) => {
 										setSelectedRepoFromAutocomplete(
 											value.full_name
+										);
+									}}
+									isOptionEqualToValue={(
+										option: any,
+										value: any
+									) => {
+										return (
+											option.full_name === value.full_name
 										);
 									}}
 								/>
