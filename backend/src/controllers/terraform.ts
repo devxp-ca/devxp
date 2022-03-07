@@ -23,6 +23,7 @@ import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
 import {jsonToHcl} from "../util";
+import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
@@ -31,6 +32,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 	const allowSsh = req.body.settings.allowSsh ?? false;
 	const allowEgressWeb = req.body.settings.allowEgressWeb ?? false;
 	const allowIngressWeb = req.body.settings.allowIngressWeb ?? false;
+	const autoLoadBalance = req.body.settings.autoLoadBalance ?? false;
 
 	//Only needed for google
 	const project =
@@ -88,7 +90,21 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		return;
 	}
 
-	const [gce, lambda, networkedResources] = splitForPrefab(resources);
+	let [gce, lambda, networkedResources] = splitForPrefab(resources);
+
+	if (autoLoadBalance) {
+		networkedResources = [
+			...networkedResources,
+			new AwsLoadBalancer(
+				`http-load-balancer`,
+				"TBD",
+				"application",
+				true,
+				"TBD",
+				"TBD"
+			)
+		];
+	}
 
 	const network =
 		networkedResources.length > 0 && provider === "aws"
