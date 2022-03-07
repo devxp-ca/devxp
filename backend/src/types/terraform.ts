@@ -21,6 +21,8 @@ import {AwsSubnet} from "../terraform/awsSubnet";
 import {AwsIamInstanceProfile} from "../terraform/AwsIamInstanceProfile";
 import {AwsIamRolePolicyAttachment} from "../terraform/awsIamRolePolicyAttachment";
 import {IamRole} from "../terraform/iamRole";
+import {AwsRoute as AwsRouteResource} from "../terraform/AwsRoute";
+import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -251,7 +253,9 @@ export type TerraformResource =
 	| Eip
 	| AwsIamInstanceProfile
 	| AwsIamRolePolicyAttachment
-	| IamRole;
+	| IamRole
+	| AwsVpcEndpoint
+	| AwsRouteResource;
 
 export interface PolicyStatement {
 	actions: string[];

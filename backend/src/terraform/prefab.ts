@@ -4,6 +4,7 @@ import {AwsIamInstanceProfile} from "./AwsIamInstanceProfile";
 import {AwsIamRolePolicyAttachment} from "./awsIamRolePolicyAttachment";
 import {AwsSecurityGroup} from "./AwsSecurityGroup";
 import {AwsVpc} from "./awsVpc";
+import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
 import {Ec2} from "./ec2";
 import {IamRole} from "./iamRole";
 import {S3} from "./s3";
@@ -17,12 +18,16 @@ export const prefabNetwork = (
 		ssh?: boolean;
 		sshCidr?: string[];
 		allEgress?: boolean;
-		web?: boolean;
+		allIngress?: boolean;
+		webEgress?: boolean;
+		webIngress?: boolean;
 		webCidr?: string[];
 	},
-	cidr = "10.0.0.0/24",
-	vpc = "devxp_allow_ssh_vpc",
-	securityGroup = "devxp_allow_ssh_security_group"
+	vpc_cidr = "10.0.0.0/16",
+	public_cidr = "10.0.0.0/24",
+	private_cidr = "10.0.128.0/24",
+	vpc = "devxp_vpc",
+	securityGroup = "devxp_security_group"
 ): TerraformResource[] => {
 	const instances = arr(resources.ec2 ?? []).map(
 		(ec2: Ec2) =>
@@ -32,12 +37,13 @@ export const prefabNetwork = (
 				ec2.id,
 				ec2.autoIam,
 				2,
-				`${vpc}_subnet`,
+				`${vpc}_subnet_public`,
+				//`${vpc}_subnet_private`,
 				securityGroup
 			)
 	);
 	const buckets = arr(resources.s3 ?? []).map(
-		(bucket: S3) => new S3(bucket.id, true, bucket.name)
+		(bucket: S3) => new S3(bucket.id, true, true, bucket.name)
 	);
 	const policies = buckets.map(bucket => `${bucket.id}_iam_policy0`);
 	const iamRoles = instances.map(
@@ -78,6 +84,18 @@ export const prefabNetwork = (
 			}
 		];
 	}
+	if (rules.allIngress) {
+		firewalls = [
+			...firewalls,
+			{
+				type: "ingress",
+				from_port: 0,
+				to_port: 0,
+				protocol: "-1",
+				cidr_blocks: ["0.0.0.0/0"]
+			}
+		];
+	}
 	if (rules.ssh) {
 		firewalls = [
 			...firewalls,
@@ -90,7 +108,7 @@ export const prefabNetwork = (
 			}
 		];
 	}
-	if (rules.web) {
+	if (rules.webIngress) {
 		firewalls = [
 			...firewalls,
 			{
@@ -102,11 +120,16 @@ export const prefabNetwork = (
 			},
 			{
 				type: "ingress",
-				from_port: 433,
-				to_port: 433,
+				from_port: 443,
+				to_port: 443,
 				protocol: "tcp",
 				cidr_blocks: rules.webCidr ?? ["0.0.0.0/0"]
-			},
+			}
+		];
+	}
+	if (rules.webEgress) {
+		firewalls = [
+			...firewalls,
 			{
 				type: "egress",
 				from_port: 80,
@@ -116,8 +139,8 @@ export const prefabNetwork = (
 			},
 			{
 				type: "egress",
-				from_port: 433,
-				to_port: 433,
+				from_port: 443,
+				to_port: 443,
 				protocol: "tcp",
 				cidr_blocks: rules.webCidr ?? ["0.0.0.0/0"]
 			}
@@ -130,7 +153,19 @@ export const prefabNetwork = (
 		...instanceProfiles,
 		...iamRoles,
 		...attachments,
-		new AwsVpc(cidr, true, vpc),
+		// new AwsVpcEndpoint(`${vpc}_endpoint`, vpc, `com.amazonaws.us-west-2.s3`, [], {
+		// 	isDefault: false,
+		// 	id: `${vpc}_routetable_pub`
+		// }),
+		new AwsVpc(
+			vpc_cidr,
+			private_cidr,
+			public_cidr,
+			vpc,
+			false,
+			undefined,
+			true
+		),
 		new AwsSecurityGroup(securityGroup, vpc, firewalls)
 	];
 };

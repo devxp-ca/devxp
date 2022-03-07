@@ -24,18 +24,20 @@ testToFileAws(
 	"/home/brennan/aws_test/devxp.tf",
 	prefabNetwork(
 		{
-			ec2: [
-				new Ec2("AUTO_UBUNTU", "t2.micro", "instance_a", false),
-				new Ec2("AUTO_UBUNTU", "t2.micro", "instance_b", false)
-			],
+			ec2: [new Ec2("AUTO_UBUNTU", "t2.micro", "instance_a", true)],
 			s3: [
-				new S3("devxp_test_bucket_a", false, "devxp-test-bucket-a"),
-				new S3("devxp_test_bucket_b", false, "devxp-test-bucket-b")
+				new S3(
+					"devxp_test_bucket_a",
+					false,
+					false,
+					"devxp-test-bucket-a"
+				)
 			]
 		},
 		{
 			ssh: true,
-			web: true
+			webEgress: true,
+			webIngress: true
 		}
 	)
 );
