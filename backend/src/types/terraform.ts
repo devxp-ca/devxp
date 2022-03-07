@@ -10,8 +10,20 @@ import {DatabaseModel, generateSchemaInternals} from "./database";
 import {arr} from "../util";
 import {IamUser} from "../terraform/awsIamUser";
 import {GlacierVault} from "../terraform/glacierVault";
-import {Resource} from "../terraform/resource";
 import {lambdaFunction} from "../terraform/lambdaFunction";
+import {AwsVpc} from "../terraform/awsVpc";
+import {AwsInternetGateway} from "../terraform/AwsInternetGateway";
+import {AwsRouteTable} from "../terraform/AwsRouteTable";
+import {AwsSecurityGroup} from "../terraform/AwsSecurityGroup";
+import {Eip} from "../terraform/Eip";
+import {SnsTopic} from "../terraform/awsSnsTopic";
+import {AwsSubnet} from "../terraform/awsSubnet";
+import {AwsIamInstanceProfile} from "../terraform/AwsIamInstanceProfile";
+import {AwsIamRolePolicyAttachment} from "../terraform/awsIamRolePolicyAttachment";
+import {IamRole} from "../terraform/iamRole";
+import {AwsRoute as AwsRouteResource} from "../terraform/AwsRoute";
+import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
+import {DynamoDb} from "../terraform/DynamoDb";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -163,7 +175,18 @@ export type source_image =
 
 export type acl = "private" | "public-read" | "public-read-write";
 
-// ----------------------------------LambdaFunction-------------------------------------- //
+// -------------------------------DynamoDb----------------------------------- //
+
+export type billing_mode = "PROVISIONED" | "PAY_PER_REQUEST";
+export interface db_attribute {
+	name: string;
+	type: "S" | "N" | "B";
+
+	//TODO: Add sort key
+	isHash?: boolean;
+}
+
+// ----------------------------LambdaFunction-------------------------------- //
 
 export type runtime =
 	| "nodejs"
@@ -232,7 +255,20 @@ export type TerraformResource =
 	| S3
 	| IamUser
 	| GlacierVault
-	| lambdaFunction;
+	| lambdaFunction
+	| AwsVpc
+	| AwsInternetGateway
+	| AwsRouteTable
+	| AwsSecurityGroup
+	| SnsTopic
+	| AwsSubnet
+	| Eip
+	| AwsIamInstanceProfile
+	| AwsIamRolePolicyAttachment
+	| IamRole
+	| AwsVpcEndpoint
+	| AwsRouteResource
+	| DynamoDb;
 
 export interface PolicyStatement {
 	actions: string[];
@@ -245,6 +281,19 @@ export interface TerraformJson {
 	data: Record<string, any>[];
 	terraform: Record<string, any>[];
 	resource: Record<string, any>[];
+}
+
+export interface AwsRoute {
+	gateway_id: string;
+	cidr_block: string;
+}
+
+export interface Firewall {
+	type: "egress" | "ingress";
+	from_port: number | "icmp";
+	to_port: number | "icmp";
+	protocol: string;
+	cidr_blocks?: string[];
 }
 
 // ----------------------------Terraform Root-------------------------------- //

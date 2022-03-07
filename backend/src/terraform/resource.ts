@@ -60,7 +60,7 @@ export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 		json = super.postProcess(json);
 
 		if (this.autoIam) {
-			json.data = [...json.data, this.toPolicyDocument()];
+			json.data = [...json.data, this.toPolicyDocument()].flat();
 		}
 		return json;
 	}

@@ -27,7 +27,10 @@ export class lambdaFunction
 
 	//Returns an array of resource blocks
 	toJSON() {
-		const iamRole = new IamRole("iam_for_lambda_" + this.functionName);
+		const iamRole = new IamRole(
+			"iam_for_lambda_" + this.functionName,
+			"lambda.amazonaws.com"
+		);
 		return [
 			iamRole.toJSON(),
 			jsonRoot("aws_lambda_function", this.id, {

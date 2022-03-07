@@ -10,26 +10,40 @@ import updateHead from "../githubapi/updateHead";
 import {getModeNumber} from "../githubapi/util";
 import {NamedAwsBackend} from "../terraform/awsBackend";
 import {AwsProvider} from "../terraform/awsProvider";
+import {DynamoDb} from "../terraform/DynamoDb";
 import {Ec2} from "../terraform/ec2";
 import {Gce} from "../terraform/gce";
 import {GlacierVault} from "../terraform/glacierVault";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
 import {lambdaFunction} from "../terraform/lambdaFunction";
+import {prefabNetworkFromArr, splitForPrefab} from "../terraform/prefab";
 import {S3} from "../terraform/s3";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
+import {jsonToHcl} from "../util";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
+
+	const secure = req.body.settings.secure ?? false;
+	const allowSsh = req.body.settings.allowSsh ?? false;
+	const allowEgressWeb = req.body.settings.allowEgressWeb ?? false;
+	const allowIngressWeb = req.body.settings.allowIngressWeb ?? false;
 
 	//Only needed for google
 	const project =
 		provider === "google" ? (req.body.settings?.project as string) : "";
 
 	const resourcesRaw = req.body.settings?.resources as (TerraformResource & {
-		type: "ec2" | "gce" | "s3" | "glacierVault" | "lambdaFunction";
+		type:
+			| "ec2"
+			| "gce"
+			| "s3"
+			| "glacierVault"
+			| "lambdaFunction"
+			| "dynamoDb";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -49,6 +63,13 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		} else if (resource.type === "glacierVault") {
 			const glacierVault: GlacierVault = resource as GlacierVault;
 			return new GlacierVault(glacierVault.id, glacierVault.autoIam);
+		} else if (resource.type === "dynamoDb") {
+			const dynamoDb: DynamoDb = resource as DynamoDb;
+			return new DynamoDb(
+				dynamoDb.id,
+				dynamoDb.attributes,
+				dynamoDb.autoIam
+			);
 		} else if (resource.type === "lambdaFunction") {
 			const lambdaFunc: lambdaFunction = resource as lambdaFunction;
 			return new lambdaFunction(
@@ -67,12 +88,25 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		return;
 	}
 
+	const [gce, lambda, networkedResources] = splitForPrefab(resources);
+
+	const network =
+		networkedResources.length > 0 && provider === "aws"
+			? prefabNetworkFromArr(networkedResources, {
+					allEgress: !secure,
+					allIngress: !secure,
+					ssh: secure && allowSsh,
+					webEgress: secure && allowEgressWeb,
+					webIngress: secure && allowIngressWeb
+			  })
+			: networkedResources;
+
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
 		provider === "aws"
 			? new NamedAwsBackend()
 			: new NamedGoogleBackend(project),
-		resources
+		[...gce, ...lambda, ...network]
 	);
 
 	getHead(token, repo, "main")
@@ -81,7 +115,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			const blobRoot = await postBlob(
 				token,
 				repo,
-				JSON.stringify(root, null, 2) + "\n"
+				jsonToHcl(root) + "\n"
 			);
 
 			/*
@@ -90,14 +124,14 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			const blobBackend = await postBlob(
 				token,
 				repo,
-				JSON.stringify(backend, null, 2) + "\n"
+				jsonToHcl(backend) + "\n"
 			);
 			*/
 
 			// Create a new branch to post our commit to
 			const branchName = "DevXP-Configuration";
 			const newBranch = await createBranch(
-				`refs/heads/${branchName}`,
+				branchName,
 				token,
 				repo,
 				head.sha
@@ -115,7 +149,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			//Create a new tree within that one
 			const newTree = await createTree(token, repo, tree.sha, [
 				{
-					path: "terraform.tf.json",
+					path: "terraform.tf",
 					mode: getModeNumber("blob"),
 					type: "blob",
 					sha: blobRoot.sha,
@@ -125,7 +159,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				/*
 				Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
 				{
-					path: "backend.tf.json",
+					path: "backend.tf",
 					mode: getModeNumber("blob"),
 					type: "blob",
 					sha: blobBackend.sha,
