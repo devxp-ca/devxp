@@ -7,11 +7,8 @@ export default function Footer() {
 	return (
 		<Box
 			sx={{
-				position: "fixed",
-				paddingTop: 5,
-				bottom: 5,
-				left: 0,
-				right: 0
+				position: "sticky",
+				marginTop: -5
 			}}>
 			<Typography variant="body2" color="text.secondary" align="center">
 				{"Copyright © "}

@@ -12,11 +12,11 @@ export default class Homepage extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<Container>
+				<Container sx={{minHeight: "100vh"}}>
 					<Navbar />
 					<MainLandingVisual />
-					<Footer />
 				</Container>
+				<Footer />
 			</ThemeProvider>
 		);
 	}

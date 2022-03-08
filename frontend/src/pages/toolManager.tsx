@@ -68,14 +68,15 @@ export default function ToolManager() {
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<Box style={{display: "flex"}}>
+			{/* It's 99 here because of the Navbar -1 margin */}
+			<Box style={{display: "flex", minHeight: "99vh"}}>
 				<Box
 					style={{
 						width: "100%",
 						paddingLeft: 30,
 						paddingRight: 30
 					}}>
-					<Grid container direction="column">
+					<Grid container direction="column" sx={{paddingBottom: 10}}>
 						<Navbar />
 						<Grid
 							container
@@ -144,10 +145,10 @@ export default function ToolManager() {
 								repoData={selectedRepoData}
 							/>
 						)}
-						<Footer />
 					</Grid>
 				</Box>
 			</Box>
+			<Footer />
 		</ThemeProvider>
 	);
 }

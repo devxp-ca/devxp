@@ -318,7 +318,7 @@ export default function TerraformManager(props: {
 
 	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
 	return (
-		<Box sx={{width: "100%"}}>
+		<Box sx={{width: "100%", paddingBottom: 12}}>
 			<GenericModal
 				isOpen={openModal}
 				handleClose={handleCloseModal}
@@ -384,14 +384,23 @@ export default function TerraformManager(props: {
 				</FormControl>
 			</Grid>
 			{getCards()}
-			<Box textAlign="center" sx={{paddingTop: 3}}>
+			<Box
+				textAlign="center"
+				sx={{
+					paddingTop: 3,
+					position: "fixed",
+					bottom: 75,
+					left: "50%",
+					transform: "translate(-50%)"
+				}}>
 				<Button
 					variant="contained"
 					color="success"
 					size="large"
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
-					onClick={handleOpenSubmitModal}>
+					onClick={handleOpenSubmitModal}
+					sx={{padding: 2, fontSize: 18}}>
 					Submit To Repo
 				</Button>
 			</Box>
