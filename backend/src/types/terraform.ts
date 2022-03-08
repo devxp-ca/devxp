@@ -24,6 +24,7 @@ import {IamRole} from "../terraform/iamRole";
 import {AwsRoute as AwsRouteResource} from "../terraform/AwsRoute";
 import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
 import {DynamoDb} from "../terraform/DynamoDb";
+import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -132,7 +133,8 @@ export type amiType =
 	| "AUTO_Amazon"
 	| "AUTO_WINDOWS";
 
-//TODO: Extend list of instance types
+//Check here for information about these types:
+//https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html
 export type ec2InstanceType =
 	//1 CPU 1gB RAM
 	| "t2.micro"
@@ -147,7 +149,25 @@ export type ec2InstanceType =
 	| "t2.large"
 
 	//4 CPU 16gB RAM
-	| "t2.xlarge";
+	| "t2.xlarge"
+
+	//Compute optimized
+	| "c3.2xlarge"
+
+	//Compute optimitzed extra
+	| "c3.8xlarge"
+
+	//Storage Optimized
+	| "d3.2xlarge"
+
+	//Storage Optimized extra
+	| "d3.8xlarge"
+
+	//Memory Optimized
+	| "r3.2xlarge"
+
+	//Memory Optimized extra
+	| "r3.8xlarge";
 
 // ----------------------------------GCE------------------------------------- //
 
@@ -268,7 +288,8 @@ export type TerraformResource =
 	| IamRole
 	| AwsVpcEndpoint
 	| AwsRouteResource
-	| DynamoDb;
+	| DynamoDb
+	| AwsLoadBalancer;
 
 export interface PolicyStatement {
 	actions: string[];
@@ -326,8 +347,11 @@ export type char =
 export type digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 export type countryCode = "us" | "af" | "ap" | "ca" | "eu" | "me" | "sa";
 export type awsZone = `${countryCode}-${string}-${digit}`;
+export type awsRegion = `${awsZone}${char}`;
 export type gcpRegion = `${string}-${string}${digit}`;
-export type gcpZone = `${string}-${string}${digit}-${char}`;
+export type gcpZone = `${gcpRegion}-${char}`;
+
+export type load_balancer_type = "application" | "gateway" | "network";
 
 // ----------------------------Terraform Root-------------------------------- //
 

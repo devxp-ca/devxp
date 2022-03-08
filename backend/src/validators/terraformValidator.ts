@@ -55,6 +55,12 @@ export const settingsValidator = [
 		.isBoolean()
 		.default(false)
 		.withMessage("allowEgressWeb flag must be boolean"),
+	body("settings.autoLoadBalance")
+		.if(body("tool").equals("terraform"))
+		.optional()
+		.isBoolean()
+		.default(false)
+		.withMessage("autoLoadBalance flag must be boolean"),
 	body("settings.project")
 		.if(body("tool").equals("terraform"))
 		.if(body("settings.provider").equals("google"))

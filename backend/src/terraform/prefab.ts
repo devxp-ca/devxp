@@ -2,6 +2,7 @@ import {Firewall, TerraformResource} from "../types/terraform";
 import {arr} from "../util";
 import {AwsIamInstanceProfile} from "./AwsIamInstanceProfile";
 import {AwsIamRolePolicyAttachment} from "./awsIamRolePolicyAttachment";
+import {AwsLoadBalancer} from "./awsLoadBalancer";
 import {AwsSecurityGroup} from "./AwsSecurityGroup";
 import {AwsVpc} from "./awsVpc";
 //import {AwsVpcEndpoint} from "./AwsVpcEndpoint";
@@ -13,7 +14,12 @@ import {IamRole} from "./iamRole";
 import {lambdaFunction} from "./lambdaFunction";
 import {S3} from "./s3";
 
-export type PrefabSupports = Ec2 | S3 | GlacierVault | DynamoDb;
+export type PrefabSupports =
+	| Ec2
+	| S3
+	| GlacierVault
+	| DynamoDb
+	| AwsLoadBalancer;
 
 export const splitForPrefab = (
 	resources: TerraformResource[]
@@ -47,8 +53,9 @@ export const prefabNetworkFromArr = (
 		webCidr?: string[];
 	},
 	vpc_cidr = "10.0.0.0/16",
-	public_cidr = "10.0.0.0/24",
-	private_cidr = "10.0.128.0/24",
+	public_cidr = "10.0.0.0/25",
+	public_cidr_2 = "10.0.128.0/25",
+	private_cidr = "10.0.128.0/25",
 	vpc = "devxp_vpc",
 	securityGroup = "devxp_security_group"
 ) =>
@@ -61,11 +68,15 @@ export const prefabNetworkFromArr = (
 			) as DynamoDb[],
 			glacier: resources.filter(
 				r => r.type.toLowerCase() === "glaciervault"
-			) as GlacierVault[]
+			) as GlacierVault[],
+			load_balancer: resources.filter(
+				r => r.type.toLowerCase() === "awsloadbalancer"
+			) as AwsLoadBalancer[]
 		},
 		rules,
 		vpc_cidr,
 		public_cidr,
+		public_cidr_2,
 		private_cidr,
 		vpc,
 		securityGroup
@@ -77,6 +88,7 @@ export const prefabNetwork = (
 		s3?: S3[] | S3;
 		glacier?: GlacierVault[] | GlacierVault;
 		dynamo?: DynamoDb[] | DynamoDb;
+		load_balancer?: AwsLoadBalancer[] | AwsLoadBalancer;
 	},
 	rules: {
 		ssh?: boolean;
@@ -88,8 +100,9 @@ export const prefabNetwork = (
 		webCidr?: string[];
 	},
 	vpc_cidr = "10.0.0.0/16",
-	public_cidr = "10.0.0.0/24",
-	private_cidr = "10.0.128.0/24",
+	public_cidr = "10.0.0.0/25",
+	public_cidr_2 = "10.0.128.0/25",
+	private_cidr = "10.0.128.0/25",
 	vpc = "devxp_vpc",
 	securityGroup = "devxp_security_group"
 ): TerraformResource[] => {
@@ -103,7 +116,7 @@ export const prefabNetwork = (
 				2,
 
 				//TODO: Find a way to put this in the private subnet
-				`${vpc}_subnet_public`,
+				`${vpc}_subnet_public0`,
 				//`${vpc}_subnet_private`,
 				securityGroup
 			)
@@ -116,6 +129,24 @@ export const prefabNetwork = (
 	);
 	const dbs = arr(resources.dynamo ?? []).map(
 		(db: DynamoDb) => new DynamoDb(db.id, db.attributes, true, db.name)
+	);
+	const lbs = arr(resources.load_balancer ?? []).map(
+		(lb: AwsLoadBalancer) =>
+			new AwsLoadBalancer(
+				lb.id,
+				vpc,
+				lb.type,
+				true,
+				[securityGroup],
+				[`${vpc}_subnet_public0`, `${vpc}_subnet_public1`],
+				lb.protocol,
+				lb.port,
+				instances,
+				lb.enable_http2,
+				lb.enable_deletion_protection,
+				false,
+				lb.name
+			)
 	);
 
 	const policies = [...buckets, ...vaults, ...dbs].map(
@@ -237,12 +268,14 @@ export const prefabNetwork = (
 		new AwsVpc(
 			vpc_cidr,
 			private_cidr,
-			public_cidr,
+			[public_cidr, public_cidr_2],
 			vpc,
+			["us-west-2a", "us-west-2b"],
 			false,
 			undefined,
 			true
 		),
-		new AwsSecurityGroup(securityGroup, vpc, firewalls)
+		new AwsSecurityGroup(securityGroup, vpc, firewalls),
+		...lbs
 	];
 };

@@ -35,7 +35,6 @@ export const isGithubTreeNode = (object: any): object is GithubTreeNode =>
 	"mode" in object &&
 	"type" in object &&
 	"sha" in object &&
-	"url" in object &&
 	noNullProps(object);
 
 export interface GithubTree {
