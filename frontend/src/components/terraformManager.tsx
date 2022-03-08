@@ -23,6 +23,7 @@ import axios, {AxiosError} from "axios";
 import GenericModal from "./GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
+import Tooltip from "@mui/material/Tooltip";
 
 export interface BackendError {
 	timestamp: Date;
@@ -163,52 +164,54 @@ export default function TerraformManager(props: {
 				</Grid>
 				{/* New Terraform Instance */}
 				<Grid item>
-					<Card>
-						{!selectedNewInstance && (
-							<CardActionArea
-								onClick={selectedNewInstanceCallback}
-								sx={{
-									"&:hover": {
-										backgroundColor: `${currentTheme.palette.success.main}50`
-									}
-								}}>
-								<Grid
-									container
-									justifyContent="center"
-									alignItems="center"
+					<Tooltip title="Add a new Terraform instance, must select provider first">
+						<Card>
+							{!selectedNewInstance && (
+								<CardActionArea
+									onClick={selectedNewInstanceCallback}
 									sx={{
-										width: defaultCardSize / 2,
-										height: defaultCardSize,
-										border: `1px solid ${currentTheme.palette.success.main}`,
-										borderRadius: 1
+										"&:hover": {
+											backgroundColor: `${currentTheme.palette.success.main}50`
+										}
 									}}>
-									<Grid item>
-										<AddIcon
-											sx={{
-												width: 75,
-												height: 75,
-												opacity: 1,
-												color: currentTheme.palette
-													.success.main
-											}}
-										/>
+									<Grid
+										container
+										justifyContent="center"
+										alignItems="center"
+										sx={{
+											width: defaultCardSize / 2,
+											height: defaultCardSize,
+											border: `1px solid ${currentTheme.palette.success.main}`,
+											borderRadius: 1
+										}}>
+										<Grid item>
+											<AddIcon
+												sx={{
+													width: 75,
+													height: 75,
+													opacity: 1,
+													color: currentTheme.palette
+														.success.main
+												}}
+											/>
+										</Grid>
 									</Grid>
-								</Grid>
-							</CardActionArea>
-						)}
-						{/* TODO: bug: changing provider when option box is already opened doesn't refresh options*/}
-						{/* if provider is blank the + button will not work -- may need to communicate this more */}
-						{selectedNewInstance && selectedProvider != "" && (
-							<TerraformOptions
-								selectedRepo={props.selectedRepo}
-								globalProvider={selectedProvider}
-								addNewDataCallback={
-									changeConfigurationsCallback
-								}
-								cardIndex={0}
-							/>
-						)}
-					</Card>
+								</CardActionArea>
+							)}
+							{/* TODO: bug: changing provider when option box is already opened doesn't refresh options*/}
+							{/* if provider is blank the + button will not work -- may need to communicate this more */}
+							{selectedNewInstance && selectedProvider != "" && (
+								<TerraformOptions
+									selectedRepo={props.selectedRepo}
+									globalProvider={selectedProvider}
+									addNewDataCallback={
+										changeConfigurationsCallback
+									}
+									cardIndex={0}
+								/>
+							)}
+						</Card>
+					</Tooltip>
 				</Grid>
 				{/* Populate previous instances here */}
 				{prevInstanceSettings.map((cardSettings, index) => (
