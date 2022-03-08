@@ -92,9 +92,16 @@
 
 				//Array of "primary keys" for the noSQL database (like mongo).
 				attributes: [
-					name: "username",
-					type: "S", //"S" for string, "N" for number, or "B" for binary
-					isHash: true //For now just always set this true. Support for other types of keys hasn't been added yet
+					{
+						name: "username",
+						type: "S", //"S" for string, "N" for number, or "B" for binary
+						isHash: true //For now just always set this true. Support for other types of keys hasn't been added yet
+					},
+					{
+						name: "email",
+						type: "S", //"S" for string, "N" for number, or "B" for binary
+						isHash: true //For now just always set this true. Support for other types of keys hasn't been added yet
+					}
 				]
 				autoIam: true //Defaults to false. Determines if IAM users will be setup for the resource
 			},
