@@ -59,7 +59,7 @@
 }
 ```
 
-## Example with one of every supported resource
+## Example with one of every supported AWS resource (no google)
 
 ```js
 {
