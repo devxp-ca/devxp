@@ -109,7 +109,7 @@
 				type: "lambdaFunction",
 				id: "my-func",
 				functionName: "myFunctionName", // must match the regex /^[a-zA-Z][a-zA-Z0-9_]+$/ or /^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/
-				runtume: "nodejs14.x" //values can be found in backend/src/types/terraform.ts
+				runtime: "nodejs14.x" //values can be found in backend/src/types/terraform.ts
 			}
 		]
 	}
