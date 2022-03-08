@@ -4,6 +4,9 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import LoginWithGithub from "./loginWithGithub";
+import HomeIcon from "@mui/icons-material/Home";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import ConstructionIcon from "@mui/icons-material/Construction";
 import {ThemeProvider} from "@mui/material/styles";
 import {lightTheme} from "../style/themes";
 import {Cookies} from "react-cookie";
@@ -39,20 +42,27 @@ export default function Navbar() {
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<Box sx={{flexGrow: 1, marginTop: 5}}>
+			<Box sx={{flexGrow: 1, marginTop: -1}}>
 				<AppBar position="relative">
 					<Toolbar>
 						<Box sx={{display: "flex"}}>
-							<Button href="/" color="inherit">
+							<Button
+								startIcon={<HomeIcon />}
+								href="/"
+								color="inherit">
 								Home
 							</Button>
 							<Button
+								startIcon={<QuestionMarkIcon />}
 								href="https://github.com/devxp-ca/devxp/wiki"
 								color="inherit">
 								Wiki
 							</Button>
 							{isLoggedIn ? (
-								<Button href="/toolManager" color="inherit">
+								<Button
+									startIcon={<ConstructionIcon />}
+									href="/toolManager"
+									color="inherit">
 									Tool Manager
 								</Button>
 							) : null}
