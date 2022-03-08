@@ -71,6 +71,16 @@ const resourceValidator: CustomValidator = (resource: any) => {
 		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
 			return false;
 		}
+	} else if (resource.type === "googleStorageBucket") {
+		if (!hasAllKeys(resource, ["id"])) {
+			return false;
+		}
+		if (!validId(resource.id)) {
+			return false;
+		}
+		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
+			return false;
+		}
 	} else if (resource.type === "s3") {
 		if (!hasAllKeys(resource, ["id"])) {
 			return false;

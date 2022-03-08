@@ -1,7 +1,7 @@
 import {model} from "mongoose";
 import CONFIG from "../config";
 import {DatabaseModel, generateSchema} from "../types/database";
-import {GoogleBackend, named} from "../types/terraform";
+import {gcpRegion, GoogleBackend, named} from "../types/terraform";
 import {generateId, removeName} from "./util";
 
 export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
@@ -9,13 +9,8 @@ export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 	name: "gcs";
 	constructor(project: string);
 	constructor(project: string, bucket: string);
-	constructor(project: string, bucket: string, location: string);
-	constructor(
-		project: string,
-		bucket: string,
-		prefix: string,
-		location: string
-	);
+	constructor(project: string, bucket: string, location: gcpRegion);
+	constructor(project: string, name: string, location: gcpRegion);
 	constructor(
 		project: string,
 		bucket = `terraform-state-${generateId(45)}`,

@@ -25,6 +25,7 @@ import {AwsRoute as AwsRouteResource} from "../terraform/AwsRoute";
 import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
 import {DynamoDb} from "../terraform/DynamoDb";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
+import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -289,7 +290,8 @@ export type TerraformResource =
 	| AwsVpcEndpoint
 	| AwsRouteResource
 	| DynamoDb
-	| AwsLoadBalancer;
+	| AwsLoadBalancer
+	| GoogleStorageBucket;
 
 export interface PolicyStatement {
 	actions: string[];

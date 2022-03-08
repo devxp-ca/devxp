@@ -24,6 +24,7 @@ import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
 import {jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
+import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
@@ -45,7 +46,8 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			| "s3"
 			| "glacierVault"
 			| "lambdaFunction"
-			| "dynamoDb";
+			| "dynamoDb"
+			| "googleStorageBucket";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -80,6 +82,9 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				lambdaFunc.filename,
 				lambdaFunc.runtime
 			);
+		} else if (resource.type === "googleStorageBucket") {
+			const bucket: GoogleStorageBucket = resource as GoogleStorageBucket;
+			return new GoogleStorageBucket(project, bucket.id, bucket.zone);
 		} else {
 			flag = true;
 		}
@@ -91,7 +96,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 	}
 
 	/* eslint-disable prefer-const */
-	let [gce, lambda, networkedResources] = splitForPrefab(resources);
+	let [google, lambda, networkedResources] = splitForPrefab(resources);
 	/* eslint-enable prefer-const */
 
 	if (autoLoadBalance) {
@@ -131,7 +136,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		provider === "aws"
 			? new NamedAwsBackend()
 			: new NamedGoogleBackend(project),
-		[...gce, ...lambda, ...network]
+		[...google, ...lambda, ...network]
 	);
 
 	getHead(token, repo, "main")

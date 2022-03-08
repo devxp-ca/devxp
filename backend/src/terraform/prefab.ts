@@ -10,6 +10,7 @@ import {DynamoDb} from "./DynamoDb";
 import {Ec2} from "./ec2";
 import {Gce} from "./gce";
 import {GlacierVault} from "./glacierVault";
+import {GoogleStorageBucket} from "./googleStorageBucket";
 import {IamRole} from "./iamRole";
 import {lambdaFunction} from "./lambdaFunction";
 import {S3} from "./s3";
@@ -21,16 +22,18 @@ export type PrefabSupports =
 	| DynamoDb
 	| AwsLoadBalancer;
 
+export type googleResource = Gce | GoogleStorageBucket;
+
 export const splitForPrefab = (
 	resources: TerraformResource[]
-): [Gce[], lambdaFunction[], PrefabSupports[]] => {
-	let gce: Gce[] = [];
+): [googleResource[], lambdaFunction[], PrefabSupports[]] => {
+	let google: any[] = [];
 	let lambda: lambdaFunction[] = [];
 	let prefabSupports: PrefabSupports[] = [];
 
 	resources.forEach(r => {
-		if (r.type.toLowerCase() === "gce") {
-			gce = [...gce, r as Gce];
+		if (r.type.toLowerCase() in ["gce", "googlestoragebucket"]) {
+			google = [...google, r];
 		} else if (r.type.toLowerCase() === "lambdafunction") {
 			lambda = [...lambda, r as lambdaFunction];
 		} else {
@@ -38,7 +41,7 @@ export const splitForPrefab = (
 		}
 	});
 
-	return [gce, lambda, prefabSupports];
+	return [google as googleResource[], lambda, prefabSupports];
 };
 
 export const prefabNetworkFromArr = (
