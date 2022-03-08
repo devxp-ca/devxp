@@ -14,6 +14,8 @@ import TerraformOptions, {
 import Grid from "@mui/material/Grid";
 import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
@@ -83,16 +85,10 @@ export default function ToolManager() {
 							direction="row"
 							justifyContent="space-between"
 							columns={2}
-							sx={{mt: 2, mb: -6}}>
-							<Grid item>
-								<Typography variant="h5">
-									Current Repo:{" "}
-									{isRepoSelected ? selectedRepo : "None"}
-								</Typography>
-							</Grid>
+							sx={{mt: 3}}>
 							<Grid item>
 								<Autocomplete
-									sx={{padding: "3px", width: "300px"}}
+									sx={{ml: 1, width: "300px"}}
 									id="repo-select"
 									options={repoList}
 									getOptionLabel={(option: any) =>
@@ -120,12 +116,19 @@ export default function ToolManager() {
 									}}
 								/>
 							</Grid>
+							<Grid item>
+								<Tooltip title="Click here to copy these settings to another repo">
+									<Button variant="contained">
+										Copy to another repo
+									</Button>
+								</Tooltip>
+							</Grid>
 						</Grid>
 						{selectedTool == "none" && (
 							<Grid
 								container
 								direction="row"
-								sx={{paddingTop: 5}}>
+								sx={{paddingTop: 3}}>
 								<ToolManagerCard
 									onClick={setSelectedToolCardCallback(
 										"terraform"
