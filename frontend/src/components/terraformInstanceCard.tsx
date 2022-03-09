@@ -74,6 +74,10 @@ export default function TerraformInstanceCard(props: {
 							color="text.secondary"
 							sx={{padding: 2, paddingTop: 0}}>
 							<p>Provider: {props.cardData.settings.provider}</p>
+							<p>
+								Secure:{" "}
+								{props.cardData.settings.secure ? "on" : "off"}
+							</p>
 
 							{props.cardData.settings.provider === "aws" && (
 								<p>
@@ -123,6 +127,7 @@ export default function TerraformInstanceCard(props: {
 					selectedRepo={props.selectedRepo}
 					instanceDataForModify={props.cardData}
 					globalProvider={props.cardData.settings.provider}
+					globalSecure={props.cardData.settings.secure}
 					addNewDataCallback={passNewDataCallback}
 					cardIndex={props.cardIndex}
 				/>

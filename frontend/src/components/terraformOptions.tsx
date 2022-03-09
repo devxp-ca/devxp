@@ -22,6 +22,7 @@ export interface terraformDataSettings {
 	tool: string;
 	settings: {
 		provider: string;
+		secure: boolean;
 		resources: {
 			type: string;
 			id: string;
@@ -44,6 +45,7 @@ export default function TerraformOptions(props: {
 	selectedRepo: string;
 	instanceDataForModify?: terraformDataSettings; //used when modifying existing instances
 	globalProvider: string;
+	globalSecure: boolean;
 	addNewDataCallback: (
 		newData: terraformDataSettings,
 		isModifyingInstance: Boolean,
@@ -59,6 +61,9 @@ export default function TerraformOptions(props: {
 			? props.instanceDataForModify.settings.provider ??
 			  props.globalProvider
 			: props.globalProvider,
+		secureValue: isModifyingInstance
+			? props.instanceDataForModify.settings.secure ?? props.globalSecure
+			: props.globalSecure,
 		resourceTypeValue: isModifyingInstance
 			? props.instanceDataForModify.settings.resources[0].type ?? ""
 			: "",
@@ -92,6 +97,7 @@ export default function TerraformOptions(props: {
 
 	const {
 		providerValue,
+		secureValue,
 		resourceTypeValue,
 		instanceNameValue,
 		autoIamValue,
@@ -175,6 +181,7 @@ export default function TerraformOptions(props: {
 			tool: "terraform",
 			settings: {
 				provider: providerValue,
+				secure: secureValue,
 				resources: resourceArray
 			}
 		};
