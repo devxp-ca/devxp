@@ -78,11 +78,14 @@ export const settingsValidator = [
 		.default([])
 		.custom(uniquenessValidator)
 		.withMessage("Resource IDs must be unique"),
-	body("settings.resources.*.*")
-		.if(body("tool").equals("terraform"))
-		.trim()
-		.escape()
-		.isLength({min: 1}),
+
+	//TODO: Find a way to re-add this without casting arrays to strings
+	// body("settings.resources.*.*")
+	// 	.if(body("tool").equals("terraform"))
+	// 	.isString()
+	// 	.trim()
+	// 	.escape()
+	// 	.isLength({min: 1}),
 	body("settings.resources.*.type")
 		.if(body("tool").equals("terraform"))
 		.exists()
@@ -108,8 +111,7 @@ export const settingsValidator = [
 	body("settings.resources.*")
 		.if(body("tool").equals("terraform"))
 		.isObject()
-		.custom(resourceValidator)
-		.withMessage(value => `Invalid terraform resource "${value}"`),
+		.custom(resourceValidator),
 	header("token")
 		.exists()
 		.trim()

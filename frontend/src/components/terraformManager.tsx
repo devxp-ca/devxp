@@ -26,6 +26,21 @@ import CheckIcon from "@mui/icons-material/Check";
 import Tooltip from "@mui/material/Tooltip";
 import Checkbox from "@mui/material/Checkbox";
 
+const removeEmptyKeys = (obj: Record<string, any>) => {
+	Object.keys(obj).forEach(key => {
+		if (typeof obj[key] === "object") {
+			obj[key] = removeEmptyKeys(obj[key]);
+		} else if (Array.isArray(obj[key])) {
+			for (let i = 0; i < obj[key].length; i++) {
+				obj[key][i] = removeEmptyKeys(obj[key][i]);
+			}
+		} else if (typeof obj[key] === "string" && obj[key].length === 0) {
+			delete obj[key];
+		}
+	});
+	return obj;
+};
+
 export interface BackendError {
 	timestamp: Date;
 
@@ -71,12 +86,34 @@ export default function TerraformManager(props: {
 	const [selectedSecureOption, setSelectedSecureOption] =
 		React.useState(savedSecureOption);
 
+	const savedAllowEgressWebOption = Boolean(props.repoData)
+		? !!(props.repoData.settings as any).AllowEgressWeb
+		: true;
+	const [selectedAllowEgressWebOption, setSelectedAllowEgressWebOption] =
+		React.useState(savedAllowEgressWebOption);
+
+	const savedAllowSshOption = Boolean(props.repoData)
+		? !!(props.repoData.settings as any).AllowSsh
+		: true;
+	const [selectedAllowSshOption, setSelectedAllowSshOption] =
+		React.useState(savedAllowSshOption);
+
+	const savedAllowIngressWebOption = Boolean(props.repoData)
+		? !!(props.repoData.settings as any).allowIngressWeb
+		: false;
+	const [selectedAllowIngressWebOption, setSelectedAllowIngressWebOption] =
+		React.useState(savedAllowIngressWebOption);
+
+	const savedAutoLoadBalanceOption = Boolean(props.repoData)
+		? !!(props.repoData.settings as any).autoLoadBalance
+		: false;
+	const [selectedAutoLoadBalanceOption, setSelectedAutoLoadBalanceOption] =
+		React.useState(savedAutoLoadBalanceOption);
+
 	const handleChangeSecureOption = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		setSelectedSecureOption(
-			Boolean((event.target as HTMLInputElement).value)
-		);
+		setSelectedSecureOption(event.target.checked);
 	};
 
 	//for the + button
@@ -122,7 +159,6 @@ export default function TerraformManager(props: {
 					}
 				);
 			}
-
 			const tempData: terraformDataSettings = {
 				repo: updatedConfigurations.repo,
 				tool: updatedConfigurations.tool,
@@ -254,11 +290,20 @@ export default function TerraformManager(props: {
 		//Dirty fix
 		updatedConfigurations.tool = updatedConfigurations.tool ?? "terraform";
 		updatedConfigurations.repo = props.selectedRepo;
+		updatedConfigurations.settings.secure = selectedSecureOption;
+		(updatedConfigurations as any).settings.allowSsh =
+			selectedAllowSshOption;
+		(updatedConfigurations as any).settings.allowEgressWeb =
+			selectedAllowEgressWebOption;
+		(updatedConfigurations as any).settings.allowIngressWeb =
+			selectedAllowIngressWebOption;
+		(updatedConfigurations as any).settings.autoLoadBalance =
+			selectedAutoLoadBalanceOption;
 
 		axios
 			.post(
 				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-				updatedConfigurations
+				removeEmptyKeys(updatedConfigurations)
 			)
 			.then(response => {
 				console.log(response.data);
@@ -430,8 +475,185 @@ export default function TerraformManager(props: {
 									marginTop: -0.45
 								}}
 								onChange={handleChangeSecureOption}
+								defaultChecked={selectedSecureOption}
+								checked={selectedSecureOption}
 							/>
 						</Grid>
+						{selectedSecureOption && (
+							<>
+								<Grid container direction="row">
+									<Typography
+										sx={{paddingTop: 0.4}}
+										variant="h6">
+										Enable SSH
+									</Typography>
+									<MouseOverPopover
+										icon={
+											<HelpIcon
+												sx={{
+													paddingLeft: 1,
+													paddingTop: 0.85,
+													opacity: 0.5
+												}}
+											/>
+										}
+										popOverInfo={
+											<div>
+												Opens up port 22 for ssh access
+											</div>
+										}
+									/>
+									<Checkbox
+										sx={{
+											"& .MuiSvgIcon-root": {
+												fontSize: 28
+											},
+											marginTop: -0.45
+										}}
+										onChange={(
+											event: React.ChangeEvent<HTMLInputElement>
+										) =>
+											setSelectedAllowSshOption(
+												event.target.checked
+											)
+										}
+										defaultChecked={selectedAllowSshOption}
+										checked={selectedAllowSshOption}
+									/>
+								</Grid>
+								<Grid container direction="row">
+									<Typography
+										sx={{paddingTop: 0.4}}
+										variant="h6">
+										Enable Inbound Web Traffic
+									</Typography>
+									<MouseOverPopover
+										icon={
+											<HelpIcon
+												sx={{
+													paddingLeft: 1,
+													paddingTop: 0.85,
+													opacity: 0.5
+												}}
+											/>
+										}
+										popOverInfo={
+											<div>
+												Opens up ports 443 and 80 for
+												web traffic
+											</div>
+										}
+									/>
+									<Checkbox
+										sx={{
+											"& .MuiSvgIcon-root": {
+												fontSize: 28
+											},
+											marginTop: -0.45
+										}}
+										onChange={(
+											event: React.ChangeEvent<HTMLInputElement>
+										) =>
+											setSelectedAllowIngressWebOption(
+												event.target.checked
+											)
+										}
+										defaultChecked={
+											selectedAllowIngressWebOption
+										}
+										checked={selectedAllowIngressWebOption}
+									/>
+								</Grid>
+								<Grid container direction="row">
+									<Typography
+										sx={{paddingTop: 0.4}}
+										variant="h6">
+										Enable Outbound Web Traffic
+									</Typography>
+									<MouseOverPopover
+										icon={
+											<HelpIcon
+												sx={{
+													paddingLeft: 1,
+													paddingTop: 0.85,
+													opacity: 0.5
+												}}
+											/>
+										}
+										popOverInfo={
+											<div>
+												Opens up ports 443 and 80 for
+												software updates, web requests,
+												etc
+											</div>
+										}
+									/>
+									<Checkbox
+										sx={{
+											"& .MuiSvgIcon-root": {
+												fontSize: 28
+											},
+											marginTop: -0.45
+										}}
+										onChange={(
+											event: React.ChangeEvent<HTMLInputElement>
+										) =>
+											setSelectedAllowEgressWebOption(
+												event.target.checked
+											)
+										}
+										defaultChecked={
+											selectedAllowEgressWebOption
+										}
+										checked={selectedAllowEgressWebOption}
+									/>
+								</Grid>
+								<Grid container direction="row">
+									<Typography
+										sx={{paddingTop: 0.4}}
+										variant="h6">
+										Enable Network Load Balancing
+									</Typography>
+									<MouseOverPopover
+										icon={
+											<HelpIcon
+												sx={{
+													paddingLeft: 1,
+													paddingTop: 0.85,
+													opacity: 0.5
+												}}
+											/>
+										}
+										popOverInfo={
+											<div>
+												Spins up a network load balancer
+												within your VPC, connected to
+												all ec2 instances
+											</div>
+										}
+									/>
+									<Checkbox
+										sx={{
+											"& .MuiSvgIcon-root": {
+												fontSize: 28
+											},
+											marginTop: -0.45
+										}}
+										onChange={(
+											event: React.ChangeEvent<HTMLInputElement>
+										) =>
+											setSelectedAutoLoadBalanceOption(
+												event.target.checked
+											)
+										}
+										defaultChecked={
+											selectedAutoLoadBalanceOption
+										}
+										checked={selectedAutoLoadBalanceOption}
+									/>
+								</Grid>
+							</>
+						)}
 					</Grid>
 				</FormControl>
 			</Grid>

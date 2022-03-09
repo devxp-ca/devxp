@@ -55,6 +55,7 @@ export default function TerraformOptions(props: {
 	cardIndex: number;
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
+
 	const resource0 = isModifyingInstance
 		? props.instanceDataForModify.settings.resources[0]
 		: undefined;
@@ -81,14 +82,14 @@ export default function TerraformOptions(props: {
 		runtimeValue: isModifyingInstance ? resource0.runtime ?? "" : "",
 		numberOfInstancesValue: 1,
 		//TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute
-		attributeName: isModifyingInstance
-			? ("attributes" in resource0 && resource0.attributes[0].name) ?? ""
+		attributeNameValue: isModifyingInstance
+			? ("attributes" in resource0 && resource0.attributes[0]?.name) ?? ""
 			: "",
-		attributeType: isModifyingInstance
-			? ("attributes" in resource0 && resource0.attributes[0].type) ?? ""
+		attributeTypeValue: isModifyingInstance
+			? ("attributes" in resource0 && resource0.attributes[0]?.type) ?? ""
 			: "",
-		attributeIsHash: isModifyingInstance
-			? ("attributes" in resource0 && resource0.attributes[0].isHash) ??
+		attributeIsHashValue: isModifyingInstance
+			? ("attributes" in resource0 && resource0.attributes[0]?.isHash) ??
 			  false
 			: true
 	};
@@ -116,6 +117,8 @@ export default function TerraformOptions(props: {
 	} = optionState;
 
 	function optionsReducer(state: any, action: any) {
+		console.dir(action);
+
 		switch (action.type) {
 			case "provider":
 				return {
@@ -649,10 +652,13 @@ export default function TerraformOptions(props: {
 												) =>
 													dispatch({
 														type: "attributeIsHash",
-														payload: (
-															event.target as HTMLInputElement
-														).value
+														payload:
+															event.target.checked
 													})
+												}
+												checked={attributeIsHashValue}
+												defaultChecked={
+													attributeIsHashValue
 												}
 											/>
 										</Grid>
@@ -701,14 +707,14 @@ export default function TerraformOptions(props: {
 										}}
 										onChange={(
 											event: React.ChangeEvent<HTMLInputElement>
-										) =>
-											dispatch({
+										) => {
+											console.dir(event);
+											return dispatch({
 												type: "autoIam",
-												payload: (
-													event.target as HTMLInputElement
-												).value
-											})
-										}
+												payload: event.target.checked
+											});
+										}}
+										defaultChecked={autoIamValue}
 									/>
 								</FormControl>
 							</Grid>
