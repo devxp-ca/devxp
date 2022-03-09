@@ -73,7 +73,6 @@ export default function TerraformInstanceCard(props: {
 							variant="body2"
 							color="text.secondary"
 							sx={{padding: 2, paddingTop: 0}}>
-							<p>Provider: {props.cardData.settings.provider}</p>
 							<p>
 								Secure:{" "}
 								{props.cardData.settings.secure ? "on" : "off"}
