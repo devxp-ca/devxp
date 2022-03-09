@@ -60,8 +60,6 @@ export default function ToolManager() {
 	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
 
 	const setRepoForCopy = (repo_full_name: string) => {
-		setCopyRepo(repo_full_name);
-
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -73,9 +71,13 @@ export default function ToolManager() {
 					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
 					{
 						repo: `${copyRepo}`,
-						settings: response.data
+						tool: "terraform",
+						settings: response.data.settings
 					}
 				);
+			})
+			.then((response: any) => {
+				setCopyRepoOpen(false);
 			})
 			.catch((error: any) => {
 				console.error(error);
