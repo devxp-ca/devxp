@@ -657,9 +657,6 @@ export default function TerraformOptions(props: {
 													})
 												}
 												checked={attributeIsHashValue}
-												defaultChecked={
-													attributeIsHashValue
-												}
 											/>
 										</Grid>
 									</Grid>
@@ -708,13 +705,12 @@ export default function TerraformOptions(props: {
 										onChange={(
 											event: React.ChangeEvent<HTMLInputElement>
 										) => {
-											console.dir(event);
 											return dispatch({
 												type: "autoIam",
 												payload: event.target.checked
 											});
 										}}
-										defaultChecked={autoIamValue}
+										checked={autoIamValue}
 									/>
 								</FormControl>
 							</Grid>

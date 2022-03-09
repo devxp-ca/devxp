@@ -476,7 +476,6 @@ export default function TerraformManager(props: {
 										marginTop: -0.45
 									}}
 									onChange={handleChangeSecureOption}
-									defaultChecked={selectedSecureOption}
 									checked={selectedSecureOption}
 								/>
 							</Grid>
