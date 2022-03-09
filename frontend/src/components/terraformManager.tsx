@@ -221,7 +221,7 @@ export default function TerraformManager(props: {
 								<TerraformOptions
 									selectedRepo={props.selectedRepo}
 									globalProvider={selectedProvider}
-                  globalSecure={selectedSecureOption}
+									globalSecure={selectedSecureOption}
 									addNewDataCallback={
 										changeConfigurationsCallback
 									}
