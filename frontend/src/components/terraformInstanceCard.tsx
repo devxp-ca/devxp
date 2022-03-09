@@ -68,25 +68,79 @@ export default function TerraformInstanceCard(props: {
 							{props.cardData.settings.resources[0].id}
 						</Typography>
 
+						{/* TODO: Add display values for dynamoDB + lambda */}
 						<Typography
 							variant="body2"
 							color="text.secondary"
 							sx={{padding: 2, paddingTop: 0}}>
-							<p>Provider: {props.cardData.settings.provider}</p>
-							<p>
-								Resource:{" "}
-								{props.cardData.settings.resources[0].type}
-							</p>
-							<p>
-								OS: {props.cardData.settings.resources[0].ami}
-							</p>
-							<p>
-								Hardware:{" "}
-								{
-									props.cardData.settings.resources[0]
-										.instance_type
-								}
-							</p>
+							{props.cardData.settings.provider === "aws" && (
+								<p>
+									<p>
+										Resource:{" "}
+										{
+											props.cardData.settings.resources[0]
+												.type
+										}
+									</p>
+									<p>
+										AutoIam:{" "}
+										{props.cardData.settings.resources[0]
+											.autoIam
+											? "on"
+											: "off"}
+									</p>
+									{props.cardData.settings.resources[0]
+										.type === "ec2" && (
+										<p>
+											<p>
+												OS:{" "}
+												{
+													props.cardData.settings
+														.resources[0].ami
+												}
+											</p>
+											<p>
+												Hardware:
+												{
+													props.cardData.settings
+														.resources[0]
+														.instance_type
+												}
+											</p>
+										</p>
+									)}
+									{/*TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute*/}
+									{props.cardData.settings.resources[0]
+										.type === "dynamoDb" && (
+										<p>
+											<p>
+												Attribute Name:{" "}
+												{
+													props.cardData.settings
+														.resources[0]
+														.attributes[0].name
+												}
+											</p>
+											<p>
+												Type:
+												{
+													props.cardData.settings
+														.resources[0]
+														.attributes[0].type
+												}
+											</p>
+											<p>
+												isHash:
+												{props.cardData.settings
+													.resources[0].attributes[0]
+													.isHash
+													? "true"
+													: "false"}
+											</p>
+										</p>
+									)}
+								</p>
+							)}
 						</Typography>
 					</CardMedia>
 				</CardActionArea>
@@ -97,6 +151,7 @@ export default function TerraformInstanceCard(props: {
 					selectedRepo={props.selectedRepo}
 					instanceDataForModify={props.cardData}
 					globalProvider={props.cardData.settings.provider}
+					globalSecure={props.cardData.settings.secure}
 					addNewDataCallback={passNewDataCallback}
 					cardIndex={props.cardIndex}
 				/>

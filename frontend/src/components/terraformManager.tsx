@@ -24,6 +24,7 @@ import GenericModal from "./GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
 import Tooltip from "@mui/material/Tooltip";
+import Checkbox from "@mui/material/Checkbox";
 
 export interface BackendError {
 	timestamp: Date;
@@ -60,6 +61,20 @@ export default function TerraformManager(props: {
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setSelectedProvider((event.target as HTMLInputElement).value);
+	};
+
+	const savedSecureOption = Boolean(props.repoData)
+		? props.repoData.settings.secure
+		: false;
+	const [selectedSecureOption, setSelectedSecureOption] =
+		React.useState(savedSecureOption);
+
+	const handleChangeSecureOption = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setSelectedSecureOption(
+			Boolean((event.target as HTMLInputElement).value)
+		);
 	};
 
 	//for the + button
@@ -111,6 +126,7 @@ export default function TerraformManager(props: {
 				tool: updatedConfigurations.tool,
 				settings: {
 					provider: updatedConfigurations.settings.provider,
+					secure: updatedConfigurations.settings.secure,
 					resources: justResources
 				}
 			};
@@ -137,6 +153,7 @@ export default function TerraformManager(props: {
 				tool: prevSettings.tool,
 				settings: {
 					provider: prevSettings.settings.provider,
+					secure: prevSettings.settings.secure,
 					resources: [element]
 				}
 			});
@@ -204,6 +221,7 @@ export default function TerraformManager(props: {
 								<TerraformOptions
 									selectedRepo={props.selectedRepo}
 									globalProvider={selectedProvider}
+									globalSecure={selectedSecureOption}
 									addNewDataCallback={
 										changeConfigurationsCallback
 									}
@@ -320,6 +338,7 @@ export default function TerraformManager(props: {
 	};
 
 	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
+	//TODO: bug with provider and secure states where if you change it it doesn't register until you reload the page
 	return (
 		<Box sx={{width: "100%", paddingBottom: 12}}>
 			<GenericModal
@@ -329,60 +348,89 @@ export default function TerraformManager(props: {
 				bodyText={modalText.body}
 				children={modalChildren()}
 			/>
-			<Grid container direction="row" alignItems={"center"}>
-				<Typography sx={{paddingTop: 4, marginBottom: 3}} variant="h4">
+			<Grid container direction="row">
+				<Typography sx={{paddingTop: 4}} variant="h4">
 					Terraform
 				</Typography>
 				<FormControl>
 					<Grid
 						container
-						direction="row"
-						sx={{paddingLeft: 8, paddingTop: 1}}>
-						<Typography sx={{paddingTop: 0.4}} variant="h6">
-							Provider
-						</Typography>
-						<MouseOverPopover
-							icon={
-								<HelpIcon
-									sx={{
-										paddingLeft: 1,
-										paddingTop: 1,
-										opacity: 0.5
-									}}
+						direction="column"
+						sx={{paddingLeft: 8, paddingTop: 4.5, marginBottom: 2}}>
+						<Grid container direction="row">
+							<Typography sx={{paddingTop: 0.4}} variant="h6">
+								Provider
+							</Typography>
+							<MouseOverPopover
+								icon={
+									<HelpIcon
+										sx={{
+											paddingLeft: 1,
+											paddingTop: 0.85,
+											opacity: 0.5
+										}}
+									/>
+								}
+								popOverInfo={
+									<div>
+										Select the provider you have a cloud
+										services account with
+									</div>
+								}
+							/>
+							<RadioGroup
+								name="Provider"
+								value={selectedProvider}
+								onChange={handleChangeProvider}
+								row
+								sx={{paddingLeft: 2}}>
+								<FormControlLabel
+									key="aws"
+									value="aws"
+									control={<Radio size="small" />}
+									label="Amazon"
 								/>
-							}
-							popOverInfo={
-								<div>
-									Select the provider you have a cloud
-									services account with
-								</div>
-							}
-						/>
-						<RadioGroup
-							name="Provider"
-							value={selectedProvider}
-							onChange={handleChangeProvider}
-							row
-							sx={{paddingLeft: 2}}>
-							<FormControlLabel
-								key="aws"
-								value="aws"
-								control={<Radio size="small" />}
-								label="Amazon"
+								<FormControlLabel
+									key="google"
+									value="google"
+									control={<Radio size="small" />}
+									label="Google"
+								/>
+								<FormControlLabel
+									key="other"
+									value="other"
+									control={<Radio size="small" />}
+									label="Azure"
+									disabled={true}
+								/>
+							</RadioGroup>
+						</Grid>
+						<Grid container direction="row">
+							<Typography sx={{paddingTop: 0.4}} variant="h6">
+								Secure
+							</Typography>
+							<MouseOverPopover
+								icon={
+									<HelpIcon
+										sx={{
+											paddingLeft: 1,
+											paddingTop: 0.85,
+											opacity: 0.5
+										}}
+									/>
+								}
+								popOverInfo={<div>Secures resources</div>}
 							/>
-							<FormControlLabel
-								key="google"
-								value="google"
-								control={<Radio size="small" />}
-								label="Google"
+							<Checkbox
+								sx={{
+									"& .MuiSvgIcon-root": {
+										fontSize: 28
+									},
+									marginTop: -0.45
+								}}
+								onChange={handleChangeSecureOption}
 							/>
-							<FormControlLabel
-								key="other"
-								value="other"
-								control={<Radio size="small" />}
-								label="Azure"
-							/>
-						</RadioGroup>
+						</Grid>
 					</Grid>
 				</FormControl>
 			</Grid>
