@@ -55,8 +55,9 @@ export default function TerraformOptions(props: {
 	cardIndex: number;
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
-
-	const resource0 = props.instanceDataForModify.settings.resources[0];
+	const resource0 = isModifyingInstance
+		? props.instanceDataForModify.settings.resources[0]
+		: undefined;
 
 	//OPTION STATES AND REDUCER -- pre-populate options if modifying
 	const initialOptionState = {
