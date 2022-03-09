@@ -53,6 +53,8 @@ export default function TerraformOptions(props: {
 		cardNum: number
 	) => void;
 	cardIndex: number;
+	incrementOpenCards: () => void;
+	decrementOpenCards: () => void;
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
@@ -187,6 +189,7 @@ export default function TerraformOptions(props: {
 	}
 
 	const addChanges = () => {
+		props.decrementOpenCards();
 		let resourceArray = [];
 		for (let i = 0; i < numberOfInstancesValue; i++) {
 			resourceArray.push({
@@ -227,6 +230,7 @@ export default function TerraformOptions(props: {
 	};
 
 	const deleteInstance = () => {
+		props.decrementOpenCards();
 		props.addNewDataCallback(null, isModifyingInstance, props.cardIndex);
 	};
 
