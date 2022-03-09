@@ -14,6 +14,9 @@ import TerraformOptions, {
 import Grid from "@mui/material/Grid";
 import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import GenericModal from "../components/GenericModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
@@ -52,6 +55,71 @@ export default function ToolManager() {
 		return callback;
 	};
 
+	/* For the copy settings modal */
+	const [copyRepo, setCopyRepo] = React.useState<string>("");
+	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
+
+	const setRepoForCopy = (repo_full_name: string) => {
+		axios
+			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				headers: {
+					repo: `${selectedRepo}`
+				}
+			})
+			.then((response: any) => {
+				return axios.post(
+					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+					{
+						repo: `${copyRepo}`,
+						tool: "terraform",
+						settings: response.data.settings
+					}
+				);
+			})
+			.then((response: any) => {
+				setCopyRepoOpen(false);
+			})
+			.catch((error: any) => {
+				console.error(error);
+			});
+	};
+
+	const modalChildren = () => {
+		return (
+			<Grid
+				container
+				direction="column"
+				style={{display: "flex", justifyContent: "center"}}>
+				<Autocomplete
+					sx={{margin: 3, width: "300px"}}
+					id="repo-select"
+					options={repoList}
+					getOptionLabel={(option: any) => option.full_name}
+					renderInput={(params: any) => (
+						<TextField
+							{...params}
+							label="Select A Repo"
+							variant="outlined"
+						/>
+					)}
+					onChange={(event: any, value: any) => {
+						setCopyRepo(value.full_name);
+					}}
+					isOptionEqualToValue={(option: any, value: any) => {
+						return option.full_name === value.full_name;
+					}}
+				/>
+				<Button
+					variant="contained"
+					onClick={() => {
+						setRepoForCopy(copyRepo);
+					}}>
+					Copy Settings
+				</Button>
+			</Grid>
+		);
+	};
+
 	//on mount, get the list of repos
 	React.useEffect(() => {
 		//api call to get repos
@@ -83,16 +151,10 @@ export default function ToolManager() {
 							direction="row"
 							justifyContent="space-between"
 							columns={2}
-							sx={{mt: 2, mb: -6}}>
-							<Grid item>
-								<Typography variant="h5">
-									Current Repo:{" "}
-									{isRepoSelected ? selectedRepo : "None"}
-								</Typography>
-							</Grid>
+							sx={{mt: 3}}>
 							<Grid item>
 								<Autocomplete
-									sx={{padding: "3px", width: "300px"}}
+									sx={{ml: 1, width: "300px"}}
 									id="repo-select"
 									options={repoList}
 									getOptionLabel={(option: any) =>
@@ -120,12 +182,32 @@ export default function ToolManager() {
 									}}
 								/>
 							</Grid>
+							<Grid item>
+								<Tooltip title="Click here to copy these settings to another repo">
+									<Button
+										variant="contained"
+										onClick={() => {
+											setCopyRepoOpen(true);
+										}}>
+										Copy to another repo
+									</Button>
+								</Tooltip>
+								<GenericModal
+									isOpen={copyRepoOpen}
+									handleClose={() => {
+										setCopyRepoOpen(false);
+									}}
+									title="Copy Settings"
+									bodyText="Select the repo you want to copy the settings to"
+									children={modalChildren()}
+								/>
+							</Grid>
 						</Grid>
 						{selectedTool == "none" && (
 							<Grid
 								container
 								direction="row"
-								sx={{paddingTop: 5}}>
+								sx={{paddingTop: 3}}>
 								<ToolManagerCard
 									onClick={setSelectedToolCardCallback(
 										"terraform"

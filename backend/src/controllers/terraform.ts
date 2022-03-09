@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import createCommit from "../githubapi/createCommit";
 import createTree from "../githubapi/createTree";
 import createBranch from "../githubapi/createBranch";
+import createPullRequest from "../githubapi/createPullRequest";
 import getCommitFromUrl from "../githubapi/getCommitFromUrl";
 import getHead from "../githubapi/getHead";
 import getTreeFromUrl from "../githubapi/getTreeFromUrl";
@@ -166,12 +167,9 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				repo,
 				head.sha
 			);
-			// Reassign head.url and head.sha to point to this new branch
-			head.url = newBranch.url;
-			head.sha = newBranch.sha;
 
 			//Grab the latest commit at the head pointer
-			const commit = await getCommitFromUrl(token, head.url);
+			const commit = await getCommitFromUrl(token, newBranch.url);
 
 			//Grab the tree referenced by the commit
 			const tree = await getTreeFromUrl(token, commit.treeUrl);
@@ -203,12 +201,20 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				token,
 				repo,
 				newTree.sha,
-				head.sha,
+				newBranch.sha,
 				"DevXP: Initialized Terraform"
 			);
-
 			//Update the HEAD pointer to the new commit
-			return updateHead(token, repo, newCommit.commitSha, branchName);
+			const ref = await updateHead(
+				token,
+				repo,
+				newCommit.commitSha,
+				branchName
+			);
+
+			//Initiate a pull request to the main branch
+			await createPullRequest("DevXP-Configuration", "main", token, repo);
+			return ref;
 		})
 		.then(ref => {
 			res.json({ref});

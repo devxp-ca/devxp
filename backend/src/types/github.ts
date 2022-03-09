@@ -117,6 +117,14 @@ export interface GithubBranch {
 	url: string;
 }
 
+export const isGithubPR = (object: any): object is GithubPR =>
+	"url" in object && "title" in object && noNullProps(object);
+
+export interface GithubPR {
+	url: string;
+	title: string;
+}
+
 export const isGithubBranch = (object: any): object is GithubBranch =>
 	"sha" in object && "type" in object && "url" in object;
 
