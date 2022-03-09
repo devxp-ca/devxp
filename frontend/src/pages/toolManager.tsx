@@ -60,7 +60,6 @@ export default function ToolManager() {
 	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
 
 	const setRepoForCopy = (repo_full_name: string) => {
-		setCopyRepo(repo_full_name);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -71,7 +70,7 @@ export default function ToolManager() {
 				return axios.post(
 					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
 					{
-						repo: copyRepo,
+						repo: repo_full_name,
 						settings: response.data
 					}
 				);
@@ -100,7 +99,7 @@ export default function ToolManager() {
 						/>
 					)}
 					onChange={(event: any, value: any) => {
-						setSelectedRepoFromAutocomplete(value.full_name);
+						setCopyRepo(value.full_name);
 					}}
 					isOptionEqualToValue={(option: any, value: any) => {
 						return option.full_name === value.full_name;
