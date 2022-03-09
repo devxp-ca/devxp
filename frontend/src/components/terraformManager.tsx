@@ -60,6 +60,8 @@ export default function TerraformManager(props: {
 	const handleChangeProvider = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
+		//Remove any currently open instance since the provider has changed
+		setSelectNewInstance(false);
 		setSelectedProvider((event.target as HTMLInputElement).value);
 	};
 
@@ -216,7 +218,6 @@ export default function TerraformManager(props: {
 								</CardActionArea>
 							</Tooltip>
 						)}
-						{/* TODO: bug: changing provider when option box is already opened doesn't refresh options*/}
 						{/* if provider is blank the + button will not work -- may need to communicate this more */}
 						{selectedNewInstance && selectedProvider != "" && (
 							<TerraformOptions
