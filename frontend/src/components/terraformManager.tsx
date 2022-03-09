@@ -181,9 +181,9 @@ export default function TerraformManager(props: {
 				</Grid>
 				{/* New Terraform Instance */}
 				<Grid item>
-					<Tooltip title="Add a new Terraform instance, must select provider first">
-						<Card>
-							{!selectedNewInstance && (
+					<Card>
+						{!selectedNewInstance && (
+							<Tooltip title="Add a new Terraform instance, must select provider first">
 								<CardActionArea
 									onClick={selectedNewInstanceCallback}
 									sx={{
@@ -214,22 +214,22 @@ export default function TerraformManager(props: {
 										</Grid>
 									</Grid>
 								</CardActionArea>
-							)}
-							{/* TODO: bug: changing provider when option box is already opened doesn't refresh options*/}
-							{/* if provider is blank the + button will not work -- may need to communicate this more */}
-							{selectedNewInstance && selectedProvider != "" && (
-								<TerraformOptions
-									selectedRepo={props.selectedRepo}
-									globalProvider={selectedProvider}
-									globalSecure={selectedSecureOption}
-									addNewDataCallback={
-										changeConfigurationsCallback
-									}
-									cardIndex={0}
-								/>
-							)}
-						</Card>
-					</Tooltip>
+							</Tooltip>
+						)}
+						{/* TODO: bug: changing provider when option box is already opened doesn't refresh options*/}
+						{/* if provider is blank the + button will not work -- may need to communicate this more */}
+						{selectedNewInstance && selectedProvider != "" && (
+							<TerraformOptions
+								selectedRepo={props.selectedRepo}
+								globalProvider={selectedProvider}
+								globalSecure={selectedSecureOption}
+								addNewDataCallback={
+									changeConfigurationsCallback
+								}
+								cardIndex={0}
+							/>
+						)}
+					</Card>
 				</Grid>
 				{/* Populate previous instances here */}
 				{prevInstanceSettings.map((cardSettings, index) => (
