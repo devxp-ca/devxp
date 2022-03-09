@@ -19,11 +19,14 @@ export default function TerraformInstanceCard(props: {
 		cardNum: number
 	) => void;
 	cardIndex: number;
+	incrementOpenCards: () => void;
+	decrementOpenCards: () => void;
 }) {
 	const currentTheme = lightTheme;
 	const [selectedEditInstance, setSelectEditInstance] = React.useState(false);
 
 	const selectedEditInstanceCallback = () => {
+		props.incrementOpenCards();
 		setSelectEditInstance(true);
 	};
 
@@ -71,9 +74,10 @@ export default function TerraformInstanceCard(props: {
 						<Typography
 							variant="body2"
 							color="text.secondary"
+							component="div"
 							sx={{padding: 2, paddingTop: 0}}>
 							{props.cardData.settings.provider === "aws" && (
-								<p>
+								<div>
 									<p>
 										Resource:{" "}
 										{
@@ -90,7 +94,7 @@ export default function TerraformInstanceCard(props: {
 									</p>
 									{props.cardData.settings.resources[0]
 										.type === "ec2" && (
-										<p>
+										<div>
 											<p>
 												OS:{" "}
 												{
@@ -106,12 +110,12 @@ export default function TerraformInstanceCard(props: {
 														.instance_type
 												}
 											</p>
-										</p>
+										</div>
 									)}
 									{/*TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute*/}
 									{props.cardData.settings.resources[0]
 										.type === "dynamoDb" && (
-										<p>
+										<div>
 											<p>
 												Attribute Name:{" "}
 												{
@@ -136,9 +140,9 @@ export default function TerraformInstanceCard(props: {
 													? "true"
 													: "false"}
 											</p>
-										</p>
+										</div>
 									)}
-								</p>
+								</div>
 							)}
 						</Typography>
 					</CardMedia>
@@ -152,6 +156,8 @@ export default function TerraformInstanceCard(props: {
 					globalSecure={props.cardData.settings.secure}
 					addNewDataCallback={passNewDataCallback}
 					cardIndex={props.cardIndex}
+					incrementOpenCards={props.incrementOpenCards}
+					decrementOpenCards={props.decrementOpenCards}
 				/>
 			)}
 		</Card>

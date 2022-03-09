@@ -119,12 +119,17 @@ export default function TerraformManager(props: {
 	//for the + button
 	const [selectedNewInstance, setSelectNewInstance] = React.useState(false);
 	const selectedNewInstanceCallback = () => {
-		if (selectedProvider == "") {
+		if (selectedProvider === "") {
 			setSelectNewInstance(false);
 		} else {
+			incrementOpenCards();
 			setSelectNewInstance(true);
 		}
 	};
+
+	const [openCards, setOpenCards] = React.useState<number>(0);
+	const incrementOpenCards = () => setOpenCards(openCards + 1);
+	const decrementOpenCards = () => setOpenCards(openCards - 1);
 
 	const [currentlySavedConfigurations, setCurrentlySavedConfigurations] =
 		React.useState<terraformDataSettings>(props.repoData);
@@ -264,19 +269,24 @@ export default function TerraformManager(props: {
 									changeConfigurationsCallback
 								}
 								cardIndex={0}
+								incrementOpenCards={incrementOpenCards}
+								decrementOpenCards={decrementOpenCards}
 							/>
 						)}
 					</Card>
 				</Grid>
 				{/* Populate previous instances here */}
 				{prevInstanceSettings.map((cardSettings, index) => (
-					<Grid item>
+					<Grid item key={`prevInstanceCardGrid${index}`}>
 						<TerraformInstanceCard
+							key={`TerraformInstanceCard${index}`}
 							cardData={cardSettings}
 							cardSize={defaultCardSize}
 							selectedRepo={props.selectedRepo}
 							addNewDataCallback={changeConfigurationsCallback}
 							cardIndex={index}
+							incrementOpenCards={incrementOpenCards}
+							decrementOpenCards={decrementOpenCards}
 						/>
 					</Grid>
 				))}
@@ -418,10 +428,10 @@ export default function TerraformManager(props: {
 									/>
 								}
 								popOverInfo={
-									<div>
+									<span>
 										Select the provider you have a cloud
 										services account with
-									</div>
+									</span>
 								}
 							/>
 							<RadioGroup
@@ -451,35 +461,36 @@ export default function TerraformManager(props: {
 								/>
 							</RadioGroup>
 						</Grid>
-						<Grid container direction="row">
-							<Typography sx={{paddingTop: 0.4}} variant="h6">
-								Secure
-							</Typography>
-							<MouseOverPopover
-								icon={
-									<HelpIcon
-										sx={{
-											paddingLeft: 1,
-											paddingTop: 0.85,
-											opacity: 0.5
-										}}
-									/>
-								}
-								popOverInfo={<div>Secures resources</div>}
-							/>
-							<Checkbox
-								sx={{
-									"& .MuiSvgIcon-root": {
-										fontSize: 28
-									},
-									marginTop: -0.45
-								}}
-								onChange={handleChangeSecureOption}
-								defaultChecked={selectedSecureOption}
-								checked={selectedSecureOption}
-							/>
-						</Grid>
-						{selectedSecureOption && (
+						{selectedProvider === "aws" && (
+							<Grid container direction="row">
+								<Typography sx={{paddingTop: 0.4}} variant="h6">
+									Secure
+								</Typography>
+								<MouseOverPopover
+									icon={
+										<HelpIcon
+											sx={{
+												paddingLeft: 1,
+												paddingTop: 0.85,
+												opacity: 0.5
+											}}
+										/>
+									}
+									popOverInfo={<span>Secures resources</span>}
+								/>
+								<Checkbox
+									sx={{
+										"& .MuiSvgIcon-root": {
+											fontSize: 28
+										},
+										marginTop: -0.45
+									}}
+									onChange={handleChangeSecureOption}
+									checked={selectedSecureOption}
+								/>
+							</Grid>
+						)}
+						{selectedProvider === "aws" && selectedSecureOption && (
 							<>
 								<Grid container direction="row">
 									<Typography
@@ -498,9 +509,9 @@ export default function TerraformManager(props: {
 											/>
 										}
 										popOverInfo={
-											<div>
+											<span>
 												Opens up port 22 for ssh access
-											</div>
+											</span>
 										}
 									/>
 									<Checkbox
@@ -517,7 +528,6 @@ export default function TerraformManager(props: {
 												event.target.checked
 											)
 										}
-										defaultChecked={selectedAllowSshOption}
 										checked={selectedAllowSshOption}
 									/>
 								</Grid>
@@ -538,10 +548,10 @@ export default function TerraformManager(props: {
 											/>
 										}
 										popOverInfo={
-											<div>
+											<span>
 												Opens up ports 443 and 80 for
 												web traffic
-											</div>
+											</span>
 										}
 									/>
 									<Checkbox
@@ -557,9 +567,6 @@ export default function TerraformManager(props: {
 											setSelectedAllowIngressWebOption(
 												event.target.checked
 											)
-										}
-										defaultChecked={
-											selectedAllowIngressWebOption
 										}
 										checked={selectedAllowIngressWebOption}
 									/>
@@ -581,11 +588,11 @@ export default function TerraformManager(props: {
 											/>
 										}
 										popOverInfo={
-											<div>
+											<span>
 												Opens up ports 443 and 80 for
 												software updates, web requests,
 												etc
-											</div>
+											</span>
 										}
 									/>
 									<Checkbox
@@ -601,9 +608,6 @@ export default function TerraformManager(props: {
 											setSelectedAllowEgressWebOption(
 												event.target.checked
 											)
-										}
-										defaultChecked={
-											selectedAllowEgressWebOption
 										}
 										checked={selectedAllowEgressWebOption}
 									/>
@@ -625,11 +629,11 @@ export default function TerraformManager(props: {
 											/>
 										}
 										popOverInfo={
-											<div>
+											<span>
 												Spins up a network load balancer
 												within your VPC, connected to
 												all ec2 instances
-											</div>
+											</span>
 										}
 									/>
 									<Checkbox
@@ -646,9 +650,6 @@ export default function TerraformManager(props: {
 												event.target.checked
 											)
 										}
-										defaultChecked={
-											selectedAutoLoadBalanceOption
-										}
 										checked={selectedAutoLoadBalanceOption}
 									/>
 								</Grid>
@@ -664,10 +665,14 @@ export default function TerraformManager(props: {
 					paddingTop: 3,
 					position: "fixed",
 					bottom: 75,
-					left: "50%",
-					transform: "translate(-50%)"
+					width: "calc(100vw - 76px)"
 				}}>
 				<Button
+					disabled={
+						openCards > 0 ||
+						(selectedProvider?.length ?? 0) < 1 ||
+						(props.selectedRepo?.length ?? 0) < 1
+					}
 					variant="contained"
 					color="success"
 					size="large"
