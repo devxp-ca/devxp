@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import Container from "@mui/material/Container";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
+import {Box} from "@mui/system";
 
 interface IProps {}
 interface IState {}
@@ -12,10 +13,17 @@ export default class Homepage extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<Container sx={{minHeight: "100vh"}}>
-					<Navbar />
+				<Box sx={{minHeight: "99vh", display: "flex"}}>
 					<MainLandingVisual />
-				</Container>
+					<Box
+						style={{
+							width: "100%",
+							paddingLeft: 30,
+							paddingRight: 30
+						}}>
+						<Navbar />
+					</Box>
+				</Box>
 				<Footer />
 			</ThemeProvider>
 		);
