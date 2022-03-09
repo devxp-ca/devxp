@@ -56,6 +56,10 @@ export default function TerraformOptions(props: {
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
+	const resource0 = isModifyingInstance
+		? props.instanceDataForModify.settings.resources[0]
+		: undefined;
+
 	//OPTION STATES AND REDUCER -- pre-populate options if modifying
 	const initialOptionState = {
 		providerValue: isModifyingInstance
@@ -65,43 +69,29 @@ export default function TerraformOptions(props: {
 		secureValue: isModifyingInstance
 			? props.instanceDataForModify.settings.secure ?? props.globalSecure
 			: props.globalSecure,
-		resourceTypeValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].type ?? ""
-			: "",
-		instanceNameValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].id ?? ""
-			: "",
-		autoIamValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].autoIam ?? false
-			: false,
-		amiValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].ami ?? ""
-			: "",
+		resourceTypeValue: isModifyingInstance ? resource0.type ?? "" : "",
+		instanceNameValue: isModifyingInstance ? resource0.id ?? "" : "",
+		autoIamValue: isModifyingInstance ? resource0.autoIam ?? false : true,
+		amiValue: isModifyingInstance ? resource0.ami ?? "" : "",
 		instanceTypeValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].instance_type ??
-			  ""
+			? resource0.instance_type ?? ""
 			: "",
 		functionNameValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].functionName ??
-			  ""
+			? resource0.functionName ?? ""
 			: "",
-		runtimeValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].runtime ?? ""
-			: "",
+		runtimeValue: isModifyingInstance ? resource0.runtime ?? "" : "",
 		numberOfInstancesValue: 1,
 		//TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute
-		attributeName: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].attributes[0]
-					.name ?? ""
+		attributeNameValue: isModifyingInstance
+			? ("attributes" in resource0 && resource0.attributes[0]?.name) ?? ""
 			: "",
-		attributeType: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].attributes[0]
-					.type ?? ""
+		attributeTypeValue: isModifyingInstance
+			? ("attributes" in resource0 && resource0.attributes[0]?.type) ?? ""
 			: "",
-		attributeIsHash: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].attributes[0]
-					.isHash ?? false
-			: false
+		attributeIsHashValue: isModifyingInstance
+			? ("attributes" in resource0 && resource0.attributes[0]?.isHash) ??
+			  false
+			: true
 	};
 
 	const [optionState, dispatch] = React.useReducer(
@@ -127,6 +117,8 @@ export default function TerraformOptions(props: {
 	} = optionState;
 
 	function optionsReducer(state: any, action: any) {
+		console.dir(action);
+
 		switch (action.type) {
 			case "provider":
 				return {
@@ -239,7 +231,10 @@ export default function TerraformOptions(props: {
 	};
 
 	return (
-		<Box sx={{padding: 4}}>
+		<Box
+			sx={{
+				padding: 4
+			}}>
 			<Grid container direction="column">
 				{
 					//AWS Options
@@ -657,10 +652,13 @@ export default function TerraformOptions(props: {
 												) =>
 													dispatch({
 														type: "attributeIsHash",
-														payload: (
-															event.target as HTMLInputElement
-														).value
+														payload:
+															event.target.checked
 													})
+												}
+												checked={attributeIsHashValue}
+												defaultChecked={
+													attributeIsHashValue
 												}
 											/>
 										</Grid>
@@ -709,14 +707,14 @@ export default function TerraformOptions(props: {
 										}}
 										onChange={(
 											event: React.ChangeEvent<HTMLInputElement>
-										) =>
-											dispatch({
+										) => {
+											console.dir(event);
+											return dispatch({
 												type: "autoIam",
-												payload: (
-													event.target as HTMLInputElement
-												).value
-											})
-										}
+												payload: event.target.checked
+											});
+										}}
+										defaultChecked={autoIamValue}
 									/>
 								</FormControl>
 							</Grid>

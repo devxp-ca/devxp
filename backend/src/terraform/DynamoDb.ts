@@ -20,7 +20,7 @@ export class DynamoDb extends ResourceWithIam<DynamoDb> implements DynamoDb {
 	toJSON() {
 		return jsonRoot("aws_dynamodb_table", this.id, {
 			name: this.name,
-			hash_key: this.attributes.filter(a => a.isHash)[0]?.name,
+			hash_key: this.attributes.filter(a => !!a.isHash)[0]?.name,
 			billing_mode: "PAY_PER_REQUEST",
 			ttl: {
 				attribute_name: "TimeToExist",

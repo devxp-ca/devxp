@@ -1,5 +1,5 @@
 import express, {Express, Router} from "express";
-import bodyParser from "body-parser";
+//import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import {Server} from "http";
 import CONFIG from "./config";
@@ -37,14 +37,14 @@ export default class RESTServer {
 		// Initialize express
 		this.app = express();
 
-		// support json encoded bodies
-		this.app.use(express.json());
-
 		// Parse cookies
 		this.app.use(cookieParser());
 
 		// support encoded bodies
-		this.app.use(bodyParser.urlencoded({extended: true}));
+		this.app.use(express.urlencoded({extended: true}));
+
+		// support json encoded bodies
+		this.app.use(express.json({type: "application/json"}));
 	}
 
 	route(path: string, router: Router): void {

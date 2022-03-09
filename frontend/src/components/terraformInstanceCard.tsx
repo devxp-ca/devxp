@@ -35,7 +35,6 @@ export default function TerraformInstanceCard(props: {
 		setSelectEditInstance(false);
 		props.addNewDataCallback(data, isModifying, cardNum);
 	};
-
 	/* TODO: Improve style/text, multiple cards open at same time? Maybe we should restrict */
 	return (
 		<Card
@@ -145,7 +144,6 @@ export default function TerraformInstanceCard(props: {
 					</CardMedia>
 				</CardActionArea>
 			)}
-
 			{selectedEditInstance && (
 				<TerraformOptions
 					selectedRepo={props.selectedRepo}

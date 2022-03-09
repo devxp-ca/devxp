@@ -6,6 +6,7 @@ import {RepoSettings} from "../database/repoSettings";
 
 export const postSettings = (req: Request, res: Response) => {
 	if (req.body.tool == "terraform") {
+		console.dir(req.body.settings);
 		RepoSettings.updateOne(
 			{repo: req.body.repo},
 			{repo: req.body.repo, terraformSettings: req.body.settings},
@@ -50,6 +51,7 @@ export const getSettings = (req: Request, res: Response) => {
 						delete resource._id;
 						return resource;
 					});
+
 					res.json({
 						settings: json
 					});

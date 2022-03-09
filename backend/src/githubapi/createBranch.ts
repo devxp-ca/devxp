@@ -11,8 +11,6 @@ export default (
 	treeSha: string
 ): Promise<GithubBranch> =>
 	new Promise<GithubBranch>((resolve, reject) => {
-		let errCache: any;
-
 		axios
 			.post(
 				`${GITHUB_BASE_URL}/repos/${repo}/git/refs`,
