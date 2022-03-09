@@ -213,12 +213,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			);
 
 			//Initiate a pull request to the main branch
-			const newPR = await createPullRequest(
-				"DevXP-Configuration",
-				"main",
-				token,
-				repo
-			);
+			await createPullRequest("DevXP-Configuration", "main", token, repo);
 			return ref;
 		})
 		.then(ref => {

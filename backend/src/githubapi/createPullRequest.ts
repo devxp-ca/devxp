@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import axios from "axios";
 import {GithubPR, isGithubPR} from "../types/github";
-import getHead from "./getHead";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 
 export default (
@@ -25,8 +24,7 @@ export default (
 					head: head,
 					base: base,
 					title: "DevXP Config",
-					body: "Merge DevXP Config branch with main branch",
-					maintainer_can_modify: true
+					body: "Merge DevXP Config branch with main branch"
 				},
 				header
 			)
