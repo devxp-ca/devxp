@@ -68,6 +68,7 @@ export default function TerraformInstanceCard(props: {
 							{props.cardData.settings.resources[0].id}
 						</Typography>
 
+						{/* TODO: Change these displays based on type of instance */}
 						<Typography
 							variant="body2"
 							color="text.secondary"

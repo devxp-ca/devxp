@@ -12,9 +12,11 @@ import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import HelpIcon from "@mui/icons-material/Help";
+import Checkbox from "@mui/material/Checkbox";
 
 import MouseOverPopover from "./MouseOverPopover";
 
+/* TODO: Add google fields, uncomment + add dynamoDB fields, implement lambda function fields */
 export interface terraformDataSettings {
 	repo: string;
 	tool: string;
@@ -23,8 +25,17 @@ export interface terraformDataSettings {
 		resources: {
 			type: string;
 			id: string;
-			ami: string;
-			instance_type: string;
+			autoIam: boolean;
+			ami: string; // for ec2
+			instance_type: string; // for ec2
+			//attributes: { //for dynamodb
+			//name: string
+			//type: string //"S" for string, "N" for number, or "B" for binary
+			//isHash: boolean //For now just always set this true. Support for other types of keys hasn't been added yet
+			//}[]
+			//for lambdafunctions
+			functionName: string; // must match the regex /^[a-zA-Z][a-zA-Z0-9_]+$/ or /^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/
+			runtume: string; //values can be found in backend/src/types/terraform.ts
 		}[];
 	};
 }
@@ -43,7 +54,6 @@ export default function TerraformOptions(props: {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
 	//OPTION STATES AND REDUCER -- pre-populate options if modifying
-	//TODO: will have to change these to not rely on [0] array, may need to be passed as pieces of terraformDataSettings for each card
 	const initialOptionState = {
 		providerValue: isModifyingInstance
 			? props.instanceDataForModify.settings.provider ??
@@ -55,12 +65,22 @@ export default function TerraformOptions(props: {
 		instanceNameValue: isModifyingInstance
 			? props.instanceDataForModify.settings.resources[0].id ?? ""
 			: "",
+		autoIamValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].autoIam ?? false
+			: false,
 		amiValue: isModifyingInstance
 			? props.instanceDataForModify.settings.resources[0].ami ?? ""
 			: "",
 		instanceTypeValue: isModifyingInstance
 			? props.instanceDataForModify.settings.resources[0].instance_type ??
 			  ""
+			: "",
+		functionNameValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].functionName ??
+			  ""
+			: "",
+		runtumeValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].runtume ?? ""
 			: "",
 		numberOfInstancesValue: 1
 	};
@@ -74,8 +94,11 @@ export default function TerraformOptions(props: {
 		providerValue,
 		resourceTypeValue,
 		instanceNameValue,
+		autoIamValue,
 		amiValue,
 		instanceTypeValue,
+		functionNameValue,
+		runtumeValue,
 		numberOfInstancesValue
 	} = optionState;
 
@@ -96,6 +119,11 @@ export default function TerraformOptions(props: {
 					...state,
 					instanceNameValue: action.payload
 				};
+			case "autoIam":
+				return {
+					...state,
+					autoIamValue: action.payload
+				};
 			case "ami":
 				return {
 					...state,
@@ -105,6 +133,16 @@ export default function TerraformOptions(props: {
 				return {
 					...state,
 					instanceTypeValue: action.payload
+				};
+			case "functionName":
+				return {
+					...state,
+					functionNameValue: action.payload
+				};
+			case "runtume":
+				return {
+					...state,
+					runtumeValue: action.payload
 				};
 			case "numberOfInstances":
 				return {
@@ -117,28 +155,6 @@ export default function TerraformOptions(props: {
 	}
 
 	const addChanges = () => {
-		/* TODO add/figure out terraformDataSettings variables that account for all providers/servies, some will be optional etc.
-
-			GOOGLE VERSION
-
-			const settings = {
-				repo: "devxp-ca/devxp-test-repo",
-				tool: "terraform",
-				settings: {
-					provider: "google",
-					project: "devxp-test-project",		//This field is required for Google, not AWS
-					resources: [{
-						type: "gce",
-						id: "my-gce-instance",			//Note with google capital letters are not allowed
-						disk_image: "ubuntu-2004-focal-v20220204",
-						machine_type: "f1-micro"
-					}]
-				}
-			}
-
-		*/
-
-		/* TODO: Implement number of instances, pass number to backend or pass bigger data from frontend? */
 		let resourceArray = [];
 		for (let i = 0; i < numberOfInstancesValue; i++) {
 			resourceArray.push({
@@ -147,8 +163,11 @@ export default function TerraformOptions(props: {
 					i == 0
 						? instanceNameValue
 						: `${instanceNameValue}-${String.fromCharCode(96 + i)}`,
+				autoIam: autoIamValue,
 				ami: amiValue,
-				instance_type: instanceTypeValue
+				instance_type: instanceTypeValue,
+				functionName: functionNameValue,
+				runtume: runtumeValue
 			});
 		}
 		const settings: terraformDataSettings = {
@@ -178,162 +197,10 @@ export default function TerraformOptions(props: {
 					providerValue === "aws" && (
 						<Grid container direction="column">
 							<Grid container direction="row">
-								<Grid item sx={{padding: 2}}>
-									<FormControl>
-										<FormLabel>
-											<Grid container direction="row">
-												Resource Type
-												<MouseOverPopover
-													icon={
-														<HelpIcon
-															sx={{
-																paddingLeft: 1
-															}}
-														/>
-													}
-													popOverInfo={
-														<div>
-															Choose the type of
-															resource that you
-															want terraform to
-															spin up
-														</div>
-													}
-												/>
-											</Grid>
-										</FormLabel>
-										{/*TO DO: Move options shared between providers outside amazon only and make their values change depending on provider instead?*/}
-										<Select
-											name="resource-type"
-											value={resourceTypeValue}
-											onChange={(
-												event: React.ChangeEvent<HTMLInputElement>
-											) =>
-												dispatch({
-													type: "resourceType",
-													payload: (
-														event.target as HTMLInputElement
-													).value
-												})
-											}>
-											<MenuItem key="ec2" value="ec2">
-												EC2
-											</MenuItem>
-										</Select>
-									</FormControl>
-								</Grid>
-								<Grid item sx={{padding: 2}}>
-									<FormControl>
-										<FormLabel>
-											<Grid container direction="row">
-												Instance Name
-												<MouseOverPopover
-													icon={
-														<HelpIcon
-															sx={{
-																paddingLeft: 1
-															}}
-														/>
-													}
-													popOverInfo={
-														<div>
-															Give this particular
-															instance a name so
-															it's identifiable --
-															can be whatever you
-															like
-														</div>
-													}
-												/>
-											</Grid>
-										</FormLabel>
-										<TextField
-											id="instance-name"
-											name="instance-name"
-											label=""
-											type="text"
-											value={instanceNameValue}
-											onChange={(
-												event: React.ChangeEvent<HTMLInputElement>
-											) =>
-												dispatch({
-													type: "instanceName",
-													payload: (
-														event.target as HTMLInputElement
-													).value
-												})
-											}
-										/>
-									</FormControl>
-								</Grid>
-								<Grid item sx={{padding: 2}}>
-									<FormControl>
-										<FormLabel>
-											<Grid container direction="row">
-												Instance OS
-												<MouseOverPopover
-													icon={
-														<HelpIcon
-															sx={{
-																paddingLeft: 1
-															}}
-														/>
-													}
-													popOverInfo={
-														<div>
-															Choose the type of
-															OS you want this
-															instance to run
-														</div>
-													}
-												/>
-											</Grid>
-										</FormLabel>
-										{/*TO DO: Move options shared between providers outside amazon only and make their values change depending on provider instead?*/}
-										<Select
-											name="instance-os"
-											value={amiValue}
-											onChange={(
-												event: React.ChangeEvent<HTMLInputElement>
-											) =>
-												dispatch({
-													type: "ami",
-													payload: (
-														event.target as HTMLInputElement
-													).value
-												})
-											}>
-											<MenuItem
-												key="amazon-linux"
-												value="AUTO_AMAZON">
-												Amazon Linux 2 AMI (HVM)
-											</MenuItem>
-											<MenuItem
-												key="ubuntu"
-												value="AUTO_UBUNTU">
-												Ubuntu Server 20.04 LTS 64-bit
-												x86
-											</MenuItem>
-											<MenuItem
-												key="macOS"
-												value="ami-0faefa03f7ddcd657">
-												MacOS Monterey 12.2
-											</MenuItem>
-											<MenuItem
-												key="windows"
-												value="AUTO_WINDOWS">
-												Microsoft Windows Server 2022
-												Base with Containers
-											</MenuItem>
-										</Select>
-									</FormControl>
-								</Grid>
-							</Grid>
-							<Grid item sx={{padding: 2}}>
 								<FormControl>
 									<FormLabel>
 										<Grid container direction="row">
-											Instance Hardware
+											Resource Type
 											<MouseOverPopover
 												icon={
 													<HelpIcon
@@ -344,120 +211,375 @@ export default function TerraformOptions(props: {
 												}
 												popOverInfo={
 													<div>
-														<p>
-															Choose the computing
-															power you want this
-															instance to have:
-														</p>
-														<p>
-															Micro - 1 CPU 1GB
-															RAM
-														</p>
-														<p>
-															Small - 1 CPU 2GB
-															RAM
-														</p>
-														<p>
-															Medium - 2 CPU 4GB
-															RAM
-														</p>
-														<p>
-															Large - 2 CPU 8GB
-															RAM
-														</p>
-														<p>
-															Extra-Large - 4 CPU
-															16GB RAM
-														</p>
+														Choose the type of
+														resource that you want
+														terraform to spin up
 													</div>
 												}
 											/>
 										</Grid>
 									</FormLabel>
 									<RadioGroup
-										name="Instance Hardware"
-										value={instanceTypeValue}
+										name="resource-type"
+										value={resourceTypeValue}
 										onChange={(
 											event: React.ChangeEvent<HTMLInputElement>
 										) =>
 											dispatch({
-												type: "instanceType",
+												type: "resourceType",
 												payload: (
 													event.target as HTMLInputElement
 												).value
 											})
 										}
 										row>
-										{optionState.amiValue ===
-										"ami-0faefa03f7ddcd657" ? (
-											//If the ami image selected is MAC, the instance MUST be mac1.metal
-											<>
-												<FormControlLabel
-													key="1"
-													value="mac1.metal"
-													control={
-														<Radio size="small" />
-													}
-													label="Mac Hardware"
-												/>
-											</>
-										) : (
-											<>
-												<FormControlLabel
-													key="1"
-													value="t2.micro"
-													control={
-														<Radio size="small" />
-													}
-													label="Micro"
-												/>
-												<FormControlLabel
-													key="2"
-													value="t2.small"
-													control={
-														<Radio size="small" />
-													}
-													label="Small"
-												/>
-												<FormControlLabel
-													key="3"
-													value="t2.medium"
-													control={
-														<Radio size="small" />
-													}
-													label="Medium"
-												/>
-												<FormControlLabel
-													key="4"
-													value="t2.large"
-													control={
-														<Radio size="small" />
-													}
-													label="Large"
-												/>
-												<FormControlLabel
-													key="5"
-													value="t2.xlarge"
-													control={
-														<Radio size="small" />
-													}
-													label="Extra-Large"
-												/>
-											</>
-										)}
+										<FormControlLabel
+											key="1"
+											value="ec2"
+											control={<Radio size="medium" />}
+											label="EC2"
+										/>
+										<FormControlLabel
+											key="2"
+											value="s3"
+											control={<Radio size="medium" />}
+											label="S3"
+										/>
+										<FormControlLabel
+											key="3"
+											value="glacierVault"
+											control={<Radio size="medium" />}
+											label="glacierVault"
+										/>
+										<FormControlLabel
+											key="4"
+											value="dynamoDb"
+											control={<Radio size="medium" />}
+											label="dynamoDb"
+											disabled={true}
+										/>
+										<FormControlLabel
+											key="5"
+											value="lambdaFunction"
+											control={<Radio size="medium" />}
+											label="lambdaFunction"
+											disabled={true}
+										/>
 									</RadioGroup>
+								</FormControl>
+							</Grid>
+
+							{/* ------ AWS - EC2 OPTIONS ------ */}
+							{optionState.resourceTypeValue === "ec2" && (
+								<Grid
+									container
+									direction="column"
+									alignItems="center">
+									<Grid item sx={{paddingTop: 2}}>
+										<FormControl>
+											<FormLabel>
+												<Grid container direction="row">
+													Instance OS
+													<MouseOverPopover
+														icon={
+															<HelpIcon
+																sx={{
+																	paddingLeft: 1
+																}}
+															/>
+														}
+														popOverInfo={
+															<div>
+																Choose the type
+																of OS you want
+																this instance to
+																run
+															</div>
+														}
+													/>
+												</Grid>
+											</FormLabel>
+											<Select
+												name="instance-os"
+												value={amiValue}
+												onChange={(
+													event: React.ChangeEvent<HTMLInputElement>
+												) =>
+													dispatch({
+														type: "ami",
+														payload: (
+															event.target as HTMLInputElement
+														).value
+													})
+												}>
+												<MenuItem
+													key="amazon-linux"
+													value="AUTO_AMAZON">
+													Amazon Linux 2 AMI (HVM)
+												</MenuItem>
+												<MenuItem
+													key="ubuntu"
+													value="AUTO_UBUNTU">
+													Ubuntu Server 20.04 LTS
+													64-bit x86
+												</MenuItem>
+												<MenuItem
+													key="macOS"
+													value="ami-0faefa03f7ddcd657">
+													MacOS Monterey 12.2
+												</MenuItem>
+												<MenuItem
+													key="windows"
+													value="AUTO_WINDOWS">
+													Microsoft Windows Server
+													2022 Base with Containers
+												</MenuItem>
+											</Select>
+										</FormControl>
+									</Grid>
+									<Grid item sx={{paddingTop: 2}}>
+										<FormControl>
+											<FormLabel>
+												<Grid container direction="row">
+													Instance Hardware
+													<MouseOverPopover
+														icon={
+															<HelpIcon
+																sx={{
+																	paddingLeft: 1
+																}}
+															/>
+														}
+														popOverInfo={
+															<div>
+																<p>
+																	Choose the
+																	computing
+																	power you
+																	want this
+																	instance to
+																	have:
+																</p>
+																<p>
+																	Micro - 1
+																	CPU 1GB RAM
+																</p>
+																<p>
+																	Small - 1
+																	CPU 2GB RAM
+																</p>
+																<p>
+																	Medium - 2
+																	CPU 4GB RAM
+																</p>
+																<p>
+																	Large - 2
+																	CPU 8GB RAM
+																</p>
+																<p>
+																	Extra-Large
+																	- 4 CPU 16GB
+																	RAM
+																</p>
+															</div>
+														}
+													/>
+												</Grid>
+											</FormLabel>
+											<RadioGroup
+												name="Instance Hardware"
+												value={instanceTypeValue}
+												onChange={(
+													event: React.ChangeEvent<HTMLInputElement>
+												) =>
+													dispatch({
+														type: "instanceType",
+														payload: (
+															event.target as HTMLInputElement
+														).value
+													})
+												}
+												row>
+												{optionState.amiValue ===
+												"ami-0faefa03f7ddcd657" ? (
+													//If the ami image selected is MAC, the instance MUST be mac1.metal
+													<>
+														<FormControlLabel
+															key="1"
+															value="mac1.metal"
+															control={
+																<Radio size="small" />
+															}
+															label="Mac Hardware"
+														/>
+													</>
+												) : (
+													<>
+														<FormControlLabel
+															key="1"
+															value="t2.micro"
+															control={
+																<Radio size="small" />
+															}
+															label="Micro"
+														/>
+														<FormControlLabel
+															key="2"
+															value="t2.small"
+															control={
+																<Radio size="small" />
+															}
+															label="Small"
+														/>
+														<FormControlLabel
+															key="3"
+															value="t2.medium"
+															control={
+																<Radio size="small" />
+															}
+															label="Medium"
+														/>
+														<FormControlLabel
+															key="4"
+															value="t2.large"
+															control={
+																<Radio size="small" />
+															}
+															label="Large"
+														/>
+														<FormControlLabel
+															key="5"
+															value="t2.xlarge"
+															control={
+																<Radio size="small" />
+															}
+															label="Extra-Large"
+														/>
+													</>
+												)}
+											</RadioGroup>
+										</FormControl>
+									</Grid>
+								</Grid>
+							)}
+
+							{/* ------ AWS - S3 OPTIONS ------ */}
+							{}
+
+							{/* ------ AWS - GLACIERVAULT OPTIONS ------ */}
+							{}
+
+							{/* ------ AWS - DYNAMODB OPTIONS ------ */}
+							{}
+
+							{/* ------ AWS - LAMBDAFUNCTION OPTIONS ------ */}
+							{}
+
+							{/* ------ AWS - GENERAL OPTIONS ------ */}
+							<Grid
+								container
+								alignItems="center"
+								justifyContent="center"
+								direction="row"
+								sx={{paddingTop: 2}}>
+								<FormControl>
+									<FormLabel>
+										<Grid container direction="row">
+											Enable IAM Users
+											<MouseOverPopover
+												icon={
+													<HelpIcon
+														sx={{
+															paddingLeft: 1
+														}}
+													/>
+												}
+												popOverInfo={
+													<div>
+														Determines if IAM users
+														will be setup for the
+														resource
+													</div>
+												}
+											/>
+										</Grid>
+									</FormLabel>
+									<Checkbox
+										sx={{
+											"& .MuiSvgIcon-root": {
+												fontSize: 32
+											},
+											marginTop: -1
+										}}
+										onChange={(
+											event: React.ChangeEvent<HTMLInputElement>
+										) =>
+											dispatch({
+												type: "autoIam",
+												payload: (
+													event.target as HTMLInputElement
+												).value
+											})
+										}
+									/>
 								</FormControl>
 							</Grid>
 						</Grid>
 					)
 				}
+
+				{/* ------ GENERAL OPTIONS ------ */}
 				<FormControl>
 					<Grid
 						container
 						direction="row"
 						alignItems="center"
 						sx={{paddingTop: 2}}
-						justifyContent="center">
+						justifyContent="center"
+						spacing={2}>
+						<Grid item>
+							<FormControl>
+								<FormLabel>
+									<Grid container direction="row">
+										Instance Name
+										<MouseOverPopover
+											icon={
+												<HelpIcon
+													sx={{
+														paddingLeft: 1
+													}}
+												/>
+											}
+											popOverInfo={
+												<div>
+													Give this particular
+													instance a name so it's
+													identifiable -- can be
+													whatever you like
+												</div>
+											}
+										/>
+									</Grid>
+								</FormLabel>
+								<TextField
+									id="instance-name"
+									name="instance-name"
+									label=""
+									type="text"
+									value={instanceNameValue}
+									onChange={(
+										event: React.ChangeEvent<HTMLInputElement>
+									) =>
+										dispatch({
+											type: "instanceName",
+											payload: (
+												event.target as HTMLInputElement
+											).value
+										})
+									}
+								/>
+							</FormControl>
+						</Grid>
 						<Grid item>
 							<FormLabel>
 								<Grid container direction="row">
@@ -466,40 +588,47 @@ export default function TerraformOptions(props: {
 										icon={
 											<HelpIcon
 												sx={{
-													paddingLeft: 1,
-													paddingRight: 1
+													paddingLeft: 1
 												}}
 											/>
 										}
 										popOverInfo={
 											<div>
-												Allows you to spin up any number
-												of instances with the same
-												settings chosen above
+												<p>
+													Allows you to spin up any
+													number of instances with the
+													same settings chosen above
+												</p>
+												<p>
+													They will be named
+													consecutively with -a, -b,
+													-c... etc. appended to the
+													name you entered
+												</p>
 											</div>
 										}
 									/>
 								</Grid>
 							</FormLabel>
-						</Grid>
-						<Grid item>
-							<TextField
-								id="number-of-instances"
-								name="number-of-instances"
-								label=""
-								type="number"
-								value={numberOfInstancesValue}
-								onChange={(
-									event: React.ChangeEvent<HTMLInputElement>
-								) =>
-									dispatch({
-										type: "numberOfInstances",
-										payload: (
-											event.target as HTMLInputElement
-										).value
-									})
-								}
-							/>
+							<Grid item>
+								<TextField
+									id="number-of-instances"
+									name="number-of-instances"
+									label=""
+									type="number"
+									value={numberOfInstancesValue}
+									onChange={(
+										event: React.ChangeEvent<HTMLInputElement>
+									) =>
+										dispatch({
+											type: "numberOfInstances",
+											payload: (
+												event.target as HTMLInputElement
+											).value
+										})
+									}
+								/>
+							</Grid>
 						</Grid>
 					</Grid>
 				</FormControl>
