@@ -16,5 +16,11 @@ DevXP is a web application designed to make your life easier. We know that learn
 ![last commit](https://img.shields.io/github/last-commit/devxp-ca/devxp?style=plastic)  
 
 ## To learn more, please visit the [wiki](https://github.com/devxp-ca/devxp/wiki).
+### Quick Reference:
+- [Usage](https://github.com/devxp-ca/devxp/wiki/Usage)
+- [Contributions](https://github.com/devxp-ca/devxp/wiki/Development)
+- [Terraform](https://github.com/devxp-ca/devxp/wiki/Terraform)
 
 **Application Deployment**: https://devxp.ca/
+
+![](https://github.com/devxp-ca/devxp/blob/main/frontend/src/assets/memories.gif)
