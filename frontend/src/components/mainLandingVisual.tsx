@@ -80,6 +80,16 @@ export default function MainLandingVisual() {
 						</Box>
 					</Box>
 				</Grid>
+				{/* Use this grid as the parent for the product page (put everything inside) */}
+				{/* Temporary height and backgroundColor */}
+				{/* Might eventually want to style the scrollbar */}
+				<Grid
+					item
+					sx={{
+						width: "100%",
+						height: "8vh",
+						backgroundColor: lightTheme.palette.primary.main
+					}}></Grid>
 			</Grid>
 		</ThemeProvider>
 	);
