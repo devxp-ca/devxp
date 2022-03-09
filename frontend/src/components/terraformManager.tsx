@@ -378,6 +378,7 @@ export default function TerraformManager(props: {
 								value="other"
 								control={<Radio size="small" />}
 								label="Azure"
+								disabled={true}
 							/>
 						</RadioGroup>
 					</Grid>
