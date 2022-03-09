@@ -73,11 +73,6 @@ export default function TerraformInstanceCard(props: {
 							variant="body2"
 							color="text.secondary"
 							sx={{padding: 2, paddingTop: 0}}>
-							<p>
-								Secure:{" "}
-								{props.cardData.settings.secure ? "on" : "off"}
-							</p>
-
 							{props.cardData.settings.provider === "aws" && (
 								<p>
 									<p>
@@ -111,6 +106,36 @@ export default function TerraformInstanceCard(props: {
 														.resources[0]
 														.instance_type
 												}
+											</p>
+										</p>
+									)}
+									{/*TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute*/}
+									{props.cardData.settings.resources[0]
+										.type === "dynamoDb" && (
+										<p>
+											<p>
+												Attribute Name:{" "}
+												{
+													props.cardData.settings
+														.resources[0]
+														.attributes[0].name
+												}
+											</p>
+											<p>
+												Type:
+												{
+													props.cardData.settings
+														.resources[0]
+														.attributes[0].type
+												}
+											</p>
+											<p>
+												isHash:
+												{props.cardData.settings
+													.resources[0].attributes[0]
+													.isHash
+													? "true"
+													: "false"}
 											</p>
 										</p>
 									)}

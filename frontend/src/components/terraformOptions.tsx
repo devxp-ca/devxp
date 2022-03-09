@@ -29,11 +29,12 @@ export interface terraformDataSettings {
 			autoIam: boolean;
 			ami: string; // for ec2
 			instance_type: string; // for ec2
-			//attributes: { //for dynamodb
-			//name: string
-			//type: string //"S" for string, "N" for number, or "B" for binary
-			//isHash: boolean //For now just always set this true. Support for other types of keys hasn't been added yet
-			//}[]
+			attributes: {
+				//for dynamodb
+				name: string;
+				type: string; //"S" for string, "N" for number, or "B" for binary
+				isHash: boolean; //For now just always set this true. Support for other types of keys hasn't been added yet
+			}[];
 			//for lambdafunctions
 			functionName: string; // must match the regex /^[a-zA-Z][a-zA-Z0-9_]+$/ or /^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/
 			runtime: string; //values can be found in backend/src/types/terraform.ts
@@ -87,7 +88,20 @@ export default function TerraformOptions(props: {
 		runtimeValue: isModifyingInstance
 			? props.instanceDataForModify.settings.resources[0].runtime ?? ""
 			: "",
-		numberOfInstancesValue: 1
+		numberOfInstancesValue: 1,
+		//TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute
+		attributeName: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].attributes[0]
+					.name ?? ""
+			: "",
+		attributeType: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].attributes[0]
+					.type ?? ""
+			: "",
+		attributeIsHash: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].attributes[0]
+					.isHash ?? false
+			: false
 	};
 
 	const [optionState, dispatch] = React.useReducer(
@@ -105,7 +119,11 @@ export default function TerraformOptions(props: {
 		instanceTypeValue,
 		functionNameValue,
 		runtimeValue,
-		numberOfInstancesValue
+		numberOfInstancesValue,
+		//TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute
+		attributeNameValue,
+		attributeTypeValue,
+		attributeIsHashValue
 	} = optionState;
 
 	function optionsReducer(state: any, action: any) {
@@ -155,6 +173,22 @@ export default function TerraformOptions(props: {
 					...state,
 					numberOfInstancesValue: action.payload
 				};
+			//TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute
+			case "attributeName":
+				return {
+					...state,
+					attributeNameValue: action.payload
+				};
+			case "attributeType":
+				return {
+					...state,
+					attributeTypeValue: action.payload
+				};
+			case "attributeIsHash":
+				return {
+					...state,
+					attributeIsHashValue: action.payload
+				};
 			default:
 				return state;
 		}
@@ -172,6 +206,14 @@ export default function TerraformOptions(props: {
 				autoIam: autoIamValue,
 				ami: amiValue,
 				instance_type: instanceTypeValue,
+				//TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute
+				attributes: [
+					{
+						name: attributeNameValue,
+						type: attributeTypeValue,
+						isHash: attributeIsHashValue
+					}
+				],
 				functionName: functionNameValue,
 				runtime: runtimeValue
 			});
@@ -263,7 +305,6 @@ export default function TerraformOptions(props: {
 											value="dynamoDb"
 											control={<Radio size="medium" />}
 											label="dynamoDb"
-											disabled={true}
 										/>
 										<FormControlLabel
 											key="5"
@@ -477,7 +518,155 @@ export default function TerraformOptions(props: {
 							{}
 
 							{/* ------ AWS - DYNAMODB OPTIONS ------ */}
-							{}
+							{/*TODO: Figure out UI design and way to configure multiple database attributes -- this allows only 1 attribute*/}
+							{optionState.resourceTypeValue === "dynamoDb" && (
+								<FormControl>
+									<Grid
+										container
+										direction="row"
+										alignItems="center"
+										sx={{paddingTop: 2}}
+										justifyContent="center"
+										spacing={2}>
+										<Grid item>
+											<FormControl>
+												<FormLabel>
+													<Grid
+														container
+														direction="row">
+														Attribute Name
+														<MouseOverPopover
+															icon={
+																<HelpIcon
+																	sx={{
+																		paddingLeft: 1
+																	}}
+																/>
+															}
+															popOverInfo={
+																<div>
+																	Give this
+																	database
+																	attribute a
+																	name for
+																	identification
+																</div>
+															}
+														/>
+													</Grid>
+												</FormLabel>
+												<TextField
+													id="attribute-name"
+													name="attribute-name"
+													label=""
+													type="text"
+													value={attributeNameValue}
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) =>
+														dispatch({
+															type: "attributeName",
+															payload: (
+																event.target as HTMLInputElement
+															).value
+														})
+													}
+												/>
+											</FormControl>
+										</Grid>
+										<Grid item>
+											<FormLabel>
+												<Grid container direction="row">
+													Type
+													<MouseOverPopover
+														icon={
+															<HelpIcon
+																sx={{
+																	paddingLeft: 1
+																}}
+															/>
+														}
+														popOverInfo={
+															<div>
+																String, Number,
+																or Binary for
+																the type of
+																database
+																attribute
+															</div>
+														}
+													/>
+												</Grid>
+											</FormLabel>
+											<Grid item>
+												<Select
+													name="attribute-type"
+													value={attributeTypeValue}
+													onChange={(
+														event: React.ChangeEvent<HTMLInputElement>
+													) =>
+														dispatch({
+															type: "attributeType",
+															payload: (
+																event.target as HTMLInputElement
+															).value
+														})
+													}
+													sx={{width: 75}}>
+													<MenuItem key="S" value="S">
+														String
+													</MenuItem>
+													<MenuItem key="N" value="N">
+														Number
+													</MenuItem>
+													<MenuItem key="B" value="B">
+														Binary
+													</MenuItem>
+												</Select>
+											</Grid>
+										</Grid>
+										<Grid item>
+											<FormLabel>
+												<Grid container direction="row">
+													isHash
+													<MouseOverPopover
+														icon={
+															<HelpIcon
+																sx={{
+																	paddingLeft: 1
+																}}
+															/>
+														}
+														popOverInfo={
+															<div>
+																Type of key
+															</div>
+														}
+													/>
+												</Grid>
+											</FormLabel>
+											<Checkbox
+												sx={{
+													"& .MuiSvgIcon-root": {
+														fontSize: 32
+													},
+													marginTop: -1
+												}}
+												onChange={(
+													event: React.ChangeEvent<HTMLInputElement>
+												) =>
+													dispatch({
+														type: "attributeIsHash",
+														payload: (
+															event.target as HTMLInputElement
+														).value
+													})
+												}
+											/>
+										</Grid>
+									</Grid>
+								</FormControl>
+							)}
 
 							{/* ------ AWS - LAMBDAFUNCTION OPTIONS ------ */}
 							{}
