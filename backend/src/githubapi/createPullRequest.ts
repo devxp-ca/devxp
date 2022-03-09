@@ -10,7 +10,6 @@ export default (
 	repo: string
 ): Promise<GithubPR> =>
 	new Promise<GithubPR>((resolve, reject) => {
-		let errCache: any;
 		const header = {
 			headers: {
 				Authorization: `token ${token}`,
