@@ -35,7 +35,7 @@ export interface terraformDataSettings {
 			//}[]
 			//for lambdafunctions
 			functionName: string; // must match the regex /^[a-zA-Z][a-zA-Z0-9_]+$/ or /^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/
-			runtume: string; //values can be found in backend/src/types/terraform.ts
+			runtime: string; //values can be found in backend/src/types/terraform.ts
 		}[];
 	};
 }
@@ -79,8 +79,8 @@ export default function TerraformOptions(props: {
 			? props.instanceDataForModify.settings.resources[0].functionName ??
 			  ""
 			: "",
-		runtumeValue: isModifyingInstance
-			? props.instanceDataForModify.settings.resources[0].runtume ?? ""
+		runtimeValue: isModifyingInstance
+			? props.instanceDataForModify.settings.resources[0].runtime ?? ""
 			: "",
 		numberOfInstancesValue: 1
 	};
@@ -98,7 +98,7 @@ export default function TerraformOptions(props: {
 		amiValue,
 		instanceTypeValue,
 		functionNameValue,
-		runtumeValue,
+		runtimeValue,
 		numberOfInstancesValue
 	} = optionState;
 
@@ -139,10 +139,10 @@ export default function TerraformOptions(props: {
 					...state,
 					functionNameValue: action.payload
 				};
-			case "runtume":
+			case "runtime":
 				return {
 					...state,
-					runtumeValue: action.payload
+					runtimeValue: action.payload
 				};
 			case "numberOfInstances":
 				return {
@@ -167,7 +167,7 @@ export default function TerraformOptions(props: {
 				ami: amiValue,
 				instance_type: instanceTypeValue,
 				functionName: functionNameValue,
-				runtume: runtumeValue
+				runtime: runtimeValue
 			});
 		}
 		const settings: terraformDataSettings = {
