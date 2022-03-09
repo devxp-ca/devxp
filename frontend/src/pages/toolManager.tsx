@@ -60,17 +60,19 @@ export default function ToolManager() {
 	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
 
 	const setRepoForCopy = (repo_full_name: string) => {
+		setCopyRepo(repo_full_name);
+
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
-					repo: repo_full_name
+					repo: `${selectedRepo}`
 				}
 			})
 			.then((response: any) => {
 				return axios.post(
 					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
 					{
-						repo: repo_full_name,
+						repo: `${copyRepo}`,
 						settings: response.data
 					}
 				);
