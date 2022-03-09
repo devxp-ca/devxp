@@ -451,35 +451,37 @@ export default function TerraformManager(props: {
 								/>
 							</RadioGroup>
 						</Grid>
-						<Grid container direction="row">
-							<Typography sx={{paddingTop: 0.4}} variant="h6">
-								Secure
-							</Typography>
-							<MouseOverPopover
-								icon={
-									<HelpIcon
-										sx={{
-											paddingLeft: 1,
-											paddingTop: 0.85,
-											opacity: 0.5
-										}}
-									/>
-								}
-								popOverInfo={<div>Secures resources</div>}
-							/>
-							<Checkbox
-								sx={{
-									"& .MuiSvgIcon-root": {
-										fontSize: 28
-									},
-									marginTop: -0.45
-								}}
-								onChange={handleChangeSecureOption}
-								defaultChecked={selectedSecureOption}
-								checked={selectedSecureOption}
-							/>
-						</Grid>
-						{selectedSecureOption && (
+						{selectedProvider === "aws" && (
+							<Grid container direction="row">
+								<Typography sx={{paddingTop: 0.4}} variant="h6">
+									Secure
+								</Typography>
+								<MouseOverPopover
+									icon={
+										<HelpIcon
+											sx={{
+												paddingLeft: 1,
+												paddingTop: 0.85,
+												opacity: 0.5
+											}}
+										/>
+									}
+									popOverInfo={<div>Secures resources</div>}
+								/>
+								<Checkbox
+									sx={{
+										"& .MuiSvgIcon-root": {
+											fontSize: 28
+										},
+										marginTop: -0.45
+									}}
+									onChange={handleChangeSecureOption}
+									defaultChecked={selectedSecureOption}
+									checked={selectedSecureOption}
+								/>
+							</Grid>
+						)}
+						{selectedProvider === "aws" && selectedSecureOption && (
 							<>
 								<Grid container direction="row">
 									<Typography
