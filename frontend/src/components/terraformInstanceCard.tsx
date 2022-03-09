@@ -68,26 +68,51 @@ export default function TerraformInstanceCard(props: {
 							{props.cardData.settings.resources[0].id}
 						</Typography>
 
-						{/* TODO: Change these displays based on type of instance */}
+						{/* TODO: Add display values for dynamoDB + lambda */}
 						<Typography
 							variant="body2"
 							color="text.secondary"
 							sx={{padding: 2, paddingTop: 0}}>
 							<p>Provider: {props.cardData.settings.provider}</p>
-							<p>
-								Resource:{" "}
-								{props.cardData.settings.resources[0].type}
-							</p>
-							<p>
-								OS: {props.cardData.settings.resources[0].ami}
-							</p>
-							<p>
-								Hardware:{" "}
-								{
-									props.cardData.settings.resources[0]
-										.instance_type
-								}
-							</p>
+
+							{props.cardData.settings.provider === "aws" && (
+								<p>
+									<p>
+										Resource:{" "}
+										{
+											props.cardData.settings.resources[0]
+												.type
+										}
+									</p>
+									<p>
+										AutoIam:{" "}
+										{props.cardData.settings.resources[0]
+											.autoIam
+											? "on"
+											: "off"}
+									</p>
+									{props.cardData.settings.resources[0]
+										.type === "ec2" && (
+										<p>
+											<p>
+												OS:{" "}
+												{
+													props.cardData.settings
+														.resources[0].ami
+												}
+											</p>
+											<p>
+												Hardware:
+												{
+													props.cardData.settings
+														.resources[0]
+														.instance_type
+												}
+											</p>
+										</p>
+									)}
+								</p>
+							)}
 						</Typography>
 					</CardMedia>
 				</CardActionArea>
