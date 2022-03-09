@@ -16,6 +16,7 @@ import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
+import GenericModal from "../components/GenericModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
@@ -52,6 +53,68 @@ export default function ToolManager() {
 			setSelectedTool(tool_name);
 		};
 		return callback;
+	};
+
+	/* For the copy settings modal */
+	const [copyRepo, setCopyRepo] = React.useState<string>("");
+	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
+
+	const setRepoForCopy = (repo_full_name: string) => {
+		setCopyRepo(repo_full_name);
+		axios
+			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				headers: {
+					repo: repo_full_name
+				}
+			})
+			.then((response: any) => {
+				return axios.post(
+					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+					{
+						repo: copyRepo,
+						settings: response.data
+					}
+				);
+			})
+			.catch((error: any) => {
+				console.error(error);
+			});
+	};
+
+	const modalChildren = () => {
+		return (
+			<Grid
+				container
+				direction="column"
+				style={{display: "flex", justifyContent: "center"}}>
+				<Autocomplete
+					sx={{margin: 3, width: "300px"}}
+					id="repo-select"
+					options={repoList}
+					getOptionLabel={(option: any) => option.full_name}
+					renderInput={(params: any) => (
+						<TextField
+							{...params}
+							label="Select A Repo"
+							variant="outlined"
+						/>
+					)}
+					onChange={(event: any, value: any) => {
+						setSelectedRepoFromAutocomplete(value.full_name);
+					}}
+					isOptionEqualToValue={(option: any, value: any) => {
+						return option.full_name === value.full_name;
+					}}
+				/>
+				<Button
+					variant="contained"
+					onClick={() => {
+						setRepoForCopy(copyRepo);
+					}}>
+					Copy Settings
+				</Button>
+			</Grid>
+		);
 	};
 
 	//on mount, get the list of repos
@@ -118,10 +181,23 @@ export default function ToolManager() {
 							</Grid>
 							<Grid item>
 								<Tooltip title="Click here to copy these settings to another repo">
-									<Button variant="contained">
+									<Button
+										variant="contained"
+										onClick={() => {
+											setCopyRepoOpen(true);
+										}}>
 										Copy to another repo
 									</Button>
 								</Tooltip>
+								<GenericModal
+									isOpen={copyRepoOpen}
+									handleClose={() => {
+										setCopyRepoOpen(false);
+									}}
+									title="Copy Settings"
+									bodyText="Select the repo you want to copy the settings to"
+									children={modalChildren()}
+								/>
 							</Grid>
 						</Grid>
 						{selectedTool == "none" && (

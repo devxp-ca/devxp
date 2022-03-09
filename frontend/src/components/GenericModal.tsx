@@ -9,7 +9,7 @@ interface modalProps {
 	handleClose: () => void;
 	title?: string;
 	bodyText?: string;
-	children?: JSX.Element; // Can be used for buttons or any other custom element we want on a modal
+	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal
 }
 
 export default function GenericModal({
