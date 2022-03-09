@@ -70,7 +70,7 @@ export default function TerraformOptions(props: {
 			: props.globalSecure,
 		resourceTypeValue: isModifyingInstance ? resource0.type ?? "" : "",
 		instanceNameValue: isModifyingInstance ? resource0.id ?? "" : "",
-		autoIamValue: isModifyingInstance ? resource0.autoIam ?? false : false,
+		autoIamValue: isModifyingInstance ? resource0.autoIam ?? false : true,
 		amiValue: isModifyingInstance ? resource0.ami ?? "" : "",
 		instanceTypeValue: isModifyingInstance
 			? resource0.instance_type ?? ""
@@ -90,7 +90,7 @@ export default function TerraformOptions(props: {
 		attributeIsHash: isModifyingInstance
 			? ("attributes" in resource0 && resource0.attributes[0].isHash) ??
 			  false
-			: false
+			: true
 	};
 
 	const [optionState, dispatch] = React.useReducer(
@@ -228,7 +228,10 @@ export default function TerraformOptions(props: {
 	};
 
 	return (
-		<Box sx={{padding: 4}}>
+		<Box
+			sx={{
+				padding: 4
+			}}>
 			<Grid container direction="column">
 				{
 					//AWS Options

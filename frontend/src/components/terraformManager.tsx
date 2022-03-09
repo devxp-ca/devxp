@@ -67,7 +67,7 @@ export default function TerraformManager(props: {
 
 	const savedSecureOption = Boolean(props.repoData)
 		? props.repoData.settings.secure
-		: false;
+		: true;
 	const [selectedSecureOption, setSelectedSecureOption] =
 		React.useState(savedSecureOption);
 
