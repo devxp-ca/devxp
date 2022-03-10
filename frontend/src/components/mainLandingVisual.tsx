@@ -23,7 +23,6 @@ export default function MainLandingVisual() {
 			<Grid
 				container
 				sx={{
-					height: "100%",
 					marginLeft: -1,
 					marginTop: -1,
 					backgroundColor: "#0f101a",
@@ -90,6 +89,8 @@ export default function MainLandingVisual() {
 				{/* Might eventually want to style the scrollbar */}
 				<Grid
 					item
+					container
+					direction="column"
 					sx={{
 						width: "100%",
 						height: "100%",
@@ -144,11 +145,13 @@ export default function MainLandingVisual() {
 						configuration options, providing explanations in simple
 						language, and even writing configuration files for you.
 					</Typography>
-					<hr />
 					<Typography variant="h5" color="black" align="center">
 						DevXP...
 					</Typography>
-					<Box sx={{textAlign: "left"}}>
+					<Grid
+						item
+						container
+						sx={{alignItems: "center", justifyContent: "center"}}>
 						<img
 							src={githubIcon}
 							alt="DevXP integrates directly with GitHub"
@@ -161,8 +164,11 @@ export default function MainLandingVisual() {
 						<Typography variant="h5" color="black">
 							... integrates directly with GitHub
 						</Typography>
-					</Box>
-					<Box sx={{textAlign: "right"}}>
+					</Grid>
+					<Grid
+						item
+						container
+						sx={{alignItems: "center", justifyContent: "center"}}>
 						<Typography variant="h5" color="black">
 							... has simple configuration options
 						</Typography>
@@ -175,8 +181,11 @@ export default function MainLandingVisual() {
 								margin: 20
 							}}
 						/>
-					</Box>
-					<Box sx={{textAlign: "left"}}>
+					</Grid>
+					<Grid
+						item
+						container
+						sx={{alignItems: "center", justifyContent: "center"}}>
 						<img
 							src={writeConfigPNG}
 							alt="DevXP writes complex configuration files for you"
@@ -188,8 +197,11 @@ export default function MainLandingVisual() {
 						<Typography variant="h5" color="black">
 							... writes complex configuration files for you
 						</Typography>
-					</Box>
-					<Box sx={{textAlign: "right"}}>
+					</Grid>
+					<Grid
+						item
+						container
+						sx={{alignItems: "center", justifyContent: "center"}}>
 						<Typography variant="h5" color="black">
 							... empowers you to follow best practices with ease
 						</Typography>
@@ -201,7 +213,7 @@ export default function MainLandingVisual() {
 								margin: 20
 							}}
 						/>
-					</Box>
+					</Grid>
 				</Grid>
 			</Grid>
 		</ThemeProvider>
