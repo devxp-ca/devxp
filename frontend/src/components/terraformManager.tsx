@@ -476,7 +476,16 @@ export default function TerraformManager(props: {
 											}}
 										/>
 									}
-									popOverInfo={<span>Secures resources</span>}
+									popOverInfo={
+										<span>
+											Whether or not to put all the
+											configured resources into their own
+											VPC,
+											<br /> setup a subnet, and give them
+											IAM permissions to access each
+											other.
+										</span>
+									}
 								/>
 								<Checkbox
 									sx={{
