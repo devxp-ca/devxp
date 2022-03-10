@@ -12,6 +12,10 @@ import Backsplash from "../assets/memories-transparent.gif";
 import titleImage from "../assets/devxp-title.png";
 import terraformPNG from "../assets/Terraform_Vertical.png";
 import cloudProvidersPNG from "../assets/cloud_providers.png";
+import easyConfigPNG from "../assets/easy_config.png";
+import githubIcon from "../assets/github_icon.png";
+import writeConfigPNG from "../assets/write_config.png";
+import bestPracticesPNG from "../assets/best_practices.png";
 
 export default function MainLandingVisual() {
 	return (
@@ -140,6 +144,64 @@ export default function MainLandingVisual() {
 						configuration options, providing explanations in simple
 						language, and even writing configuration files for you.
 					</Typography>
+					<hr />
+					<Typography variant="h5" color="black" align="center">
+						DevXP...
+					</Typography>
+					<Box sx={{textAlign: "left"}}>
+						<img
+							src={githubIcon}
+							alt="DevXP integrates directly with GitHub"
+							style={{
+								backgroundColor: "white",
+								height: "200px",
+								margin: 20
+							}}
+						/>
+						<Typography variant="h5" color="black">
+							... integrates directly with GitHub
+						</Typography>
+					</Box>
+					<Box sx={{textAlign: "right"}}>
+						<Typography variant="h5" color="black">
+							... has simple configuration options
+						</Typography>
+						<img
+							src={easyConfigPNG}
+							alt="DevXP has simple configuration options"
+							style={{
+								backgroundColor: "white",
+								height: "500px",
+								margin: 20
+							}}
+						/>
+					</Box>
+					<Box sx={{textAlign: "left"}}>
+						<img
+							src={writeConfigPNG}
+							alt="DevXP writes complex configuration files for you"
+							style={{
+								height: "300px",
+								margin: 20
+							}}
+						/>
+						<Typography variant="h5" color="black">
+							... writes complex configuration files for you
+						</Typography>
+					</Box>
+					<Box sx={{textAlign: "right"}}>
+						<Typography variant="h5" color="black">
+							... empowers you to follow best practices with ease
+						</Typography>
+						<img
+							src={bestPracticesPNG}
+							alt="DevXP empowers you to follow best practices with ease"
+							style={{
+								height: "300px",
+								margin: 20
+							}}
+						/>
+					</Box>
 				</Grid>
 			</Grid>
 		</ThemeProvider>
