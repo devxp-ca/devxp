@@ -3,10 +3,6 @@ import {db_attribute, isRuntime} from "../types/terraform";
 
 export const resourceTypes = /^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb)$/;
 
-const validId = (id: string): boolean => {
-	return /^[a-z]([-a-z0-9]*[a-z0-9])?$/.test(id);
-};
-
 const hasAllKeys = (obj: any, keys: string[]) => {
 	let retVal = true;
 	keys.forEach(key => {
@@ -55,9 +51,6 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		} else if (!/^[tcagimr][0-9].[a-zA-Z]+$/.test(resource.instance_type)) {
 			return Promise.reject(new Error("Invalid instance type"));
 		}
-		if (!validId(resource.id)) {
-			return Promise.reject(new Error("Invalid ID"));
-		}
 	} else if (resource.type === "gce") {
 		if (!hasAllKeys(resource, ["id", "machine_type", "disk_image"])) {
 			return Promise.reject(new Error("Resource is missing keys"));
@@ -68,18 +61,12 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		if (!/^[a-zA-Z0-9-]+$/.test(resource.disk_image)) {
 			return Promise.reject(new Error("Invalid disk image"));
 		}
-		if (!validId(resource.id)) {
-			return Promise.reject(new Error("Invalid ID"));
-		}
 		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
 			return Promise.reject(new Error("Invalid resource zone"));
 		}
 	} else if (resource.type === "googleStorageBucket") {
 		if (!hasAllKeys(resource, ["id"])) {
 			return Promise.reject(new Error("Resource is missing keys"));
-		}
-		if (!validId(resource.id)) {
-			return Promise.reject(new Error("Invalid ID"));
 		}
 		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
 			return Promise.reject(new Error("Invalid resource zone"));
@@ -94,9 +81,6 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		) {
 			return Promise.reject(new Error("Invalid acl"));
 		}
-		if (!validId(resource.id)) {
-			return Promise.reject(new Error("Invalid ID"));
-		}
 	} else if (resource.type === "lambdaFunction") {
 		if (
 			!hasAllKeys(resource, [
@@ -105,7 +89,6 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 				"filename",
 				"runtime"
 			]) ||
-			!validId(resource.id) ||
 			!/^[a-zA-Z][a-zA-Z0-9_]+$/.test(resource.funtionName) ||
 			!/^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/.test(
 				resource.filename
@@ -118,21 +101,11 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		if (!hasAllKeys(resource, ["id"])) {
 			return Promise.reject(new Error("Resource is missing keys"));
 		}
-		if (!/^[a-z][-a-z0-9]*[a-z0-9]$/.test(resource.id)) {
-			return Promise.reject(new Error("Invalid ID"));
-		}
 	} else if (resource.type === "dynamoDb") {
 		if (!hasAllKeys(resource, ["id", "attributes"])) {
 			return Promise.reject(new Error("Resource is missing keys"));
 		}
-		if (!/^[a-z][-a-z0-9]*[a-z0-9]$/.test(resource.id)) {
-			console.error("bad id");
-			return Promise.reject(new Error("Invalid ID"));
-		}
 		if (!Array.isArray(resource.attributes)) {
-			console.error("bad attributes");
-			console.dir(resource);
-			console.dir(resource.attributes);
 			return Promise.reject(new Error(`Invalid attributes array`));
 		}
 		for (let i = 0; i < resource.attributes.length; i++) {

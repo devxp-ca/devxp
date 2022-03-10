@@ -104,7 +104,7 @@ export const settingsValidator = [
 		.trim()
 		.escape()
 		.isLength({min: 1})
-		.matches(/^[a-zA-Z-]+$/)
+		.matches(/^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])$/)
 		.withMessage(
 			"Invalid resource ID. Only letters, dashes, and underscores are allowed"
 		),
