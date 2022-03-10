@@ -665,7 +665,8 @@ export default function TerraformManager(props: {
 					paddingTop: 3,
 					position: "fixed",
 					bottom: 75,
-					width: "calc(100vw - 76px)"
+					width: "calc(100vw - 76px)",
+					pointerEvents: "none"
 				}}>
 				<Button
 					disabled={
@@ -679,7 +680,11 @@ export default function TerraformManager(props: {
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
 					onClick={handleOpenSubmitModal}
-					sx={{padding: 2, fontSize: 18}}>
+					sx={{
+						padding: 2,
+						fontSize: 18,
+						pointerEvents: "initial"
+					}}>
 					Submit To Repo
 				</Button>
 			</Box>
