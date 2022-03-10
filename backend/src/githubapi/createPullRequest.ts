@@ -3,7 +3,7 @@ import axios from "axios";
 import {GithubPR, isGithubPR} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 
-export default (
+const createPullRequest = (
 	head: string, // Name of branch where changes implemented
 	base: string, // Name of branch we want to merge into
 	token: string,
@@ -27,6 +27,23 @@ export default (
 				},
 				header
 			)
+			.catch(err => {
+				//Try master
+				if (base === "main") {
+					return axios.post(
+						`${GITHUB_BASE_URL}/repos/${repo}/pulls`,
+						{
+							head: head,
+							base: "master",
+							title: "DevXP Config",
+							body: "Merge DevXP Config branch with main branch"
+						},
+						header
+					);
+				} else {
+					return Promise.reject(err);
+				}
+			})
 			.then(resp => {
 				const pr = {
 					url: resp.data.url,
@@ -60,3 +77,5 @@ export default (
 				}
 			});
 	});
+
+export default createPullRequest;
