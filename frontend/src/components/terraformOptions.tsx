@@ -15,6 +15,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import Checkbox from "@mui/material/Checkbox";
 
 import MouseOverPopover from "./MouseOverPopover";
+import LabelledNumberInput from "./LabelledNumberInput";
 
 /* TODO: Add google fields, uncomment + add dynamoDB fields, implement lambda function fields */
 export interface terraformDataSettings {
@@ -774,56 +775,29 @@ export default function TerraformOptions(props: {
 								/>
 							</FormControl>
 						</Grid>
-						<Grid item>
-							<FormLabel>
-								<Grid container direction="row">
-									Number of Instances
-									<MouseOverPopover
-										icon={
-											<HelpIcon
-												sx={{
-													paddingLeft: 1
-												}}
-											/>
-										}
-										popOverInfo={
-											<div>
-												<p>
-													Allows you to spin up any
-													number of instances with the
-													same settings chosen above
-												</p>
-												<p>
-													They will be named
-													consecutively with -a, -b,
-													-c... etc. appended to the
-													name you entered
-												</p>
-											</div>
-										}
-									/>
-								</Grid>
-							</FormLabel>
-							<Grid item>
-								<TextField
-									id="number-of-instances"
-									name="number-of-instances"
-									label=""
-									type="number"
-									value={numberOfInstancesValue}
-									onChange={(
-										event: React.ChangeEvent<HTMLInputElement>
-									) =>
-										dispatch({
-											type: "numberOfInstances",
-											payload: (
-												event.target as HTMLInputElement
-											).value
-										})
-									}
-								/>
-							</Grid>
-						</Grid>
+						<LabelledNumberInput
+							text="Number of Instances"
+							description={
+								<div>
+									<p>
+										Allows you to spin up any number of
+										instances with the same settings chosen
+										above
+									</p>
+									<p>
+										They will be named consecutively with
+										-a, -b, -c... etc. appended to the name
+										you entered
+									</p>
+								</div>
+							}
+							onChange={(payload: number) => {
+								dispatch({
+									type: "numberOfInstances",
+									payload
+								});
+							}}
+						/>
 					</Grid>
 				</FormControl>
 			</Grid>

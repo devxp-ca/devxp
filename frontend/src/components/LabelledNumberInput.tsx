@@ -8,15 +8,11 @@ import HelpIcon from "@mui/icons-material/Help";
 
 export default function LabelledTextInput(props: {
 	text: string | Element;
-	description: string | Element;
-	onChange?: (value: string) => void;
-	onChangeValidity?: (value: boolean) => void;
-	initial?: string;
-	pattern?: string;
+	description: string | React.ReactElement;
+	onChange?: (value: number) => void;
+	initial?: number;
 }) {
-	const regex = new RegExp(props.pattern ?? ".*");
-	const [value, setValue] = React.useState(props.initial ?? "");
-	const [valid, setValid] = React.useState(true);
+	const [value, setValue] = React.useState(props.initial ?? 1);
 
 	return (
 		<>
@@ -38,24 +34,25 @@ export default function LabelledTextInput(props: {
 						</Grid>
 					</FormLabel>
 					<TextField
-						error={!valid}
-						inputProps={{
-							pattern: props.pattern ?? ".*"
-						}}
 						label=""
-						type="text"
-						value={value}
+						type="number"
+						value={value ?? ""}
 						onChange={(
 							event: React.ChangeEvent<HTMLInputElement>
 						) => {
-							const newValid = !!event.target.value.match(regex);
-							setValid(newValid);
-							setValue(event.target.value);
-							if (props.onChange && newValid) {
-								props.onChange(event.target.value);
-							}
-							if (props.onChangeValidity) {
-								props.onChangeValidity(newValid);
+							if (event.target.value === "") {
+								setValue(undefined);
+								if (props.onChange) {
+									props.onChange(0);
+								}
+							} else {
+								const num = parseInt(event.target.value);
+								if (!isNaN(num) && num > 0) {
+									setValue(num);
+									if (props.onChange) {
+										props.onChange(num);
+									}
+								}
 							}
 						}}
 					/>

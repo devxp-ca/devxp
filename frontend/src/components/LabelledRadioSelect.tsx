@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 
 export default function LabelledCheckboxInput(props: {
-	text: string;
-	description: string;
+	text: string | Element;
+	description: string | Element;
 	onChange?: (value: string) => void;
 	initial?: string;
 	options: {
