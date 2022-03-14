@@ -25,6 +25,7 @@ import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
 import Tooltip from "@mui/material/Tooltip";
 import Checkbox from "@mui/material/Checkbox";
+import LabelledCheckboxInput from "../components/LabelledCheckboxInput";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -462,206 +463,39 @@ export default function TerraformManager(props: {
 							</RadioGroup>
 						</Grid>
 						{selectedProvider === "aws" && (
-							<Grid container direction="row">
-								<Typography sx={{paddingTop: 0.4}} variant="h6">
-									Secure
-								</Typography>
-								<MouseOverPopover
-									icon={
-										<HelpIcon
-											sx={{
-												paddingLeft: 1,
-												paddingTop: 0.85,
-												opacity: 0.5
-											}}
-										/>
-									}
-									popOverInfo={
-										<span>
-											Whether or not to put all the
-											configured resources into their own
-											VPC,
-											<br /> setup a subnet, and give them
-											IAM permissions to access each
-											other.
-										</span>
-									}
-								/>
-								<Checkbox
-									sx={{
-										"& .MuiSvgIcon-root": {
-											fontSize: 28
-										},
-										marginTop: -0.45
-									}}
-									onChange={handleChangeSecureOption}
-									checked={selectedSecureOption}
-								/>
-							</Grid>
+							<LabelledCheckboxInput
+								text="Secure"
+								description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
+								initial={savedSecureOption}
+								onChange={setSelectedSecureOption}
+							/>
 						)}
 						{selectedProvider === "aws" && selectedSecureOption && (
 							<>
-								<Grid container direction="row">
-									<Typography
-										sx={{paddingTop: 0.4}}
-										variant="h6">
-										Enable SSH
-									</Typography>
-									<MouseOverPopover
-										icon={
-											<HelpIcon
-												sx={{
-													paddingLeft: 1,
-													paddingTop: 0.85,
-													opacity: 0.5
-												}}
-											/>
-										}
-										popOverInfo={
-											<span>
-												Opens up port 22 for ssh access
-											</span>
-										}
-									/>
-									<Checkbox
-										sx={{
-											"& .MuiSvgIcon-root": {
-												fontSize: 28
-											},
-											marginTop: -0.45
-										}}
-										onChange={(
-											event: React.ChangeEvent<HTMLInputElement>
-										) =>
-											setSelectedAllowSshOption(
-												event.target.checked
-											)
-										}
-										checked={selectedAllowSshOption}
-									/>
-								</Grid>
-								<Grid container direction="row">
-									<Typography
-										sx={{paddingTop: 0.4}}
-										variant="h6">
-										Enable Inbound Web Traffic
-									</Typography>
-									<MouseOverPopover
-										icon={
-											<HelpIcon
-												sx={{
-													paddingLeft: 1,
-													paddingTop: 0.85,
-													opacity: 0.5
-												}}
-											/>
-										}
-										popOverInfo={
-											<span>
-												Opens up ports 443 and 80 for
-												web traffic
-											</span>
-										}
-									/>
-									<Checkbox
-										sx={{
-											"& .MuiSvgIcon-root": {
-												fontSize: 28
-											},
-											marginTop: -0.45
-										}}
-										onChange={(
-											event: React.ChangeEvent<HTMLInputElement>
-										) =>
-											setSelectedAllowIngressWebOption(
-												event.target.checked
-											)
-										}
-										checked={selectedAllowIngressWebOption}
-									/>
-								</Grid>
-								<Grid container direction="row">
-									<Typography
-										sx={{paddingTop: 0.4}}
-										variant="h6">
-										Enable Outbound Web Traffic
-									</Typography>
-									<MouseOverPopover
-										icon={
-											<HelpIcon
-												sx={{
-													paddingLeft: 1,
-													paddingTop: 0.85,
-													opacity: 0.5
-												}}
-											/>
-										}
-										popOverInfo={
-											<span>
-												Opens up ports 443 and 80 for
-												software updates, web requests,
-												etc
-											</span>
-										}
-									/>
-									<Checkbox
-										sx={{
-											"& .MuiSvgIcon-root": {
-												fontSize: 28
-											},
-											marginTop: -0.45
-										}}
-										onChange={(
-											event: React.ChangeEvent<HTMLInputElement>
-										) =>
-											setSelectedAllowEgressWebOption(
-												event.target.checked
-											)
-										}
-										checked={selectedAllowEgressWebOption}
-									/>
-								</Grid>
-								<Grid container direction="row">
-									<Typography
-										sx={{paddingTop: 0.4}}
-										variant="h6">
-										Enable Network Load Balancing
-									</Typography>
-									<MouseOverPopover
-										icon={
-											<HelpIcon
-												sx={{
-													paddingLeft: 1,
-													paddingTop: 0.85,
-													opacity: 0.5
-												}}
-											/>
-										}
-										popOverInfo={
-											<span>
-												Spins up a network load balancer
-												within your VPC, connected to
-												all ec2 instances
-											</span>
-										}
-									/>
-									<Checkbox
-										sx={{
-											"& .MuiSvgIcon-root": {
-												fontSize: 28
-											},
-											marginTop: -0.45
-										}}
-										onChange={(
-											event: React.ChangeEvent<HTMLInputElement>
-										) =>
-											setSelectedAutoLoadBalanceOption(
-												event.target.checked
-											)
-										}
-										checked={selectedAutoLoadBalanceOption}
-									/>
-								</Grid>
+								<LabelledCheckboxInput
+									text="Enable SSH"
+									description="Opens up port 22 for ssh access."
+									initial={savedAllowSshOption}
+									onChange={setSelectedAllowSshOption}
+								/>
+								<LabelledCheckboxInput
+									text="Enable Inbound Web Traffic"
+									description="Opens up ports 443 and 80 for web traffic."
+									initial={savedAllowIngressWebOption}
+									onChange={setSelectedAllowIngressWebOption}
+								/>
+								<LabelledCheckboxInput
+									text="Enable Outbound Web Traffic"
+									description="Opens up ports 443 and 80 for software updates, web requests, etc."
+									initial={savedAllowEgressWebOption}
+									onChange={setSelectedAllowEgressWebOption}
+								/>
+								<LabelledCheckboxInput
+									text="Enable Network Load Balancing"
+									description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
+									initial={savedAutoLoadBalanceOption}
+									onChange={setSelectedAutoLoadBalanceOption}
+								/>
 							</>
 						)}
 					</Grid>
