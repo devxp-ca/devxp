@@ -26,6 +26,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import Tooltip from "@mui/material/Tooltip";
 import Checkbox from "@mui/material/Checkbox";
 import LabelledCheckboxInput from "../components/LabelledCheckboxInput";
+import LabelledRadioSelect from "./LabelledRadioSelect";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -414,54 +415,20 @@ export default function TerraformManager(props: {
 						container
 						direction="column"
 						sx={{paddingLeft: 8, paddingTop: 4.5, marginBottom: 2}}>
-						<Grid container direction="row">
-							<Typography sx={{paddingTop: 0.4}} variant="h6">
-								Provider
-							</Typography>
-							<MouseOverPopover
-								icon={
-									<HelpIcon
-										sx={{
-											paddingLeft: 1,
-											paddingTop: 0.85,
-											opacity: 0.5
-										}}
-									/>
-								}
-								popOverInfo={
-									<span>
-										Select the provider you have a cloud
-										services account with
-									</span>
-								}
-							/>
-							<RadioGroup
-								name="Provider"
-								value={selectedProvider}
-								onChange={handleChangeProvider}
-								row
-								sx={{paddingLeft: 2}}>
-								<FormControlLabel
-									key="aws"
-									value="aws"
-									control={<Radio size="small" />}
-									label="Amazon"
-								/>
-								<FormControlLabel
-									key="google"
-									value="google"
-									control={<Radio size="small" />}
-									label="Google"
-								/>
-								<FormControlLabel
-									key="other"
-									value="other"
-									control={<Radio size="small" />}
-									label="Azure"
-									disabled={true}
-								/>
-							</RadioGroup>
-						</Grid>
+						<LabelledRadioSelect
+							text="Provider"
+							description="Select the provider you have a cloud services account with"
+							options={[
+								{key: "aws", label: "Amazon"},
+								{key: "google", label: "Google"},
+								{key: "azure", label: "Azure", disabled: true}
+							]}
+							initial={savedProvider}
+							onChange={(value: string) => {
+								setSelectNewInstance(false);
+								setSelectedProvider(value);
+							}}
+						/>
 						{selectedProvider === "aws" && (
 							<LabelledCheckboxInput
 								text="Secure"
