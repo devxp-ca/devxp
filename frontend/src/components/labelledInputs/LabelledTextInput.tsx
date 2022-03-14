@@ -22,10 +22,13 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
 	const regex = new RegExp(props.pattern ?? ".*");
 	const [value, setValue] = React.useState(props.initial ?? "");
 	const [valid, setValid] = React.useState(true);
+	const [shouldFocus, setShouldFocus] = React.useState(false);
 
 	const prevProp = usePrevious({
-		override: props.override
+		override: props.override,
+		disabled: props.disabled
 	});
+
 	React.useEffect(() => {
 		if (
 			props.override !== undefined &&
@@ -34,6 +37,14 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
 			setValue(props.override);
 		}
 	}, [props.override]);
+
+	React.useEffect(() => {
+		if (!props.disabled && prevProp?.disabled !== props.disabled) {
+			setShouldFocus(true);
+		} else {
+			setShouldFocus(false);
+		}
+	}, [props.disabled]);
 
 	return (
 		<>
@@ -55,6 +66,9 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
 						</Grid>
 					</FormLabel>
 					<TextField
+						inputRef={(input?: HTMLInputElement) =>
+							input && shouldFocus && input.focus()
+						}
 						error={!valid}
 						inputProps={{
 							pattern: props.pattern ?? ".*"
