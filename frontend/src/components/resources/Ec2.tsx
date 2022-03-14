@@ -1,22 +1,19 @@
 import React from "react";
 import Resource from "./Resource";
 
-interface IProps {
-	test: string;
-}
+interface IProps {}
 interface IState {}
-export default class Ec2 extends Resource<IProps, IState> {
+export default class Ec2 extends Resource<IProps> {
 	constructor(props: IProps) {
-		super(props);
+		super({
+			...props,
+			resource: "Instance",
+			randomPrefix: "ecTwo-",
+			randomGroups: 1
+		});
 	}
 
 	render() {
-		return (
-			<>
-				<h1>Ec2</h1>
-				{super.render()}
-				<h1>Ec2</h1>
-			</>
-		);
+		return <>{super.render()}</>;
 	}
 }

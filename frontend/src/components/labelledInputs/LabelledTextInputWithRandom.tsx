@@ -20,17 +20,23 @@ export default function LabelledTextInputWithRandom(
 			if (props.onChange) {
 				props.onChange(value);
 			}
-		}
+		},
+		disabled: !checked
 	};
 
 	const prevState = usePrevious({checked});
 	if (checked !== prevState?.checked) {
 		subProps = {
 			...subProps,
-			override: !checked ? id : innerValue,
-			disabled: !checked
+			override: !checked ? id : innerValue
 		};
 	}
+
+	React.useEffect(() => {
+		if (props.onChange) {
+			props.onChange(id);
+		}
+	}, []);
 
 	return (
 		<Grid container direction="row">
