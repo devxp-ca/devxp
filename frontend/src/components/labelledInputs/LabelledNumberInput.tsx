@@ -1,16 +1,17 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import MouseOverPopover from "./MouseOverPopover";
+import MouseOverPopover from "../MouseOverPopover";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import HelpIcon from "@mui/icons-material/Help";
 
-export default function LabelledTextInput(props: {
+export default function LabelledNumberInput(props: {
 	text: string | Element;
 	description: string | React.ReactElement;
 	onChange?: (value: number) => void;
 	initial?: number;
+	disabled?: boolean;
 }) {
 	const [value, setValue] = React.useState(props.initial ?? 1);
 
@@ -35,6 +36,7 @@ export default function LabelledTextInput(props: {
 					</FormLabel>
 					<TextField
 						label=""
+						disabled={props.disabled ?? false}
 						type="number"
 						value={value ?? ""}
 						onChange={(

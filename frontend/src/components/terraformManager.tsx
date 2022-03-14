@@ -25,8 +25,8 @@ import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
 import Tooltip from "@mui/material/Tooltip";
 import Checkbox from "@mui/material/Checkbox";
-import LabelledCheckboxInput from "../components/LabelledCheckboxInput";
-import LabelledRadioSelect from "./LabelledRadioSelect";
+import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
+import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {

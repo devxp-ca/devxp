@@ -1,22 +1,39 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import MouseOverPopover from "./MouseOverPopover";
+import MouseOverPopover from "../MouseOverPopover";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import HelpIcon from "@mui/icons-material/Help";
+import {usePrevious} from "../../util";
 
-export default function LabelledTextInput(props: {
-	text: string | Element;
-	description: string | Element;
+export interface LabelledTextInputProps {
+	text: string | React.ReactElement;
+	description: string | React.ReactElement;
 	onChange?: (value: string) => void;
 	onChangeValidity?: (value: boolean) => void;
 	initial?: string;
 	pattern?: string;
-}) {
+	disabled?: boolean;
+	override?: string;
+}
+
+export default function LabelledTextInput(props: LabelledTextInputProps) {
 	const regex = new RegExp(props.pattern ?? ".*");
 	const [value, setValue] = React.useState(props.initial ?? "");
 	const [valid, setValid] = React.useState(true);
+
+	const prevProp = usePrevious({
+		override: props.override
+	});
+	React.useEffect(() => {
+		if (
+			props.override !== undefined &&
+			prevProp?.override !== props.override
+		) {
+			setValue(props.override);
+		}
+	}, [props.override]);
 
 	return (
 		<>
@@ -44,6 +61,7 @@ export default function LabelledTextInput(props: {
 						}}
 						label=""
 						type="text"
+						disabled={props.disabled ?? false}
 						value={value}
 						onChange={(
 							event: React.ChangeEvent<HTMLInputElement>

@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import MouseOverPopover from "./MouseOverPopover";
+import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
 import {Checkbox, Typography} from "@mui/material";
 

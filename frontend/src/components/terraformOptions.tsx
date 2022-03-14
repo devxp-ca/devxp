@@ -15,7 +15,8 @@ import HelpIcon from "@mui/icons-material/Help";
 import Checkbox from "@mui/material/Checkbox";
 
 import MouseOverPopover from "./MouseOverPopover";
-import LabelledNumberInput from "./LabelledNumberInput";
+import LabelledNumberInput from "./labelledInputs/LabelledNumberInput";
+import LabelledTextInputWithRandom from "./labelledInputs/LabelledTextInputWithRandom";
 
 /* TODO: Add google fields, uncomment + add dynamoDB fields, implement lambda function fields */
 export interface terraformDataSettings {
@@ -120,8 +121,6 @@ export default function TerraformOptions(props: {
 	} = optionState;
 
 	function optionsReducer(state: any, action: any) {
-		console.dir(action);
-
 		switch (action.type) {
 			case "provider":
 				return {
@@ -732,49 +731,23 @@ export default function TerraformOptions(props: {
 						sx={{paddingTop: 2}}
 						justifyContent="center"
 						spacing={2}>
-						<Grid item>
-							<FormControl>
-								<FormLabel>
-									<Grid container direction="row">
-										Instance Name
-										<MouseOverPopover
-											icon={
-												<HelpIcon
-													sx={{
-														paddingLeft: 1
-													}}
-												/>
-											}
-											popOverInfo={
-												<div>
-													Give this particular
-													instance a name so it's
-													identifiable -- can be
-													whatever you like
-												</div>
-											}
-										/>
-									</Grid>
-								</FormLabel>
-								<TextField
-									id="instance-name"
-									name="instance-name"
-									label=""
-									type="text"
-									value={instanceNameValue}
-									onChange={(
-										event: React.ChangeEvent<HTMLInputElement>
-									) =>
-										dispatch({
-											type: "instanceName",
-											payload: (
-												event.target as HTMLInputElement
-											).value
-										})
-									}
-								/>
-							</FormControl>
-						</Grid>
+						<LabelledTextInputWithRandom
+							text="Instance Name"
+							description={
+								<div>
+									Give this particular instance a name so it's
+									identifiable -- can be whatever you like
+								</div>
+							}
+							onChange={(payload: string) => {
+								dispatch({
+									type: "instanceName",
+									payload
+								});
+							}}
+							initial={initialOptionState.instanceNameValue}
+							randomPrefix="ecTwo-"
+						/>
 						<LabelledNumberInput
 							text="Number of Instances"
 							description={
