@@ -5,6 +5,7 @@ import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWithRandom";
 import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
+import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 
 interface IProps {
 	//Ec2, S3, etc
@@ -24,10 +25,16 @@ interface IProps {
 
 	//Data passed from children
 	data?: any;
+
+	initialData?: {
+		autoIam?: boolean;
+		name?: string;
+	};
 }
 interface IState {
 	resources: number;
 	name: string;
+	autoIam: boolean;
 }
 export default abstract class Resource<Props> extends React.Component<
 	IProps & Props & randomIdSettings,
@@ -37,9 +44,11 @@ export default abstract class Resource<Props> extends React.Component<
 		super(props);
 		this.state = {
 			resources: 1,
-			name: ""
+			name: "",
+			autoIam: this.props.initialData?.autoIam ?? true
 		};
 		this.getData = this.getData.bind(this);
+		this.getResourceData = this.getResourceData.bind(this);
 	}
 
 	componentDidUpdate(prevProps: IProps & Props, prevState: IState) {
@@ -56,11 +65,18 @@ export default abstract class Resource<Props> extends React.Component<
 		}
 	}
 
+	getResourceData() {
+		return {
+			resources: this.state.resources,
+			name: this.state.name,
+			autoIam: this.state.autoIam
+		};
+	}
+
 	getData() {
 		return {
 			...this.props.data,
-			resources: this.state.resources,
-			name: this.state.name
+			...this.getResourceData()
 		};
 	}
 
@@ -73,6 +89,12 @@ export default abstract class Resource<Props> extends React.Component<
 	render() {
 		return (
 			<Grid container direction="column">
+				<LabelledCheckboxInput
+					initial={this.props.initialData?.autoIam ?? true}
+					text="Enable IAM Users"
+					description="Determine if IAM Users will be setup for this resource"
+					onChange={(autoIam: boolean) => this.setState({autoIam})}
+				/>
 				<Grid container direction="row">
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} Name`}
@@ -81,6 +103,7 @@ export default abstract class Resource<Props> extends React.Component<
 						onChange={(name: string) => {
 							this.setState({name});
 						}}
+						initial={this.props.initialData?.name}
 					/>
 					<LabelledNumberInput
 						text={`Number of ${this.props.resource}s`}
