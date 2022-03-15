@@ -1,3 +1,4 @@
+import Grid from "@mui/material/Grid";
 import React from "react";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import LabelledRadioInput from "../labelledInputs/LabelledRadioSelect";
@@ -36,9 +37,28 @@ export default class Ec2 extends Resource<IProps, IState> {
 		};
 	}
 
+	isValid() {
+		return (
+			super.isValid() &&
+			(this.state.ami !== "ami-0faefa03f7ddcd657" ||
+				this.state.instance === "mac1.metal")
+		);
+	}
+
 	render() {
 		return (
-			<>
+			<Grid
+				sx={
+					this.state.valid
+						? {
+								padding: "5px"
+						  }
+						: {
+								padding: "5px",
+								border: "2px solid red",
+								borderRadius: "10px"
+						  }
+				}>
 				<LabelledMultiInput
 					text="Instance OS"
 					description="Choose the type of OS you want this instance to run"
@@ -114,7 +134,7 @@ export default class Ec2 extends Resource<IProps, IState> {
 				/>
 
 				{super.render()}
-			</>
+			</Grid>
 		);
 	}
 }

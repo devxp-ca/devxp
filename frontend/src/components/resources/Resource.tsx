@@ -37,6 +37,7 @@ export interface ResourceState {
 	resources: number;
 	name: string;
 	autoIam: boolean;
+	valid: boolean;
 }
 export default abstract class Resource<
 	Props,
@@ -47,7 +48,8 @@ export default abstract class Resource<
 		this.state = {
 			resources: 1,
 			name: "",
-			autoIam: this.props.initialData?.autoIam ?? true
+			autoIam: this.props.initialData?.autoIam ?? true,
+			valid: true
 		} as State;
 		this.getData = this.getData.bind(this);
 		this.getResourceData = this.getResourceData.bind(this);
@@ -61,7 +63,12 @@ export default abstract class Resource<
 			this.props.onChange &&
 			!equal(this.getData(this.state), this.getData(prevState))
 		) {
-			this.props.onChange(this.getData());
+			if (this.isValid()) {
+				this.props.onChange(this.getData());
+			}
+			this.setState({
+				valid: this.isValid()
+			});
 		}
 	}
 
@@ -156,8 +163,9 @@ export default abstract class Resource<
 				<Box textAlign="center" sx={{paddingTop: 3}}>
 					<Grid>
 						<Button
+							disabled={!this.state.valid}
 							variant="contained"
-							color="success"
+							color={this.state.valid ? "success" : "warning"}
 							size="large"
 							startIcon={<CheckIcon />}
 							aria-label="add changes"
