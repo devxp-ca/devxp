@@ -14,9 +14,7 @@ export default function LabelledMultiInput(props: {
 		label: string;
 	}[];
 }) {
-	const [value, setValue] = React.useState(
-		props.initial ?? props.options[0]?.key ?? ""
-	);
+	const [value, setValue] = React.useState(props.initial ?? "");
 
 	return (
 		<Grid container direction="row">

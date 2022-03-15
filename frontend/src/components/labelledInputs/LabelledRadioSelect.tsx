@@ -15,9 +15,7 @@ export default function LabelledRadioInput(props: {
 		disabled?: boolean;
 	}[];
 }) {
-	const [value, setValue] = React.useState(
-		props.initial ?? props.options[0]?.key ?? ""
-	);
+	const [value, setValue] = React.useState(props.initial ?? "");
 
 	return (
 		<Grid container direction="row">

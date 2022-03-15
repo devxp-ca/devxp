@@ -26,6 +26,8 @@ interface IProps {
 	//Data passed from children
 	data?: string[];
 
+	namePattern?: string;
+
 	initialData?: {
 		autoIam?: boolean;
 		name?: string;
@@ -50,6 +52,7 @@ export default abstract class Resource<
 		this.getData = this.getData.bind(this);
 		this.getResourceData = this.getResourceData.bind(this);
 		this.getInternalData = this.getInternalData.bind(this);
+		this.isValid = this.isValid.bind(this);
 	}
 
 	componentDidUpdate(_prevProps: IProps & Props, prevState: State) {
@@ -88,10 +91,22 @@ export default abstract class Resource<
 		};
 	}
 
+	isValid() {
+		const data: Record<string, any> = this.getData();
+		return Object.keys(data).reduce(
+			(acc, key) =>
+				acc &&
+				!!data[key] &&
+				(typeof data[key] !== "string" || data[key].length > 0),
+			true
+		);
+	}
+
 	static defaultProps = {
 		resource: "Resource",
 		isModifying: false,
-		data: [] as string[]
+		data: [] as string[],
+		namePattern: "^[a-zA-Z-]+$"
 	};
 
 	render() {
@@ -112,6 +127,7 @@ export default abstract class Resource<
 							onChange={(name: string) => {
 								this.setState({name});
 							}}
+							pattern={this.props.namePattern}
 							initial={this.props.initialData?.name}
 						/>
 						<LabelledNumberInput

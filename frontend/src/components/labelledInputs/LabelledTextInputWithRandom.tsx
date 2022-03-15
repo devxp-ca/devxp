@@ -7,11 +7,11 @@ import Checkbox from "@mui/material/Checkbox";
 export default function LabelledTextInputWithRandom(
 	props: Omit<LabelledTextInputProps, "override"> & randomIdSettings
 ) {
-	const [checked, setChecked] = React.useState(false);
+	const [checked, setChecked] = React.useState(!!props.initial);
 
 	const id = getRandomId({...props});
 
-	const [innerValue, setInnerValue] = React.useState("");
+	const [innerValue, setInnerValue] = React.useState(props.initial ?? "");
 
 	let subProps: LabelledTextInputProps = {
 		...props,
