@@ -2,15 +2,9 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
-import {
-	Checkbox,
-	FormControlLabel,
-	Radio,
-	RadioGroup,
-	Typography
-} from "@mui/material";
+import {MenuItem, Select, RadioGroup, Typography} from "@mui/material";
 
-export default function LabelledRadioInput(props: {
+export default function LabelledMultiInput(props: {
 	text: string | Element;
 	description: string | Element;
 	onChange?: (value: string) => void;
@@ -18,7 +12,6 @@ export default function LabelledRadioInput(props: {
 	options: {
 		key: string;
 		label: string;
-		disabled?: boolean;
 	}[];
 }) {
 	const [value, setValue] = React.useState(
@@ -42,8 +35,7 @@ export default function LabelledRadioInput(props: {
 				}
 				popOverInfo={<span>{props.description}</span>}
 			/>
-			<RadioGroup
-				name="Provider"
+			<Select
 				value={value}
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 					setValue(event.target.value);
@@ -51,18 +43,15 @@ export default function LabelledRadioInput(props: {
 						props.onChange(event.target.value);
 					}
 				}}
-				row
 				sx={{paddingLeft: 2}}>
 				{props.options.map(option => (
-					<FormControlLabel
+					<MenuItem
 						key={`radio-${option.key}-key`}
-						value={option.key}
-						control={<Radio size="small" />}
-						label={option.label}
-						disabled={option.disabled ?? false}
-					/>
+						value={option.key}>
+						{option.label}
+					</MenuItem>
 				))}
-			</RadioGroup>
+			</Select>
 		</Grid>
 	);
 }

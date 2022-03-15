@@ -95,38 +95,40 @@ export default abstract class Resource<Props> extends React.Component<
 					description="Determine if IAM Users will be setup for this resource"
 					onChange={(autoIam: boolean) => this.setState({autoIam})}
 				/>
-				<Grid container direction="row">
-					<LabelledTextInputWithRandom
-						text={`${this.props.resource} Name`}
-						description={`Give this ${this.props.resource} a specific name`}
-						{...this.props}
-						onChange={(name: string) => {
-							this.setState({name});
-						}}
-						initial={this.props.initialData?.name}
-					/>
-					<LabelledNumberInput
-						text={`Number of ${this.props.resource}s`}
-						description={
-							<div>
-								<p>
-									Allows you to spin up any number of
-									{this.props.resource.toLowerCase()}s with
-									the same settings chosen above
-								</p>
-								<p>
-									They will be named consecutively with -a,
-									-b, -c... etc. appended to the name you
-									entered
-								</p>
-							</div>
-						}
-						initial={1}
-						onChange={(resources: number) => {
-							this.setState({resources});
-						}}
-					/>
-				</Grid>
+				<Box textAlign="center">
+					<Grid>
+						<LabelledTextInputWithRandom
+							text={`${this.props.resource} Name`}
+							description={`Give this ${this.props.resource} a specific name`}
+							{...this.props}
+							onChange={(name: string) => {
+								this.setState({name});
+							}}
+							initial={this.props.initialData?.name}
+						/>
+						<LabelledNumberInput
+							text={`Number of ${this.props.resource}s`}
+							description={
+								<div>
+									<p>
+										Allows you to spin up any number of
+										{this.props.resource.toLowerCase()}s
+										with the same settings chosen above
+									</p>
+									<p>
+										They will be named consecutively with
+										-a, -b, -c... etc. appended to the name
+										you entered
+									</p>
+								</div>
+							}
+							initial={1}
+							onChange={(resources: number) => {
+								this.setState({resources});
+							}}
+						/>
+					</Grid>
+				</Box>
 				<Box textAlign="center" sx={{paddingTop: 3}}>
 					<Grid>
 						<Button
