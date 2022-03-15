@@ -5,8 +5,8 @@ import HelpIcon from "@mui/icons-material/Help";
 import {Checkbox, Typography} from "@mui/material";
 
 export default function LabelledCheckboxInput(props: {
-	text: string | Element;
-	description: string | Element;
+	text: string | React.ReactElement;
+	description: string | React.ReactElement;
 	onChange?: (value: boolean) => void;
 	initial?: boolean;
 }) {

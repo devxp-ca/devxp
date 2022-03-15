@@ -7,7 +7,7 @@ import FormLabel from "@mui/material/FormLabel";
 import HelpIcon from "@mui/icons-material/Help";
 
 export default function LabelledNumberInput(props: {
-	text: string | Element;
+	text: string | React.ReactElement;
 	description: string | React.ReactElement;
 	onChange?: (value: number) => void;
 	initial?: number;

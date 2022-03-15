@@ -24,66 +24,74 @@ interface IProps {
 	onDelete?: (data: any) => void;
 
 	//Data passed from children
-	data?: any;
+	data?: string[];
 
 	initialData?: {
 		autoIam?: boolean;
 		name?: string;
 	};
 }
-interface IState {
+export interface ResourceState {
 	resources: number;
 	name: string;
 	autoIam: boolean;
 }
-export default abstract class Resource<Props> extends React.Component<
-	IProps & Props & randomIdSettings,
-	IState
-> {
+export default abstract class Resource<
+	Props,
+	State extends ResourceState
+> extends React.Component<IProps & Props & randomIdSettings, State> {
 	constructor(props: IProps & Props & randomIdSettings) {
 		super(props);
 		this.state = {
 			resources: 1,
 			name: "",
 			autoIam: this.props.initialData?.autoIam ?? true
-		};
+		} as State;
 		this.getData = this.getData.bind(this);
 		this.getResourceData = this.getResourceData.bind(this);
+		this.getInternalData = this.getInternalData.bind(this);
 	}
 
-	componentDidUpdate(prevProps: IProps & Props, prevState: IState) {
+	componentDidUpdate(_prevProps: IProps & Props, prevState: State) {
 		//Fire onChange if required
 		if (
 			this.props.onChange &&
-			!equal(this.getData(), {
-				...prevProps.data,
-				resources: prevState.resources,
-				name: prevState.name
-			})
+			!equal(this.getData(this.state), this.getData(prevState))
 		) {
 			this.props.onChange(this.getData());
 		}
 	}
 
-	getResourceData() {
+	getResourceData(state: State = this.state) {
 		return {
-			resources: this.state.resources,
-			name: this.state.name,
-			autoIam: this.state.autoIam
+			resources: state.resources,
+			name: state.name,
+			autoIam: state.autoIam
 		};
 	}
 
-	getData() {
+	//This is really hacky, don't do this at home kids
+	getInternalData(state: Record<string, any> = this.state) {
+		const data: Record<string, any> = {};
+		this.props.data.forEach(key => {
+			if (key in state) {
+				data[key] = state[key];
+			}
+		});
+		return data;
+	}
+
+	getData(state: State = this.state) {
 		return {
-			...this.props.data,
-			...this.getResourceData()
+			...this.getInternalData(state),
+			...this.getResourceData(state)
 		};
 	}
 
-	defaultProps: {
-		resource: "Resource";
-		isModifying: false;
-		data: {};
+	static defaultProps = {
+		resource: "Resource",
+		isModifying: false,
+		data: [] as string[]
 	};
 
 	render() {

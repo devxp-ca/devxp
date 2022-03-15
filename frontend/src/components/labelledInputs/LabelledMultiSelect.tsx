@@ -5,8 +5,8 @@ import HelpIcon from "@mui/icons-material/Help";
 import {MenuItem, Select, RadioGroup, Typography} from "@mui/material";
 
 export default function LabelledMultiInput(props: {
-	text: string | Element;
-	description: string | Element;
+	text: string | React.ReactElement;
+	description: string | React.ReactElement;
 	onChange?: (value: string) => void;
 	initial?: string;
 	options: {

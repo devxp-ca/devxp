@@ -10,7 +10,7 @@ export interface randomIdSettings {
 
 export const getRandomId = (settings?: randomIdSettings) => {
 	let prefix = settings?.randomPrefix ?? "devxp-resource-";
-	const groups = settings?.randomGroups ?? 3;
+	const groups = settings?.randomGroups ?? 1;
 	const length = settings?.randomLength ?? 4;
 
 	for (let i = 0; i < groups; i++) {

@@ -2,17 +2,11 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
-import {
-	Checkbox,
-	FormControlLabel,
-	Radio,
-	RadioGroup,
-	Typography
-} from "@mui/material";
+import {FormControlLabel, Radio, RadioGroup, Typography} from "@mui/material";
 
 export default function LabelledRadioInput(props: {
-	text: string | Element;
-	description: string | Element;
+	text: string | React.ReactElement;
+	description: string | React.ReactElement;
 	onChange?: (value: string) => void;
 	initial?: string;
 	options: {
