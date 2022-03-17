@@ -11,6 +11,9 @@ interface IProps {
 	//Ec2, S3, etc
 	resource?: string;
 
+	//Type to send to backend
+	resourceType?: string;
+
 	//Adds delete button essentially
 	isModifying?: boolean;
 
@@ -30,12 +33,12 @@ interface IProps {
 
 	initialData?: {
 		autoIam?: boolean;
-		name?: string;
+		id?: string;
 	};
 }
 export interface ResourceState {
 	resources: number;
-	name: string;
+	id: string;
 	autoIam: boolean;
 	valid: boolean;
 	triedToSave: boolean;
@@ -48,7 +51,7 @@ export default abstract class Resource<
 		super(props);
 		this.state = {
 			resources: 1,
-			name: "",
+			id: "",
 			autoIam: this.props.initialData?.autoIam ?? true,
 			valid: true,
 			triedToSave: false
@@ -77,7 +80,7 @@ export default abstract class Resource<
 	getResourceData(state: State = this.state) {
 		return {
 			resources: state.resources,
-			name: state.name,
+			id: state.id,
 			autoIam: state.autoIam
 		};
 	}
@@ -96,7 +99,8 @@ export default abstract class Resource<
 	getData(state: State = this.state) {
 		return {
 			...this.getInternalData(state),
-			...this.getResourceData(state)
+			...this.getResourceData(state),
+			type: this.props.resourceType
 		};
 	}
 
@@ -130,13 +134,13 @@ export default abstract class Resource<
 				<Box textAlign="center">
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} Name`}
-						description={`Give this ${this.props.resource} a specific name`}
+						description={`Give this ${this.props.resource} a specific id`}
 						{...this.props}
-						onChange={(name: string) => {
-							this.setState({name});
+						onChange={(id: string) => {
+							this.setState({id});
 						}}
 						pattern={this.props.namePattern}
-						initial={this.props.initialData?.name}
+						initial={this.props.initialData?.id}
 					/>
 					<LabelledNumberInput
 						text={`Number of ${this.props.resource}s`}

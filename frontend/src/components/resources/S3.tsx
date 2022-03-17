@@ -14,7 +14,10 @@ export default class S3 extends Resource<IProps, IState> {
 		randomPrefix: "Bucket-",
 
 		//Length of random hash
-		randomGroups: 5
+		randomGroups: 5,
+
+		//The "type" to send to the backend
+		resourceType: "s3"
 	};
 
 	render() {

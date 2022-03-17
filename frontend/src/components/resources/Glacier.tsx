@@ -14,7 +14,10 @@ export default class Glacier extends Resource<IProps, IState> {
 		randomPrefix: "Glacier-",
 
 		//Length of random hash
-		randomGroups: 5
+		randomGroups: 5,
+
+		//The "type" to send to the backend
+		resourceType: "glacierVault"
 	};
 
 	render() {

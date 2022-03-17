@@ -14,7 +14,10 @@ export default class StorageBucket extends Resource<IProps, IState> {
 		randomPrefix: "Storage-Bucket-",
 
 		//Length of random hash
-		randomGroups: 5
+		randomGroups: 5,
+
+		//The "type" to send to the backend
+		resourceType: "googleStorageBucket"
 	};
 
 	render() {
