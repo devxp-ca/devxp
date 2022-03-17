@@ -6,18 +6,18 @@ import Resource, {ResourceState} from "./Resource";
 
 interface IProps {
 	ami?: string;
-	instance?: string;
+	instance_type?: string;
 }
 interface IState extends ResourceState {
 	ami: string;
-	instance: string;
+	instance_type: string;
 }
 export default class Ec2 extends Resource<IProps, IState> {
 	static defaultProps = {
 		...Resource.defaultProps,
 
 		//Keys of IState, hacky I know
-		data: ["ami", "instance"],
+		data: ["ami", "instance_type"],
 
 		//Type of resource for labels
 		resource: "Instance",
@@ -36,7 +36,7 @@ export default class Ec2 extends Resource<IProps, IState> {
 		this.state = {
 			...this.state,
 			ami: this.props.ami ?? "",
-			instance: this.props.instance ?? ""
+			instance_type: this.props.instance_type ?? ""
 		};
 	}
 
@@ -44,7 +44,7 @@ export default class Ec2 extends Resource<IProps, IState> {
 		return (
 			super.isValid() &&
 			(this.state.ami !== "ami-0faefa03f7ddcd657" ||
-				this.state.instance === "mac1.metal")
+				this.state.instance_type === "mac1.metal")
 		);
 	}
 
@@ -131,7 +131,7 @@ export default class Ec2 extends Resource<IProps, IState> {
 									}
 							  ]
 					}
-					onChange={instance => this.setState({instance})}
+					onChange={instance_type => this.setState({instance_type})}
 				/>
 
 				{super.render()}

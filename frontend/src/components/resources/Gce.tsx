@@ -5,19 +5,19 @@ import LabelledRadioInput from "../labelledInputs/LabelledRadioSelect";
 import Resource, {ResourceState} from "./Resource";
 
 interface IProps {
-	ami?: string;
-	instance?: string;
+	disk_image?: string;
+	machine_type?: string;
 }
 interface IState extends ResourceState {
-	ami: string;
-	instance: string;
+	disk_image: string;
+	machine_type: string;
 }
 export default class Gce extends Resource<IProps, IState> {
 	static defaultProps = {
 		...Resource.defaultProps,
 
 		//Keys of IState, hacky I know
-		data: ["ami", "instance"],
+		data: ["disk_image", "machine_type"],
 
 		//Type of resource for labels
 		resource: "Compute Engine",
@@ -35,8 +35,8 @@ export default class Gce extends Resource<IProps, IState> {
 		//Lmao this is so bad practice
 		this.state = {
 			...this.state,
-			ami: this.props.ami ?? "",
-			instance: this.props.instance ?? ""
+			disk_image: this.props.disk_image ?? "",
+			machine_type: this.props.machine_type ?? ""
 		};
 	}
 
@@ -70,7 +70,7 @@ export default class Gce extends Resource<IProps, IState> {
 							key: "windows-server-2019-dc-v20220210"
 						}
 					]}
-					onChange={ami => this.setState({ami})}
+					onChange={disk_image => this.setState({disk_image})}
 				/>
 
 				<LabelledRadioInput
@@ -78,8 +78,8 @@ export default class Gce extends Resource<IProps, IState> {
 					description={
 						<div>
 							<p>
-								Choose the computing power you want this
-								instance to have:
+								Choose the computing power you want this engine
+								to have:
 							</p>
 							<p>Micro - 1 CPU 614mB RAM</p>
 							<p>Small - 1 CPU 3.75gB RAM</p>
@@ -93,7 +93,7 @@ export default class Gce extends Resource<IProps, IState> {
 						{label: "Large", key: "e2-standard-2"},
 						{label: "Extra Large", key: "e2-standard-8"}
 					]}
-					onChange={instance => this.setState({instance})}
+					onChange={machine_type => this.setState({machine_type})}
 				/>
 
 				{super.render()}
