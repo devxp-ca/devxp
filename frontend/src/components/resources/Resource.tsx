@@ -38,6 +38,7 @@ export interface ResourceState {
 	name: string;
 	autoIam: boolean;
 	valid: boolean;
+	triedToSave: boolean;
 }
 export default abstract class Resource<
 	Props,
@@ -49,7 +50,8 @@ export default abstract class Resource<
 			resources: 1,
 			name: "",
 			autoIam: this.props.initialData?.autoIam ?? true,
-			valid: true
+			valid: true,
+			triedToSave: false
 		} as State;
 		this.getData = this.getData.bind(this);
 		this.getResourceData = this.getResourceData.bind(this);
@@ -59,16 +61,16 @@ export default abstract class Resource<
 
 	componentDidUpdate(_prevProps: IProps & Props, prevState: State) {
 		//Fire onChange if required
-		if (
-			this.props.onChange &&
-			!equal(this.getData(this.state), this.getData(prevState))
-		) {
-			if (this.isValid()) {
+		if (!equal(this.getData(this.state), this.getData(prevState))) {
+			if (this.props.onChange && this.isValid()) {
 				this.props.onChange(this.getData());
 			}
-			this.setState({
-				valid: this.isValid()
-			});
+			if (this.state.triedToSave && !this.state.valid && this.isValid()) {
+				this.setState({
+					valid: true,
+					triedToSave: false
+				});
+			}
 		}
 	}
 
@@ -126,39 +128,37 @@ export default abstract class Resource<
 					onChange={(autoIam: boolean) => this.setState({autoIam})}
 				/>
 				<Box textAlign="center">
-					<Grid>
-						<LabelledTextInputWithRandom
-							text={`${this.props.resource} Name`}
-							description={`Give this ${this.props.resource} a specific name`}
-							{...this.props}
-							onChange={(name: string) => {
-								this.setState({name});
-							}}
-							pattern={this.props.namePattern}
-							initial={this.props.initialData?.name}
-						/>
-						<LabelledNumberInput
-							text={`Number of ${this.props.resource}s`}
-							description={
-								<div>
-									<p>
-										Allows you to spin up any number of
-										{this.props.resource.toLowerCase()}s
-										with the same settings chosen above
-									</p>
-									<p>
-										They will be named consecutively with
-										-a, -b, -c... etc. appended to the name
-										you entered
-									</p>
-								</div>
-							}
-							initial={1}
-							onChange={(resources: number) => {
-								this.setState({resources});
-							}}
-						/>
-					</Grid>
+					<LabelledTextInputWithRandom
+						text={`${this.props.resource} Name`}
+						description={`Give this ${this.props.resource} a specific name`}
+						{...this.props}
+						onChange={(name: string) => {
+							this.setState({name});
+						}}
+						pattern={this.props.namePattern}
+						initial={this.props.initialData?.name}
+					/>
+					<LabelledNumberInput
+						text={`Number of ${this.props.resource}s`}
+						description={
+							<div>
+								<p>
+									Allows you to spin up any number of
+									{this.props.resource.toLowerCase()}s with
+									the same settings chosen above
+								</p>
+								<p>
+									They will be named consecutively with -a,
+									-b, -c... etc. appended to the name you
+									entered
+								</p>
+							</div>
+						}
+						initial={1}
+						onChange={(resources: number) => {
+							this.setState({resources});
+						}}
+					/>
 				</Box>
 				<Box textAlign="center" sx={{paddingTop: 3}}>
 					<Grid>
@@ -170,9 +170,11 @@ export default abstract class Resource<
 							startIcon={<CheckIcon />}
 							aria-label="add changes"
 							onClick={() => {
-								if (this.props.onSave) {
+								const valid = this.isValid();
+								if (valid && this.props.onSave) {
 									this.props.onSave(this.getData());
 								}
+								this.setState({valid, triedToSave: true});
 							}}>
 							{this.props.isModifying
 								? `Add ${this.props.resource} Changes`
