@@ -40,17 +40,15 @@ export default class Gce extends Resource<IProps, IState> {
 	render() {
 		return (
 			<Grid
-				sx={
-					this.state.valid
-						? {
-								padding: "5px"
-						  }
+				sx={{
+					padding: "5px",
+					...(this.state.valid
+						? {}
 						: {
-								padding: "5px",
 								border: "2px solid red",
 								borderRadius: "10px"
-						  }
-				}>
+						  })
+				}}>
 				<LabelledMultiInput
 					text="Instance OS"
 					description="Choose the type of OS you want this instance to run"

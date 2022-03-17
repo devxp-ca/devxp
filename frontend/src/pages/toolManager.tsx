@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import GenericModal from "../components/GenericModal";
+import DynamoDb from "../components/resources/DynamoDb";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
@@ -227,6 +228,7 @@ export default function ToolManager() {
 								repoData={selectedRepoData}
 							/>
 						)}
+						<DynamoDb onChange={console.log} />
 					</Grid>
 				</Box>
 			</Box>
