@@ -184,13 +184,17 @@ export default abstract class Resource<
 
 	render() {
 		return (
-			<Grid container direction="column">
-				<LabelledCheckboxInput
-					initial={this.props?.autoIam ?? true}
-					text="Enable IAM Users"
-					description="Determine if IAM Users will be setup for this resource"
-					onChange={(autoIam: boolean) => this.setState({autoIam})}
-				/>
+			<Grid container direction="column" alignItems="center">
+				<Grid item>
+					<LabelledCheckboxInput
+						initial={this.props?.autoIam ?? true}
+						text="Enable IAM Users"
+						description="Determine if IAM Users will be setup for this resource"
+						onChange={(autoIam: boolean) =>
+							this.setState({autoIam})
+						}
+					/>
+				</Grid>
 				<Box textAlign="center">
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} Name`}

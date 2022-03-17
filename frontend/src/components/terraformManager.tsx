@@ -163,25 +163,31 @@ export default function TerraformManager(props: {
 						: "Add New"
 				} Resource`}
 				children={
-					currentResource &&
-					(typeToResource(
-						{
-							...currentResource,
-							isModifying:
-								Object.keys(currentResource).length > 1,
-							onSave: (data: resourceSettings) => {
-								setTrackedResources([
-									...trackedResources,
-									data
-								]);
-								setCurrentResource(undefined);
-							},
-							onDelete: (_data: resourceSettings) => {
-								setCurrentResource(undefined);
+					currentResource && (
+						<Grid container direction="column" alignItems="center">
+							{
+								typeToResource(
+									{
+										...currentResource,
+										isModifying:
+											Object.keys(currentResource)
+												.length > 1,
+										onSave: (data: resourceSettings) => {
+											setTrackedResources([
+												...trackedResources,
+												data
+											]);
+											setCurrentResource(undefined);
+										},
+										onDelete: (_data: resourceSettings) => {
+											setCurrentResource(undefined);
+										}
+									},
+									false
+								) as React.ReactElement
 							}
-						},
-						false
-					) as React.ReactElement)
+						</Grid>
+					)
 				}
 				width="90vw"
 			/>
@@ -210,140 +216,163 @@ export default function TerraformManager(props: {
 					</>
 				}
 			/>
-			<Grid container direction="row">
-				<Typography sx={{paddingTop: 4}} variant="h4">
-					Terraform
-				</Typography>
-				<FormControl>
-					<Grid
-						container
-						direction="column"
-						sx={{paddingLeft: 8, paddingTop: 4.5, marginBottom: 2}}>
-						<LabelledRadioSelect
-							text="Provider"
-							description="Select the provider you have a cloud services account with"
-							options={[
-								{key: "aws", label: "Amazon"},
-								{key: "google", label: "Google"},
-								{key: "azure", label: "Azure", disabled: true}
-							]}
-							initial={props.repoData?.settings?.provider}
-							onChange={(value: string) => {
-								setSelectedProvider(value);
-							}}
-						/>
-						{selectedProvider === "aws" && (
-							<LabelledCheckboxInput
-								text="Secure"
-								description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
-								initial={props.repoData?.settings?.secure}
-								onChange={setSelectedSecureOption}
+			<Grid container direction="row" spacing={2}>
+				<Grid container direction="row">
+					<Typography sx={{paddingTop: 4}} variant="h4">
+						Terraform
+					</Typography>
+					<FormControl>
+						<Grid
+							container
+							direction="column"
+							sx={{
+								paddingLeft: 8,
+								paddingTop: 4.5,
+								marginBottom: 2
+							}}>
+							<LabelledRadioSelect
+								text="Provider"
+								description="Select the provider you have a cloud services account with"
+								options={[
+									{key: "aws", label: "Amazon"},
+									{key: "google", label: "Google"},
+									{
+										key: "azure",
+										label: "Azure",
+										disabled: true
+									}
+								]}
+								initial={props.repoData?.settings?.provider}
+								onChange={(value: string) => {
+									setSelectedProvider(value);
+								}}
 							/>
-						)}
-						{selectedProvider === "aws" && selectedSecureOption && (
-							<>
+							{selectedProvider === "aws" && (
 								<LabelledCheckboxInput
-									text="Enable SSH"
-									description="Opens up port 22 for ssh access."
-									initial={props.repoData?.settings?.allowSsh}
-									onChange={setSelectedAllowSshOption}
+									text="Secure"
+									description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
+									initial={props.repoData?.settings?.secure}
+									onChange={setSelectedSecureOption}
 								/>
-								<LabelledCheckboxInput
-									text="Enable Inbound Web Traffic"
-									description="Opens up ports 443 and 80 for web traffic."
-									initial={
-										props.repoData?.settings
-											?.allowIngressWeb
+							)}
+							{selectedProvider === "aws" &&
+								selectedSecureOption && (
+									<>
+										<LabelledCheckboxInput
+											text="Enable SSH"
+											description="Opens up port 22 for ssh access."
+											initial={
+												props.repoData?.settings
+													?.allowSsh
+											}
+											onChange={setSelectedAllowSshOption}
+										/>
+										<LabelledCheckboxInput
+											text="Enable Inbound Web Traffic"
+											description="Opens up ports 443 and 80 for web traffic."
+											initial={
+												props.repoData?.settings
+													?.allowIngressWeb
+											}
+											onChange={
+												setSelectedAllowIngressWebOption
+											}
+										/>
+										<LabelledCheckboxInput
+											text="Enable Outbound Web Traffic"
+											description="Opens up ports 443 and 80 for software updates, web requests, etc."
+											initial={
+												props.repoData?.settings
+													?.allowEgressWeb
+											}
+											onChange={
+												setSelectedAllowEgressWebOption
+											}
+										/>
+										<LabelledCheckboxInput
+											text="Enable Network Load Balancing"
+											description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
+											initial={
+												props.repoData?.settings
+													?.autoLoadBalance
+											}
+											onChange={
+												setSelectedAutoLoadBalanceOption
+											}
+										/>
+									</>
+								)}
+						</Grid>
+					</FormControl>
+				</Grid>
+				<Grid item>
+					<Button
+						variant="outlined"
+						sx={{width: 3, height: defaultCardSize}}
+						onClick={props.backButton}>
+						<ArrowBackIcon />
+					</Button>
+				</Grid>
+				<Grid item>
+					<Card>
+						<Tooltip title="Add a new Terraform instance, must select provider first">
+							<CardActionArea
+								onClick={() => {
+									//TODO: Popup modal and select type
+									setCurrentResource({
+										type: "dynamoDb"
+									});
+								}}
+								sx={{
+									"&:hover": {
+										backgroundColor: `${currentTheme.palette.success.main}50`
 									}
-									onChange={setSelectedAllowIngressWebOption}
-								/>
-								<LabelledCheckboxInput
-									text="Enable Outbound Web Traffic"
-									description="Opens up ports 443 and 80 for software updates, web requests, etc."
-									initial={
-										props.repoData?.settings?.allowEgressWeb
-									}
-									onChange={setSelectedAllowEgressWebOption}
-								/>
-								<LabelledCheckboxInput
-									text="Enable Network Load Balancing"
-									description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
-									initial={
-										props.repoData?.settings
-											?.autoLoadBalance
-									}
-									onChange={setSelectedAutoLoadBalanceOption}
-								/>
-							</>
+								}}>
+								<Grid
+									container
+									justifyContent="center"
+									alignItems="center"
+									sx={{
+										width: defaultCardSize / 2,
+										height: defaultCardSize,
+										border: `1px solid ${currentTheme.palette.success.main}`,
+										borderRadius: 1
+									}}>
+									<Grid item>
+										<AddIcon
+											sx={{
+												width: 75,
+												height: 75,
+												opacity: 1,
+												color: currentTheme.palette
+													.success.main
+											}}
+										/>
+									</Grid>
+								</Grid>
+							</CardActionArea>
+						</Tooltip>
+					</Card>
+				</Grid>
+				{trackedResources.map((resource, index) => (
+					<Grid item key={`prevInstanceCardGrid${index}`}>
+						{(
+							typeToResource(resource, true) as Resource<any, any>
+						).toCard(
+							() => {
+								setCurrentResource(resource);
+								setTrackedResources(
+									trackedResources.filter(
+										(r, i) => i !== index
+									)
+								);
+							},
+							defaultCardSize,
+							currentTheme
 						)}
 					</Grid>
-				</FormControl>
+				))}
 			</Grid>
-			<Grid item>
-				<Button
-					variant="outlined"
-					sx={{width: 3, height: defaultCardSize}}
-					onClick={props.backButton}>
-					<ArrowBackIcon />
-				</Button>
-			</Grid>
-			<Grid item>
-				<Card>
-					<Tooltip title="Add a new Terraform instance, must select provider first">
-						<CardActionArea
-							onClick={() => {
-								//TODO: Popup modal and select type
-								setCurrentResource({
-									type: "dynamoDb"
-								});
-							}}
-							sx={{
-								"&:hover": {
-									backgroundColor: `${currentTheme.palette.success.main}50`
-								}
-							}}>
-							<Grid
-								container
-								justifyContent="center"
-								alignItems="center"
-								sx={{
-									width: defaultCardSize / 2,
-									height: defaultCardSize,
-									border: `1px solid ${currentTheme.palette.success.main}`,
-									borderRadius: 1
-								}}>
-								<Grid item>
-									<AddIcon
-										sx={{
-											width: 75,
-											height: 75,
-											opacity: 1,
-											color: currentTheme.palette.success
-												.main
-										}}
-									/>
-								</Grid>
-							</Grid>
-						</CardActionArea>
-					</Tooltip>
-				</Card>
-			</Grid>
-			{trackedResources.map((resource, index) => (
-				<Grid item key={`prevInstanceCardGrid${index}`}>
-					{(
-						typeToResource(resource, true) as Resource<any, any>
-					).toCard(
-						() => {
-							setCurrentResource(resource);
-							setTrackedResources(
-								trackedResources.filter((r, i) => i !== index)
-							);
-						},
-						defaultCardSize,
-						currentTheme
-					)}
-				</Grid>
-			))}
 			<Box
 				textAlign="center"
 				sx={{
