@@ -19,14 +19,11 @@ export default function TerraformInstanceCard(props: {
 		cardNum: number
 	) => void;
 	cardIndex: number;
-	incrementOpenCards: () => void;
-	decrementOpenCards: () => void;
 }) {
 	const currentTheme = lightTheme;
 	const [selectedEditInstance, setSelectEditInstance] = React.useState(false);
 
 	const selectedEditInstanceCallback = () => {
-		props.incrementOpenCards();
 		setSelectEditInstance(true);
 	};
 
@@ -156,8 +153,6 @@ export default function TerraformInstanceCard(props: {
 					globalSecure={props.cardData.settings.secure}
 					addNewDataCallback={passNewDataCallback}
 					cardIndex={props.cardIndex}
-					incrementOpenCards={props.incrementOpenCards}
-					decrementOpenCards={props.decrementOpenCards}
 				/>
 			)}
 		</Card>

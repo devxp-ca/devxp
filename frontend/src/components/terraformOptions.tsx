@@ -19,28 +19,34 @@ import LabelledNumberInput from "./labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "./labelledInputs/LabelledTextInputWithRandom";
 
 /* TODO: Add google fields, uncomment + add dynamoDB fields, implement lambda function fields */
+export interface resourceSettings{
+	type: string;
+	id: string;
+	autoIam: boolean;
+	ami: string; // for ec2
+	instance_type: string; // for ec2
+	attributes: {
+		//for dynamodb
+		name: string;
+		type: "S" | "N" | "B"; //"S" for string, "N" for number, or "B" for binary
+		isHash: boolean; //For now just always set this true. Support for other types of keys hasn't been added yet
+	}[];
+	//for lambdafunctions
+	functionName: string; // must match the regex /^[a-zA-Z][a-zA-Z0-9_]+$/ or /^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/
+	runtime: string; //values can be found in backend/src/types/terraform.ts
+}
+
 export interface terraformDataSettings {
 	repo: string;
 	tool: string;
 	settings: {
 		provider: string;
 		secure: boolean;
-		resources: {
-			type: string;
-			id: string;
-			autoIam: boolean;
-			ami: string; // for ec2
-			instance_type: string; // for ec2
-			attributes: {
-				//for dynamodb
-				name: string;
-				type: string; //"S" for string, "N" for number, or "B" for binary
-				isHash: boolean; //For now just always set this true. Support for other types of keys hasn't been added yet
-			}[];
-			//for lambdafunctions
-			functionName: string; // must match the regex /^[a-zA-Z][a-zA-Z0-9_]+$/ or /^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/
-			runtime: string; //values can be found in backend/src/types/terraform.ts
-		}[];
+		allowSsh?: boolean;
+		allowEgressWeb?: boolean;
+		allowIngressWeb?: boolean;
+		autoLoadBalance?: boolean;
+		resources: resourceSettings[];
 	};
 }
 
@@ -55,8 +61,6 @@ export default function TerraformOptions(props: {
 		cardNum: number
 	) => void;
 	cardIndex: number;
-	incrementOpenCards: () => void;
-	decrementOpenCards: () => void;
 }) {
 	const isModifyingInstance = Boolean(props.instanceDataForModify);
 
@@ -189,7 +193,6 @@ export default function TerraformOptions(props: {
 	}
 
 	const addChanges = () => {
-		props.decrementOpenCards();
 		let resourceArray = [];
 		for (let i = 0; i < numberOfInstancesValue; i++) {
 			resourceArray.push({
@@ -230,7 +233,6 @@ export default function TerraformOptions(props: {
 	};
 
 	const deleteInstance = () => {
-		props.decrementOpenCards();
 		props.addNewDataCallback(null, isModifyingInstance, props.cardIndex);
 	};
 

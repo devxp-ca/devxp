@@ -71,6 +71,7 @@ export default class Gce extends Resource<IProps, IState> {
 						}
 					]}
 					onChange={disk_image => this.setState({disk_image})}
+					initial={this.state.disk_image}
 				/>
 
 				<LabelledRadioInput
@@ -94,6 +95,7 @@ export default class Gce extends Resource<IProps, IState> {
 						{label: "Extra Large", key: "e2-standard-8"}
 					]}
 					onChange={machine_type => this.setState({machine_type})}
+					initial={this.state.machine_type}
 				/>
 
 				{super.render()}

@@ -32,6 +32,8 @@ export default class Ec2 extends Resource<IProps, IState> {
 	constructor(props: IProps) {
 		super(props);
 
+		console.dir(props);
+
 		//Lmao this is so bad practice
 		this.state = {
 			...this.state,
@@ -79,6 +81,7 @@ export default class Ec2 extends Resource<IProps, IState> {
 						}
 					]}
 					onChange={ami => this.setState({ami})}
+					initial={this.state.ami}
 				/>
 
 				<LabelledRadioInput
@@ -132,6 +135,7 @@ export default class Ec2 extends Resource<IProps, IState> {
 							  ]
 					}
 					onChange={instance_type => this.setState({instance_type})}
+					initial={this.state.instance_type}
 				/>
 
 				{super.render()}

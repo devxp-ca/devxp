@@ -1,4 +1,4 @@
-import {Box, Button, Grid} from "@mui/material";
+import {Box, Button, Card, Grid, Theme} from "@mui/material";
 import React from "react";
 import {randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
@@ -6,6 +6,10 @@ import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWith
 import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
+import {lightTheme} from "../../style/themes";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import {CardActionArea} from "@mui/material";
 
 interface IProps {
 	//Ec2, S3, etc
@@ -31,10 +35,8 @@ interface IProps {
 
 	namePattern?: string;
 
-	initialData?: {
-		autoIam?: boolean;
-		id?: string;
-	};
+	autoIam?: boolean;
+	id?: string;
 }
 export interface ResourceState {
 	resources: number;
@@ -52,7 +54,7 @@ export default abstract class Resource<
 		this.state = {
 			resources: 1,
 			id: "",
-			autoIam: this.props.initialData?.autoIam ?? true,
+			autoIam: this.props.autoIam ?? true,
 			valid: true,
 			triedToSave: false
 		} as State;
@@ -122,11 +124,74 @@ export default abstract class Resource<
 		namePattern: "^[a-zA-Z-]+$"
 	};
 
+	toCard(
+		onClick: () => void,
+		cardSize: number,
+		currentTheme: Theme = lightTheme
+	) {
+		return (
+			<Card sx={{width: cardSize, height: cardSize}}>
+				<CardActionArea
+					onClick={onClick}
+					sx={{
+						height: "100%",
+						"&:hover": {
+							backgroundColor: `${currentTheme.palette.primary.main}50`
+						}
+					}}>
+					<CardMedia sx={{height: "100%"}}>
+						<Typography
+							gutterBottom
+							variant="h5"
+							component="div"
+							sx={{
+								backgroundColor: `${currentTheme.palette.primary.main}75`,
+								borderRadius: 1,
+								padding: 2,
+								textAlign: "center",
+								boxSizing: "border-box"
+							}}>
+							{this.state.id}
+						</Typography>
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							component="div"
+							sx={{padding: 2, paddingTop: 0}}>
+							<div>
+								<p>Resource: {this.props.resourceType}</p>
+							</div>
+							<div>
+								<p>AutoIam: {this.state.autoIam}</p>
+							</div>
+							{this.props.data.slice(0, 2).map(key => (
+								<div>
+									<p>
+										{key.slice(0, 1).toUpperCase()}
+										{key.slice(1).toLowerCase()}:{" "}
+										{
+											(
+												this.state as unknown as Record<
+													string,
+													string
+												>
+											)[key]
+										}
+									</p>
+								</div>
+							))}
+						</Typography>
+					</CardMedia>
+				</CardActionArea>
+			</Card>
+		);
+	}
+
 	render() {
 		return (
 			<Grid container direction="column">
 				<LabelledCheckboxInput
-					initial={this.props.initialData?.autoIam ?? true}
+					initial={this.props?.autoIam ?? true}
 					text="Enable IAM Users"
 					description="Determine if IAM Users will be setup for this resource"
 					onChange={(autoIam: boolean) => this.setState({autoIam})}
@@ -140,7 +205,7 @@ export default abstract class Resource<
 							this.setState({id});
 						}}
 						pattern={this.props.namePattern}
-						initial={this.props.initialData?.id}
+						initial={this.props?.id}
 					/>
 					<LabelledNumberInput
 						text={`Number of ${this.props.resource}s`}
