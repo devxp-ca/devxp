@@ -111,7 +111,7 @@ export default abstract class Resource<
 		return Object.keys(data).reduce(
 			(acc, key) =>
 				acc &&
-				!!data[key] &&
+				(typeof data[key] === "boolean" || !!data[key]) &&
 				(typeof data[key] !== "string" || data[key].length > 0),
 			true
 		);
@@ -169,14 +169,9 @@ export default abstract class Resource<
 									<p>
 										{key.slice(0, 1).toUpperCase()}
 										{key.slice(1).toLowerCase()}:{" "}
-										{
-											(
-												this.state as unknown as Record<
-													string,
-													string
-												>
-											)[key]
-										}
+										{`${
+											(this.state as unknown as any)[key]
+										}`}
 									</p>
 								</div>
 							))}

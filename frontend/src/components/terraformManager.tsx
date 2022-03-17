@@ -97,6 +97,36 @@ export default function TerraformManager(props: {
 		| undefined
 	>();
 
+	const handleSubmit = () => {
+		setOpenModal(false);
+
+		axios
+			.post(
+				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				removeEmptyKeys({
+					tool: "terraform",
+					repo: props.selectedRepo,
+					settings: {
+						provider: selectedProvider,
+						secure: selectedSecureOption,
+						allowSsh: selectedAllowSshOption,
+						allowIngressWeb: selectedAllowIngressWebOption,
+						allowEgressWeb: selectedAllowEgressWebOption,
+						autoLoadBalance: selectedAutoLoadBalanceOption,
+						resources: trackedResources
+					}
+				})
+			)
+			.then(response => {
+				console.log(response.data);
+				handleOpenSuccessModal();
+			})
+			.catch((error: AxiosError) => {
+				console.dir(error.response.data);
+				handleOpenFailModal(error.response?.data?.errors ?? []);
+			});
+	};
+
 	//SUBMIT MODAL THINGS
 	const [openModal, setOpenModal] = React.useState(false);
 	const [modalText, setModalText] = React.useState({
@@ -154,7 +184,7 @@ export default function TerraformManager(props: {
 					sx={{marginTop: 2}}
 					onClick={
 						modalText.isSubmitModal
-							? () => undefined //handleSubmit //TODO
+							? handleSubmit
 							: handleCloseModal
 					}>
 					{modalText.isSubmitModal ? "Confirm" : "Ok"}
@@ -300,7 +330,7 @@ export default function TerraformManager(props: {
 							onClick={() => {
 								//TODO: Popup modal and select type
 								setCurrentResource({
-									type: "ec2"
+									type: "dynamoDb"
 								});
 							}}
 							sx={{

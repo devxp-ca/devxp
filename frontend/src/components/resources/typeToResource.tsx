@@ -13,7 +13,6 @@ export default (
 	} & any,
 	noRender: boolean = false
 ) => {
-	console.dir(resource);
 	switch (resource.type) {
 		case "ec2":
 			return noRender ? (

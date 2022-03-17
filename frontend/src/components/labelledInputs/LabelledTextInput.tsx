@@ -39,12 +39,16 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
 	}, [props.override]);
 
 	React.useEffect(() => {
-		if (!props.disabled && prevProp?.disabled !== props.disabled) {
+		if (
+			!props.disabled &&
+			prevProp?.disabled !== props.disabled &&
+			!shouldFocus
+		) {
 			setShouldFocus(true);
 		} else {
 			setShouldFocus(false);
 		}
-	}, [props.disabled]);
+	}, [props.disabled, shouldFocus]);
 
 	return (
 		<>

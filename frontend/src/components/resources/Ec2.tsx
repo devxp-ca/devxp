@@ -32,8 +32,6 @@ export default class Ec2 extends Resource<IProps, IState> {
 	constructor(props: IProps) {
 		super(props);
 
-		console.dir(props);
-
 		//Lmao this is so bad practice
 		this.state = {
 			...this.state,
