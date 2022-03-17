@@ -3,11 +3,10 @@ import Button from "@mui/material/Button";
 import {Box} from "@mui/system";
 import Grid from "@mui/material/Grid";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import TerraformOptions, {
+import {
 	resourceSettings,
 	terraformDataSettings
 } from "../components/terraformOptions";
-import TerraformInstanceCard from "../components/terraformInstanceCard";
 import Card from "@mui/material/Card";
 import {CardActionArea} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";

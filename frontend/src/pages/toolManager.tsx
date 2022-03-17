@@ -8,9 +8,7 @@ import axios from "axios";
 import {CONFIG} from "../config";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
-import TerraformOptions, {
-	terraformDataSettings
-} from "../components/terraformOptions";
+import {terraformDataSettings} from "../components/terraformOptions";
 import Grid from "@mui/material/Grid";
 import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
