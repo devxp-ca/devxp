@@ -14,20 +14,21 @@ import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import {lightTheme} from "../style/themes";
 import axios, {AxiosError} from "axios";
-import GenericModal from "./GenericModal";
+import GenericModal from "./modals/GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
 import Tooltip from "@mui/material/Tooltip";
 import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
-import Ec2 from "./resources/Ec2";
-import S3 from "./resources/S3";
-import Glacier from "./resources/Glacier";
-import DynamoDb from "./resources/DynamoDb";
-import Gce from "./resources/Gce";
-import StorageBucket from "./resources/StorageBucket";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
+import {
+	handleCloseModal,
+	handleOpenFailModal,
+	handleOpenSubmitModalNoRepo,
+	handleOpenSubmitModalConfirmation,
+	handleOpenSuccessModal
+} from "./modals/modalHandlers";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -119,11 +120,14 @@ export default function TerraformManager(props: {
 			)
 			.then(response => {
 				console.log(response.data);
-				handleOpenSuccessModal();
+				handleOpenSuccessModal(setModalText, setOpenModal)();
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);
-				handleOpenFailModal(error.response?.data?.errors ?? []);
+				handleOpenFailModal(
+					setModalText,
+					setOpenModal
+				)(error.response?.data?.errors ?? []);
 			});
 	};
 
@@ -134,64 +138,6 @@ export default function TerraformManager(props: {
 		title: "",
 		body: ""
 	});
-	const [openAlertDialog, setOpenAlertDialog] = React.useState(false);
-	const handleOpenSubmitModal = () => {
-		//check to see if isRepoSelected is true, if not, prompt user to select a repo
-		if (props.isRepoSelected) {
-			setModalText({
-				isSubmitModal: true,
-				title: "Are you sure you want to submit?",
-				body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
-			});
-			setOpenModal(true);
-		} else {
-			setModalText({
-				isSubmitModal: false,
-				title: "Please select a repository",
-				body: "You must select a repository before submitting"
-			});
-			setOpenModal(true);
-		}
-	};
-	const handleOpenSuccessModal = () => {
-		setModalText({
-			isSubmitModal: false,
-			title: "Success",
-			body: "Your changes have been successfully pushed to your repository"
-		});
-		setOpenModal(true);
-	};
-	const handleOpenFailModal = (errors: BackendError[]) => {
-		setModalText({
-			isSubmitModal: false,
-			title: "Submission Failed",
-			body:
-				errors[0]?.message ??
-				"Something went wrong, please make sure all the fields are filled out and try again"
-		});
-		setOpenModal(true);
-	};
-	const handleCloseModal = () => {
-		setOpenModal(false);
-	};
-	const modalChildren = () => {
-		return (
-			<div style={{display: "flex", justifyContent: "center"}}>
-				<Button
-					color="secondary"
-					variant="contained"
-					size="large"
-					sx={{marginTop: 2}}
-					onClick={
-						modalText.isSubmitModal
-							? handleSubmit
-							: handleCloseModal
-					}>
-					{modalText.isSubmitModal ? "Confirm" : "Ok"}
-				</Button>
-			</div>
-		);
-	};
 
 	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
 	//TODO: bug with provider and secure states where if you change it it doesn't register until you reload the page
@@ -241,10 +187,28 @@ export default function TerraformManager(props: {
 			/>
 			<GenericModal
 				isOpen={openModal}
-				handleClose={handleCloseModal}
+				handleClose={handleCloseModal(setOpenModal)}
 				title={modalText.title}
 				bodyText={modalText.body}
-				children={modalChildren()}
+				children={
+					<>
+						<div
+							style={{display: "flex", justifyContent: "center"}}>
+							<Button
+								color="secondary"
+								variant="contained"
+								size="large"
+								sx={{marginTop: 2}}
+								onClick={
+									modalText.isSubmitModal
+										? handleSubmit
+										: handleCloseModal(setOpenModal)
+								}>
+								{modalText.isSubmitModal ? "Confirm" : "Ok"}
+							</Button>
+						</div>
+					</>
+				}
 			/>
 			<Grid container direction="row">
 				<Typography sx={{paddingTop: 4}} variant="h4">
@@ -400,7 +364,17 @@ export default function TerraformManager(props: {
 					size="large"
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
-					onClick={handleOpenSubmitModal}
+					onClick={
+						props.isRepoSelected
+							? handleOpenSubmitModalConfirmation(
+									setModalText,
+									setOpenModal
+							  )
+							: handleOpenSubmitModalNoRepo(
+									setModalText,
+									setOpenModal
+							  )
+					}
 					sx={{
 						padding: 2,
 						fontSize: 18,

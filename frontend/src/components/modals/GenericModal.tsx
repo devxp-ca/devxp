@@ -2,23 +2,24 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {lightTheme} from "../style/themes";
-import Grid from "@mui/material/Grid";
+import {lightTheme} from "../../style/themes";
 
 interface modalProps {
 	isOpen: boolean;
-	handleClose: (event: any, reason: any) => void;
+	handleClose: () => void;
 	title?: string;
 	bodyText?: string;
-	children?: JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal
+	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal,
+	width?: number | string;
 }
 
-export default function SelectRepoModal({
+export default function GenericModal({
 	isOpen,
 	handleClose,
 	title,
 	bodyText,
-	children
+	children,
+	width
 }: modalProps) {
 	const currentTheme = lightTheme;
 
@@ -27,7 +28,7 @@ export default function SelectRepoModal({
 		top: "50%",
 		left: "50%",
 		transform: "translate(-50%, -50%)",
-		width: 400,
+		width: width ?? 400,
 		bgcolor: "white",
 		boxShadow: 24,
 		zIndex: 100
@@ -57,12 +58,10 @@ export default function SelectRepoModal({
 							{title}
 						</Typography>
 					</Box>
-					<Grid container direction="column" sx={bodyStyle}>
-						<Typography sx={{m: 2, justifyContent: "center"}}>
-							{bodyText}
-						</Typography>
+					<Box sx={bodyStyle}>
+						<Typography sx={{mt: 2}}>{bodyText}</Typography>
 						{children}
-					</Grid>
+					</Box>
 				</Box>
 			</Modal>
 		</div>

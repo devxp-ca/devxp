@@ -14,7 +14,7 @@ import {Autocomplete, Typography} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import GenericModal from "../components/GenericModal";
+import GenericModal from "../components/modals/GenericModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
