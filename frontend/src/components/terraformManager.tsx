@@ -30,6 +30,8 @@ import {
 	handleOpenSuccessModal
 } from "./modals/modalHandlers";
 
+import TerraformOptionsModal from "./modals/TerraformOptionsModal";
+
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
 		if (typeof obj[key] === "object") {
@@ -100,6 +102,7 @@ export default function TerraformManager(props: {
 
 	const handleSubmit = () => {
 		setOpenModal(false);
+		setOpenOptionsModal(false);
 
 		axios
 			.post(
@@ -139,10 +142,29 @@ export default function TerraformManager(props: {
 		body: ""
 	});
 
+	//OPTIONS MODAL THINGS
+	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
+
 	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
 	//TODO: bug with provider and secure states where if you change it it doesn't register until you reload the page
 	return (
+		// Terraform Options Modal for adding new resources
 		<Box sx={{width: "100%", paddingBottom: 12}}>
+			<TerraformOptionsModal
+				isOpen={!!openOptionsModal}
+				handleClose={() => {
+					setCurrentResource(undefined);
+					setOpenOptionsModal(false);
+				}}
+				handleClick={(event: any, value: string) => {
+					setCurrentResource({
+						type: value
+					});
+					setOpenOptionsModal(false);
+				}}
+				provider={selectedProvider}
+				title={`Choose your Resource for ${selectedProvider}`}
+			/>
 			<GenericModal
 				isOpen={!!currentResource}
 				handleClose={() => {
@@ -319,9 +341,13 @@ export default function TerraformManager(props: {
 							<CardActionArea
 								onClick={() => {
 									//TODO: Popup modal and select type
-									setCurrentResource({
-										type: "dynamoDb"
-									});
+									// If provider selected, open:
+									if ((selectedProvider?.length ?? 0) > 0) {
+										setOpenOptionsModal(true);
+									} else {
+										setOpenOptionsModal(false);
+									}
+									// Otherwise, should we have a popover reminder?
 								}}
 								sx={{
 									"&:hover": {
