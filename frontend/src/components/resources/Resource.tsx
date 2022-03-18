@@ -11,6 +11,22 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import {CardActionArea} from "@mui/material";
 
+const display = (content: any): string => {
+	if (Array.isArray(content)) {
+		if (content.length > 0) {
+			return `[${display(content[0]).slice(0, 10)}...]`;
+		} else {
+			return `[]`;
+		}
+	} else {
+		if (typeof content === "object") {
+			return JSON.stringify(content);
+		} else {
+			return `${content}`;
+		}
+	}
+};
+
 interface IProps {
 	//Ec2, S3, etc
 	resource?: string;
@@ -151,7 +167,7 @@ export default abstract class Resource<
 								textAlign: "center",
 								boxSizing: "border-box"
 							}}>
-							{this.state.id}
+							{this.props.id}
 						</Typography>
 						<Typography
 							variant="body2"
@@ -162,16 +178,16 @@ export default abstract class Resource<
 								<p>Resource: {this.props.resourceType}</p>
 							</div>
 							<div>
-								<p>AutoIam: {this.state.autoIam}</p>
+								<p>AutoIam: {String(this.props.autoIam)}</p>
 							</div>
-							{this.props.data.slice(0, 2).map(key => (
-								<div>
+							{this.props.data.slice(0, 2).map((key, i) => (
+								<div key={`resourceCard-${this.props.id}-${i}`}>
 									<p>
 										{key.slice(0, 1).toUpperCase()}
 										{key.slice(1).toLowerCase()}:{" "}
-										{`${
+										{display(
 											(this.state as unknown as any)[key]
-										}`}
+										)}
 									</p>
 								</div>
 							))}
@@ -184,7 +200,14 @@ export default abstract class Resource<
 
 	render() {
 		return (
-			<Grid container direction="column" alignItems="center">
+			<Grid
+				container
+				direction="column"
+				alignItems="center"
+				sx={{
+					gridGap: "15px",
+					marginTop: "15px"
+				}}>
 				<Grid item>
 					<LabelledCheckboxInput
 						initial={this.props?.autoIam ?? true}
@@ -195,7 +218,18 @@ export default abstract class Resource<
 						}
 					/>
 				</Grid>
-				<Box textAlign="center">
+				<Box
+					textAlign="center"
+					sx={{
+						display: "flex",
+						width: "80vw",
+						alignItems: "center",
+						justifyContent: "space-evenly",
+						flexDirection: "row",
+						"& > div": {
+							width: "30%"
+						}
+					}}>
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} Name`}
 						description={`Give this ${this.props.resource} a specific id`}

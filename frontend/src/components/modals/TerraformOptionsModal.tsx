@@ -36,8 +36,8 @@ export default function TerraformOptionsModal({
 					direction="column"
 					alignItems="stretch"
 					justifyContent="space-evenly">
-					{currentResources.map((value: any) => (
-						<Card>
+					{currentResources.map((value: any, i: number) => (
+						<Card key={`options-modal-${i}`}>
 							<CardActionArea
 								key={value["key"]}
 								onClick={(event: any) => {

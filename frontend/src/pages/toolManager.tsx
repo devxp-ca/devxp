@@ -29,8 +29,7 @@ export default function ToolManager() {
 
 	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
-		console.dir(repo_full_name);
-		setIsRepoSelected(true);
+		setIsRepoSelected(repo_full_name && repo_full_name.length > 0);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -39,9 +38,13 @@ export default function ToolManager() {
 			})
 			.then((response: any) => {
 				setSelectedRepoData(response.data);
-				console.dir(response.data);
 			})
 			.catch((error: any) => {
+				setSelectedRepoData({
+					settings: {
+						resources: []
+					}
+				} as any);
 				console.error(error);
 			});
 	};
@@ -92,7 +95,7 @@ export default function ToolManager() {
 					sx={{margin: 3, width: "300px"}}
 					id="repo-select"
 					options={repoList}
-					getOptionLabel={(option: any) => option.full_name}
+					getOptionLabel={(option: any) => option?.full_name ?? ""}
 					renderInput={(params: any) => (
 						<TextField
 							{...params}
@@ -101,10 +104,10 @@ export default function ToolManager() {
 						/>
 					)}
 					onChange={(event: any, value: any) => {
-						setCopyRepo(value.full_name);
+						setCopyRepo(value?.full_name ?? "");
 					}}
 					isOptionEqualToValue={(option: any, value: any) => {
-						return option.full_name === value.full_name;
+						return option?.full_name === value?.full_name;
 					}}
 				/>
 				<Button
@@ -156,7 +159,7 @@ export default function ToolManager() {
 									id="repo-select"
 									options={repoList}
 									getOptionLabel={(option: any) =>
-										option.full_name
+										option?.full_name ?? ""
 									}
 									renderInput={(params: any) => (
 										<TextField
@@ -167,7 +170,7 @@ export default function ToolManager() {
 									)}
 									onChange={(event: any, value: any) => {
 										setSelectedRepoFromAutocomplete(
-											value.full_name
+											value?.full_name ?? ""
 										);
 									}}
 									isOptionEqualToValue={(
@@ -175,7 +178,8 @@ export default function ToolManager() {
 										value: any
 									) => {
 										return (
-											option.full_name === value.full_name
+											option?.full_name ===
+											value?.full_name
 										);
 									}}
 								/>
@@ -183,6 +187,7 @@ export default function ToolManager() {
 							<Grid item>
 								<Tooltip title="Click here to copy these settings to another repo">
 									<Button
+										disabled={!isRepoSelected}
 										variant="contained"
 										onClick={() => {
 											setCopyRepoOpen(true);

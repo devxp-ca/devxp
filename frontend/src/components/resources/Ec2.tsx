@@ -53,6 +53,9 @@ export default class Ec2 extends Resource<IProps, IState> {
 			<Grid
 				sx={{
 					padding: "5px",
+					gridGap: "15px",
+					display: "flex",
+					flexDirection: "column",
 					...(this.state.valid
 						? {}
 						: {
