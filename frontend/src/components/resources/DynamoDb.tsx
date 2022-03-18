@@ -62,6 +62,9 @@ export default class DynamoDb extends Resource<IProps, IState> {
 			<Grid
 				sx={{
 					padding: "5px",
+					gridGap: "15px",
+					display: "flex",
+					flexDirection: "column",
 					...(this.state.valid
 						? {}
 						: {

@@ -178,8 +178,6 @@ export default abstract class Resource<
 								<p>Resource: {this.props.resourceType}</p>
 							</div>
 							<div>
-								{console.dir(this.props.autoIam)}
-								{console.dir(this.state.autoIam)}
 								<p>AutoIam: {String(this.props.autoIam)}</p>
 							</div>
 							{this.props.data.slice(0, 2).map((key, i) => (
@@ -202,7 +200,14 @@ export default abstract class Resource<
 
 	render() {
 		return (
-			<Grid container direction="column" alignItems="center">
+			<Grid
+				container
+				direction="column"
+				alignItems="center"
+				sx={{
+					gridGap: "15px",
+					marginTop: "15px"
+				}}>
 				<Grid item>
 					<LabelledCheckboxInput
 						initial={this.props?.autoIam ?? true}
@@ -213,7 +218,18 @@ export default abstract class Resource<
 						}
 					/>
 				</Grid>
-				<Box textAlign="center">
+				<Box
+					textAlign="center"
+					sx={{
+						display: "flex",
+						width: "80vw",
+						alignItems: "center",
+						justifyContent: "space-evenly",
+						flexDirection: "row",
+						"& > div": {
+							width: "30%"
+						}
+					}}>
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} Name`}
 						description={`Give this ${this.props.resource} a specific id`}
