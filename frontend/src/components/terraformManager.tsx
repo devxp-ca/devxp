@@ -194,10 +194,36 @@ export default function TerraformManager(props: {
 										isModifying:
 											Object.keys(currentResource)
 												.length > 1,
-										onSave: (data: resourceSettings) => {
+										onSave: (
+											data: resourceSettings & {
+												resources: number;
+											}
+										) => {
+											let newResources: resourceSettings[] =
+												[];
+											for (
+												let i = 0;
+												i < data.resources;
+												i++
+											) {
+												newResources = [
+													...newResources,
+													data.resources > 1
+														? {
+																...data,
+																id: `${
+																	data.id
+																}-${String.fromCharCode(
+																	97 + i
+																)}`
+														  }
+														: data
+												];
+											}
+
 											setTrackedResources([
 												...trackedResources,
-												data
+												...newResources
 											]);
 											setCurrentResource(undefined);
 										},
