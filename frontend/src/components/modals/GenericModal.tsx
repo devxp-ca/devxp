@@ -2,14 +2,15 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {lightTheme} from "../style/themes";
+import {lightTheme} from "../../style/themes";
 
 interface modalProps {
 	isOpen: boolean;
 	handleClose: () => void;
 	title?: string;
 	bodyText?: string;
-	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal
+	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal,
+	width?: number | string;
 }
 
 export default function GenericModal({
@@ -17,7 +18,8 @@ export default function GenericModal({
 	handleClose,
 	title,
 	bodyText,
-	children
+	children,
+	width
 }: modalProps) {
 	const currentTheme = lightTheme;
 
@@ -26,7 +28,7 @@ export default function GenericModal({
 		top: "50%",
 		left: "50%",
 		transform: "translate(-50%, -50%)",
-		width: 400,
+		width: width ?? 400,
 		bgcolor: "white",
 		boxShadow: 24,
 		zIndex: 100
