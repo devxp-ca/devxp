@@ -296,8 +296,16 @@ export default function TerraformManager(props: {
 								text="Provider"
 								description="Select the provider you have a cloud services account with"
 								options={[
-									{key: "aws", label: "Amazon"},
-									{key: "google", label: "Google"},
+									{
+										key: "aws",
+										label: "Amazon",
+										disabled: trackedResources.length > 0
+									},
+									{
+										key: "google",
+										label: "Google",
+										disabled: trackedResources.length > 0
+									},
 									{
 										key: "azure",
 										label: "Azure",
