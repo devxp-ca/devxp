@@ -20,7 +20,7 @@ export const RESOURCE_LIST = {
 		},
 		{
 			name: "Archival Storage",
-			key: "glacier",
+			key: "glacierVault",
 			description:
 				"Amazon S3 Glacier is an online file storage web service that provides storage for data archiving and backup."
 		}

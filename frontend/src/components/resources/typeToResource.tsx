@@ -36,7 +36,7 @@ export default (
 				<S3 {...resource} />
 			);
 			break;
-		case "glacier":
+		case "glacierVault":
 			return noRender ? (
 				new Glacier({
 					...Resource.defaultProps,
