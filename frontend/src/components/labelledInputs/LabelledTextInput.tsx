@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import HelpIcon from "@mui/icons-material/Help";
 import {usePrevious} from "../../util";
+import Typography from "@mui/material/Typography";
 
 export interface LabelledTextInputProps {
 	text: string | React.ReactElement;
@@ -16,6 +17,7 @@ export interface LabelledTextInputProps {
 	pattern?: string;
 	disabled?: boolean;
 	override?: string;
+	direction?: "row" | "column";
 }
 
 export default function LabelledTextInput(props: LabelledTextInputProps) {
@@ -52,7 +54,33 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
 
 	return (
 		<>
-			<Grid item>
+			<Grid
+				id="test"
+				item={(props.direction ?? "column") === "column"}
+				sx={
+					props.direction === "row"
+						? {
+								"& > div": {
+									flexDirection: "row"
+								},
+								"& > div > label": {
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center"
+								},
+								"& > div > label > div": {
+									flexWrap: "nowrap",
+									justifyContent: "center",
+									display: "flex",
+									alignItems: "center"
+								},
+								"& > div > div": {
+									marginLeft: "10px",
+									marginRight: "10px"
+								}
+						  }
+						: {}
+				}>
 				<FormControl>
 					<FormLabel>
 						<Grid container direction="row">

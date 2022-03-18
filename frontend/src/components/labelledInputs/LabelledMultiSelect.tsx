@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
-import {MenuItem, Select, RadioGroup, Typography} from "@mui/material";
+import {FormLabel, MenuItem, Select, Typography} from "@mui/material";
 
 export default function LabelledMultiInput(props: {
 	text: string | React.ReactElement;
@@ -13,20 +13,30 @@ export default function LabelledMultiInput(props: {
 		key: string;
 		label: string;
 	}[];
+	formStyle?: boolean;
 }) {
 	const [value, setValue] = React.useState(props.initial ?? "");
 
 	return (
-		<Grid container direction="row">
-			<Typography sx={{paddingTop: 0.4}} variant="h6">
-				{props.text}
-			</Typography>
+		<Grid
+			container
+			direction="row"
+			sx={{
+				display: "flex",
+				alignItems: "center",
+				flexDirection: "row"
+			}}>
+			{props.formStyle ? (
+				<FormLabel>{props.text}</FormLabel>
+			) : (
+				<Typography variant="h6">{props.text}</Typography>
+			)}
 			<MouseOverPopover
 				icon={
 					<HelpIcon
 						sx={{
-							paddingLeft: 1,
-							paddingTop: 0.85,
+							paddingLeft: "10px",
+							paddingRight: "10px",
 							opacity: 0.5
 						}}
 					/>
@@ -34,14 +44,19 @@ export default function LabelledMultiInput(props: {
 				popOverInfo={<span>{props.description}</span>}
 			/>
 			<Select
+				sx={{
+					minWidth: `${props.options.reduce(
+						(acc, opt) => Math.max(acc, opt.label.length),
+						0
+					)}ch`
+				}}
 				value={value}
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 					setValue(event.target.value);
 					if (props.onChange) {
 						props.onChange(event.target.value);
 					}
-				}}
-				sx={{paddingLeft: 2}}>
+				}}>
 				{props.options.map(option => (
 					<MenuItem
 						key={`radio-${option.key}-key`}

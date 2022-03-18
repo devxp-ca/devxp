@@ -76,9 +76,15 @@ export default class DynamoDb extends Resource<IProps, IState> {
 					this.state.attributes.map((att, i) => (
 						<Grid
 							key={`dynamoDb-${this.state.id}-${i}`}
+							sx={{
+								"& > div": {
+									width: "30%"
+								}
+							}}
 							container
 							direction="row">
 							<LabelledTextInput
+								direction="row"
 								text="Name"
 								description="A name to identify this DB attribute with"
 								initial={att.name}
@@ -101,6 +107,7 @@ export default class DynamoDb extends Resource<IProps, IState> {
 								}}
 							/>
 							<LabelledMultiSelect
+								formStyle={true}
 								text="Type"
 								description="String, Number, or Binary"
 								initial={att.type}
