@@ -164,8 +164,8 @@ export default abstract class Resource<
 							<div>
 								<p>AutoIam: {this.state.autoIam}</p>
 							</div>
-							{this.props.data.slice(0, 2).map(key => (
-								<div>
+							{this.props.data.slice(0, 2).map((key, i) => (
+								<div key={`resourceCard-${this.state.id}-${i}`}>
 									<p>
 										{key.slice(0, 1).toUpperCase()}
 										{key.slice(1).toLowerCase()}:{" "}

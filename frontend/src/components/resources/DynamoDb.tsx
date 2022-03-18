@@ -71,60 +71,59 @@ export default class DynamoDb extends Resource<IProps, IState> {
 				}}>
 				{this.state.attributes.length > 0 ? (
 					this.state.attributes.map((att, i) => (
-						<>
-							<Grid direction="row">
-								<LabelledTextInput
-									text="Name"
-									description="A name to identify this DB attribute with"
-									initial={att.name}
-									pattern="^[a-zA-Z]+$"
-									onChange={name => {
-										this.setState({
-											attributes:
-												this.state.attributes.map(
-													(attr: Attribute, j) => {
-														if (i === j) {
-															attr = {
-																name,
-																type: attr.type,
-																isHash: true //TODO: Add more booleans
-															};
-														}
-														return attr;
-													}
-												)
-										});
-									}}
-								/>
-								<LabelledMultiSelect
-									text="Type"
-									description="String, Number, or Binary"
-									initial={att.type}
-									options={[
-										{key: "S", label: "String"},
-										{key: "N", label: "Number"},
-										{key: "B", label: "Binary"}
-									]}
-									onChange={(type: "B" | "N" | "S") => {
-										this.setState({
-											attributes:
-												this.state.attributes.map(
-													(attr: Attribute, j) => {
-														if (i === j) {
-															attr = {
-																name: attr.name,
-																type,
-																isHash: true //TODO: Add more booleans
-															};
-														}
-														return attr;
-													}
-												)
-										});
-									}}
-								/>
-							</Grid>
-						</>
+						<Grid
+							key={`dynamoDb-${this.state.id}-${i}`}
+							container
+							direction="row">
+							<LabelledTextInput
+								text="Name"
+								description="A name to identify this DB attribute with"
+								initial={att.name}
+								pattern="^[a-zA-Z]+$"
+								onChange={name => {
+									this.setState({
+										attributes: this.state.attributes.map(
+											(attr: Attribute, j) => {
+												if (i === j) {
+													attr = {
+														name,
+														type: attr.type,
+														isHash: true //TODO: Add more booleans
+													};
+												}
+												return attr;
+											}
+										)
+									});
+								}}
+							/>
+							<LabelledMultiSelect
+								text="Type"
+								description="String, Number, or Binary"
+								initial={att.type}
+								options={[
+									{key: "S", label: "String"},
+									{key: "N", label: "Number"},
+									{key: "B", label: "Binary"}
+								]}
+								onChange={(type: "B" | "N" | "S") => {
+									this.setState({
+										attributes: this.state.attributes.map(
+											(attr: Attribute, j) => {
+												if (i === j) {
+													attr = {
+														name: attr.name,
+														type,
+														isHash: true //TODO: Add more booleans
+													};
+												}
+												return attr;
+											}
+										)
+									});
+								}}
+							/>
+						</Grid>
 					))
 				) : (
 					<Typography>No Attributes Selected</Typography>
