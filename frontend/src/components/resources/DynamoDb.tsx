@@ -119,8 +119,8 @@ export default class DynamoDb extends Resource<IProps, IState> {
 								onChange={(type: "B" | "N" | "S") => {
 									this.setState({
 										attributes: this.state.attributes.map(
-											(attr: Attribute, j) => {
-												if (i === j) {
+											(attr: Attribute, jj) => {
+												if (i === jj) {
 													attr = {
 														name: attr.name,
 														type,
@@ -133,6 +133,20 @@ export default class DynamoDb extends Resource<IProps, IState> {
 									});
 								}}
 							/>
+							<Button
+								variant="contained"
+								color="error"
+								onClick={() => {
+									console.dir(i);
+									this.setState({
+										attributes:
+											this.state.attributes.filter(
+												(_attr, ii) => i !== ii
+											)
+									});
+								}}>
+								Delete
+							</Button>
 						</Grid>
 					))
 				) : (
