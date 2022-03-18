@@ -29,7 +29,6 @@ export default function ToolManager() {
 
 	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
-		console.dir(repo_full_name);
 		setIsRepoSelected(true);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
@@ -39,9 +38,13 @@ export default function ToolManager() {
 			})
 			.then((response: any) => {
 				setSelectedRepoData(response.data);
-				console.dir(response.data);
 			})
 			.catch((error: any) => {
+				setSelectedRepoData({
+					settings: {
+						resources: []
+					}
+				} as any);
 				console.error(error);
 			});
 	};

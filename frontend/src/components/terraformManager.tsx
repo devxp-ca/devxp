@@ -72,33 +72,47 @@ export default function TerraformManager(props: {
 	const currentTheme = lightTheme;
 	const defaultCardSize = 250;
 
-	const [selectedProvider, setSelectedProvider] = React.useState<string>(
-		props.repoData?.settings?.provider ?? ""
-	);
-
-	const [selectedSecureOption, setSelectedSecureOption] = React.useState(
-		props.repoData?.settings?.secure ?? false
-	);
-	const [selectedAllowSshOption, setSelectedAllowSshOption] = React.useState(
-		props.repoData?.settings?.allowSsh ?? true
-	);
+	const [selectedProvider, setSelectedProvider] = React.useState("");
+	const [selectedSecureOption, setSelectedSecureOption] =
+		React.useState(false);
+	const [selectedAllowSshOption, setSelectedAllowSshOption] =
+		React.useState(true);
 	const [selectedAllowEgressWebOption, setSelectedAllowEgressWebOption] =
-		React.useState(props.repoData?.settings?.allowEgressWeb ?? true);
+		React.useState(true);
 	const [selectedAllowIngressWebOption, setSelectedAllowIngressWebOption] =
-		React.useState(props.repoData?.settings?.allowIngressWeb ?? false);
+		React.useState(false);
 	const [selectedAutoLoadBalanceOption, setSelectedAutoLoadBalanceOption] =
-		React.useState(props.repoData?.settings?.autoLoadBalance ?? false);
+		React.useState(false);
+	const [trackedResources, setTrackedResources] = React.useState<
+		resourceSettings[]
+	>([]);
 
-	const [trackedResources, setTrackedResources] = React.useState(
-		props.repoData?.settings?.resources ?? []
-	);
-	const [currentResource, setCurrentResource] = React.useState<
-		| resourceSettings
-		| {
-				type: string;
-		  }
-		| undefined
-	>();
+	React.useEffect(() => {
+		if (!hasEdited) {
+			setTrackedResources(props.repoData?.settings?.resources ?? []);
+			setSelectedProvider(props.repoData?.settings?.provider ?? "");
+			setSelectedSecureOption(props.repoData?.settings?.secure ?? false);
+			setSelectedAllowSshOption(
+				props.repoData?.settings?.allowSsh ?? true
+			);
+			setSelectedAllowEgressWebOption(
+				props.repoData?.settings?.allowEgressWeb ?? true
+			);
+			setSelectedAllowIngressWebOption(
+				props.repoData?.settings?.allowIngressWeb ?? false
+			);
+			setSelectedAutoLoadBalanceOption(
+				props.repoData?.settings?.autoLoadBalance ?? false
+			);
+		}
+		//TODO: Add a pop up to confirm overwriting changes, or something
+	}, [props.repoData]);
+
+	type partialResource = resourceSettings | {type: string} | undefined;
+	const [currentResource, setCurrentResource] =
+		React.useState<partialResource>();
+
+	const [hasEdited, setHasEdited] = React.useState(false);
 
 	const handleSubmit = () => {
 		setOpenModal(false);
@@ -227,9 +241,9 @@ export default function TerraformManager(props: {
 											]);
 											setCurrentResource(undefined);
 										},
-										onDelete: (_data: resourceSettings) => {
-											setCurrentResource(undefined);
-										}
+										onDelete: () =>
+											setCurrentResource(undefined),
+										onChange: () => setHasEdited(true)
 									},
 									false
 								) as React.ReactElement
@@ -293,6 +307,7 @@ export default function TerraformManager(props: {
 								initial={props.repoData?.settings?.provider}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
+									setHasEdited(true);
 								}}
 							/>
 							{selectedProvider === "aws" && (
@@ -300,7 +315,10 @@ export default function TerraformManager(props: {
 									text="Secure"
 									description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
 									initial={props.repoData?.settings?.secure}
-									onChange={setSelectedSecureOption}
+									onChange={(val: boolean) => {
+										setSelectedSecureOption(val);
+										setHasEdited(true);
+									}}
 								/>
 							)}
 							{selectedProvider === "aws" &&
@@ -313,7 +331,10 @@ export default function TerraformManager(props: {
 												props.repoData?.settings
 													?.allowSsh
 											}
-											onChange={setSelectedAllowSshOption}
+											onChange={(val: boolean) => {
+												setSelectedAllowSshOption(val);
+												setHasEdited(true);
+											}}
 										/>
 										<LabelledCheckboxInput
 											text="Enable Inbound Web Traffic"
@@ -322,9 +343,12 @@ export default function TerraformManager(props: {
 												props.repoData?.settings
 													?.allowIngressWeb
 											}
-											onChange={
-												setSelectedAllowIngressWebOption
-											}
+											onChange={(val: boolean) => {
+												setSelectedAllowIngressWebOption(
+													val
+												);
+												setHasEdited(true);
+											}}
 										/>
 										<LabelledCheckboxInput
 											text="Enable Outbound Web Traffic"
@@ -333,9 +357,12 @@ export default function TerraformManager(props: {
 												props.repoData?.settings
 													?.allowEgressWeb
 											}
-											onChange={
-												setSelectedAllowEgressWebOption
-											}
+											onChange={(val: boolean) => {
+												setSelectedAllowEgressWebOption(
+													val
+												);
+												setHasEdited(true);
+											}}
 										/>
 										<LabelledCheckboxInput
 											text="Enable Network Load Balancing"
@@ -344,9 +371,12 @@ export default function TerraformManager(props: {
 												props.repoData?.settings
 													?.autoLoadBalance
 											}
-											onChange={
-												setSelectedAutoLoadBalanceOption
-											}
+											onChange={(val: boolean) => {
+												setSelectedAutoLoadBalanceOption(
+													val
+												);
+												setHasEdited(true);
+											}}
 										/>
 									</>
 								)}
