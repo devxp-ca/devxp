@@ -236,8 +236,8 @@ export default function TerraformManager(props: {
 											}
 
 											setTrackedResources([
-												...trackedResources,
-												...newResources
+												...newResources,
+												...trackedResources
 											]);
 											setCurrentResource(undefined);
 										},
