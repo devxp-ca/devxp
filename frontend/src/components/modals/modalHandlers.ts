@@ -5,6 +5,7 @@ export interface ModalParams {
 	isSubmitModal: boolean;
 	title: string;
 	body: string;
+	loading?: boolean;
 }
 
 export type modalSetter = (params: React.SetStateAction<ModalParams>) => void;
@@ -20,12 +21,33 @@ export const handleOpenSuccessModal =
 		setOpenModal(true);
 	};
 
+export const handleAwaitSuccessModal =
+	(
+		setModalText: modalSetter,
+		setOpenModal: modalBoolSetter,
+		repoName: string
+	) =>
+	() => {
+		setModalText({
+			isSubmitModal: false,
+			title: `Pushing to ${repoName}`,
+			body: "",
+			loading: true
+		});
+		setOpenModal(true);
+	};
+
 export const handleOpenSubmitModalConfirmation =
-	(setModalText: modalSetter, setOpenModal: modalBoolSetter) => () => {
+	(
+		setModalText: modalSetter,
+		setOpenModal: modalBoolSetter,
+		repoName: string
+	) =>
+	() => {
 		setModalText({
 			isSubmitModal: true,
 			title: "Are you sure you want to submit?",
-			body: "Once confirmed, we will push a pull request to a temporary branch on your repository for review"
+			body: `Once confirmed, we will push a pull request to a temporary branch on ${repoName} for review`
 		});
 		setOpenModal(true);
 	};

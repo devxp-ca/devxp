@@ -8,7 +8,7 @@ import {
 	terraformDataSettings
 } from "../components/terraformOptions";
 import Card from "@mui/material/Card";
-import {CardActionArea} from "@mui/material";
+import {CardActionArea, LinearProgress} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
@@ -27,7 +27,8 @@ import {
 	handleOpenFailModal,
 	handleOpenSubmitModalNoRepo,
 	handleOpenSubmitModalConfirmation,
-	handleOpenSuccessModal
+	handleOpenSuccessModal,
+	handleAwaitSuccessModal
 } from "./modals/modalHandlers";
 
 import TerraformOptionsModal from "./modals/TerraformOptionsModal";
@@ -115,9 +116,12 @@ export default function TerraformManager(props: {
 	const [hasEdited, setHasEdited] = React.useState(false);
 
 	const handleSubmit = () => {
-		setOpenModal(false);
-		setOpenOptionsModal(false);
-
+		setOpenModal(true);
+		handleAwaitSuccessModal(
+			setModalText,
+			setOpenModal,
+			props.selectedRepo
+		)();
 		axios
 			.post(
 				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
@@ -153,7 +157,8 @@ export default function TerraformManager(props: {
 	const [modalText, setModalText] = React.useState({
 		isSubmitModal: true,
 		title: "",
-		body: ""
+		body: "",
+		loading: false
 	});
 
 	//OPTIONS MODAL THINGS
@@ -260,21 +265,31 @@ export default function TerraformManager(props: {
 				bodyText={modalText.body}
 				children={
 					<>
-						<div
-							style={{display: "flex", justifyContent: "center"}}>
-							<Button
-								color="secondary"
-								variant="contained"
-								size="large"
-								sx={{marginTop: 2}}
-								onClick={
-									modalText.isSubmitModal
-										? handleSubmit
-										: handleCloseModal(setOpenModal)
-								}>
-								{modalText.isSubmitModal ? "Confirm" : "Ok"}
-							</Button>
-						</div>
+						{!modalText.loading && (
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "center"
+								}}>
+								<Button
+									color="secondary"
+									variant="contained"
+									size="large"
+									sx={{marginTop: 2}}
+									onClick={
+										modalText.isSubmitModal
+											? handleSubmit
+											: handleCloseModal(setOpenModal)
+									}>
+									{modalText.isSubmitModal ? "Confirm" : "Ok"}
+								</Button>
+							</div>
+						)}
+						{!!modalText.loading && (
+							<div>
+								<LinearProgress></LinearProgress>
+							</div>
+						)}
 					</>
 				}
 			/>
@@ -487,7 +502,8 @@ export default function TerraformManager(props: {
 						props.isRepoSelected
 							? handleOpenSubmitModalConfirmation(
 									setModalText,
-									setOpenModal
+									setOpenModal,
+									props.selectedRepo
 							  )
 							: handleOpenSubmitModalNoRepo(
 									setModalText,
