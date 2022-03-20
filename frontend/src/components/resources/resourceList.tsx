@@ -1,41 +1,60 @@
 export const RESOURCE_LIST = {
 	aws: [
 		{
-			name: "Remote Server",
+			name: "Virtual Machine",
+			short_desc: "EC2 Cloud Computing",
 			key: "ec2",
 			description:
-				"A Virtual Machine that can be used for remote computing, webhosting, and other purposes."
+				"Amazon Elastic Compute Cloud (Amazon EC2) offers the broadest and deepest compute platform, with over 500 instances and choice of the latest processor, storage, networking, operating system, and purchase model to help you best match the needs of your workload. We are the first major cloud provider that supports Intel, AMD, and Arm processors, the only cloud with on-demand EC2 Mac instances, and the only cloud with 400 Gbps Ethernet networking. We offer the best price performance for machine learning training, as well as the lowest cost per inference instances in the cloud. More SAP, high performance computing (HPC), ML, and Windows workloads run on AWS than any other cloud.",
+			link: "https://aws.amazon.com/ec2/",
+			icon: "@mui/icons-material/Memory"
 		},
 		{
-			name: "NoSQL Database",
+			name: "Database",
+			short_desc: "NoSQL DynamoDB",
 			key: "dynamoDb",
 			description:
-				"DynamoDB is a fully managed proprietary NoSQL database service that supports key-value and document data structures and is offered by Amazon.com as part of the Amazon Web Services portfolio."
+				"Amazon DynamoDB is a fully managed, serverless, key-value NoSQL database designed to run high-performance applications at any scale. DynamoDB offers built-in security, continuous backups, automated multi-Region replication, in-memory caching, and data export tools.",
+			link: "https://aws.amazon.com/dynamodb/",
+			icon: "@mui/icons-material/BackupTable"
 		},
 		{
-			name: "Scalable Storage",
+			name: "Cloud Storage",
+			short_desc: "Simple Storage Service S3",
 			key: "s3",
 			description:
-				"Amazon S3 or Amazon Simple Storage Service is a service offered by Amazon Web Services that provides object storage through a web service interface"
+				"Amazon Simple Storage Service (Amazon S3) is an object storage service offering industry-leading scalability, data availability, security, and performance. Customers of all sizes and industries can store and protect any amount of data for virtually any use case, such as data lakes, cloud-native applications, and mobile apps. With cost-effective storage classes and easy-to-use management features, you can optimize costs, organize data, and configure fine-tuned access controls to meet specific business, organizational, and compliance requirements.",
+			link: "https://aws.amazon.com/s3/?nc=sn&loc=0",
+			icon: "@mui/icons-material/Storage"
 		},
 		{
 			name: "Archival Storage",
+			short_desc: "Glacier S3 Storage",
 			key: "glacierVault",
 			description:
-				"Amazon S3 Glacier is an online file storage web service that provides storage for data archiving and backup."
+				"The Amazon S3 Glacier storage classes are purpose-built for data archiving, providing you with the highest performance, most retrieval flexibility, and the lowest cost archive storage in the cloud. All S3 Glacier storage classes provide virtually unlimited scalability and are designed for 99.999999999% (11 nines) of data durability. The S3 Glacier storage classes deliver options for the fastest access to your archive data and the lowest-cost archive storage in the cloud.",
+			link: "https://docs.aws.amazon.com/glacier/index.html",
+			icon: "@mui/icons-material/Backup"
 		}
 	],
 	google: [
 		{
-			name: "Remote Server",
+			name: "Virtual Machine",
+			short_desc: "GCE Cloud Computing",
 			key: "gce",
 			description:
-				"A Virtual Machine that can be used for remote computing, webhosting, and other purposes."
+				"Compute Engine is a computing and hosting service that lets you create and run virtual machines on Google infrastructure. Compute Engine offers scale, performance, and value that lets you easily launch large compute clusters on Google's infrastructure. There are no upfront investments, and you can run thousands of virtual CPUs on a system that offers quick, consistent performance. ",
+			link: "https://cloud.google.com/compute/docs",
+			icon: "@mui/icons-material/Memory"
 		},
 		{
-			name: "Scalable storage",
+			name: "Cloud Storage",
+			short_desc: "Versatile Object Storage",
 			key: "googleStorageBucket",
-			description: "Reliable and secure object storage."
+			description:
+				"Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.",
+			link: "https://cloud.google.com/storage/docs",
+			icon: "@mui/icons-material/Storage"
 		}
 	],
 	azure: [{}]

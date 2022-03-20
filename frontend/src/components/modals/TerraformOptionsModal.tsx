@@ -2,9 +2,18 @@ import * as React from "react";
 import {lightTheme} from "../../style/themes";
 import Grid from "@mui/material/Grid";
 import GenericModal from "./GenericModal";
-import {Card, CardActionArea, Typography} from "@mui/material";
+import {
+	Card,
+	CardActionArea,
+	Typography,
+	Stack,
+	Icon,
+	Button,
+	CardActions
+} from "@mui/material";
 import {RESOURCE_LIST} from "../resources/resourceList";
-import {Stack} from "@mui/material";
+import {} from "@mui/material";
+import {Storage, BackupTable as Icons} from "@mui/icons-material";
 
 interface modalProps {
 	isOpen: boolean;
@@ -54,18 +63,52 @@ export default function TerraformOptionsModal({
 								}}>
 								{/* Would like to add some kind of icons down the road */}
 								<Grid container spacing={2}>
-									<Grid item xs={3} justifyContent="center">
+									{/* <Grid item xs={1}>
+										<MaterialIcon {..."@mui/icons-material/Storage"} />
+									</Grid> */}
+									<Grid
+										item
+										xs={3}
+										justifyContent="center"
+										alignContent="center"
+										textAlign="center"
+										alignItems="center">
+										<Typography
+											variant="overline"
+											color="gray">
+											{value["short_desc"] || ""}
+										</Typography>
 										<Typography variant="h5">
 											{value["name"]}
 										</Typography>
-										<Typography sx={{mb: 1.5}}>
-											{value["key"]}
-										</Typography>
+										<Grid container justifyContent="center">
+											<CardActions>
+												<Button
+													size="small"
+													variant="text"
+													color="info"
+													onMouseDown={event =>
+														event.stopPropagation()
+													}
+													onClick={event => {
+														event.stopPropagation();
+														event.preventDefault();
+														console.log(
+															"Button clicked"
+														);
+														window.open(
+															value["link"]
+														);
+													}}>
+													Learn More
+												</Button>
+											</CardActions>
+										</Grid>
 									</Grid>
-									<Grid item xs={12} sm container>
+									<Grid item xs={9} sm container>
 										<Grid
 											item
-											xs={9}
+											xs={12}
 											justifyContent="center">
 											<Typography variant="body2">
 												{value["description"]}
