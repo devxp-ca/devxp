@@ -1,4 +1,5 @@
 import React from "react";
+import {useEffect} from "react";
 import Button from "@mui/material/Button";
 import {Box} from "@mui/system";
 import Grid from "@mui/material/Grid";
@@ -142,6 +143,7 @@ export default function TerraformManager(props: {
 			.then(response => {
 				console.log(response.data);
 				handleOpenSuccessModal(setModalText, setOpenModal)();
+				setDirty(false);
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);
@@ -164,10 +166,19 @@ export default function TerraformManager(props: {
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
 
+	useEffect(() => {
+		window.onbeforeunload = () => {
+			if (dirty) {
+				return "Are you sure you want to leave without submitting your configuration?";
+			}
+		};
+	});
+
 	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
 	//TODO: bug with provider and secure states where if you change it it doesn't register until you reload the page
+	const [dirty, setDirty] = React.useState(false);
+
 	return (
-		// Terraform Options Modal for adding new resources
 		<Box sx={{width: "100%", paddingBottom: 12}}>
 			<TerraformOptionsModal
 				isOpen={!!openOptionsModal}
@@ -245,10 +256,16 @@ export default function TerraformManager(props: {
 												...trackedResources
 											]);
 											setCurrentResource(undefined);
+											setDirty(true);
 										},
-										onDelete: () =>
-											setCurrentResource(undefined),
-										onChange: () => setHasEdited(true)
+										onDelete: () => {
+											setCurrentResource(undefined);
+											setDirty(true);
+										},
+										onChange: () => {
+											setHasEdited(true);
+											setDirty(true);
+										}
 									},
 									false
 								) as React.ReactElement
@@ -410,7 +427,12 @@ export default function TerraformManager(props: {
 					<Button
 						variant="outlined"
 						sx={{width: 3, height: defaultCardSize}}
-						onClick={props.backButton}>
+						onClick={() => {
+							props.backButton;
+							if (dirty) {
+								// Need to do something here to trigger the warning
+							}
+						}}>
 						<ArrowBackIcon />
 					</Button>
 				</Grid>
