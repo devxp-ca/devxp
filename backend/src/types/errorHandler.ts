@@ -29,6 +29,12 @@ export const validationErrorHandler: ValidationErrorHandler = (
 ) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
+		// Handle rejected Authentication
+		if (errors["errors"][0]["value"] == "access_denied") {
+			// Redirect to home page
+			res.redirect("/");
+		}
+		console.log(errors);
 		return res
 			.status(422)
 			.json(
