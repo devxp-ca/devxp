@@ -48,7 +48,9 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 					new Error("Instance type for this ami must be mac1.metal")
 				);
 			}
-		} else if (!/^[tcagimr][0-9].[a-zA-Z]+$/.test(resource.instance_type)) {
+		} else if (
+			!/^[a-zA-Z][0-9].[a-zA-Z0-9]+$/.test(resource.instance_type)
+		) {
 			return Promise.reject(new Error("Invalid instance type"));
 		}
 	} else if (resource.type === "gce") {
