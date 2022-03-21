@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import {ThemeProvider} from "@mui/material/styles";
 import {lightTheme} from "../style/themes";
 import Grid from "@mui/material/Grid";
+import {Element, scroller} from "react-scroll";
 
 import {CONFIG} from "../config";
 
@@ -72,9 +73,13 @@ export default function MainLandingVisual() {
 								</span>
 							</Typography>
 							<Button
-								onClick={() =>
-									(window.location.href = `${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`)
-								}
+								onClick={() => {
+									scroller.scrollTo("DevXP-Product-Title", {
+										duration: 1000,
+										delay: 100,
+										smooth: true
+									});
+								}}
 								color="secondary"
 								variant="contained"
 								size="large"
@@ -126,14 +131,16 @@ export default function MainLandingVisual() {
 						is made easy by
 					</Typography>
 					<Box sx={{textAlign: "center"}}>
-						<img
-							src={titleImage}
-							alt="DevXP"
-							style={{
-								height: "100px",
-								margin: 50
-							}}
-						/>
+						<Element name="DevXP-Product-Title">
+							<img
+								src={titleImage}
+								alt="DevXP"
+								style={{
+									height: "100px",
+									margin: 50
+								}}
+							/>
+						</Element>
 					</Box>
 					<Typography variant="h5" color="black" align="center">
 						DevXP is a web application designed to make your life
