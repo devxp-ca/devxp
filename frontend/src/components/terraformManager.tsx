@@ -67,7 +67,6 @@ export interface BackendError {
 
 export default function TerraformManager(props: {
 	selectedRepo: string;
-	isRepoSelected: boolean;
 	repoData: terraformDataSettings;
 	backButton: () => void;
 }) {
@@ -515,18 +514,11 @@ export default function TerraformManager(props: {
 					size="large"
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
-					onClick={
-						props.isRepoSelected
-							? handleOpenSubmitModalConfirmation(
-									setModalText,
-									setOpenModal,
-									props.selectedRepo
-							  )
-							: handleOpenSubmitModalNoRepo(
-									setModalText,
-									setOpenModal
-							  )
-					}
+					onClick={handleOpenSubmitModalConfirmation(
+						setModalText,
+						setOpenModal,
+						props.selectedRepo
+					)}
 					sx={{
 						padding: 2,
 						fontSize: 18,

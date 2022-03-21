@@ -21,7 +21,6 @@ import terraformPNG from "../assets/Terraform_Vertical.png";
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	const [isRepoSelected, setIsRepoSelected] = React.useState(false);
 	const [selectedRepoData, setSelectedRepoData] =
 		React.useState<terraformDataSettings>(null);
 
@@ -29,7 +28,6 @@ export default function ToolManager() {
 
 	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
-		setIsRepoSelected(repo_full_name && repo_full_name.length > 0);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -187,7 +185,7 @@ export default function ToolManager() {
 							<Grid item>
 								<Tooltip title="Click here to copy these settings to another repo">
 									<Button
-										disabled={!isRepoSelected}
+										disabled={!selectedRepo}
 										variant="contained"
 										onClick={() => {
 											setCopyRepoOpen(true);
@@ -225,7 +223,6 @@ export default function ToolManager() {
 						{selectedTool == "terraform" && (
 							<TerraformManager
 								selectedRepo={selectedRepo}
-								isRepoSelected={isRepoSelected}
 								backButton={setSelectedToolCardCallback("none")}
 								repoData={selectedRepoData}
 							/>
