@@ -427,12 +427,7 @@ export default function TerraformManager(props: {
 					<Button
 						variant="outlined"
 						sx={{width: 3, height: defaultCardSize}}
-						onClick={() => {
-							props.backButton;
-							if (dirty) {
-								// Need to do something here to trigger the warning
-							}
-						}}>
+						onClick={props.backButton}>
 						<ArrowBackIcon />
 					</Button>
 				</Grid>

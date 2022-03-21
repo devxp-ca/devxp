@@ -44,11 +44,12 @@ export default function TerraformOptionsModal({
 					spacing={2}
 					direction="column"
 					alignItems="stretch"
-					justifyContent="space-evenly">
+					justifyContent="center">
 					{currentResources.map((value: any, i: number) => (
 						<Card key={`options-modal-${i}`}>
+							{/* Would like to add some kind of icons down the road */}
 							<CardActionArea
-								key={value["key"]}
+								component="a"
 								onClick={(event: any) => {
 									handleClick(event, value["key"]);
 								}}
@@ -61,28 +62,30 @@ export default function TerraformOptionsModal({
 										opacity: [0.9, 0.9, 0.9]
 									}
 								}}>
-								{/* Would like to add some kind of icons down the road */}
-								<Grid container spacing={2}>
-									{/* <Grid item xs={1}>
-										<MaterialIcon {..."@mui/icons-material/Storage"} />
-									</Grid> */}
+								<Grid container>
 									<Grid
 										item
+										container
 										xs={3}
+										direction="column"
 										justifyContent="center"
 										alignContent="center"
 										textAlign="center"
-										alignItems="center">
-										<Typography
-											variant="overline"
-											color="gray">
-											{value["short_desc"] || ""}
-										</Typography>
-										<Typography variant="h5">
-											{value["name"]}
-										</Typography>
-										<Grid container justifyContent="center">
-											<CardActions>
+										alignItems="stretch">
+										<Grid item>
+											<Typography
+												variant="overline"
+												color="gray">
+												{value["short_desc"] || ""}
+											</Typography>
+										</Grid>
+										<Grid item>
+											<Typography variant="h5">
+												{value["name"]}
+											</Typography>
+										</Grid>
+										<Grid item justifyContent="center">
+											<div>
 												<Button
 													size="small"
 													variant="text"
@@ -93,25 +96,28 @@ export default function TerraformOptionsModal({
 													onClick={event => {
 														event.stopPropagation();
 														event.preventDefault();
-														console.log(
-															"Button clicked"
-														);
 														window.open(
 															value["link"]
 														);
 													}}>
 													Learn More
 												</Button>
-											</CardActions>
+											</div>
 										</Grid>
 									</Grid>
-									<Grid item xs={9} sm container>
+									<Grid
+										xs={9}
+										item
+										container
+										sx={{p: 0.5}}
+										alignContent="center">
 										<Grid
 											item
 											xs={12}
 											justifyContent="center">
 											<Typography variant="body2">
-												{value["description"]}
+												{value["description"] ||
+													"No description provided."}
 											</Typography>
 										</Grid>
 									</Grid>
