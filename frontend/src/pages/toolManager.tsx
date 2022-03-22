@@ -15,14 +15,18 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import GenericModal from "../components/modals/GenericModal";
+import {LoadRepoDataModal} from "../components/modals/loadOverwriteModals";
+import {handleCloseModal} from "../components/modals/modalHandlers";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	const [selectedRepoData, setSelectedRepoData] =
-		React.useState<terraformDataSettings>(null);
+	const [selectedRepoCurrentData, setSelectedRepoCurrentData] =
+		React.useState<terraformDataSettings | null>(null);
+	const [selectedRepoSavedData, setSelectedRepoSavedData] =
+		React.useState<terraformDataSettings | null>(null);
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
@@ -35,14 +39,12 @@ export default function ToolManager() {
 				}
 			})
 			.then((response: any) => {
-				setSelectedRepoData(response.data);
+				setLoadRepoDataModalIsOpen(true);
+				setSelectedRepoSavedData(response.data);
 			})
 			.catch((error: any) => {
-				setSelectedRepoData({
-					settings: {
-						resources: []
-					}
-				} as any);
+				setSelectedRepoSavedData(null);
+				setSelectedRepoCurrentData(null);
 				console.error(error);
 			});
 	};
@@ -54,11 +56,15 @@ export default function ToolManager() {
 		return callback;
 	};
 
+	/* For LoadRepoDataModal */
+	const [loadRepoDataModalIsOpen, setLoadRepoDataModalIsOpen] =
+		React.useState(false);
+
 	/* For the copy settings modal */
 	const [copyRepo, setCopyRepo] = React.useState<string>("");
 	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
 
-	const setRepoForCopy = (repo_full_name: string) => {
+	const setRepoForCopy = () => {
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -83,7 +89,7 @@ export default function ToolManager() {
 			});
 	};
 
-	const modalChildren = () => {
+	const copyModalChildren = () => {
 		return (
 			<Grid
 				container
@@ -108,11 +114,7 @@ export default function ToolManager() {
 						return option?.full_name === value?.full_name;
 					}}
 				/>
-				<Button
-					variant="contained"
-					onClick={() => {
-						setRepoForCopy(copyRepo);
-					}}>
+				<Button variant="contained" onClick={setRepoForCopy}>
 					Copy Settings
 				</Button>
 			</Grid>
@@ -181,6 +183,22 @@ export default function ToolManager() {
 										);
 									}}
 								/>
+								<LoadRepoDataModal
+									isOpen={loadRepoDataModalIsOpen}
+									handleClose={handleCloseModal(
+										setLoadRepoDataModalIsOpen
+									)}
+									onYes={() => {
+										setSelectedRepoCurrentData(
+											selectedRepoSavedData
+										);
+										setLoadRepoDataModalIsOpen(false);
+									}}
+									onNo={handleCloseModal(
+										setLoadRepoDataModalIsOpen
+									)}
+									newRepo={selectedRepo}
+								/>
 							</Grid>
 							<Grid item>
 								<Tooltip title="Click here to copy these settings to another repo">
@@ -200,7 +218,7 @@ export default function ToolManager() {
 									}}
 									title="Copy Settings"
 									bodyText="Select the repo you want to copy the settings to"
-									children={modalChildren()}
+									children={copyModalChildren()}
 								/>
 							</Grid>
 						</Grid>
@@ -224,7 +242,7 @@ export default function ToolManager() {
 							<TerraformManager
 								selectedRepo={selectedRepo}
 								backButton={setSelectedToolCardCallback("none")}
-								repoData={selectedRepoData}
+								repoData={selectedRepoCurrentData}
 							/>
 						)}
 					</Grid>
