@@ -91,6 +91,7 @@ export const prefabNetwork = (
 		s3?: S3[] | S3;
 		glacier?: GlacierVault[] | GlacierVault;
 		dynamo?: DynamoDb[] | DynamoDb;
+		lambda?: lambdaFunction | lambdaFunction[];
 		load_balancer?: AwsLoadBalancer[] | AwsLoadBalancer;
 	},
 	rules: {
@@ -133,6 +134,23 @@ export const prefabNetwork = (
 	const dbs = arr(resources.dynamo ?? []).map(
 		(db: DynamoDb) => new DynamoDb(db.id, db.attributes, true, db.name)
 	);
+	const lambdas = arr(resources.lambda ?? []).map(
+		(func: lambdaFunction) =>
+			new lambdaFunction(
+				func.id,
+				func.functionName,
+				func.filename,
+				func.runtime,
+				func.handler,
+				func.keepWarm,
+				true,
+				{
+					subnet: [`${vpc}_subnet_public`],
+					securityGroup: [securityGroup]
+				}
+			)
+	);
+
 	const lbs = arr(resources.load_balancer ?? []).map(
 		(lb: AwsLoadBalancer) =>
 			new AwsLoadBalancer(
@@ -261,6 +279,7 @@ export const prefabNetwork = (
 		...buckets,
 		...vaults,
 		...dbs,
+		...lambdas,
 		...instanceProfiles,
 		...iamRoles,
 		...attachments,

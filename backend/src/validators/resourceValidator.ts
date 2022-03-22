@@ -89,8 +89,10 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 				"id",
 				"functionName",
 				"filename",
-				"runtime"
+				"runtime",
+				"handler"
 			]) ||
+			typeof resource.handler !== "string" ||
 			!/^[a-zA-Z][a-zA-Z0-9_]+$/.test(resource.funtionName) ||
 			!/^([a-zA-Z0-9_\\.]+|[a-zA-Z0-9_/.]+)[a-zA-Z0-9_]+\.zip$/.test(
 				resource.filename

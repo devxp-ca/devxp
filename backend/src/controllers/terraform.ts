@@ -81,7 +81,10 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				lambdaFunc.id,
 				lambdaFunc.functionName,
 				lambdaFunc.filename,
-				lambdaFunc.runtime
+				lambdaFunc.runtime,
+				lambdaFunc.handler,
+				!!lambdaFunc.keepWarm,
+				lambdaFunc.autoIam
 			);
 		} else if (resource.type === "googleStorageBucket") {
 			const bucket: GoogleStorageBucket = resource as GoogleStorageBucket;
