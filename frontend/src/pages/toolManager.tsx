@@ -1,35 +1,51 @@
 import * as React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Box from "@mui/material/Box";
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
 import axios from "axios";
 import {CONFIG} from "../config";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
 import {terraformDataSettings} from "../components/terraformOptions";
-import Grid from "@mui/material/Grid";
-import {Autocomplete, Typography} from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
+import {
+	Box,
+	ThemeProvider,
+	Autocomplete,
+	TextField,
+	Button,
+	Tooltip,
+	Grid
+} from "@mui/material";
 import GenericModal from "../components/modals/GenericModal";
+import YesNoModal from "../components/modals/yesNoModal";
+import {handleCloseModal} from "../components/modals/modalHandlers";
+import LoadingModal from "../components/modals/loadingModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	const [isRepoSelected, setIsRepoSelected] = React.useState(false);
-	const [selectedRepoData, setSelectedRepoData] =
-		React.useState<terraformDataSettings>(null);
+	const [selectedRepoCurrentData, setSelectedRepoCurrentData] =
+		React.useState<terraformDataSettings | null>(null);
+	const [selectedRepoSavedData, setSelectedRepoSavedData] =
+		React.useState<terraformDataSettings | null>(null);
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
 	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
-		setIsRepoSelected(repo_full_name && repo_full_name.length > 0);
+		if (repo_full_name === "") {
+			setSelectedRepoSavedData(null);
+			if (settingsHaveBeenEdited) {
+				setOverwriteModalIsOpen(true);
+			} else {
+				setSelectedRepoCurrentData(null);
+				setSettingsHaveBeenEdited(false);
+			}
+			return;
+		}
+		setShowLoadingModal(true);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -37,14 +53,24 @@ export default function ToolManager() {
 				}
 			})
 			.then((response: any) => {
-				setSelectedRepoData(response.data);
+				setShowLoadingModal(false);
+				setSelectedRepoSavedData(response.data);
+				if (settingsHaveBeenEdited) {
+					setLoadRepoDataModalIsOpen(true);
+				} else {
+					setSelectedRepoCurrentData(response.data);
+					setSettingsHaveBeenEdited(false);
+				}
 			})
 			.catch((error: any) => {
-				setSelectedRepoData({
-					settings: {
-						resources: []
-					}
-				} as any);
+				setShowLoadingModal(false);
+				setSelectedRepoSavedData(null);
+				if (settingsHaveBeenEdited) {
+					setOverwriteModalIsOpen(true);
+				} else {
+					setSelectedRepoCurrentData(null);
+					setSettingsHaveBeenEdited(false);
+				}
 				console.error(error);
 			});
 	};
@@ -56,11 +82,20 @@ export default function ToolManager() {
 		return callback;
 	};
 
+	/* For control flow logic (loading/overwriting/copying) */
+	const [loadRepoDataModalIsOpen, setLoadRepoDataModalIsOpen] =
+		React.useState(false);
+	const [overwriteModalIsOpen, setOverwriteModalIsOpen] =
+		React.useState(false);
+	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
+	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
+		React.useState(false);
+
 	/* For the copy settings modal */
 	const [copyRepo, setCopyRepo] = React.useState<string>("");
 	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
 
-	const setRepoForCopy = (repo_full_name: string) => {
+	const setRepoForCopy = () => {
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -85,7 +120,7 @@ export default function ToolManager() {
 			});
 	};
 
-	const modalChildren = () => {
+	const copyModalChildren = () => {
 		return (
 			<Grid
 				container
@@ -110,11 +145,7 @@ export default function ToolManager() {
 						return option?.full_name === value?.full_name;
 					}}
 				/>
-				<Button
-					variant="contained"
-					onClick={() => {
-						setRepoForCopy(copyRepo);
-					}}>
+				<Button variant="contained" onClick={setRepoForCopy}>
 					Copy Settings
 				</Button>
 			</Grid>
@@ -183,11 +214,56 @@ export default function ToolManager() {
 										);
 									}}
 								/>
+								<YesNoModal
+									isOpen={loadRepoDataModalIsOpen}
+									handleClose={handleCloseModal(
+										setLoadRepoDataModalIsOpen
+									)}
+									onYes={() => {
+										setSelectedRepoCurrentData(
+											selectedRepoSavedData
+										);
+										setSettingsHaveBeenEdited(false);
+										setLoadRepoDataModalIsOpen(false);
+									}}
+									onNo={handleCloseModal(
+										setLoadRepoDataModalIsOpen
+									)}
+									title={`${
+										selectedRepo ?? "This repo"
+									} has settings already saved. Would you like to load them?`}
+									bodyText={
+										"Selecting YES will undo any currently unsaved changes."
+									}
+								/>
+								<YesNoModal
+									isOpen={overwriteModalIsOpen}
+									handleClose={handleCloseModal(
+										setOverwriteModalIsOpen
+									)}
+									onYes={() => {
+										setSelectedRepoCurrentData(null);
+										setSettingsHaveBeenEdited(false);
+										setOverwriteModalIsOpen(false);
+									}}
+									onNo={handleCloseModal(
+										setOverwriteModalIsOpen
+									)}
+									title={
+										"Would you like to discard your unsaved settings?"
+									}
+								/>
+							</Grid>
+							<Grid>
+								<LoadingModal
+									isOpen={showLoadingModal}
+									loadingTitle={"Loading..."}
+								/>
 							</Grid>
 							<Grid item>
 								<Tooltip title="Click here to copy these settings to another repo">
 									<Button
-										disabled={!isRepoSelected}
+										disabled={!selectedRepoSavedData}
 										variant="contained"
 										onClick={() => {
 											setCopyRepoOpen(true);
@@ -202,7 +278,7 @@ export default function ToolManager() {
 									}}
 									title="Copy Settings"
 									bodyText="Select the repo you want to copy the settings to"
-									children={modalChildren()}
+									children={copyModalChildren()}
 								/>
 							</Grid>
 						</Grid>
@@ -225,9 +301,11 @@ export default function ToolManager() {
 						{selectedTool == "terraform" && (
 							<TerraformManager
 								selectedRepo={selectedRepo}
-								isRepoSelected={isRepoSelected}
 								backButton={setSelectedToolCardCallback("none")}
-								repoData={selectedRepoData}
+								repoData={selectedRepoCurrentData}
+								setSettingsHaveBeenEdited={
+									setSettingsHaveBeenEdited
+								}
 							/>
 						)}
 					</Grid>

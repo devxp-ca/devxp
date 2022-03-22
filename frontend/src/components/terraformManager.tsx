@@ -67,9 +67,9 @@ export interface BackendError {
 
 export default function TerraformManager(props: {
 	selectedRepo: string;
-	isRepoSelected: boolean;
 	repoData: terraformDataSettings;
 	backButton: () => void;
+	setSettingsHaveBeenEdited: (hasEdited: boolean) => void;
 }) {
 	const currentTheme = lightTheme;
 	const defaultCardSize = 250;
@@ -90,37 +90,30 @@ export default function TerraformManager(props: {
 	>([]);
 
 	React.useEffect(() => {
-		if (!hasEdited) {
-			setTrackedResources(props.repoData?.settings?.resources ?? []);
-			setSelectedProvider(props.repoData?.settings?.provider ?? "");
-			setSelectedSecureOption(props.repoData?.settings?.secure ?? false);
-			setSelectedAllowSshOption(
-				props.repoData?.settings?.allowSsh ?? true
-			);
-			setSelectedAllowEgressWebOption(
-				props.repoData?.settings?.allowEgressWeb ?? true
-			);
-			setSelectedAllowIngressWebOption(
-				props.repoData?.settings?.allowIngressWeb ?? false
-			);
-			setSelectedAutoLoadBalanceOption(
-				props.repoData?.settings?.autoLoadBalance ?? false
-			);
-		}
-		//TODO: Add a pop up to confirm overwriting changes, or something
+		setTrackedResources(props.repoData?.settings?.resources ?? []);
+		setSelectedProvider(props.repoData?.settings?.provider ?? "");
+		setSelectedSecureOption(props.repoData?.settings?.secure ?? false);
+		setSelectedAllowSshOption(props.repoData?.settings?.allowSsh ?? true);
+		setSelectedAllowEgressWebOption(
+			props.repoData?.settings?.allowEgressWeb ?? true
+		);
+		setSelectedAllowIngressWebOption(
+			props.repoData?.settings?.allowIngressWeb ?? false
+		);
+		setSelectedAutoLoadBalanceOption(
+			props.repoData?.settings?.autoLoadBalance ?? false
+		);
 	}, [props.repoData]);
 
 	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
 		React.useState<partialResource>();
 
-	const [hasEdited, setHasEdited] = React.useState(false);
-
 	const handleSubmit = () => {
-		setOpenModal(true);
+		setSubmitModalIsOpen(true);
 		handleAwaitSuccessModal(
-			setModalText,
-			setOpenModal,
+			setSubmitModalInfo,
+			setSubmitModalIsOpen,
 			props.selectedRepo
 		)();
 		axios
@@ -142,21 +135,24 @@ export default function TerraformManager(props: {
 			)
 			.then(response => {
 				console.log(response.data);
-				handleOpenSuccessModal(setModalText, setOpenModal)();
+				handleOpenSuccessModal(
+					setSubmitModalInfo,
+					setSubmitModalIsOpen
+				)();
 				setDirty(false);
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);
 				handleOpenFailModal(
-					setModalText,
-					setOpenModal
+					setSubmitModalInfo,
+					setSubmitModalIsOpen
 				)(error.response?.data?.errors ?? []);
 			});
 	};
 
 	//SUBMIT MODAL THINGS
-	const [openModal, setOpenModal] = React.useState(false);
-	const [modalText, setModalText] = React.useState({
+	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
+	const [submitModalInfo, setSubmitModalInfo] = React.useState({
 		isSubmitModal: true,
 		title: "",
 		body: "",
@@ -263,7 +259,9 @@ export default function TerraformManager(props: {
 											setDirty(true);
 										},
 										onChange: () => {
-											setHasEdited(true);
+											props.setSettingsHaveBeenEdited(
+												true
+											);
 											setDirty(true);
 										}
 									},
@@ -276,13 +274,13 @@ export default function TerraformManager(props: {
 				width="90vw"
 			/>
 			<GenericModal
-				isOpen={openModal}
-				handleClose={handleCloseModal(setOpenModal)}
-				title={modalText.title}
-				bodyText={modalText.body}
+				isOpen={submitModalIsOpen}
+				handleClose={handleCloseModal(setSubmitModalIsOpen)}
+				title={submitModalInfo.title}
+				bodyText={submitModalInfo.body}
 				children={
 					<>
-						{!modalText.loading && (
+						{!submitModalInfo.loading && (
 							<div
 								style={{
 									display: "flex",
@@ -294,15 +292,19 @@ export default function TerraformManager(props: {
 									size="large"
 									sx={{marginTop: 2}}
 									onClick={
-										modalText.isSubmitModal
+										submitModalInfo.isSubmitModal
 											? handleSubmit
-											: handleCloseModal(setOpenModal)
+											: handleCloseModal(
+													setSubmitModalIsOpen
+											  )
 									}>
-									{modalText.isSubmitModal ? "Confirm" : "Ok"}
+									{submitModalInfo.isSubmitModal
+										? "Confirm"
+										: "Ok"}
 								</Button>
 							</div>
 						)}
-						{!!modalText.loading && (
+						{!!submitModalInfo.loading && (
 							<div>
 								<LinearProgress></LinearProgress>
 							</div>
@@ -347,7 +349,7 @@ export default function TerraformManager(props: {
 								initial={props.repoData?.settings?.provider}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
-									setHasEdited(true);
+									props.setSettingsHaveBeenEdited(true);
 								}}
 							/>
 							{selectedProvider === "aws" && (
@@ -357,7 +359,7 @@ export default function TerraformManager(props: {
 									initial={props.repoData?.settings?.secure}
 									onChange={(val: boolean) => {
 										setSelectedSecureOption(val);
-										setHasEdited(true);
+										props.setSettingsHaveBeenEdited(true);
 									}}
 								/>
 							)}
@@ -373,7 +375,9 @@ export default function TerraformManager(props: {
 											}
 											onChange={(val: boolean) => {
 												setSelectedAllowSshOption(val);
-												setHasEdited(true);
+												props.setSettingsHaveBeenEdited(
+													true
+												);
 											}}
 										/>
 										<LabelledCheckboxInput
@@ -387,7 +391,9 @@ export default function TerraformManager(props: {
 												setSelectedAllowIngressWebOption(
 													val
 												);
-												setHasEdited(true);
+												props.setSettingsHaveBeenEdited(
+													true
+												);
 											}}
 										/>
 										<LabelledCheckboxInput
@@ -401,7 +407,9 @@ export default function TerraformManager(props: {
 												setSelectedAllowEgressWebOption(
 													val
 												);
-												setHasEdited(true);
+												props.setSettingsHaveBeenEdited(
+													true
+												);
 											}}
 										/>
 										<LabelledCheckboxInput
@@ -415,7 +423,9 @@ export default function TerraformManager(props: {
 												setSelectedAutoLoadBalanceOption(
 													val
 												);
-												setHasEdited(true);
+												props.setSettingsHaveBeenEdited(
+													true
+												);
 											}}
 										/>
 									</>
@@ -515,18 +525,11 @@ export default function TerraformManager(props: {
 					size="large"
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
-					onClick={
-						props.isRepoSelected
-							? handleOpenSubmitModalConfirmation(
-									setModalText,
-									setOpenModal,
-									props.selectedRepo
-							  )
-							: handleOpenSubmitModalNoRepo(
-									setModalText,
-									setOpenModal
-							  )
-					}
+					onClick={handleOpenSubmitModalConfirmation(
+						setSubmitModalInfo,
+						setSubmitModalIsOpen,
+						props.selectedRepo
+					)}
 					sx={{
 						padding: 2,
 						fontSize: 18,

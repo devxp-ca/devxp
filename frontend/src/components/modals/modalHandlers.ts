@@ -12,8 +12,8 @@ export type modalSetter = (params: React.SetStateAction<ModalParams>) => void;
 export type modalBoolSetter = (param: React.SetStateAction<boolean>) => void;
 
 export const handleOpenSuccessModal =
-	(setModalText: modalSetter, setOpenModal: modalBoolSetter) => () => {
-		setModalText({
+	(setModalInfo: modalSetter, setOpenModal: modalBoolSetter) => () => {
+		setModalInfo({
 			isSubmitModal: false,
 			title: "Success",
 			body: "Your changes have been successfully pushed to your repository"
@@ -23,12 +23,12 @@ export const handleOpenSuccessModal =
 
 export const handleAwaitSuccessModal =
 	(
-		setModalText: modalSetter,
+		setModalInfo: modalSetter,
 		setOpenModal: modalBoolSetter,
 		repoName: string
 	) =>
 	() => {
-		setModalText({
+		setModalInfo({
 			isSubmitModal: false,
 			title: `Pushing to ${repoName}`,
 			body: "",
@@ -39,12 +39,12 @@ export const handleAwaitSuccessModal =
 
 export const handleOpenSubmitModalConfirmation =
 	(
-		setModalText: modalSetter,
+		setModalInfo: modalSetter,
 		setOpenModal: modalBoolSetter,
 		repoName: string
 	) =>
 	() => {
-		setModalText({
+		setModalInfo({
 			isSubmitModal: true,
 			title: "Are you sure you want to submit?",
 			body: `Once confirmed, we will push a pull request to a temporary branch on ${repoName} for review`
@@ -53,8 +53,8 @@ export const handleOpenSubmitModalConfirmation =
 	};
 
 export const handleOpenSubmitModalNoRepo =
-	(setModalText: modalSetter, setOpenModal: modalBoolSetter) => () => {
-		setModalText({
+	(setModalInfo: modalSetter, setOpenModal: modalBoolSetter) => () => {
+		setModalInfo({
 			isSubmitModal: false,
 			title: "Please select a repository",
 			body: "You must select a repository before submitting"
@@ -63,9 +63,9 @@ export const handleOpenSubmitModalNoRepo =
 	};
 
 export const handleOpenFailModal =
-	(setModalText: modalSetter, setOpenModal: modalBoolSetter) =>
+	(setModalInfo: modalSetter, setOpenModal: modalBoolSetter) =>
 	(errors: BackendError[]) => {
-		setModalText({
+		setModalInfo({
 			isSubmitModal: false,
 			title: "Submission Failed",
 			body:
