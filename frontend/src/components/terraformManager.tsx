@@ -69,6 +69,7 @@ export default function TerraformManager(props: {
 	selectedRepo: string;
 	repoData: terraformDataSettings;
 	backButton: () => void;
+	setSettingsHaveBeenEdited: (hasEdited: boolean) => void;
 }) {
 	const currentTheme = lightTheme;
 	const defaultCardSize = 250;
@@ -258,6 +259,9 @@ export default function TerraformManager(props: {
 											setDirty(true);
 										},
 										onChange: () => {
+											props.setSettingsHaveBeenEdited(
+												true
+											);
 											setDirty(true);
 										}
 									},
@@ -345,6 +349,7 @@ export default function TerraformManager(props: {
 								initial={props.repoData?.settings?.provider}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
+									props.setSettingsHaveBeenEdited(true);
 								}}
 							/>
 							{selectedProvider === "aws" && (
@@ -354,6 +359,7 @@ export default function TerraformManager(props: {
 									initial={props.repoData?.settings?.secure}
 									onChange={(val: boolean) => {
 										setSelectedSecureOption(val);
+										props.setSettingsHaveBeenEdited(true);
 									}}
 								/>
 							)}
@@ -369,6 +375,9 @@ export default function TerraformManager(props: {
 											}
 											onChange={(val: boolean) => {
 												setSelectedAllowSshOption(val);
+												props.setSettingsHaveBeenEdited(
+													true
+												);
 											}}
 										/>
 										<LabelledCheckboxInput
@@ -381,6 +390,9 @@ export default function TerraformManager(props: {
 											onChange={(val: boolean) => {
 												setSelectedAllowIngressWebOption(
 													val
+												);
+												props.setSettingsHaveBeenEdited(
+													true
 												);
 											}}
 										/>
@@ -395,6 +407,9 @@ export default function TerraformManager(props: {
 												setSelectedAllowEgressWebOption(
 													val
 												);
+												props.setSettingsHaveBeenEdited(
+													true
+												);
 											}}
 										/>
 										<LabelledCheckboxInput
@@ -407,6 +422,9 @@ export default function TerraformManager(props: {
 											onChange={(val: boolean) => {
 												setSelectedAutoLoadBalanceOption(
 													val
+												);
+												props.setSettingsHaveBeenEdited(
+													true
 												);
 											}}
 										/>

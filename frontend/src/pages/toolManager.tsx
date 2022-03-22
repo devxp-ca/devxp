@@ -37,7 +37,12 @@ export default function ToolManager() {
 		setSelectedRepo(repo_full_name);
 		if (repo_full_name === "") {
 			setSelectedRepoSavedData(null);
-			setOverwriteModalIsOpen(true);
+			if (settingsHaveBeenEdited) {
+				setOverwriteModalIsOpen(true);
+			} else {
+				setSelectedRepoCurrentData(null);
+				setSettingsHaveBeenEdited(false);
+			}
 			return;
 		}
 		setShowLoadingModal(true);
@@ -49,13 +54,23 @@ export default function ToolManager() {
 			})
 			.then((response: any) => {
 				setShowLoadingModal(false);
-				setLoadRepoDataModalIsOpen(true);
 				setSelectedRepoSavedData(response.data);
+				if (settingsHaveBeenEdited) {
+					setLoadRepoDataModalIsOpen(true);
+				} else {
+					setSelectedRepoCurrentData(response.data);
+					setSettingsHaveBeenEdited(false);
+				}
 			})
 			.catch((error: any) => {
 				setShowLoadingModal(false);
 				setSelectedRepoSavedData(null);
-				setOverwriteModalIsOpen(true);
+				if (settingsHaveBeenEdited) {
+					setOverwriteModalIsOpen(true);
+				} else {
+					setSelectedRepoCurrentData(null);
+					setSettingsHaveBeenEdited(false);
+				}
 				console.error(error);
 			});
 	};
@@ -73,6 +88,8 @@ export default function ToolManager() {
 	const [overwriteModalIsOpen, setOverwriteModalIsOpen] =
 		React.useState(false);
 	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
+	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
+		React.useState(false);
 
 	/* For the copy settings modal */
 	const [copyRepo, setCopyRepo] = React.useState<string>("");
@@ -206,6 +223,7 @@ export default function ToolManager() {
 										setSelectedRepoCurrentData(
 											selectedRepoSavedData
 										);
+										setSettingsHaveBeenEdited(false);
 										setLoadRepoDataModalIsOpen(false);
 									}}
 									onNo={handleCloseModal(
@@ -225,6 +243,7 @@ export default function ToolManager() {
 									)}
 									onYes={() => {
 										setSelectedRepoCurrentData(null);
+										setSettingsHaveBeenEdited(false);
 										setOverwriteModalIsOpen(false);
 									}}
 									onNo={handleCloseModal(
@@ -284,6 +303,9 @@ export default function ToolManager() {
 								selectedRepo={selectedRepo}
 								backButton={setSelectedToolCardCallback("none")}
 								repoData={selectedRepoCurrentData}
+								setSettingsHaveBeenEdited={
+									setSettingsHaveBeenEdited
+								}
 							/>
 						)}
 					</Grid>
