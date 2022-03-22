@@ -22,7 +22,7 @@ export class lambdaFunction
 {
 	constructor(
 		id: string,
-		functionName: string,
+		functionName: string = id,
 		filename: string,
 		runtime: runtime,
 		handler: string,

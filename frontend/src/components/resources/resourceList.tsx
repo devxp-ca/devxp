@@ -35,6 +35,15 @@ export const RESOURCE_LIST = {
 				"The Amazon S3 Glacier storage classes are purpose-built for data archiving, providing you with the highest performance, most retrieval flexibility, and the lowest cost archive storage in the cloud. All S3 Glacier storage classes provide virtually unlimited scalability and are designed for 99.999999999% (11 nines) of data durability. The S3 Glacier storage classes deliver options for the fastest access to your archive data and the lowest-cost archive storage in the cloud.",
 			link: "https://docs.aws.amazon.com/glacier/index.html",
 			icon: "@mui/icons-material/Backup"
+		},
+		{
+			name: "Serverless",
+			short_desc: "Lambda Function",
+			key: "lambdaFunction",
+			description:
+				"Lambda is a compute service that lets you run code without provisioning or managing servers. Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging. With Lambda, you can run code for virtually any type of application or backend service. All you need to do is supply your code in one of the languages that Lambda supports.",
+			link: "https://docs.aws.amazon.com/lambda/index.html",
+			icon: "@mui/icons-material/Functions"
 		}
 	],
 	google: [

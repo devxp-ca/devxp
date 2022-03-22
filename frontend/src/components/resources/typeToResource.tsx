@@ -6,6 +6,7 @@ import DynamoDb from "./DynamoDb";
 import Gce from "./Gce";
 import StorageBucket from "./StorageBucket";
 import Resource from "./Resource";
+import Lambda from "./Lambda";
 
 export default (
 	resource: {
@@ -24,7 +25,6 @@ export default (
 			) : (
 				<Ec2 {...resource} />
 			);
-			break;
 		case "s3":
 			return noRender ? (
 				new S3({
@@ -35,7 +35,6 @@ export default (
 			) : (
 				<S3 {...resource} />
 			);
-			break;
 		case "glacierVault":
 			return noRender ? (
 				new Glacier({
@@ -46,7 +45,6 @@ export default (
 			) : (
 				<Glacier {...resource} />
 			);
-			break;
 		case "dynamoDb":
 			return noRender ? (
 				new DynamoDb({
@@ -57,7 +55,16 @@ export default (
 			) : (
 				<DynamoDb {...resource} />
 			);
-			break;
+		case "lambdaFunction":
+			return noRender ? (
+				new Lambda({
+					...Resource.defaultProps,
+					...Lambda.defaultProps,
+					...resource
+				})
+			) : (
+				<Lambda {...resource} />
+			);
 		case "gce":
 			return noRender ? (
 				new Gce({
@@ -68,7 +75,6 @@ export default (
 			) : (
 				<Gce {...resource} />
 			);
-			break;
 		case "googleStorageBucket":
 			return noRender ? (
 				new StorageBucket({
@@ -79,6 +85,5 @@ export default (
 			) : (
 				<StorageBucket {...resource} />
 			);
-			break;
 	}
 };
