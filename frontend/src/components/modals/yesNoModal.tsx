@@ -8,7 +8,7 @@ interface modalProps {
 	onYes: () => void;
 	onNo: () => void;
 	title: string;
-	bodyText: string;
+	bodyText?: string;
 }
 
 export default function YesNoModal({

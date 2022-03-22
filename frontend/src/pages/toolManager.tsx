@@ -37,6 +37,7 @@ export default function ToolManager() {
 		setSelectedRepo(repo_full_name);
 		if (repo_full_name === "") {
 			setSelectedRepoSavedData(null);
+			setOverwriteModalIsOpen(true);
 			return;
 		}
 		setShowLoadingModal(true);
@@ -54,7 +55,7 @@ export default function ToolManager() {
 			.catch((error: any) => {
 				setShowLoadingModal(false);
 				setSelectedRepoSavedData(null);
-				setSelectedRepoCurrentData(null);
+				setOverwriteModalIsOpen(true);
 				console.error(error);
 			});
 	};
@@ -66,8 +67,10 @@ export default function ToolManager() {
 		return callback;
 	};
 
-	/* For LoadRepoDataModal */
+	/* For control flow logic (loading/overwriting/copying) */
 	const [loadRepoDataModalIsOpen, setLoadRepoDataModalIsOpen] =
+		React.useState(false);
+	const [overwriteModalIsOpen, setOverwriteModalIsOpen] =
 		React.useState(false);
 	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
 
@@ -213,6 +216,22 @@ export default function ToolManager() {
 									} has settings already saved. Would you like to load them?`}
 									bodyText={
 										"Selecting YES will undo any currently unsaved changes."
+									}
+								/>
+								<YesNoModal
+									isOpen={overwriteModalIsOpen}
+									handleClose={handleCloseModal(
+										setOverwriteModalIsOpen
+									)}
+									onYes={() => {
+										setSelectedRepoCurrentData(null);
+										setOverwriteModalIsOpen(false);
+									}}
+									onNo={handleCloseModal(
+										setOverwriteModalIsOpen
+									)}
+									title={
+										"Would you like to discard your unsaved settings?"
 									}
 								/>
 							</Grid>
