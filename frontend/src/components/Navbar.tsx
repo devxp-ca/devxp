@@ -54,7 +54,11 @@ export default function Navbar() {
 							</Button>
 							<Button
 								startIcon={<QuestionMarkIcon />}
-								href="https://github.com/devxp-ca/devxp/wiki"
+								onClick={() => {
+									window.open(
+										"https://github.com/devxp-ca/devxp/wiki"
+									);
+								}}
 								color="inherit">
 								Wiki
 							</Button>
