@@ -1,22 +1,25 @@
 import * as React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Box from "@mui/material/Box";
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
 import axios from "axios";
 import {CONFIG} from "../config";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
 import {terraformDataSettings} from "../components/terraformOptions";
-import Grid from "@mui/material/Grid";
-import {Autocomplete, Typography} from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
+import {
+	Box,
+	ThemeProvider,
+	Autocomplete,
+	TextField,
+	Button,
+	Tooltip,
+	Grid
+} from "@mui/material";
 import GenericModal from "../components/modals/GenericModal";
 import {LoadRepoDataModal} from "../components/modals/loadOverwriteModals";
 import {handleCloseModal} from "../components/modals/modalHandlers";
+import LoadingModal from "../components/modals/loadingModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
@@ -32,6 +35,11 @@ export default function ToolManager() {
 
 	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
 		setSelectedRepo(repo_full_name);
+		if (repo_full_name === "") {
+			setSelectedRepoSavedData(null);
+			return;
+		}
+		setShowLoadingModal(true);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
@@ -39,10 +47,12 @@ export default function ToolManager() {
 				}
 			})
 			.then((response: any) => {
+				setShowLoadingModal(false);
 				setLoadRepoDataModalIsOpen(true);
 				setSelectedRepoSavedData(response.data);
 			})
 			.catch((error: any) => {
+				setShowLoadingModal(false);
 				setSelectedRepoSavedData(null);
 				setSelectedRepoCurrentData(null);
 				console.error(error);
@@ -59,6 +69,7 @@ export default function ToolManager() {
 	/* For LoadRepoDataModal */
 	const [loadRepoDataModalIsOpen, setLoadRepoDataModalIsOpen] =
 		React.useState(false);
+	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
 
 	/* For the copy settings modal */
 	const [copyRepo, setCopyRepo] = React.useState<string>("");
@@ -198,6 +209,12 @@ export default function ToolManager() {
 										setLoadRepoDataModalIsOpen
 									)}
 									newRepo={selectedRepo}
+								/>
+							</Grid>
+							<Grid>
+								<LoadingModal
+									isOpen={showLoadingModal}
+									loadingTitle={"Loading..."}
 								/>
 							</Grid>
 							<Grid item>

@@ -116,10 +116,10 @@ export default function TerraformManager(props: {
 	const [hasEdited, setHasEdited] = React.useState(false);
 
 	const handleSubmit = () => {
-		setOpenModal(true);
+		setSubmitModalIsOpen(true);
 		handleAwaitSuccessModal(
-			setModalText,
-			setOpenModal,
+			setSubmitModalInfo,
+			setSubmitModalIsOpen,
 			props.selectedRepo
 		)();
 		axios
@@ -141,21 +141,24 @@ export default function TerraformManager(props: {
 			)
 			.then(response => {
 				console.log(response.data);
-				handleOpenSuccessModal(setModalText, setOpenModal)();
+				handleOpenSuccessModal(
+					setSubmitModalInfo,
+					setSubmitModalIsOpen
+				)();
 				setDirty(false);
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);
 				handleOpenFailModal(
-					setModalText,
-					setOpenModal
+					setSubmitModalInfo,
+					setSubmitModalIsOpen
 				)(error.response?.data?.errors ?? []);
 			});
 	};
 
 	//SUBMIT MODAL THINGS
-	const [openModal, setOpenModal] = React.useState(false);
-	const [modalText, setModalText] = React.useState({
+	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
+	const [submitModalInfo, setSubmitModalInfo] = React.useState({
 		isSubmitModal: true,
 		title: "",
 		body: "",
@@ -275,13 +278,13 @@ export default function TerraformManager(props: {
 				width="90vw"
 			/>
 			<GenericModal
-				isOpen={openModal}
-				handleClose={handleCloseModal(setOpenModal)}
-				title={modalText.title}
-				bodyText={modalText.body}
+				isOpen={submitModalIsOpen}
+				handleClose={handleCloseModal(setSubmitModalIsOpen)}
+				title={submitModalInfo.title}
+				bodyText={submitModalInfo.body}
 				children={
 					<>
-						{!modalText.loading && (
+						{!submitModalInfo.loading && (
 							<div
 								style={{
 									display: "flex",
@@ -293,15 +296,19 @@ export default function TerraformManager(props: {
 									size="large"
 									sx={{marginTop: 2}}
 									onClick={
-										modalText.isSubmitModal
+										submitModalInfo.isSubmitModal
 											? handleSubmit
-											: handleCloseModal(setOpenModal)
+											: handleCloseModal(
+													setSubmitModalIsOpen
+											  )
 									}>
-									{modalText.isSubmitModal ? "Confirm" : "Ok"}
+									{submitModalInfo.isSubmitModal
+										? "Confirm"
+										: "Ok"}
 								</Button>
 							</div>
 						)}
-						{!!modalText.loading && (
+						{!!submitModalInfo.loading && (
 							<div>
 								<LinearProgress></LinearProgress>
 							</div>
@@ -515,8 +522,8 @@ export default function TerraformManager(props: {
 					startIcon={<CheckIcon />}
 					aria-label="submit to repo"
 					onClick={handleOpenSubmitModalConfirmation(
-						setModalText,
-						setOpenModal,
+						setSubmitModalInfo,
+						setSubmitModalIsOpen,
 						props.selectedRepo
 					)}
 					sx={{

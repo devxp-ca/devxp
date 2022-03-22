@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Button} from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import GenericModal from "./GenericModal";
 
 interface modalProps {
@@ -24,25 +24,29 @@ export function LoadRepoDataModal({
 			title={`${
 				newRepo ?? "This repo"
 			} has settings already saved. Would you like to load them?`}
-			bodyText={"Selecting YES will undo any currently unsaved changes."}>
-			<Button
-				onClick={onNo}
-				sx={{
-					padding: 2,
-					fontSize: 18,
-					pointerEvents: "initial"
-				}}>
-				NO
-			</Button>
-			<Button
-				onClick={onYes}
-				sx={{
-					padding: 2,
-					fontSize: 18,
-					pointerEvents: "initial"
-				}}>
-				YES
-			</Button>
-		</GenericModal>
+			bodyText={"Selecting YES will undo any currently unsaved changes."}
+			children={
+				<Grid style={{display: "flex", justifyContent: "center"}}>
+					<Button
+						onClick={onNo}
+						sx={{
+							padding: 2,
+							fontSize: 18,
+							pointerEvents: "initial"
+						}}>
+						NO
+					</Button>
+					<Button
+						onClick={onYes}
+						sx={{
+							padding: 2,
+							fontSize: 18,
+							pointerEvents: "initial"
+						}}>
+						YES
+					</Button>
+				</Grid>
+			}
+		/>
 	);
 }
