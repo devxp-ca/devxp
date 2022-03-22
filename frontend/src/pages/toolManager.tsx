@@ -225,7 +225,7 @@ export default function ToolManager() {
 							<Grid item>
 								<Tooltip title="Click here to copy these settings to another repo">
 									<Button
-										disabled={!selectedRepo}
+										disabled={!selectedRepoSavedData}
 										variant="contained"
 										onClick={() => {
 											setCopyRepoOpen(true);
