@@ -33,7 +33,7 @@ export class lambdaFunction
 			securityGroup: string[];
 		}
 	) {
-		super(id, "lambdaFunction", autoIam, functionName);
+		super(id, "lambdaFunc", autoIam, functionName);
 		this.functionName = functionName;
 		this.filename = filename;
 		this.runtime = runtime;
@@ -42,9 +42,17 @@ export class lambdaFunction
 		this.vpcInfo = vpcInfo;
 	}
 
-	zipFilename() {
+	justFilename() {
 		const splitFn = this.filename.split("/");
-		return `outputs/${splitFn[splitFn.length - 1]}.zip`;
+		return splitFn[splitFn.length - 1];
+	}
+	justFilenameNoExt() {
+		const filename = this.justFilename().split(".");
+		return filename[filename.length - 2];
+	}
+
+	zipFilename() {
+		return `outputs/${this.justFilename()}.zip`;
 	}
 
 	//Returns an array of resource blocks
@@ -60,7 +68,7 @@ export class lambdaFunction
 			filename: this.zipFilename(),
 			runtime: this.runtime,
 			source_code_hash: `\${data.archive_file.${this.id}-archive.output_base64sha256}`,
-			handler: this.handler
+			handler: `${this.justFilenameNoExt()}.${this.handler}`
 		};
 		if (this.vpcInfo) {
 			inner.vpc_config = {
@@ -68,7 +76,7 @@ export class lambdaFunction
 					sub => `\${aws_subnet.${sub}.id}`
 				),
 				security_group_ids: this.vpcInfo.securityGroup.map(
-					sec => `\${aws_default_security_group.${sec}.id}`
+					sec => `\${aws_security_group.${sec}.id}`
 				)
 			};
 		}

@@ -31,7 +31,7 @@ export default class Lambda extends Resource<IProps, IState> {
 		randomPrefix: "Lambda-",
 
 		//The "type" to send to the backend
-		resourceType: "lambdaFunction"
+		resourceType: "lambdaFunc"
 	};
 
 	constructor(props: IProps) {
@@ -117,7 +117,7 @@ export default class Lambda extends Resource<IProps, IState> {
 						}
 					/>
 					<LabelledTextInput
-						pattern="..*"
+						pattern=".*\.(js|py|java|go|cs|rb)$"
 						text="Filename"
 						description="Absolute path to function source within repo"
 						initial={this.state.filename}

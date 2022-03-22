@@ -55,7 +55,7 @@ export default (
 			) : (
 				<DynamoDb {...resource} />
 			);
-		case "lambdaFunction":
+		case "lambdaFunc":
 			return noRender ? (
 				new Lambda({
 					...Resource.defaultProps,

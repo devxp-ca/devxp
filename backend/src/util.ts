@@ -77,7 +77,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Remove incorrect block as attribute styles
 	hcl = hcl.replace(
-		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action) = {/g,
+		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config) = {/g,
 		(_match, $1) => `${$1} {`
 	);
 

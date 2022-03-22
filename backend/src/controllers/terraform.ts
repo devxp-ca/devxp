@@ -46,7 +46,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			| "gce"
 			| "s3"
 			| "glacierVault"
-			| "lambdaFunction"
+			| "lambdaFunc"
 			| "dynamoDb"
 			| "googleStorageBucket";
 	})[];
@@ -75,7 +75,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				dynamoDb.attributes,
 				dynamoDb.autoIam
 			);
-		} else if (resource.type === "lambdaFunction") {
+		} else if (resource.type === "lambdaFunc") {
 			const lambdaFunc: lambdaFunction = resource as lambdaFunction;
 			return new lambdaFunction(
 				lambdaFunc.id,
@@ -100,7 +100,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 	}
 
 	/* eslint-disable prefer-const */
-	let [google, lambda, networkedResources] = splitForPrefab(resources);
+	let [google, networkedResources] = splitForPrefab(resources);
 	/* eslint-enable prefer-const */
 
 	if (autoLoadBalance) {
@@ -140,7 +140,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		provider === "aws"
 			? new NamedAwsBackend()
 			: new NamedGoogleBackend(project),
-		[...google, ...lambda, ...network]
+		[...google, ...network]
 	);
 
 	getHead(token, repo, "main")

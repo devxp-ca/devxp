@@ -18,7 +18,7 @@ export class Eip extends Resource<Eip> implements Eip {
 			vpc: this.vpc
 		};
 		if (this.instance !== "") {
-			json.instace = `\${aws_instance.${this.instance}.id}`;
+			json.instance = `\${aws_instance.${this.instance}.id}`;
 		}
 
 		return jsonRoot("aws_eip", this.id, json);
