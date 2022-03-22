@@ -7,24 +7,24 @@ interface modalProps {
 	handleClose: () => void;
 	onYes: () => void;
 	onNo: () => void;
-	newRepo: string; // The repo that is in the process of being selected
+	title: string;
+	bodyText: string;
 }
 
-export function LoadRepoDataModal({
+export default function YesNoModal({
 	isOpen,
 	handleClose,
 	onYes,
 	onNo,
-	newRepo
+	title,
+	bodyText
 }: modalProps) {
 	return (
 		<GenericModal
 			isOpen={isOpen}
 			handleClose={handleClose}
-			title={`${
-				newRepo ?? "This repo"
-			} has settings already saved. Would you like to load them?`}
-			bodyText={"Selecting YES will undo any currently unsaved changes."}
+			title={title}
+			bodyText={bodyText}
 			children={
 				<Grid style={{display: "flex", justifyContent: "center"}}>
 					<Button

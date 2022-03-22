@@ -17,7 +17,7 @@ import {
 	Grid
 } from "@mui/material";
 import GenericModal from "../components/modals/GenericModal";
-import {LoadRepoDataModal} from "../components/modals/loadOverwriteModals";
+import YesNoModal from "../components/modals/yesNoModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
 import LoadingModal from "../components/modals/loadingModal";
 
@@ -194,7 +194,7 @@ export default function ToolManager() {
 										);
 									}}
 								/>
-								<LoadRepoDataModal
+								<YesNoModal
 									isOpen={loadRepoDataModalIsOpen}
 									handleClose={handleCloseModal(
 										setLoadRepoDataModalIsOpen
@@ -208,7 +208,12 @@ export default function ToolManager() {
 									onNo={handleCloseModal(
 										setLoadRepoDataModalIsOpen
 									)}
-									newRepo={selectedRepo}
+									title={`${
+										selectedRepo ?? "This repo"
+									} has settings already saved. Would you like to load them?`}
+									bodyText={
+										"Selecting YES will undo any currently unsaved changes."
+									}
 								/>
 							</Grid>
 							<Grid>
