@@ -2,6 +2,7 @@ import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 import {IamRole} from "./iamRole";
 import {runtime, TerraformJson} from "../types/terraform";
+import {AwsIamRolePolicyAttachment} from "./awsIamRolePolicyAttachment";
 
 export interface lambdaFunction {
 	functionName: string;
@@ -58,13 +59,13 @@ export class lambdaFunction
 	//Returns an array of resource blocks
 	toJSON() {
 		const iamRole = new IamRole(
-			"iam_for_lambda_" + this.functionName,
+			`${this.id}-lambda-iam-role`,
 			"lambda.amazonaws.com"
 		);
 
 		const inner: any = {
 			function_name: this.functionName,
-			role: `\${aws_iam_role.iam_for_lambda_${this.functionName}.arn}`,
+			role: `\${aws_iam_role.${this.id}-lambda-iam-role.arn}`,
 			filename: this.zipFilename(),
 			runtime: this.runtime,
 			source_code_hash: `\${data.archive_file.${this.id}-archive.output_base64sha256}`,
@@ -85,6 +86,22 @@ export class lambdaFunction
 			iamRole.toJSON(),
 			jsonRoot("aws_lambda_function", this.id, inner)
 		];
+
+		if (this.vpcInfo) {
+			json = [
+				...json,
+				jsonRoot("aws_iam_policy", `${this.id}-vpc-policy`, {
+					name: `${this.id}_vpc_policy`,
+					path: "/",
+					policy: `\${data.aws_iam_policy_document.${this.id}-vpc-policy-document.json}`
+				}),
+				...new AwsIamRolePolicyAttachment(
+					`${this.id}-vpc-policy-attachment`,
+					`${this.id}-vpc-policy`,
+					`${this.id}-lambda-iam-role`
+				).toJSON()
+			];
+		}
 
 		if (this.keepWarm) {
 			json = [
@@ -133,6 +150,34 @@ export class lambdaFunction
 				output_path: this.zipFilename()
 			})
 		];
+		if (this.vpcInfo) {
+			json.data = [
+				...json.data,
+				jsonRoot(
+					"aws_iam_policy_document",
+					`${this.id}-vpc-policy-document`,
+					{
+						statement: [
+							{
+								effect: "Allow",
+								actions: [
+									"ec2:DescribeSecurityGroups",
+									"ec2:DescribeSubnets",
+									"ec2:DescribeVpcs",
+									"logs:CreateLogGroup",
+									"logs:CreateLogStream",
+									"logs:PutLogEvents",
+									"ec2:CreateNetworkInterface",
+									"ec2:DescribeNetworkInterfaces",
+									"ec2:DeleteNetworkInterface"
+								],
+								resources: ["*"]
+							}
+						]
+					}
+				)
+			];
+		}
 		return json;
 	}
 }
