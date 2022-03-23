@@ -14,9 +14,13 @@ export class Eip extends Resource<Eip> implements Eip {
 
 	//Returns a resource block
 	toJSON() {
-		return jsonRoot("aws_eip", this.id, {
-			instance: `\${aws_instance.${this.instance}.id}`,
+		const json: any = {
 			vpc: this.vpc
-		});
+		};
+		if (this.instance !== "") {
+			json.instance = `\${aws_instance.${this.instance}.id}`;
+		}
+
+		return jsonRoot("aws_eip", this.id, json);
 	}
 }

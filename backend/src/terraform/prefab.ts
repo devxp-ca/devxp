@@ -20,28 +20,26 @@ export type PrefabSupports =
 	| S3
 	| GlacierVault
 	| DynamoDb
-	| AwsLoadBalancer;
+	| AwsLoadBalancer
+	| lambdaFunction;
 
 export type googleResource = Gce | GoogleStorageBucket;
 
 export const splitForPrefab = (
 	resources: TerraformResource[]
-): [googleResource[], lambdaFunction[], PrefabSupports[]] => {
+): [googleResource[], PrefabSupports[]] => {
 	let google: any[] = [];
-	let lambda: lambdaFunction[] = [];
 	let prefabSupports: PrefabSupports[] = [];
 
 	resources.forEach(r => {
 		if (r.type.toLowerCase() in ["gce", "googlestoragebucket"]) {
 			google = [...google, r];
-		} else if (r.type.toLowerCase() === "lambdafunction") {
-			lambda = [...lambda, r as lambdaFunction];
 		} else {
 			prefabSupports = [...prefabSupports, r as PrefabSupports];
 		}
 	});
 
-	return [google as googleResource[], lambda, prefabSupports];
+	return [google as googleResource[], prefabSupports];
 };
 
 export const prefabNetworkFromArr = (
@@ -72,6 +70,9 @@ export const prefabNetworkFromArr = (
 			glacier: resources.filter(
 				r => r.type.toLowerCase() === "glaciervault"
 			) as GlacierVault[],
+			lambda: resources.filter(
+				r => r.type.toLowerCase() === "lambdafunc"
+			) as lambdaFunction[],
 			load_balancer: resources.filter(
 				r => r.type.toLowerCase() === "awsloadbalancer"
 			) as AwsLoadBalancer[]
@@ -91,6 +92,7 @@ export const prefabNetwork = (
 		s3?: S3[] | S3;
 		glacier?: GlacierVault[] | GlacierVault;
 		dynamo?: DynamoDb[] | DynamoDb;
+		lambda?: lambdaFunction | lambdaFunction[];
 		load_balancer?: AwsLoadBalancer[] | AwsLoadBalancer;
 	},
 	rules: {
@@ -133,6 +135,23 @@ export const prefabNetwork = (
 	const dbs = arr(resources.dynamo ?? []).map(
 		(db: DynamoDb) => new DynamoDb(db.id, db.attributes, true, db.name)
 	);
+	const lambdas = arr(resources.lambda ?? []).map(
+		(func: lambdaFunction) =>
+			new lambdaFunction(
+				func.id,
+				func.functionName,
+				func.filename,
+				func.runtime,
+				func.handler,
+				func.keepWarm,
+				true,
+				{
+					subnet: [`${vpc}_subnet_public0`],
+					securityGroup: [securityGroup]
+				}
+			)
+	);
+
 	const lbs = arr(resources.load_balancer ?? []).map(
 		(lb: AwsLoadBalancer) =>
 			new AwsLoadBalancer(
@@ -261,6 +280,7 @@ export const prefabNetwork = (
 		...buckets,
 		...vaults,
 		...dbs,
+		...lambdas,
 		...instanceProfiles,
 		...iamRoles,
 		...attachments,

@@ -16,7 +16,8 @@
         "@typescript-eslint/no-empty-interface": "off",
         "no-async-promise-executor": "off",
         "no-constant-condition": "off",
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-useless-escape": "off"
     },
     "globals": {
         "_": "readonly"

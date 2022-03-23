@@ -55,7 +55,6 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
 	return (
 		<>
 			<Grid
-				id="test"
 				item={(props.direction ?? "column") === "column"}
 				sx={
 					props.direction === "row"

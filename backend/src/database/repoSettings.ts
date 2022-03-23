@@ -1,3 +1,4 @@
+import {machineType, runtime} from "../types/terraform";
 import {mongoose} from "./connection";
 const {Schema} = mongoose;
 
@@ -8,6 +9,13 @@ export interface terraformResource {
 	ami: string;
 	instance_type: string;
 	autoIam: boolean;
+	functionName: string;
+	filename: string;
+	runtime: runtime;
+	handler: string;
+	keepWarm: boolean;
+	machine_type: machineType;
+	disk_image: string;
 	attributes: {
 		name: string;
 		type: string;
@@ -40,7 +48,13 @@ export const terraformResourceSchema = new Schema({
 		default: false,
 		type: Boolean
 	},
-	attributes: [attributeSchema]
+	functionName: String,
+	filename: String,
+	runtime: String,
+	handler: String,
+	keepWarm: Boolean,
+	machine_type: String,
+	disk_image: String
 });
 
 export const terraformSettingsSchema = new Schema({
