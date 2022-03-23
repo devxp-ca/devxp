@@ -20,6 +20,7 @@ import GenericModal from "../components/modals/GenericModal";
 import OkModal from "../components/modals/OkModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
 import LoadingModal from "../components/modals/loadingModal";
+import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
@@ -27,9 +28,6 @@ export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	// The repo we are currently configuring
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	// We give a warning when a user switches repos with unsaved settings
-	const [giveOverwriteWarning, setGiveOverwriteWarning] =
-		React.useState(true);
 	const [selectedRepoSavedData, setSelectedRepoSavedData] =
 		React.useState<terraformDataSettings | null>(null);
 
@@ -68,70 +66,18 @@ export default function ToolManager() {
 	/* For control flow logic (loading/overwriting/copying) */
 	const [overwriteModalIsOpen, setOverwriteModalIsOpen] =
 		React.useState(false);
+	// We give a warning when a user switches repos with unsaved settings
+	const [giveOverwriteWarning, setGiveOverwriteWarning] =
+		React.useState(true);
 	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
 	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
 		React.useState(false);
+	const [headsUpModalIsOpen, setHeadsUpModalIsOpen] = React.useState(false);
+	// We give a warning when a user switches repos with unsaved settings
+	const [giveCopyWarning, setGiveCopyWarning] = React.useState(true);
 
 	/* For the copy settings modal */
-	const [copyRepo, setCopyRepo] = React.useState<string>("");
-	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
-
-	const setRepoForCopy = () => {
-		axios
-			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
-				headers: {
-					repo: `${selectedRepo}`
-				}
-			})
-			.then((response: any) => {
-				return axios.post(
-					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-					{
-						repo: `${copyRepo}`,
-						tool: "terraform",
-						settings: response.data.settings
-					}
-				);
-			})
-			.then((response: any) => {
-				setCopyRepoOpen(false);
-			})
-			.catch((error: any) => {
-				console.error(error);
-			});
-	};
-
-	const copyModalChildren = () => {
-		return (
-			<Grid
-				container
-				direction="column"
-				style={{display: "flex", justifyContent: "center"}}>
-				<Autocomplete
-					sx={{margin: 3, width: "300px"}}
-					id="repo-select"
-					options={repoList}
-					getOptionLabel={(option: any) => option?.full_name ?? ""}
-					renderInput={(params: any) => (
-						<TextField
-							{...params}
-							label="Select A Repo"
-							variant="outlined"
-						/>
-					)}
-					onChange={(event: any, value: any) => {
-						setCopyRepo(value?.full_name ?? "");
-					}}
-					isOptionEqualToValue={(option: any, value: any) => {
-						return option?.full_name === value?.full_name;
-					}}
-				/>
-				<Button variant="contained" onClick={setRepoForCopy}>
-					Copy Settings
-				</Button>
-			</Grid>
-		);
-	};
+	const [copyRepoModalIsOpen, setCopyRepoModalIsOpen] = React.useState(false);
 
 	//on mount, get the list of repos
 	React.useEffect(() => {
@@ -230,19 +176,37 @@ export default function ToolManager() {
 										disabled={!selectedRepoSavedData}
 										variant="contained"
 										onClick={() => {
-											setCopyRepoOpen(true);
+											if (
+												settingsHaveBeenEdited &&
+												giveCopyWarning
+											) {
+												setHeadsUpModalIsOpen(true);
+												setGiveCopyWarning(false);
+											} else {
+												setCopyRepoModalIsOpen(true);
+											}
 										}}>
 										Copy to another repo
 									</Button>
 								</Tooltip>
-								<GenericModal
-									isOpen={copyRepoOpen}
+								<CopyRepoSettingsModal
+									isOpen={copyRepoModalIsOpen}
 									handleClose={() => {
-										setCopyRepoOpen(false);
+										setCopyRepoModalIsOpen(false);
 									}}
-									title="Copy Settings"
-									bodyText="Select the repo you want to copy the settings to"
-									children={copyModalChildren()}
+									repoList={repoList}
+									selectedRepo={selectedRepo}
+									setShowLoadingModal={setShowLoadingModal}
+								/>
+								<OkModal
+									isOpen={headsUpModalIsOpen}
+									handleClose={handleCloseModal(
+										setHeadsUpModalIsOpen
+									)}
+									title={"Heads Up!"}
+									bodyText={
+										"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
+									}
 								/>
 							</Grid>
 						</Grid>
