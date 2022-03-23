@@ -234,6 +234,7 @@ export default function ToolManager() {
 								setSettingsHaveBeenEdited={
 									setSettingsHaveBeenEdited
 								}
+								settingsHaveBeenEdited={settingsHaveBeenEdited}
 							/>
 						)}
 					</Grid>

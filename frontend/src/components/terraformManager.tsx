@@ -70,6 +70,7 @@ export default function TerraformManager(props: {
 	repoData: terraformDataSettings;
 	backButton: () => void;
 	setSettingsHaveBeenEdited: (hasEdited: boolean) => void;
+	settingsHaveBeenEdited: boolean;
 }) {
 	const currentTheme = lightTheme;
 	const defaultCardSize = 250;
@@ -140,6 +141,7 @@ export default function TerraformManager(props: {
 					setSubmitModalIsOpen
 				)();
 				setDirty(false);
+				props.setSettingsHaveBeenEdited(false);
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);
@@ -517,6 +519,7 @@ export default function TerraformManager(props: {
 				<Button
 					disabled={
 						//openCards > 0 ||
+						!props.settingsHaveBeenEdited ||
 						(selectedProvider?.length ?? 0) < 1 ||
 						(props.selectedRepo?.length ?? 0) < 1
 					}

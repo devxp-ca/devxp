@@ -47,7 +47,7 @@ export const handleOpenSubmitModalConfirmation =
 		setModalInfo({
 			isSubmitModal: true,
 			title: "Are you sure you want to submit?",
-			body: `Once confirmed, we will push a pull request to a temporary branch on ${repoName} for review`
+			body: `Once confirmed, DevXP will submit changes to a temporary branch of ${repoName} for review.`
 		});
 		setOpenModal(true);
 	};

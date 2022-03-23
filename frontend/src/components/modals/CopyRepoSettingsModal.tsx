@@ -54,7 +54,7 @@ export default function CopyRepoSettingsModal({
 			isOpen={isOpen}
 			handleClose={handleClose}
 			title="Copy Settings"
-			bodyText="Select the repo you want to copy the settings to"
+			bodyText="Select the repo you would like to copy settings to. Note: the settings of the destination repo will be overwritten."
 			children={
 				<Grid
 					container
