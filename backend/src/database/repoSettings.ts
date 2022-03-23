@@ -31,6 +31,7 @@ export interface terraformSettings {
 	allowEgressWeb: boolean;
 	allowIngressWeb: boolean;
 	autoLoadBalance: boolean;
+	project: string;
 }
 
 export const attributeSchema = new Schema({
@@ -66,6 +67,10 @@ export const terraformSettingsSchema = new Schema({
 	allowSsh: {
 		default: false,
 		type: Boolean
+	},
+	project: {
+		default: "",
+		type: String
 	},
 	allowEgressWeb: {
 		default: false,

@@ -26,6 +26,7 @@ export interface terraformDataSettings {
 		allowEgressWeb?: boolean;
 		allowIngressWeb?: boolean;
 		autoLoadBalance?: boolean;
+		project?: string;
 		resources: resourceSettings[];
 	};
 }
