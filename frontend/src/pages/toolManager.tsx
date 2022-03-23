@@ -17,62 +17,43 @@ import {
 	Grid
 } from "@mui/material";
 import GenericModal from "../components/modals/GenericModal";
-import YesNoModal from "../components/modals/yesNoModal";
+import OkModal from "../components/modals/OkModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
 import LoadingModal from "../components/modals/loadingModal";
+import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
 export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
+	// The repo we are currently configuring
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	const [selectedRepoCurrentData, setSelectedRepoCurrentData] =
-		React.useState<terraformDataSettings | null>(null);
 	const [selectedRepoSavedData, setSelectedRepoSavedData] =
 		React.useState<terraformDataSettings | null>(null);
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
 
-	const setSelectedRepoFromAutocomplete = (repo_full_name: string) => {
-		setSelectedRepo(repo_full_name);
-		if (repo_full_name === "") {
-			setSelectedRepoSavedData(null);
-			if (settingsHaveBeenEdited) {
-				setOverwriteModalIsOpen(true);
-			} else {
-				setSelectedRepoCurrentData(null);
-				setSettingsHaveBeenEdited(false);
-			}
-			return;
-		}
+	const updateSelectedRepo = (repoName: string) => {
 		setShowLoadingModal(true);
 		axios
 			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
 				headers: {
-					repo: repo_full_name
+					repo: repoName
 				}
 			})
 			.then((response: any) => {
 				setShowLoadingModal(false);
 				setSelectedRepoSavedData(response.data);
-				if (settingsHaveBeenEdited) {
-					setLoadRepoDataModalIsOpen(true);
-				} else {
-					setSelectedRepoCurrentData(response.data);
-					setSettingsHaveBeenEdited(false);
-				}
+				setSettingsHaveBeenEdited(false);
 			})
 			.catch((error: any) => {
 				setShowLoadingModal(false);
 				setSelectedRepoSavedData(null);
-				if (settingsHaveBeenEdited) {
-					setOverwriteModalIsOpen(true);
-				} else {
-					setSelectedRepoCurrentData(null);
-					setSettingsHaveBeenEdited(false);
-				}
+				setSettingsHaveBeenEdited(false);
 				console.error(error);
 			});
+		setGiveOverwriteWarning(true);
+		setSelectedRepo(repoName);
 	};
 
 	const setSelectedToolCardCallback = (tool_name: string) => {
@@ -83,74 +64,20 @@ export default function ToolManager() {
 	};
 
 	/* For control flow logic (loading/overwriting/copying) */
-	const [loadRepoDataModalIsOpen, setLoadRepoDataModalIsOpen] =
-		React.useState(false);
 	const [overwriteModalIsOpen, setOverwriteModalIsOpen] =
 		React.useState(false);
+	// We give a warning when a user switches repos with unsaved settings
+	const [giveOverwriteWarning, setGiveOverwriteWarning] =
+		React.useState(true);
 	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
 	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
 		React.useState(false);
+	const [headsUpModalIsOpen, setHeadsUpModalIsOpen] = React.useState(false);
+	// We give a warning when a user switches repos with unsaved settings
+	const [giveCopyWarning, setGiveCopyWarning] = React.useState(true);
 
 	/* For the copy settings modal */
-	const [copyRepo, setCopyRepo] = React.useState<string>("");
-	const [copyRepoOpen, setCopyRepoOpen] = React.useState(false);
-
-	const setRepoForCopy = () => {
-		axios
-			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
-				headers: {
-					repo: `${selectedRepo}`
-				}
-			})
-			.then((response: any) => {
-				return axios.post(
-					`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-					{
-						repo: `${copyRepo}`,
-						tool: "terraform",
-						settings: response.data.settings
-					}
-				);
-			})
-			.then((response: any) => {
-				setCopyRepoOpen(false);
-			})
-			.catch((error: any) => {
-				console.error(error);
-			});
-	};
-
-	const copyModalChildren = () => {
-		return (
-			<Grid
-				container
-				direction="column"
-				style={{display: "flex", justifyContent: "center"}}>
-				<Autocomplete
-					sx={{margin: 3, width: "300px"}}
-					id="repo-select"
-					options={repoList}
-					getOptionLabel={(option: any) => option?.full_name ?? ""}
-					renderInput={(params: any) => (
-						<TextField
-							{...params}
-							label="Select A Repo"
-							variant="outlined"
-						/>
-					)}
-					onChange={(event: any, value: any) => {
-						setCopyRepo(value?.full_name ?? "");
-					}}
-					isOptionEqualToValue={(option: any, value: any) => {
-						return option?.full_name === value?.full_name;
-					}}
-				/>
-				<Button variant="contained" onClick={setRepoForCopy}>
-					Copy Settings
-				</Button>
-			</Grid>
-		);
-	};
+	const [copyRepoModalIsOpen, setCopyRepoModalIsOpen] = React.useState(false);
 
 	//on mount, get the list of repos
 	React.useEffect(() => {
@@ -188,6 +115,7 @@ export default function ToolManager() {
 								<Autocomplete
 									sx={{ml: 1, width: "300px"}}
 									id="repo-select"
+									disableClearable={true}
 									options={repoList}
 									getOptionLabel={(option: any) =>
 										option?.full_name ?? ""
@@ -199,8 +127,17 @@ export default function ToolManager() {
 											variant="outlined"
 										/>
 									)}
+									onOpen={() => {
+										if (
+											settingsHaveBeenEdited &&
+											giveOverwriteWarning
+										) {
+											setGiveOverwriteWarning(false);
+											setOverwriteModalIsOpen(true);
+										}
+									}}
 									onChange={(event: any, value: any) => {
-										setSelectedRepoFromAutocomplete(
+										updateSelectedRepo(
 											value?.full_name ?? ""
 										);
 									}}
@@ -214,43 +151,16 @@ export default function ToolManager() {
 										);
 									}}
 								/>
-								<YesNoModal
-									isOpen={loadRepoDataModalIsOpen}
-									handleClose={handleCloseModal(
-										setLoadRepoDataModalIsOpen
-									)}
-									onYes={() => {
-										setSelectedRepoCurrentData(
-											selectedRepoSavedData
-										);
-										setSettingsHaveBeenEdited(false);
-										setLoadRepoDataModalIsOpen(false);
-									}}
-									onNo={handleCloseModal(
-										setLoadRepoDataModalIsOpen
-									)}
-									title={`${
-										selectedRepo ?? "This repo"
-									} has settings already saved. Would you like to load them?`}
-									bodyText={
-										"Selecting YES will undo any currently unsaved changes."
-									}
-								/>
-								<YesNoModal
+								<OkModal
 									isOpen={overwriteModalIsOpen}
 									handleClose={handleCloseModal(
 										setOverwriteModalIsOpen
 									)}
-									onYes={() => {
-										setSelectedRepoCurrentData(null);
-										setSettingsHaveBeenEdited(false);
-										setOverwriteModalIsOpen(false);
-									}}
-									onNo={handleCloseModal(
-										setOverwriteModalIsOpen
-									)}
 									title={
-										"Would you like to discard your unsaved settings?"
+										"Are you sure you want to change repos?"
+									}
+									bodyText={
+										"This action will discard unsaved changes."
 									}
 								/>
 							</Grid>
@@ -266,19 +176,37 @@ export default function ToolManager() {
 										disabled={!selectedRepoSavedData}
 										variant="contained"
 										onClick={() => {
-											setCopyRepoOpen(true);
+											if (
+												settingsHaveBeenEdited &&
+												giveCopyWarning
+											) {
+												setHeadsUpModalIsOpen(true);
+												setGiveCopyWarning(false);
+											} else {
+												setCopyRepoModalIsOpen(true);
+											}
 										}}>
 										Copy to another repo
 									</Button>
 								</Tooltip>
-								<GenericModal
-									isOpen={copyRepoOpen}
+								<CopyRepoSettingsModal
+									isOpen={copyRepoModalIsOpen}
 									handleClose={() => {
-										setCopyRepoOpen(false);
+										setCopyRepoModalIsOpen(false);
 									}}
-									title="Copy Settings"
-									bodyText="Select the repo you want to copy the settings to"
-									children={copyModalChildren()}
+									repoList={repoList}
+									selectedRepo={selectedRepo}
+									setShowLoadingModal={setShowLoadingModal}
+								/>
+								<OkModal
+									isOpen={headsUpModalIsOpen}
+									handleClose={handleCloseModal(
+										setHeadsUpModalIsOpen
+									)}
+									title={"Heads Up!"}
+									bodyText={
+										"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
+									}
 								/>
 							</Grid>
 						</Grid>
@@ -302,10 +230,11 @@ export default function ToolManager() {
 							<TerraformManager
 								selectedRepo={selectedRepo}
 								backButton={setSelectedToolCardCallback("none")}
-								repoData={selectedRepoCurrentData}
+								repoData={selectedRepoSavedData}
 								setSettingsHaveBeenEdited={
 									setSettingsHaveBeenEdited
 								}
+								settingsHaveBeenEdited={settingsHaveBeenEdited}
 							/>
 						)}
 					</Grid>
