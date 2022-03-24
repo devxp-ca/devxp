@@ -27,7 +27,7 @@ export class GoogleFunction
 		location: gcpRegion = "us-west1",
 		name?: string
 	) {
-		super(id, "Gce", false, name);
+		super(id, "googleFunc", false, name);
 		this.project = project;
 		this.location = location;
 		this.runtime = runtime;

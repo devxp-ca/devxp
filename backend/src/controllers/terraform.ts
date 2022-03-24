@@ -26,6 +26,7 @@ import {TerraformResource} from "../types/terraform";
 import {jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
+import {GoogleFunction} from "../terraform/googleFunction";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
@@ -48,7 +49,8 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			| "glacierVault"
 			| "lambdaFunc"
 			| "dynamoDb"
-			| "googleStorageBucket";
+			| "googleStorageBucket"
+			| "googleFunc";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -89,6 +91,18 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 		} else if (resource.type === "googleStorageBucket") {
 			const bucket: GoogleStorageBucket = resource as GoogleStorageBucket;
 			return new GoogleStorageBucket(project, bucket.id, bucket.location);
+		} else if (resource.type === "googleFunc") {
+			const googleFunc: GoogleFunction = resource as GoogleFunction;
+			return new GoogleFunction(
+				project,
+				googleFunc.id,
+				googleFunc.runtime,
+				googleFunc.entry_point,
+				googleFunc.source_dir,
+				googleFunc.trigger_http,
+				googleFunc.memory,
+				googleFunc.location
+			);
 		} else {
 			flag = true;
 		}
