@@ -64,6 +64,15 @@ export const RESOURCE_LIST = {
 				"Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.",
 			link: "https://cloud.google.com/storage/docs",
 			icon: "@mui/icons-material/Storage"
+		},
+		{
+			name: "Serverless",
+			short_desc: "Serverless Google Functions",
+			key: "googleFunc",
+			description:
+				"Google Functions is a compute service that lets you run code without provisioning or managing servers. Functions run your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging. With Functions, you can run code for virtually any type of application or backend service. All you need to do is supply your code in one of the languages that Functions supports.",
+			link: "https://cloud.google.com/functions",
+			icon: "@mui/icons-material/Functions"
 		}
 	],
 	azure: [{}]

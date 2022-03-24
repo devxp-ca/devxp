@@ -7,6 +7,7 @@ import Gce from "./Gce";
 import StorageBucket from "./StorageBucket";
 import Resource from "./Resource";
 import Lambda from "./Lambda";
+import GoogleFunction from "./GoogleFunction";
 
 export default (
 	resource: {
@@ -84,6 +85,16 @@ export default (
 				})
 			) : (
 				<StorageBucket {...resource} />
+			);
+		case "googleFunc":
+			return noRender ? (
+				new GoogleFunction({
+					...Resource.defaultProps,
+					...GoogleFunction.defaultProps,
+					...resource
+				})
+			) : (
+				<GoogleFunction {...resource} />
 			);
 	}
 };

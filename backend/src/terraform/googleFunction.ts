@@ -68,7 +68,7 @@ export class GoogleFunction
 				this.project,
 				`${this.id}-bucket`,
 				this.location,
-				`${this.id}-devxp-storage-bucket-for-func`
+				`devxp-storage-bucket-for-func-${this.id.toLowerCase()}`
 			).toJSON(),
 
 			jsonRoot("google_cloudfunctions_function_iam_member", "invoker", {

@@ -133,12 +133,12 @@ export default function TerraformManager(props: {
 						allowIngressWeb: selectedAllowIngressWebOption,
 						allowEgressWeb: selectedAllowEgressWebOption,
 						autoLoadBalance: selectedAutoLoadBalanceOption,
-						resources: trackedResources
+						resources: trackedResources,
+						project
 					}
 				})
 			)
 			.then(response => {
-				console.log(response.data);
 				handleOpenSuccessModal(
 					setSubmitModalInfo,
 					setSubmitModalIsOpen

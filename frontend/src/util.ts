@@ -1,6 +1,6 @@
 import {useRef, useEffect} from "react";
 
-export const VALID_CHARS = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`;
+export const VALID_CHARS = `abcdefghijklmnopqrstuvwxyz`;
 
 export interface randomIdSettings {
 	randomPrefix?: string;

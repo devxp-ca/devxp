@@ -51,6 +51,8 @@ interface IProps {
 
 	namePattern?: string;
 
+	disableIam?: boolean;
+
 	autoIam?: boolean;
 	id?: string;
 }
@@ -137,7 +139,8 @@ export default abstract class Resource<
 		resource: "Resource",
 		isModifying: false,
 		data: [] as string[],
-		namePattern: "^[a-zA-Z-]+$"
+		namePattern: "^[a-zA-Z-]+$",
+		disableIam: false
 	};
 
 	toCard(
@@ -210,6 +213,7 @@ export default abstract class Resource<
 				}}>
 				<Grid item>
 					<LabelledCheckboxInput
+						disabled={this.props.disableIam}
 						initial={this.props?.autoIam ?? true}
 						text="Enable IAM Users"
 						description="Determine if IAM Users will be setup for this resource"

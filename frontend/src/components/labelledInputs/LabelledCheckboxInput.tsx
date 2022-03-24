@@ -9,6 +9,7 @@ export default function LabelledCheckboxInput(props: {
 	description: string | React.ReactElement;
 	onChange?: (value: boolean) => void;
 	initial?: boolean;
+	disabled?: boolean;
 }) {
 	const [value, setValue] = React.useState(props.initial ?? false);
 
@@ -31,6 +32,7 @@ export default function LabelledCheckboxInput(props: {
 					popOverInfo={<span>{props.description}</span>}
 				/>
 				<Checkbox
+					disabled={props.disabled ?? false}
 					sx={{
 						"& .MuiSvgIcon-root": {
 							fontSize: 28
