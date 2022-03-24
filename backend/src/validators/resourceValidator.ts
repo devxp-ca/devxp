@@ -58,7 +58,7 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		if (!hasAllKeys(resource, ["id", "machine_type", "disk_image"])) {
 			return Promise.reject(new Error("Resource is missing keys"));
 		}
-		if (!/^[a-zA-Z][0-9]-[a-zA-Z0-9-]+$/.test(resource.machine_type)) {
+		if (!/^[a-zA-Z][0-9][-.][a-zA-Z0-9-]+$/.test(resource.machine_type)) {
 			return Promise.reject(new Error("Invalid machine type"));
 		}
 		if (!/^[a-zA-Z0-9-]+$/.test(resource.disk_image)) {
