@@ -7,10 +7,6 @@ import {generateId, removeName} from "./util";
 export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
 export class NamedGoogleBackend implements DatabaseModel<NamedGoogleBackend> {
 	name: "gcs";
-	constructor(project: string);
-	constructor(project: string, bucket: string);
-	constructor(project: string, bucket: string, location: gcpRegion);
-	constructor(project: string, name: string, location: gcpRegion);
 	constructor(
 		project: string,
 		bucket = `terraform-state-${generateId(45)}`,

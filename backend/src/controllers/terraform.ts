@@ -28,8 +28,13 @@ import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
 import {GoogleCloudRun} from "../terraform/googleCloudRun";
+import {BackendModel} from "../database/bucket";
 
-export const createTerraformSettings = (req: Request, res: Response): void => {
+export const createTerraformSettings = (
+	req: Request,
+	res: Response,
+	bucketId?: string
+): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
 
 	const secure = req.body.settings.secure ?? false;
@@ -161,11 +166,14 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			  })
 			: networkedResources;
 
+	const namedBackend =
+		provider === "aws"
+			? new NamedAwsBackend(bucketId)
+			: new NamedGoogleBackend(project, bucketId);
+
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
-		provider === "aws"
-			? new NamedAwsBackend()
-			: new NamedGoogleBackend(project),
+		namedBackend,
 		[...google, ...network]
 	);
 
@@ -243,6 +251,17 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 
 			//Initiate a pull request to the main branch
 			await createPullRequest("DevXP-Configuration", "main", token, repo);
+
+			//Update bucket
+			await BackendModel.updateOne(
+				{repo},
+				{
+					repo,
+					provider,
+					bucketId: namedBackend.bucket
+				},
+				{upsert: true}
+			);
 			return ref;
 		})
 		.then(ref => {
