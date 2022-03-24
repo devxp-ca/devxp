@@ -33,6 +33,9 @@ export interface terraformResource {
 	entry_point: string;
 	source_dir: string;
 	trigger_http: boolean;
+	image: string;
+	env: {name: string; value: string}[];
+	domain?: string;
 }
 
 export interface terraformSettings {
@@ -74,7 +77,10 @@ export const terraformResourceSchema = new Schema({
 	memory: Number,
 	entry_point: String,
 	source_dir: String,
-	trigger_http: Boolean
+	trigger_http: Boolean,
+	image: String,
+	env: [new Schema({name: String, value: String})],
+	domain: String
 });
 
 export const terraformSettingsSchema = new Schema({

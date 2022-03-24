@@ -2,7 +2,7 @@ import {CustomValidator} from "express-validator";
 import {db_attribute, isRuntime} from "../types/terraform";
 
 export const resourceTypes =
-	/^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb|googleFunc)$/;
+	/^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb|googleFunc|cloudRun)$/;
 
 const hasAllKeys = (obj: any, keys: string[]) => {
 	let retVal = true;
@@ -104,6 +104,35 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		}
 		if (typeof resource.trigger_http !== "boolean") {
 			return Promise.reject(new Error("Invalid trigger http flag"));
+		}
+	} else if (resource.type === "cloudRun") {
+		if (!hasAllKeys(resource, ["id", "image"])) {
+			return Promise.reject(new Error("Resource is missing keys"));
+		}
+		if (
+			"location" in resource &&
+			!/^[a-zA-Z]*-?[0-9]*$/.test(resource.location)
+		) {
+			return Promise.reject(new Error("Invalid resource location"));
+		}
+		// TODO: Better validation
+		if (typeof resource.image !== "string") {
+			return Promise.reject(new Error("Invalid runtime"));
+		}
+		if (resource.domain) {
+			if (typeof resource.domain !== "string") {
+				return Promise.reject(new Error("Invalid domain"));
+			}
+		}
+		if (resource.env) {
+			if (!Array.isArray(resource.env)) {
+				return Promise.reject(new Error("Invalid env vars"));
+			}
+			resource.env.forEach((env: any) => {
+				if (!("value" in env && "name" in env)) {
+					return Promise.reject(new Error("Invalid env vars"));
+				}
+			});
 		}
 	} else if (resource.type === "googleStorageBucket") {
 		if (!hasAllKeys(resource, ["id"])) {
