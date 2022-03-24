@@ -26,7 +26,10 @@ export default class Gce extends Resource<IProps, IState> {
 		randomPrefix: "GCE-",
 
 		//The "type" to send to the backend
-		resourceType: "gce"
+		resourceType: "gce",
+
+		disableIam: true,
+		autoIam: false
 	};
 
 	constructor(props: IProps) {

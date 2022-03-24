@@ -1,7 +1,8 @@
 import {CustomValidator} from "express-validator";
 import {db_attribute, isRuntime} from "../types/terraform";
 
-export const resourceTypes = /^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb)$/;
+export const resourceTypes =
+	/^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb|googleFunc)$/;
 
 const hasAllKeys = (obj: any, keys: string[]) => {
 	let retVal = true;
@@ -63,8 +64,46 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		if (!/^[a-zA-Z0-9-]+$/.test(resource.disk_image)) {
 			return Promise.reject(new Error("Invalid disk image"));
 		}
-		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
-			return Promise.reject(new Error("Invalid resource zone"));
+		if (
+			"location" in resource &&
+			!/^[a-zA-Z]*-?[0-9]*$/.test(resource.location)
+		) {
+			return Promise.reject(new Error("Invalid resource location"));
+		}
+	} else if (resource.type === "googleFunc") {
+		if (
+			!hasAllKeys(resource, [
+				"id",
+				"runtime",
+				"entry_point",
+				"memory",
+				"source_dir",
+				"trigger_http"
+			])
+		) {
+			return Promise.reject(new Error("Resource is missing keys"));
+		}
+		if (
+			"location" in resource &&
+			!/^[a-zA-Z]*-?[0-9]*$/.test(resource.location)
+		) {
+			return Promise.reject(new Error("Invalid resource location"));
+		}
+		// TODO: Better validation
+		if (typeof resource.runtime !== "string") {
+			return Promise.reject(new Error("Invalid runtime"));
+		}
+		if (typeof resource.memory !== "number") {
+			return Promise.reject(new Error("Invalid memory"));
+		}
+		if (typeof resource.entry_point !== "string") {
+			return Promise.reject(new Error("Invalid entry point"));
+		}
+		if (typeof resource.source_dir !== "string") {
+			return Promise.reject(new Error("Invalid source directory"));
+		}
+		if (typeof resource.trigger_http !== "boolean") {
+			return Promise.reject(new Error("Invalid trigger http flag"));
 		}
 	} else if (resource.type === "googleStorageBucket") {
 		if (!hasAllKeys(resource, ["id"])) {

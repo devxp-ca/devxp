@@ -33,6 +33,7 @@ import {
 } from "./modals/modalHandlers";
 
 import TerraformOptionsModal from "./modals/TerraformOptionsModal";
+import LabelledTextInput from "./labelledInputs/LabelledTextInput";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -89,6 +90,7 @@ export default function TerraformManager(props: {
 	const [trackedResources, setTrackedResources] = React.useState<
 		resourceSettings[]
 	>([]);
+	const [project, setProject] = React.useState("");
 
 	React.useEffect(() => {
 		setTrackedResources(props.repoData?.settings?.resources ?? []);
@@ -104,6 +106,7 @@ export default function TerraformManager(props: {
 		setSelectedAutoLoadBalanceOption(
 			props.repoData?.settings?.autoLoadBalance ?? false
 		);
+		setProject(props.repoData?.settings?.project ?? "");
 	}, [props.repoData]);
 
 	type partialResource = resourceSettings | {type: string} | undefined;
@@ -130,12 +133,12 @@ export default function TerraformManager(props: {
 						allowIngressWeb: selectedAllowIngressWebOption,
 						allowEgressWeb: selectedAllowEgressWebOption,
 						autoLoadBalance: selectedAutoLoadBalanceOption,
-						resources: trackedResources
+						resources: trackedResources,
+						project
 					}
 				})
 			)
 			.then(response => {
-				console.log(response.data);
 				handleOpenSuccessModal(
 					setSubmitModalInfo,
 					setSubmitModalIsOpen
@@ -365,6 +368,28 @@ export default function TerraformManager(props: {
 									}}
 								/>
 							)}
+							{selectedProvider === "google" && (
+								<LabelledTextInput
+									direction="row"
+									text="Google Project ID"
+									description={
+										<p>
+											Can be found on the{" "}
+											<a
+												href="https://console.cloud.google.com/home/dashboard"
+												target="_blank">
+												Google Cloud dashboard
+											</a>
+										</p>
+									}
+									pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
+									initial={props.repoData?.settings?.project}
+									onChange={(val: string) => {
+										setProject(val);
+										props.setSettingsHaveBeenEdited(true);
+									}}
+								/>
+							)}
 							{selectedProvider === "aws" &&
 								selectedSecureOption && (
 									<>
@@ -521,7 +546,8 @@ export default function TerraformManager(props: {
 						//openCards > 0 ||
 						!props.settingsHaveBeenEdited ||
 						(selectedProvider?.length ?? 0) < 1 ||
-						(props.selectedRepo?.length ?? 0) < 1
+						(props.selectedRepo?.length ?? 0) < 1 ||
+						(selectedProvider === "google" && project.length < 6)
 					}
 					variant="contained"
 					color="success"

@@ -78,3 +78,23 @@ export abstract class ResourceWithIam<Specific> extends Resource<Specific> {
 		];
 	}
 }
+//
+// export abstract class GoogleResource<Specific> extends Resource<Specific> {
+// 	postProcess(json: TerraformJson): TerraformJson{
+// 		json = super.postProcess(json);
+//
+// 		//filter for duplicate google project services
+// 		const hash: any = {};
+// 		json.resource = json.resource.filter(r => {
+// 			if(r.name === "google_project_service"){
+// 				if(hash[`${r.name}-${Object.keys(r.name[0])[0]}`]){
+// 					return false;
+// 				}
+// 				hash[`${r.name}-${Object.keys(r.name[0])[0]}`] = true;
+// 			}
+// 			return true;
+// 		});
+//
+// 		return json;
+// 	}
+// }

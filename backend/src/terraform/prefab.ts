@@ -32,7 +32,9 @@ export const splitForPrefab = (
 	let prefabSupports: PrefabSupports[] = [];
 
 	resources.forEach(r => {
-		if (r.type.toLowerCase() in ["gce", "googlestoragebucket"]) {
+		if (
+			r.type.toLowerCase() in ["gce", "googlestoragebucket", "googlefunc"]
+		) {
 			google = [...google, r];
 		} else {
 			prefabSupports = [...prefabSupports, r as PrefabSupports];

@@ -1,4 +1,9 @@
-import {machineType, runtime} from "../types/terraform";
+import {
+	gcpRegion,
+	googleRuntime,
+	machineType,
+	runtime
+} from "../types/terraform";
 import {mongoose} from "./connection";
 const {Schema} = mongoose;
 
@@ -11,7 +16,7 @@ export interface terraformResource {
 	autoIam: boolean;
 	functionName: string;
 	filename: string;
-	runtime: runtime;
+	runtime: runtime | googleRuntime;
 	handler: string;
 	keepWarm: boolean;
 	machine_type: machineType;
@@ -21,6 +26,13 @@ export interface terraformResource {
 		type: string;
 		isHash: boolean;
 	}[];
+	name: string;
+	project: string;
+	location: gcpRegion;
+	memory: number;
+	entry_point: string;
+	source_dir: string;
+	trigger_http: boolean;
 }
 
 export interface terraformSettings {
@@ -31,6 +43,7 @@ export interface terraformSettings {
 	allowEgressWeb: boolean;
 	allowIngressWeb: boolean;
 	autoLoadBalance: boolean;
+	project: string;
 }
 
 export const attributeSchema = new Schema({
@@ -54,7 +67,14 @@ export const terraformResourceSchema = new Schema({
 	handler: String,
 	keepWarm: Boolean,
 	machine_type: String,
-	disk_image: String
+	disk_image: String,
+	name: String,
+	project: String,
+	location: String,
+	memory: Number,
+	entry_point: String,
+	source_dir: String,
+	trigger_http: Boolean
 });
 
 export const terraformSettingsSchema = new Schema({
@@ -66,6 +86,10 @@ export const terraformSettingsSchema = new Schema({
 	allowSsh: {
 		default: false,
 		type: Boolean
+	},
+	project: {
+		default: "",
+		type: String
 	},
 	allowEgressWeb: {
 		default: false,

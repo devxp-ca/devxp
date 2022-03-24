@@ -1,10 +1,10 @@
-import {gcpZone} from "../types/terraform";
+import {gcpRegion} from "../types/terraform";
 import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 
 export interface GoogleStorageBucket {
 	project: string;
-	zone: gcpZone;
+	location: gcpRegion;
 }
 export class GoogleStorageBucket
 	extends Resource<GoogleStorageBucket>
@@ -13,12 +13,12 @@ export class GoogleStorageBucket
 	constructor(
 		project: string,
 		id: string,
-		zone: gcpZone = "us-west1-a",
+		location: gcpRegion = "us-west1",
 		name?: string
 	) {
 		super(id, "Gce", false, name);
 		this.project = project;
-		this.zone = zone;
+		this.location = location;
 	}
 
 	//Returns an array of resource blocks
@@ -27,7 +27,7 @@ export class GoogleStorageBucket
 			//The bucket itself
 			jsonRoot("google_storage_bucket", this.id, {
 				name: this.name,
-				zone: this.zone,
+				location: this.location,
 				project: this.project
 			})
 		];
