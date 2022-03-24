@@ -27,6 +27,7 @@ import {DynamoDb} from "../terraform/DynamoDb";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
+import {GoogleCloudRun} from "../terraform/googleCloudRun";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -316,7 +317,8 @@ export type TerraformResource =
 	| DynamoDb
 	| AwsLoadBalancer
 	| GoogleStorageBucket
-	| GoogleFunction;
+	| GoogleFunction
+	| GoogleCloudRun;
 
 export interface PolicyStatement {
 	actions: string[];
