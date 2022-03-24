@@ -10,6 +10,8 @@ import {DynamoDb} from "./DynamoDb";
 import {Ec2} from "./ec2";
 import {Gce} from "./gce";
 import {GlacierVault} from "./glacierVault";
+import {GoogleCloudRun} from "./googleCloudRun";
+import {GoogleFunction} from "./googleFunction";
 import {GoogleStorageBucket} from "./googleStorageBucket";
 import {IamRole} from "./iamRole";
 import {lambdaFunction} from "./lambdaFunction";
@@ -23,7 +25,11 @@ export type PrefabSupports =
 	| AwsLoadBalancer
 	| lambdaFunction;
 
-export type googleResource = Gce | GoogleStorageBucket;
+export type googleResource =
+	| Gce
+	| GoogleStorageBucket
+	| GoogleCloudRun
+	| GoogleFunction;
 
 export const splitForPrefab = (
 	resources: TerraformResource[]
@@ -33,7 +39,8 @@ export const splitForPrefab = (
 
 	resources.forEach(r => {
 		if (
-			r.type.toLowerCase() in ["gce", "googlestoragebucket", "googlefunc"]
+			r.type.toLowerCase() in
+			["gce", "googlestoragebucket", "googlefunc", "cloudRun"]
 		) {
 			google = [...google, r];
 		} else {

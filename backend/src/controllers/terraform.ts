@@ -27,6 +27,7 @@ import {jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
+import {GoogleCloudRun} from "../terraform/googleCloudRun";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
@@ -50,7 +51,8 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			| "lambdaFunc"
 			| "dynamoDb"
 			| "googleStorageBucket"
-			| "googleFunc";
+			| "googleFunc"
+			| "cloudRun";
 	})[];
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;
@@ -102,6 +104,16 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 				googleFunc.trigger_http,
 				googleFunc.memory,
 				googleFunc.location
+			);
+		} else if (resource.type === "cloudRun") {
+			const cloudRun: GoogleCloudRun = resource as GoogleCloudRun;
+			return new GoogleCloudRun(
+				project,
+				cloudRun.id,
+				cloudRun.image,
+				cloudRun.env,
+				cloudRun.domain,
+				cloudRun.location
 			);
 		} else {
 			flag = true;

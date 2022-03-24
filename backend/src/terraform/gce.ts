@@ -40,11 +40,15 @@ export class Gce extends Resource<Gce> implements Gce {
 				network_interface: {
 					network: "default"
 				},
-				boot_disk: {
-					initialize_params: {
-						image: this.disk_image
+				boot_disk: [
+					{
+						initialize_params: [
+							{
+								image: this.disk_image
+							}
+						]
 					}
-				},
+				],
 				project: this.project
 			}),
 			//The resource block calling for google cloud to enable the compute service

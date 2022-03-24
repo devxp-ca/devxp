@@ -8,6 +8,7 @@ import StorageBucket from "./StorageBucket";
 import Resource from "./Resource";
 import Lambda from "./Lambda";
 import GoogleFunction from "./GoogleFunction";
+import CloudRun from "./CloudRun";
 
 export default (
 	resource: {
@@ -95,6 +96,16 @@ export default (
 				})
 			) : (
 				<GoogleFunction {...resource} />
+			);
+		case "cloudRun":
+			return noRender ? (
+				new CloudRun({
+					...Resource.defaultProps,
+					...CloudRun.defaultProps,
+					...resource
+				})
+			) : (
+				<CloudRun {...resource} />
 			);
 	}
 };

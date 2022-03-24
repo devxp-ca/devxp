@@ -77,7 +77,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Remove incorrect block as attribute styles
 	hcl = hcl.replace(
-		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config) = {/g,
+		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config|initialize_params|boot_disk|network_interface|template|spec|containers|env|traffic|metadata) = {/g,
 		(_match, $1) => `${$1} {`
 	);
 
@@ -91,8 +91,8 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Cleanup
 	hcl = hcl.replace(/}\n}\n}/g, "    }\n  }\n}");
-	hcl = hcl.replace(/data = \[\]/, "");
-
+	hcl = hcl.replace(/ *data = \[\]/, "");
+	hcl = hcl.replace(/ *env = \[\]/, "");
 	/*
 	//Merge duplicate blocks into arrays
 	let matches: Record<string, string[]> = {}
