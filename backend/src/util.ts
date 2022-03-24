@@ -91,6 +91,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Cleanup
 	hcl = hcl.replace(/}\n}\n}/g, "    }\n  }\n}");
+	hcl = hcl.replace(/data = \[\]/, "");
 
 	/*
 	//Merge duplicate blocks into arrays

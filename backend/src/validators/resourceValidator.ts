@@ -63,8 +63,11 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 		if (!/^[a-zA-Z0-9-]+$/.test(resource.disk_image)) {
 			return Promise.reject(new Error("Invalid disk image"));
 		}
-		if ("zone" in resource && !/^[a-zA-Z]*-?[0-9]*$/.test(resource.zone)) {
-			return Promise.reject(new Error("Invalid resource zone"));
+		if (
+			"location" in resource &&
+			!/^[a-zA-Z]*-?[0-9]*$/.test(resource.location)
+		) {
+			return Promise.reject(new Error("Invalid resource location"));
 		}
 	} else if (resource.type === "googleStorageBucket") {
 		if (!hasAllKeys(resource, ["id"])) {

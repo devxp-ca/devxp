@@ -26,6 +26,7 @@ import {AwsVpcEndpoint} from "../terraform/AwsVpcEndpoint";
 import {DynamoDb} from "../terraform/DynamoDb";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
+import {GoogleFunction} from "../terraform/googleFunction";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -268,6 +269,29 @@ export function isRuntime(test: string): test is runtime {
 	return runtimeValues.includes(test);
 }
 
+// ----------------------------Google Function------------------------------- //
+
+export type googleRuntime =
+	| "nodejs16"
+	| "nodejs14"
+	| "nodejs12"
+	| "nodejs10"
+	| "nodejs8"
+	| "nodejs6"
+	| "python39"
+	| "python38"
+	| "python37"
+	| "go116"
+	| "go113"
+	| "go111"
+	| "java17"
+	| "java11"
+	| "dotnet3"
+	| "ruby30"
+	| "ruby27"
+	| "ruby26"
+	| "php74";
+
 // ---------------------------------MISC------------------------------------- //
 
 export type TerraformResource =
@@ -291,7 +315,8 @@ export type TerraformResource =
 	| AwsRouteResource
 	| DynamoDb
 	| AwsLoadBalancer
-	| GoogleStorageBucket;
+	| GoogleStorageBucket
+	| GoogleFunction;
 
 export interface PolicyStatement {
 	actions: string[];

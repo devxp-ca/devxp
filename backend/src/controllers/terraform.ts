@@ -88,7 +88,7 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			);
 		} else if (resource.type === "googleStorageBucket") {
 			const bucket: GoogleStorageBucket = resource as GoogleStorageBucket;
-			return new GoogleStorageBucket(project, bucket.id, bucket.zone);
+			return new GoogleStorageBucket(project, bucket.id, bucket.location);
 		} else {
 			flag = true;
 		}
