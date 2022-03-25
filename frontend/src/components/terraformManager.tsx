@@ -352,7 +352,7 @@ export default function TerraformManager(props: {
 										disabled: true
 									}
 								]}
-								initial={props.repoData?.settings?.provider}
+								initial={selectedProvider}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
 									props.setSettingsHaveBeenEdited(true);
@@ -362,7 +362,7 @@ export default function TerraformManager(props: {
 								<LabelledCheckboxInput
 									text="Secure"
 									description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
-									initial={props.repoData?.settings?.secure}
+									initial={selectedSecureOption}
 									onChange={(val: boolean) => {
 										setSelectedSecureOption(val);
 										props.setSettingsHaveBeenEdited(true);
@@ -384,7 +384,7 @@ export default function TerraformManager(props: {
 										</p>
 									}
 									pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
-									initial={props.repoData?.settings?.project}
+									initial={project}
 									onChange={(val: string) => {
 										setProject(val);
 										props.setSettingsHaveBeenEdited(true);
@@ -397,10 +397,7 @@ export default function TerraformManager(props: {
 										<LabelledCheckboxInput
 											text="Enable SSH"
 											description="Opens up port 22 for ssh access."
-											initial={
-												props.repoData?.settings
-													?.allowSsh
-											}
+											initial={selectedAllowSshOption}
 											onChange={(val: boolean) => {
 												setSelectedAllowSshOption(val);
 												props.setSettingsHaveBeenEdited(
@@ -412,8 +409,7 @@ export default function TerraformManager(props: {
 											text="Enable Inbound Web Traffic"
 											description="Opens up ports 443 and 80 for web traffic."
 											initial={
-												props.repoData?.settings
-													?.allowIngressWeb
+												selectedAllowIngressWebOption
 											}
 											onChange={(val: boolean) => {
 												setSelectedAllowIngressWebOption(
@@ -428,8 +424,7 @@ export default function TerraformManager(props: {
 											text="Enable Outbound Web Traffic"
 											description="Opens up ports 443 and 80 for software updates, web requests, etc."
 											initial={
-												props.repoData?.settings
-													?.allowEgressWeb
+												selectedAllowEgressWebOption
 											}
 											onChange={(val: boolean) => {
 												setSelectedAllowEgressWebOption(
@@ -444,8 +439,7 @@ export default function TerraformManager(props: {
 											text="Enable Network Load Balancing"
 											description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
 											initial={
-												props.repoData?.settings
-													?.autoLoadBalance
+												selectedAutoLoadBalanceOption
 											}
 											onChange={(val: boolean) => {
 												setSelectedAutoLoadBalanceOption(

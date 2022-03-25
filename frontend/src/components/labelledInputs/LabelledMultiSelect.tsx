@@ -18,9 +18,7 @@ export default function LabelledMultiInput(props: {
 	const [value, setValue] = React.useState(props.initial ?? "");
 
 	React.useEffect(() => {
-		if (props.initial) {
-			setValue(props.initial);
-		}
+		setValue(props.initial ?? "");
 	}, [props.initial]);
 
 	return (

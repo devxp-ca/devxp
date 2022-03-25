@@ -17,6 +17,10 @@ export default function LabelledRadioInput(props: {
 }) {
 	const [value, setValue] = React.useState(props.initial ?? "");
 
+	React.useEffect(() => {
+		setValue(props.initial ?? "");
+	}, [props.initial]);
+
 	return (
 		<Grid container direction="row">
 			<Typography sx={{paddingTop: 0.4}} variant="h6">
