@@ -1,5 +1,5 @@
-import {gcpRegion, TerraformJson} from "../types/terraform";
-import {jsonRoot, variable} from "./util";
+import {gcpRegion} from "../types/terraform";
+import {jsonRoot} from "./util";
 import {Resource} from "./resource";
 
 export interface GoogleCloudRun {
@@ -28,6 +28,13 @@ export class GoogleCloudRun
 		this.image = image;
 		this.env = env;
 		this.domain = domain;
+	}
+
+	getVars() {
+		return [
+			...super.getVars(),
+			...this.env.map(name => `CLOUD_RUN_${name}`)
+		];
 	}
 
 	//Returns an array of resource blocks
@@ -98,14 +105,6 @@ export class GoogleCloudRun
 				)
 			];
 		}
-		return json;
-	}
-
-	postProcess(json: TerraformJson) {
-		json = super.postProcess(json);
-
-		json.variable = [...json.variable, this.env.map(variable)];
-
 		return json;
 	}
 }

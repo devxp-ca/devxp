@@ -33,13 +33,14 @@ export const generateId = (length: number) => {
 };
 
 export const variable = (name: string) => {
-	const json: any = {};
+	const json: Record<string, any> = {};
 	json[name] = [
 		{
 			type: "string",
 			sensitive: true
 		}
 	];
+	return json;
 };
 
 export const jsonRoot = (
