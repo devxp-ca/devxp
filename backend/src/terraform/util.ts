@@ -32,6 +32,16 @@ export const generateId = (length: number) => {
 	return id;
 };
 
+export const variable = (name: string) => {
+	const json: any = {};
+	json[name] = [
+		{
+			type: "string",
+			sensitive: true
+		}
+	];
+};
+
 export const jsonRoot = (
 	name: string,
 	id: string,
