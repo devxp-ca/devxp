@@ -36,7 +36,7 @@ export const variable = (name: string) => {
 	const json: Record<string, any> = {};
 	json[name] = [
 		{
-			type: "string",
+			type: "${string}",
 			sensitive: true
 		}
 	];
