@@ -13,6 +13,8 @@ import {GoogleProvider} from "./googleProvider";
 import {namedDestructure} from "./util";
 import {arr} from "../util";
 import {IamUserForId} from "./awsIamUser";
+import {AzureProvider} from "./azureProvider";
+import {NamedAzureBackend} from "./azureBackend";
 
 export const terraformBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
@@ -41,10 +43,15 @@ export const rootBlock = (
 	let json: TerraformJson = {
 		terraform: terraformBlock(providers, backend),
 		provider: arr(providers).map(provider =>
-			(provider as AwsProvider | GoogleProvider).toJSON()
+			(provider as AwsProvider | GoogleProvider | AzureProvider).toJSON()
 		),
 		resource: [
-			(backend as NamedAwsBackend | NamedGoogleBackend).toResource(),
+			(
+				backend as
+					| NamedAwsBackend
+					| NamedGoogleBackend
+					| NamedAzureBackend
+			).toResource(),
 			...resources
 				.map(r => {
 					let json = [r.toJSON()].flat();

@@ -16,6 +16,7 @@ export const namedDestructure = <Base>(
 	const destructuredBase: {
 		aws?: Base;
 		google?: Base;
+		azurerm?: Base;
 	} = {};
 	arr(namedBase).forEach(base => {
 		destructuredBase[base.name] = filter(removeName<Base>(base));

@@ -27,6 +27,8 @@ import {DynamoDb} from "../terraform/DynamoDb";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
+import {NamedAzureBackend} from "../terraform/azureBackend";
+import {AzureProvider} from "../terraform/azureProvider";
 
 // ---------------------------------Variable---------------------------------- //
 export type VariableType =
@@ -58,7 +60,7 @@ export type named<Base, nameVal> = Base & {
 
 // -------------------------------Provider----------------------------------- //
 
-export type providerName = "google" | "aws";
+export type providerName = "google" | "aws" | "azurerm";
 export interface RequiredProvider {
 	source: string;
 	version: string;
@@ -84,6 +86,10 @@ export const isGoogleProvider = (
 export const isAwsProvider = (
 	provider: NamedRequiredProvider
 ): provider is AwsProvider => provider.name === "aws";
+
+export const isAzureProvider = (
+	provider: NamedRequiredProvider
+): provider is AzureProvider => provider.name === "azurerm";
 
 // --------------------------------Backend----------------------------------- //
 
@@ -112,8 +118,19 @@ export const isGoogleBackend = (
 
 // -- -- -- //
 
-export type backendName = "s3" | "gcs";
-export type terraformBackend = AwsBackend | GoogleBackend;
+export interface AzureBackend {
+	resource_group_name: string;
+	storage_account_name: string;
+	container_name: string;
+	key: string;
+	location: string;
+}
+export const isAzureBackend = (
+	backend: namedTerraformBackend
+): backend is NamedAzureBackend => backend.name === "azurerm";
+
+export type backendName = "s3" | "gcs" | "azurerm";
+export type terraformBackend = AwsBackend | GoogleBackend | AzureBackend;
 export type namedTerraformBackend = named<terraformBackend, backendName>;
 
 // ----------------------------------EC2------------------------------------- //
@@ -377,6 +394,10 @@ export type awsZone = `${countryCode}-${string}-${digit}`;
 export type awsRegion = `${awsZone}${char}`;
 export type gcpRegion = `${string}-${string}${digit}`;
 export type gcpZone = `${gcpRegion}-${char}`;
+
+// Weird names.  Some go {region}{zone}, with nums after, in the middle.
+// Some have {zone}{region}
+export type azureRegion = `${string}`;
 
 export type load_balancer_type = "application" | "gateway" | "network";
 

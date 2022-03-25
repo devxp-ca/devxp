@@ -8,6 +8,23 @@ import RESTServer from "./server";
 import mainRouter from "./routes/index";
 import {mongoose} from "./database/connection";
 
+import {testToFile} from "./util";
+import {AzureProvider} from "./terraform/azureProvider";
+import {NamedAzureBackend} from "./terraform/azureBackend";
+import {AwsProvider} from "./terraform/awsProvider";
+import {NamedAwsBackend} from "./terraform/awsBackend";
+import {Ec2} from "./terraform/ec2";
+
+const PROJECT = "devxp-339721";
+testToFile(
+	"/Users/ctpet/Desktop/azure/terraform_test.tf",
+	// new AwsProvider(),
+	// new NamedAwsBackend(),
+	// [new Ec2("AUTO_UBUNTU", "t2.micro", "my-instance")]
+	new AzureProvider(),
+	new NamedAzureBackend()
+);
+
 const server = new RESTServer();
 server.serve("/");
 server.serve("/toolManager");

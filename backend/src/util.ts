@@ -77,8 +77,13 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Remove incorrect block as attribute styles
 	hcl = hcl.replace(
-		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config) = {/g,
+		/(features|lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config) = {/g,
 		(_match, $1) => `${$1} {`
+	);
+
+	// Remove deprecated double quotes from depends_on
+	hcl = hcl.replace(/depends_on = \[(.*?)\]/g, _match =>
+		_match.replace(/"/g, "")
 	);
 
 	//Remove quote escaping for functions

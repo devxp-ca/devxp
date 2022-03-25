@@ -27,6 +27,8 @@ import {jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
+import {AzureProvider} from "../terraform/azureProvider";
+import {NamedAzureBackend} from "../terraform/azureBackend";
 
 export const createTerraformSettings = (req: Request, res: Response): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
@@ -150,10 +152,16 @@ export const createTerraformSettings = (req: Request, res: Response): void => {
 			: networkedResources;
 
 	const [root, backend] = rootBlockSplitBackend(
-		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
+		provider === "aws"
+			? new AwsProvider()
+			: provider === "google"
+			? new GoogleProvider(project)
+			: new AzureProvider(),
 		provider === "aws"
 			? new NamedAwsBackend()
-			: new NamedGoogleBackend(project),
+			: provider === "google"
+			? new NamedGoogleBackend(project)
+			: new NamedAzureBackend(),
 		[...google, ...network]
 	);
 
