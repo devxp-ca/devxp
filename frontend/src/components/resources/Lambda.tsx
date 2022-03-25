@@ -1,21 +1,48 @@
-import {Grid} from "@mui/material";
+import {Autocomplete, Grid, TextField} from "@mui/material";
+import axios from "axios";
 import React from "react";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
+import {CONFIG} from "../../config";
+
+const extToKey = (ext?: string) => {
+	if (!ext || ext.length < 1) {
+		return undefined;
+	}
+
+	if (ext === "js") {
+		return "nodejs14.x";
+	}
+	if (ext === "java") {
+		return "java8";
+	}
+	if (ext === "py") {
+		return "python3.9";
+	}
+	if (ext === "go") {
+		return "go1.x";
+	}
+	if (ext === "rb") {
+		return "ruby2.7";
+	}
+	return undefined;
+};
 
 interface IProps {
 	runtime?: string;
 	handler?: string;
 	filename?: string;
 	keepWarm?: boolean;
+	repo?: string;
 }
 interface IState extends ResourceState {
 	runtime: string;
 	handler: string;
 	filename: string;
 	keepWarm: boolean;
+	files: string[];
 }
 export default class Lambda extends Resource<IProps, IState> {
 	static defaultProps = {
@@ -43,8 +70,26 @@ export default class Lambda extends Resource<IProps, IState> {
 			runtime: this.props.runtime ?? "",
 			handler: this.props.handler ?? "",
 			filename: this.props.filename ?? "",
-			keepWarm: this.props.keepWarm ?? false
+			keepWarm: this.props.keepWarm ?? false,
+			files: []
 		};
+	}
+
+	componentDidMount() {
+		axios
+			.get(
+				`${CONFIG.BACKEND_URL}${
+					CONFIG.REPO_FILES_PATH
+				}?repo=${encodeURIComponent(this.props.repo ?? "")}`
+			)
+			.then(resp => {
+				this.setState({
+					files: (resp.data.files as string[]).filter(file =>
+						file.match(/.*\.(js|py|java|go|cs|rb)$/)
+					)
+				});
+			})
+			.catch(console.error);
 	}
 
 	render() {
@@ -103,7 +148,14 @@ export default class Lambda extends Resource<IProps, IState> {
 								label: ".NET Core 3.1",
 								key: "dotnetcore3.1"
 							}
-						]}
+						].filter((option: {label: string; key: string}) => {
+							const ext =
+								this.state.filename.split(".")[
+									this.state.filename.split(".").length - 1
+								];
+							const filt = extToKey(ext);
+							return !filt || filt === option.key;
+						})}
 						onChange={runtime => this.setState({runtime})}
 						initial={this.state.runtime}
 					/>
@@ -116,17 +168,66 @@ export default class Lambda extends Resource<IProps, IState> {
 							this.setState({keepWarm})
 						}
 					/>
-					<LabelledTextInput
-						pattern=".*\.(js|py|java|go|cs|rb)$"
-						text="Filename"
-						description="Absolute path to function source within repo"
-						initial={this.state.filename}
-						onChange={filename => {
-							this.setState({
-								filename
-							});
-						}}
-					/>
+
+					{this.state.files.length < 1 ? (
+						<>
+							<LabelledTextInput
+								pattern=".*\.(js|py|java|go|cs|rb)$"
+								text="Filename"
+								description="Absolute path to function source within repo"
+								initial={this.state.filename}
+								onChange={filename => {
+									this.setState({
+										filename
+									});
+									const ext =
+										filename.split(".")[
+											filename.split(".").length - 1
+										];
+									const runtime = extToKey(ext);
+									if (runtime) {
+										this.setState({
+											runtime
+										});
+									}
+								}}
+							/>
+						</>
+					) : (
+						<>
+							<Autocomplete
+								freeSolo={true}
+								sx={{ml: 1, width: "300px"}}
+								disableClearable={true}
+								options={this.state.files}
+								renderInput={(params: any) => (
+									<TextField
+										{...params}
+										label="Filename"
+										variant="outlined"
+									/>
+								)}
+								onChange={(_event: any, filename: string) => {
+									this.setState({
+										filename
+									});
+									const ext =
+										filename.split(".")[
+											filename.split(".").length - 1
+										];
+									const runtime = extToKey(ext);
+									console.dir(filename);
+									console.dir(ext);
+									console.dir(runtime);
+									if (runtime) {
+										this.setState({
+											runtime
+										});
+									}
+								}}
+							/>
+						</>
+					)}
 
 					<LabelledTextInput
 						pattern="..*"

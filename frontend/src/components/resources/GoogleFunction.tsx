@@ -1,10 +1,12 @@
-import {Grid} from "@mui/material";
+import {Autocomplete, Grid, TextField} from "@mui/material";
 import React from "react";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
+import {CONFIG} from "../../config";
+import axios from "axios";
 
 interface IProps {
 	runtime?: string;
@@ -12,6 +14,7 @@ interface IProps {
 	source_dir?: string;
 	trigger_http?: boolean;
 	memory?: number;
+	repo?: string;
 }
 interface IState extends ResourceState {
 	runtime: string;
@@ -19,6 +22,7 @@ interface IState extends ResourceState {
 	source_dir: string;
 	trigger_http: boolean;
 	memory: number;
+	files: string[];
 }
 export default class GoogleFunction extends Resource<IProps, IState> {
 	static defaultProps = {
@@ -56,8 +60,29 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 			entry_point: this.props.entry_point ?? "main",
 			source_dir: this.props.source_dir ?? "./",
 			trigger_http: this.props.trigger_http ?? false,
-			memory: this.props.memory ?? 128
+			memory: this.props.memory ?? 128,
+			files: ["./"]
 		};
+	}
+
+	componentDidMount() {
+		axios
+			.get(
+				`${CONFIG.BACKEND_URL}${
+					CONFIG.REPO_FILES_PATH
+				}?repo=${encodeURIComponent(this.props.repo ?? "")}`
+			)
+			.then(resp => {
+				this.setState({
+					files: [
+						"./",
+						...(resp.data.files as string[]).filter(file =>
+							file.match(/^([^\/]*\/[^\/]*\/)*[^.]+$/)
+						)
+					]
+				});
+			})
+			.catch(console.error);
 	}
 
 	render() {
@@ -133,12 +158,20 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 							this.setState({trigger_http})
 						}
 					/>
-					<LabelledTextInput
-						pattern="^\/?([a-zA-Z0-9_\-\.]+\/?)*$"
-						text="Source Directory"
-						description="Absolute path to function source directory within repo"
-						initial={this.state.source_dir}
-						onChange={source_dir => {
+
+					<Autocomplete
+						freeSolo={true}
+						sx={{ml: 1, width: "300px"}}
+						disableClearable={true}
+						options={this.state.files}
+						renderInput={(params: any) => (
+							<TextField
+								{...params}
+								label="Source Directory"
+								variant="outlined"
+							/>
+						)}
+						onChange={(_event: any, source_dir: string) => {
 							this.setState({
 								source_dir
 							});

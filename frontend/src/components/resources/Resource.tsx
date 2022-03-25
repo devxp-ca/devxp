@@ -55,6 +55,8 @@ interface IProps {
 
 	autoIam?: boolean;
 	id?: string;
+
+	repo?: string;
 }
 export interface ResourceState {
 	resources: number;
