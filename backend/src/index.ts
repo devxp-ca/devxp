@@ -15,16 +15,17 @@ import {AwsProvider} from "./terraform/awsProvider";
 import {NamedAwsBackend} from "./terraform/awsBackend";
 import {Ec2} from "./terraform/ec2";
 
-const PROJECT = "devxp-339721";
-testToFile(
-	"../../azure/test.tf",
-	//"/Users/ctpet/Desktop/azure/terraform_test.tf",
-	// new AwsProvider(),
-	// new NamedAwsBackend(),
-	// [new Ec2("AUTO_UBUNTU", "t2.micro", "my-instance")]
-	new AzureProvider(),
-	new NamedAzureBackend()
-);
+// Code for testing terraform file
+// const PROJECT = "devxp-339721";
+// testToFile(
+// 	"../../azure/test.tf",
+// 	//"/Users/ctpet/Desktop/azure/terraform_test.tf",
+// 	// new AwsProvider(),
+// 	// new NamedAwsBackend(),
+// 	// [new Ec2("AUTO_UBUNTU", "t2.micro", "my-instance")]
+// 	new AzureProvider(),
+// 	new NamedAzureBackend()
+// );
 
 const server = new RESTServer();
 server.serve("/");
