@@ -17,7 +17,8 @@ import {Ec2} from "./terraform/ec2";
 
 const PROJECT = "devxp-339721";
 testToFile(
-	"/Users/ctpet/Desktop/azure/terraform_test.tf",
+	"../../azure/test.tf",
+	//"/Users/ctpet/Desktop/azure/terraform_test.tf",
 	// new AwsProvider(),
 	// new NamedAwsBackend(),
 	// [new Ec2("AUTO_UBUNTU", "t2.micro", "my-instance")]

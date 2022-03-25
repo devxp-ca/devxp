@@ -9,9 +9,6 @@ export interface NamedAzureBackend extends named<AzureBackend, "azurerm"> {}
 export class NamedAzureBackend implements DatabaseModel<NamedAzureBackend> {
 	name: "azurerm";
 	constructor();
-	constructor(bucket: string);
-	constructor(bucket: string, region: string);
-	constructor(bucket: string, key: string, region: string);
 	constructor(
 		resource_group_name = `tfstate`,
 		storage_account_name = `tfstate${generateId(15)}`,

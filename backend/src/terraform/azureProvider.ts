@@ -17,10 +17,7 @@ export class AzureProvider
 	implements DatabaseModel<AzureProvider>
 {
 	name: "azurerm";
-	features: object[];
 	constructor();
-	constructor(region: string);
-	constructor(source: string, version: string, region: string, features: []);
 	constructor(
 		source = "hashicorp/azurerm",
 		version = ">= 2.46.0",
