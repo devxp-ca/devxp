@@ -1,21 +1,25 @@
 import {Grid} from "@mui/material";
+import axios from "axios";
 import React from "react";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
+import {CONFIG} from "../../config";
 
 interface IProps {
 	runtime?: string;
 	handler?: string;
 	filename?: string;
 	keepWarm?: boolean;
+	repo?: string;
 }
 interface IState extends ResourceState {
 	runtime: string;
 	handler: string;
 	filename: string;
 	keepWarm: boolean;
+	files: string[];
 }
 export default class Lambda extends Resource<IProps, IState> {
 	static defaultProps = {
@@ -43,8 +47,26 @@ export default class Lambda extends Resource<IProps, IState> {
 			runtime: this.props.runtime ?? "",
 			handler: this.props.handler ?? "",
 			filename: this.props.filename ?? "",
-			keepWarm: this.props.keepWarm ?? false
+			keepWarm: this.props.keepWarm ?? false,
+			files: []
 		};
+	}
+
+	componentDidMount() {
+		axios
+			.get(
+				`${CONFIG.BACKEND_URL}${
+					CONFIG.REPO_FILES_PATH
+				}?repo=${encodeURIComponent(this.props.repo ?? "")}`
+			)
+			.then(resp => {
+				this.setState({
+					files: (resp.data.files as string[]).filter(file =>
+						file.match(/.*\.(js|py|java|go|cs|rb)$/)
+					)
+				});
+			})
+			.catch(console.error);
 	}
 
 	render() {
@@ -116,17 +138,39 @@ export default class Lambda extends Resource<IProps, IState> {
 							this.setState({keepWarm})
 						}
 					/>
-					<LabelledTextInput
-						pattern=".*\.(js|py|java|go|cs|rb)$"
-						text="Filename"
-						description="Absolute path to function source within repo"
-						initial={this.state.filename}
-						onChange={filename => {
-							this.setState({
-								filename
-							});
-						}}
-					/>
+
+					{this.state.files.length < 1 ? (
+						<>
+							<LabelledTextInput
+								pattern=".*\.(js|py|java|go|cs|rb)$"
+								text="Filename"
+								description="Absolute path to function source within repo"
+								initial={this.state.filename}
+								onChange={filename => {
+									this.setState({
+										filename
+									});
+								}}
+							/>
+						</>
+					) : (
+						<>
+							<LabelledMultiInput
+								text="Filename"
+								description="Absolute path to function source within repo"
+								initial={this.state.filename}
+								options={this.state.files.map(file => ({
+									key: file,
+									label: file
+								}))}
+								onChange={filename => {
+									this.setState({
+										filename
+									});
+								}}
+							/>
+						</>
+					)}
 
 					<LabelledTextInput
 						pattern="..*"

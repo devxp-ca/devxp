@@ -9,17 +9,17 @@ export const getRepoFiles = (req: Request, res: Response) => {
 				files
 			});
 		})
-		.catch(() =>
+		.catch(() => {
 			getFiles(
 				req.headers.token as string,
 				req.query.repo as string,
 				"master"
 			)
-		)
-		.then(files => {
-			res.json({
-				files
-			});
-		})
-		.catch(internalErrorHandler(req, res));
+				.then(files => {
+					res.json({
+						files
+					});
+				})
+				.catch(internalErrorHandler(req, res));
+		});
 };

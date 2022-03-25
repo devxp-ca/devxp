@@ -222,6 +222,7 @@ export default function TerraformManager(props: {
 								typeToResource(
 									{
 										...currentResource,
+										repo: props.selectedRepo ?? "",
 										isModifying:
 											Object.keys(currentResource)
 												.length > 1,
