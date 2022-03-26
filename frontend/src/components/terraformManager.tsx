@@ -23,6 +23,7 @@ import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
+import OkModal from "./modals/OkModal";
 import {
 	handleCloseModal,
 	handleOpenFailModal,
@@ -166,6 +167,10 @@ export default function TerraformManager(props: {
 
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
+
+	// Info modal for when a user tries to add a resource without choosing a provider
+	const [addResourceWarningModalIsOpen, setAddResourceWarningModalIsOpen] =
+		React.useState(false);
 
 	useEffect(() => {
 		window.onbeforeunload = () => {
@@ -465,18 +470,23 @@ export default function TerraformManager(props: {
 				</Grid>
 				<Grid item>
 					<Card>
-						<Tooltip title="Add a new Terraform instance, must select provider first">
-							<CardActionArea
-								onClick={() => {
-									//TODO: Popup modal and select type
-									// If provider selected, open:
-									if ((selectedProvider?.length ?? 0) > 0) {
-										setOpenOptionsModal(true);
-									} else {
-										setOpenOptionsModal(false);
-									}
-									// Otherwise, should we have a popover reminder?
-								}}
+						<CardActionArea
+							onClick={() => {
+								if (!!selectedProvider) {
+									setOpenOptionsModal(true);
+								} else {
+									setAddResourceWarningModalIsOpen(true);
+								}
+							}}
+							sx={{
+								"&:hover": {
+									backgroundColor: "success.light"
+								}
+							}}>
+							<Grid
+								container
+								justifyContent="center"
+								alignItems="center"
 								sx={{
 									"&:hover": {
 										backgroundColor: "success.light"
@@ -505,8 +515,18 @@ export default function TerraformManager(props: {
 										/>
 									</Grid>
 								</Grid>
-							</CardActionArea>
-						</Tooltip>
+							</Grid>
+						</CardActionArea>
+						<OkModal
+							isOpen={addResourceWarningModalIsOpen}
+							handleClose={handleCloseModal(
+								setAddResourceWarningModalIsOpen
+							)}
+							title={"Howdy,"}
+							bodyText={
+								"You'll need to select a provider before we can add resources for you."
+							}
+						/>
 					</Card>
 				</Grid>
 				{trackedResources.map((resource, index) => (
@@ -554,7 +574,7 @@ export default function TerraformManager(props: {
 						fontSize: 18,
 						pointerEvents: "initial"
 					}}>
-					Submit To Repo
+					Create Pull Request
 				</Button>
 			</Box>
 		</Box>
