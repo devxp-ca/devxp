@@ -13,8 +13,12 @@ export default class Homepage extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<Box sx={{minHeight: "99vh", display: "flex"}}>
-					<MainLandingVisual />
+				<Box
+					sx={{
+						minHeight: "100vh",
+						display: "flex",
+						backgroundColor: "#0f101a"
+					}}>
 					<Box
 						style={{
 							width: "100%",
@@ -23,6 +27,7 @@ export default class Homepage extends React.Component<IProps, IState> {
 						}}>
 						<Navbar />
 					</Box>
+					<MainLandingVisual />
 				</Box>
 				<Footer />
 			</ThemeProvider>

@@ -42,7 +42,7 @@ export default function Navbar() {
 
 	return (
 		<ThemeProvider theme={lightTheme}>
-			<Box sx={{flexGrow: 1, marginTop: -1}}>
+			<Box sx={{flexGrow: 1}}>
 				<AppBar position="relative">
 					<Toolbar>
 						<Box sx={{display: "flex"}}>

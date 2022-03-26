@@ -24,9 +24,6 @@ export default function MainLandingVisual() {
 			<Grid
 				container
 				sx={{
-					marginLeft: -1,
-					marginTop: -1,
-					backgroundColor: "#0f101a",
 					position: "absolute"
 				}}>
 				<Grid
