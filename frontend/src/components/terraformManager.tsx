@@ -144,7 +144,6 @@ export default function TerraformManager(props: {
 					setSubmitModalInfo,
 					setSubmitModalIsOpen
 				)();
-				setDirty(false);
 				props.setSettingsHaveBeenEdited(false);
 			})
 			.catch((error: AxiosError) => {
@@ -174,15 +173,11 @@ export default function TerraformManager(props: {
 
 	useEffect(() => {
 		window.onbeforeunload = () => {
-			if (dirty) {
+			if (props.settingsHaveBeenEdited) {
 				return "Are you sure you want to leave without submitting your configuration?";
 			}
 		};
 	});
-
-	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
-	//TODO: bug with provider and secure states where if you change it it doesn't register until you reload the page
-	const [dirty, setDirty] = React.useState(false);
 
 	return (
 		<Box sx={{width: "100%", paddingBottom: 12}}>
@@ -263,17 +258,20 @@ export default function TerraformManager(props: {
 												...trackedResources
 											]);
 											setCurrentResource(undefined);
-											setDirty(true);
+											props.setSettingsHaveBeenEdited(
+												true
+											);
 										},
 										onDelete: () => {
 											setCurrentResource(undefined);
-											setDirty(true);
+											props.setSettingsHaveBeenEdited(
+												true
+											);
 										},
 										onChange: () => {
 											props.setSettingsHaveBeenEdited(
 												true
 											);
-											setDirty(true);
 										}
 									},
 									false
