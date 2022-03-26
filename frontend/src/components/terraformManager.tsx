@@ -566,74 +566,61 @@ export default function TerraformManager(props: {
 				))}
 			</Grid>
 			<Grid>
-				<Grid>
-					<Box
-						textAlign="center"
+				<Box
+					textAlign="center"
+					sx={{
+						paddingTop: 3,
+						position: "fixed",
+						bottom: 75,
+						width: "calc(100vw - 76px)",
+						pointerEvents: "none"
+					}}>
+					<Button
+						disabled={
+							//openCards > 0 ||
+							!props.settingsHaveBeenEdited ||
+							(selectedProvider?.length ?? 0) < 1 ||
+							(props.selectedRepo?.length ?? 0) < 1 ||
+							(selectedProvider === "google" &&
+								project.length < 6)
+						}
+						variant="contained"
+						color="success"
+						size="large"
+						startIcon={<CheckIcon />}
+						aria-label="submit to repo"
+						onClick={handleOpenSubmitModalConfirmation(
+							setSubmitModalInfo,
+							setSubmitModalIsOpen,
+							props.selectedRepo
+						)}
 						sx={{
-							paddingTop: 3,
-							position: "fixed",
-							bottom: 75,
-							width: "calc(100vw - 76px)",
-							pointerEvents: "none"
+							padding: 2,
+							fontSize: 18,
+							pointerEvents: "initial",
+							marginRight: 2
 						}}>
-						<Button
-							disabled={
-								//openCards > 0 ||
-								!props.settingsHaveBeenEdited ||
-								(selectedProvider?.length ?? 0) < 1 ||
-								(props.selectedRepo?.length ?? 0) < 1 ||
-								(selectedProvider === "google" &&
-									project.length < 6)
-							}
-							variant="contained"
-							color="success"
-							size="large"
-							startIcon={<CheckIcon />}
-							aria-label="submit to repo"
-							onClick={handleOpenSubmitModalConfirmation(
-								setSubmitModalInfo,
-								setSubmitModalIsOpen,
-								props.selectedRepo
-							)}
-							sx={{
-								padding: 2,
-								fontSize: 18,
-								pointerEvents: "initial"
-							}}>
-							Create Pull Request
-						</Button>
-					</Box>
-				</Grid>
-				<Grid>
-					<Box
-						textAlign="center"
+						Create Pull Request
+					</Button>
+					<Button
+						disabled={!props.settingsHaveBeenEdited}
+						variant="contained"
+						color="error"
+						size="large"
+						startIcon={<CheckIcon />}
+						aria-label="discard changes"
+						onClick={() => {
+							props.setSettingsHaveBeenEdited(false);
+							resetRepoData();
+						}}
 						sx={{
-							paddingTop: 3,
-							position: "fixed",
-							bottom: 75,
-							width: "calc(100vw - 76px)",
-							pointerEvents: "none"
+							padding: 2,
+							fontSize: 18,
+							pointerEvents: "initial"
 						}}>
-						<Button
-							disabled={!props.settingsHaveBeenEdited}
-							variant="contained"
-							color="error"
-							size="large"
-							startIcon={<CheckIcon />}
-							aria-label="discard changes"
-							onClick={() => {
-								props.setSettingsHaveBeenEdited(false);
-								resetRepoData();
-							}}
-							sx={{
-								padding: 2,
-								fontSize: 18,
-								pointerEvents: "initial"
-							}}>
-							Discard Changes
-						</Button>
-					</Box>
-				</Grid>
+						Discard Changes
+					</Button>
+				</Box>
 			</Grid>
 		</Box>
 	);
