@@ -1,11 +1,12 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import MainLandingVisual from "../components/mainLandingVisual";
+import ProductPage from "../components/ProductPage";
 import Footer from "../components/Footer";
-import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
-import {Box} from "@mui/system";
+import {Element, scroller} from "react-scroll";
 
 interface IProps {}
 interface IState {}
@@ -13,23 +14,51 @@ export default class Homepage extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={lightTheme}>
-				<Box
+				<Grid
+					container
+					direction="column"
 					sx={{
-						minHeight: "100vh",
-						display: "flex",
 						backgroundColor: "#0f101a"
 					}}>
-					<Box
-						style={{
-							width: "100%",
-							paddingLeft: 30,
-							paddingRight: 30
+					<Grid
+						container
+						direction="column"
+						sx={{
+							minHeight: "100vh"
 						}}>
-						<Navbar />
-					</Box>
-					<MainLandingVisual />
-				</Box>
-				<Footer />
+						<Grid
+							item
+							style={{
+								width: "100%",
+								paddingLeft: 30,
+								paddingRight: 30
+							}}>
+							<Navbar />
+						</Grid>
+						<Grid
+							item
+							container
+							sx={{
+								flexGrow: 1,
+								paddingTop: 2,
+								paddingBottom: 3
+							}}>
+							<MainLandingVisual
+								onClick={() => {
+									scroller.scrollTo("DevXP-Product-Title", {
+										duration: 1000,
+										delay: 100,
+										smooth: true
+									});
+								}}
+							/>
+						</Grid>
+					</Grid>
+					<Element name="DevXP-Product-Title">
+						<ProductPage />
+					</Element>
+					<Footer />
+				</Grid>
 			</ThemeProvider>
 		);
 	}

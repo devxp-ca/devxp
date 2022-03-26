@@ -14,7 +14,9 @@ export default function Footer() {
 				position: "fixed",
 				left: 0,
 				bottom: 0,
-				right: 0
+				right: 0,
+				paddingBottom: 0.5,
+				zIndex: 0
 			}}>
 			<Typography variant="body2" color="text.secondary" align="center">
 				<MuiLink
