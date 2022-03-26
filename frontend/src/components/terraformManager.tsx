@@ -24,6 +24,7 @@ import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
 import OkModal from "./modals/OkModal";
+import OkCancelModal from "./modals/OkCancelModal";
 import {
 	handleCloseModal,
 	handleOpenFailModal,
@@ -169,6 +170,8 @@ export default function TerraformManager(props: {
 
 	// Info modal for when a user tries to add a resource without choosing a provider
 	const [addResourceWarningModalIsOpen, setAddResourceWarningModalIsOpen] =
+		React.useState(false);
+	const [exitWarningModalIsOpen, setExitWarningModalIsOpen] =
 		React.useState(false);
 
 	useEffect(() => {
@@ -462,9 +465,29 @@ export default function TerraformManager(props: {
 					<Button
 						variant="outlined"
 						sx={{width: 3, height: defaultCardSize}}
-						onClick={props.backButton}>
+						onClick={() => {
+							if (props.settingsHaveBeenEdited) {
+								setExitWarningModalIsOpen(true);
+							} else {
+								props.backButton();
+							}
+						}}>
 						<ArrowBackIcon />
 					</Button>
+					<OkCancelModal
+						isOpen={exitWarningModalIsOpen}
+						onOk={() => {
+							props.backButton();
+							setExitWarningModalIsOpen(false);
+						}}
+						onCancel={() => {
+							setExitWarningModalIsOpen(false);
+						}}
+						title={"Hold Up!"}
+						bodyText={
+							"If you leave, you will lose your currently unsaved settings."
+						}
+					/>
 				</Grid>
 				<Grid item>
 					<Card>
