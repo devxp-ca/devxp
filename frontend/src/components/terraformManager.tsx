@@ -511,32 +511,22 @@ export default function TerraformManager(props: {
 								justifyContent="center"
 								alignItems="center"
 								sx={{
-									"&:hover": {
-										backgroundColor: "success.light"
-									}
+									width: defaultCardSize / 2,
+									height: defaultCardSize,
+									borderWidth: 1,
+									borderColor: "success.main",
+									borderStyle: "solid",
+									borderRadius: 1
 								}}>
-								<Grid
-									container
-									justifyContent="center"
-									alignItems="center"
-									sx={{
-										width: defaultCardSize / 2,
-										height: defaultCardSize,
-										borderWidth: 1,
-										borderColor: "success.main",
-										borderStyle: "solid",
-										borderRadius: 1
-									}}>
-									<Grid item>
-										<AddIcon
-											sx={{
-												width: 75,
-												height: 75,
-												opacity: 1,
-												color: "success.main"
-											}}
-										/>
-									</Grid>
+								<Grid item>
+									<AddIcon
+										sx={{
+											width: 75,
+											height: 75,
+											opacity: 1,
+											color: "success.main"
+										}}
+									/>
 								</Grid>
 							</Grid>
 						</CardActionArea>
