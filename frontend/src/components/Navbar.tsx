@@ -12,7 +12,11 @@ import {lightTheme} from "../style/themes";
 import {Cookies} from "react-cookie";
 import {CONFIG} from "../config";
 
-export default function Navbar() {
+interface NavbarProps {
+	children?: JSX.Element; // Can be used for buttons or any other custom element we want on a modal,
+}
+
+export default function Navbar({children}: NavbarProps) {
 	const [isLoggedIn, setIsLoggedIn] = React.useState(() => {
 		const cookies = new Cookies();
 		const token = cookies.get("token");
@@ -73,6 +77,7 @@ export default function Navbar() {
 						</Box>
 						<Box sx={{flexGrow: 1}} />
 						<Box sx={{display: {xs: "flex", md: "flex"}}}>
+							{children}
 							<LoginWithGithub
 								isLoggedIn={isLoggedIn}
 								handleLogin={handleLogin}

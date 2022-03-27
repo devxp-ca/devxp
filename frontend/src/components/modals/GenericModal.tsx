@@ -2,6 +2,7 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 
 interface modalProps {
 	isOpen: boolean;
@@ -26,7 +27,7 @@ export default function GenericModal({
 		left: "50%",
 		transform: "translate(-50%, -50%)",
 		width: width ?? 400,
-		bgcolor: "white",
+		bgcolor: "primary",
 		boxShadow: 24,
 		zIndex: 100
 	};
@@ -44,23 +45,18 @@ export default function GenericModal({
 	};
 
 	return (
-		<div>
-			<Modal open={isOpen} onClose={handleClose}>
-				<Box sx={modalStyle}>
-					<Box sx={titleBoxStyle}>
-						<Typography
-							variant="h6"
-							component="h2"
-							sx={{padding: 2}}>
-							{title}
-						</Typography>
-					</Box>
-					<Box sx={bodyStyle}>
-						<Typography sx={{mt: 2}}>{bodyText}</Typography>
-						{children}
-					</Box>
+		<Modal open={isOpen} onClose={handleClose}>
+			<Paper sx={modalStyle}>
+				<Box sx={titleBoxStyle}>
+					<Typography variant="h6" component="h2" sx={{padding: 2}}>
+						{title}
+					</Typography>
 				</Box>
-			</Modal>
-		</div>
+				<Box sx={bodyStyle}>
+					<Typography sx={{mt: 2}}>{bodyText}</Typography>
+					{children}
+				</Box>
+			</Paper>
+		</Modal>
 	);
 }

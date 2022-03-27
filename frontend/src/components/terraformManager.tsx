@@ -23,6 +23,8 @@ import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
+import OkModal from "./modals/OkModal";
+import OkCancelModal from "./modals/OkCancelModal";
 import {
 	handleCloseModal,
 	handleOpenFailModal,
@@ -92,7 +94,7 @@ export default function TerraformManager(props: {
 	>([]);
 	const [project, setProject] = React.useState("");
 
-	React.useEffect(() => {
+	const resetRepoData = () => {
 		setTrackedResources(props.repoData?.settings?.resources ?? []);
 		setSelectedProvider(props.repoData?.settings?.provider ?? "");
 		setSelectedSecureOption(props.repoData?.settings?.secure ?? false);
@@ -107,7 +109,9 @@ export default function TerraformManager(props: {
 			props.repoData?.settings?.autoLoadBalance ?? false
 		);
 		setProject(props.repoData?.settings?.project ?? "");
-	}, [props.repoData]);
+	};
+
+	React.useEffect(resetRepoData, [props.repoData]);
 
 	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
@@ -143,7 +147,6 @@ export default function TerraformManager(props: {
 					setSubmitModalInfo,
 					setSubmitModalIsOpen
 				)();
-				setDirty(false);
 				props.setSettingsHaveBeenEdited(false);
 			})
 			.catch((error: AxiosError) => {
@@ -167,17 +170,19 @@ export default function TerraformManager(props: {
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
 
+	// Info modal for when a user tries to add a resource without choosing a provider
+	const [addResourceWarningModalIsOpen, setAddResourceWarningModalIsOpen] =
+		React.useState(false);
+	const [exitWarningModalIsOpen, setExitWarningModalIsOpen] =
+		React.useState(false);
+
 	useEffect(() => {
 		window.onbeforeunload = () => {
-			if (dirty) {
+			if (props.settingsHaveBeenEdited) {
 				return "Are you sure you want to leave without submitting your configuration?";
 			}
 		};
 	});
-
-	//TODO: add more info to provider, can't switch it after submitting instances unless you want to delete them all -- override in options?
-	//TODO: bug with provider and secure states where if you change it it doesn't register until you reload the page
-	const [dirty, setDirty] = React.useState(false);
 
 	return (
 		<Box sx={{width: "100%", paddingBottom: 12}}>
@@ -258,17 +263,20 @@ export default function TerraformManager(props: {
 												...trackedResources
 											]);
 											setCurrentResource(undefined);
-											setDirty(true);
+											props.setSettingsHaveBeenEdited(
+												true
+											);
 										},
 										onDelete: () => {
 											setCurrentResource(undefined);
-											setDirty(true);
+											props.setSettingsHaveBeenEdited(
+												true
+											);
 										},
 										onChange: () => {
 											props.setSettingsHaveBeenEdited(
 												true
 											);
-											setDirty(true);
 										}
 									},
 									false
@@ -459,54 +467,80 @@ export default function TerraformManager(props: {
 					<Button
 						variant="outlined"
 						sx={{width: 3, height: defaultCardSize}}
-						onClick={props.backButton}>
+						onClick={() => {
+							if (props.settingsHaveBeenEdited) {
+								setExitWarningModalIsOpen(true);
+							} else {
+								props.backButton();
+							}
+						}}>
 						<ArrowBackIcon />
 					</Button>
+					<OkCancelModal
+						isOpen={exitWarningModalIsOpen}
+						onOk={() => {
+							props.backButton();
+							setExitWarningModalIsOpen(false);
+							props.setSettingsHaveBeenEdited(false);
+						}}
+						onCancel={() => {
+							setExitWarningModalIsOpen(false);
+						}}
+						title={"Hold Up!"}
+						bodyText={
+							"If you leave, you will lose your currently unsaved settings."
+						}
+					/>
 				</Grid>
 				<Grid item>
 					<Card>
-						<Tooltip title="Add a new Terraform instance, must select provider first">
-							<CardActionArea
-								onClick={() => {
-									//TODO: Popup modal and select type
-									// If provider selected, open:
-									if ((selectedProvider?.length ?? 0) > 0) {
-										setOpenOptionsModal(true);
-									} else {
-										setOpenOptionsModal(false);
-									}
-									// Otherwise, should we have a popover reminder?
-								}}
+						<CardActionArea
+							onClick={() => {
+								if (!!selectedProvider) {
+									setOpenOptionsModal(true);
+								} else {
+									setAddResourceWarningModalIsOpen(true);
+								}
+							}}
+							sx={{
+								"&:hover": {
+									backgroundColor: "success.light"
+								}
+							}}>
+							<Grid
+								container
+								justifyContent="center"
+								alignItems="center"
 								sx={{
-									"&:hover": {
-										backgroundColor: "success.light"
-									}
+									width: defaultCardSize / 2,
+									height: defaultCardSize,
+									borderWidth: 1,
+									borderColor: "success.main",
+									borderStyle: "solid",
+									borderRadius: 1
 								}}>
-								<Grid
-									container
-									justifyContent="center"
-									alignItems="center"
-									sx={{
-										width: defaultCardSize / 2,
-										height: defaultCardSize,
-										borderWidth: 1,
-										borderColor: "success.main",
-										borderStyle: "solid",
-										borderRadius: 1
-									}}>
-									<Grid item>
-										<AddIcon
-											sx={{
-												width: 75,
-												height: 75,
-												opacity: 1,
-												color: "success.main"
-											}}
-										/>
-									</Grid>
+								<Grid item>
+									<AddIcon
+										sx={{
+											width: 75,
+											height: 75,
+											opacity: 1,
+											color: "success.main"
+										}}
+									/>
 								</Grid>
-							</CardActionArea>
-						</Tooltip>
+							</Grid>
+						</CardActionArea>
+						<OkModal
+							isOpen={addResourceWarningModalIsOpen}
+							handleClose={handleCloseModal(
+								setAddResourceWarningModalIsOpen
+							)}
+							title={"Howdy,"}
+							bodyText={
+								"You'll need to select a provider before we can add resources for you."
+							}
+						/>
 					</Card>
 				</Grid>
 				{trackedResources.map((resource, index) => (
@@ -522,41 +556,63 @@ export default function TerraformManager(props: {
 					</Grid>
 				))}
 			</Grid>
-			<Box
-				textAlign="center"
-				sx={{
-					paddingTop: 3,
-					position: "fixed",
-					bottom: 75,
-					width: "calc(100vw - 76px)",
-					pointerEvents: "none"
-				}}>
-				<Button
-					disabled={
-						//openCards > 0 ||
-						!props.settingsHaveBeenEdited ||
-						(selectedProvider?.length ?? 0) < 1 ||
-						(props.selectedRepo?.length ?? 0) < 1 ||
-						(selectedProvider === "google" && project.length < 6)
-					}
-					variant="contained"
-					color="success"
-					size="large"
-					startIcon={<CheckIcon />}
-					aria-label="submit to repo"
-					onClick={handleOpenSubmitModalConfirmation(
-						setSubmitModalInfo,
-						setSubmitModalIsOpen,
-						props.selectedRepo
-					)}
+			<Grid>
+				<Box
+					textAlign="center"
 					sx={{
-						padding: 2,
-						fontSize: 18,
-						pointerEvents: "initial"
+						paddingTop: 3,
+						position: "fixed",
+						bottom: 75,
+						width: "calc(100vw - 76px)",
+						pointerEvents: "none"
 					}}>
-					Submit To Repo
-				</Button>
-			</Box>
+					<Button
+						disabled={
+							//openCards > 0 ||
+							!props.settingsHaveBeenEdited ||
+							(selectedProvider?.length ?? 0) < 1 ||
+							(props.selectedRepo?.length ?? 0) < 1 ||
+							(selectedProvider === "google" &&
+								project.length < 6)
+						}
+						variant="contained"
+						color="success"
+						size="large"
+						startIcon={<CheckIcon />}
+						aria-label="submit to repo"
+						onClick={handleOpenSubmitModalConfirmation(
+							setSubmitModalInfo,
+							setSubmitModalIsOpen,
+							props.selectedRepo
+						)}
+						sx={{
+							padding: 2,
+							fontSize: 18,
+							pointerEvents: "initial",
+							marginRight: 2
+						}}>
+						Create Pull Request
+					</Button>
+					<Button
+						disabled={!props.settingsHaveBeenEdited}
+						variant="contained"
+						color="error"
+						size="large"
+						startIcon={<CheckIcon />}
+						aria-label="discard changes"
+						onClick={() => {
+							props.setSettingsHaveBeenEdited(false);
+							resetRepoData();
+						}}
+						sx={{
+							padding: 2,
+							fontSize: 18,
+							pointerEvents: "initial"
+						}}>
+						Discard Changes
+					</Button>
+				</Box>
+			</Grid>
 		</Box>
 	);
 }
