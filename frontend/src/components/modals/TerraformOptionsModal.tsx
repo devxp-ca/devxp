@@ -30,7 +30,6 @@ export default function TerraformOptionsModal({
 	title,
 	handleClick
 }: modalProps) {
-	const currentTheme = useTheme();
 	const currentResources = provider ? (RESOURCE_LIST as any)[provider] : [];
 
 	return (
@@ -56,7 +55,7 @@ export default function TerraformOptionsModal({
 								sx={{
 									backgroundColor: "#FFF",
 									"&:hover": {
-										backgroundColor: `${currentTheme.palette.info.main}10`
+										backgroundColor: "info.dark"
 									}
 								}}>
 								<Grid container>

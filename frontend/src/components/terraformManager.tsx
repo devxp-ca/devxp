@@ -74,7 +74,6 @@ export default function TerraformManager(props: {
 	setSettingsHaveBeenEdited: (hasEdited: boolean) => void;
 	settingsHaveBeenEdited: boolean;
 }) {
-	const currentTheme = useTheme();
 	const defaultCardSize = 250;
 
 	const [selectedProvider, setSelectedProvider] = React.useState("");
@@ -480,7 +479,7 @@ export default function TerraformManager(props: {
 								}}
 								sx={{
 									"&:hover": {
-										backgroundColor: `${currentTheme.palette.success.main}50`
+										backgroundColor: "success.light"
 									}
 								}}>
 								<Grid
@@ -490,7 +489,9 @@ export default function TerraformManager(props: {
 									sx={{
 										width: defaultCardSize / 2,
 										height: defaultCardSize,
-										border: `1px solid ${currentTheme.palette.success.main}`,
+										borderWidth: 1,
+										borderColor: "success.main",
+										borderStyle: "solid",
 										borderRadius: 1
 									}}>
 									<Grid item>
@@ -499,8 +500,7 @@ export default function TerraformManager(props: {
 												width: 75,
 												height: 75,
 												opacity: 1,
-												color: currentTheme.palette
-													.success.main
+												color: "success.main"
 											}}
 										/>
 									</Grid>
@@ -513,18 +513,12 @@ export default function TerraformManager(props: {
 					<Grid item key={`prevInstanceCardGrid${index}`}>
 						{(
 							typeToResource(resource, true) as Resource<any, any>
-						).toCard(
-							() => {
-								setCurrentResource(resource);
-								setTrackedResources(
-									trackedResources.filter(
-										(r, i) => i !== index
-									)
-								);
-							},
-							defaultCardSize,
-							currentTheme
-						)}
+						).toCard(() => {
+							setCurrentResource(resource);
+							setTrackedResources(
+								trackedResources.filter((r, i) => i !== index)
+							);
+						}, defaultCardSize)}
 					</Grid>
 				))}
 			</Grid>

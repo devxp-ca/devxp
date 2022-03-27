@@ -145,11 +145,7 @@ export default abstract class Resource<
 		disableIam: false
 	};
 
-	toCard(
-		onClick: () => void,
-		cardSize: number,
-		currentTheme: Theme = lightTheme
-	) {
+	toCard(onClick: () => void, cardSize: number) {
 		return (
 			<Card sx={{width: cardSize, height: cardSize}}>
 				<CardActionArea
@@ -157,7 +153,7 @@ export default abstract class Resource<
 					sx={{
 						height: "100%",
 						"&:hover": {
-							backgroundColor: `${currentTheme.palette.primary.main}50`
+							backgroundColor: "info.light"
 						}
 					}}>
 					<CardMedia sx={{height: "100%"}}>
@@ -166,7 +162,7 @@ export default abstract class Resource<
 							variant="h5"
 							component="div"
 							sx={{
-								backgroundColor: `${currentTheme.palette.primary.main}75`,
+								backgroundColor: "info.main",
 								borderRadius: 1,
 								padding: 2,
 								textAlign: "center",

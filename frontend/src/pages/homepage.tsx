@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import Grid from "@mui/material/Grid";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {lightTheme} from "../style/themes";
+import {darkTheme} from "../style/themes";
 import {Element, scroller} from "react-scroll";
 
 interface IProps {}
@@ -28,10 +29,10 @@ export default class Homepage extends React.Component<IProps, IState> {
 						}}>
 						<Grid
 							item
-							style={{
+							sx={{
 								width: "100%",
-								paddingLeft: 30,
-								paddingRight: 30
+								paddingLeft: 6,
+								paddingRight: 6
 							}}>
 							<Navbar />
 						</Grid>

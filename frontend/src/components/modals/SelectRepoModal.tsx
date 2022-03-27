@@ -20,8 +20,6 @@ export default function SelectRepoModal({
 	bodyText,
 	children
 }: modalProps) {
-	const currentTheme = useTheme();
-
 	const modalStyle = {
 		position: "absolute",
 		top: "50%",
@@ -35,7 +33,7 @@ export default function SelectRepoModal({
 
 	const titleBoxStyle = {
 		textAlign: "center",
-		bgcolor: currentTheme.palette.primary.main,
+		bgcolor: "primary.main",
 		width: "100%"
 	};
 
