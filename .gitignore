@@ -160,3 +160,6 @@ terraform.rc
 
 # typedoc generated docs
 **/docs/
+
+# Misc files
+**/.DS_Store
