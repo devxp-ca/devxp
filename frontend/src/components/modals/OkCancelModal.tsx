@@ -4,46 +4,44 @@ import GenericModal from "./GenericModal";
 
 interface modalProps {
 	isOpen: boolean;
-	handleClose: () => void;
-	onYes: () => void;
-	onNo: () => void;
+	onOk: () => void;
+	onCancel: () => void;
 	title: string;
 	bodyText?: string;
 }
 
-export default function YesNoModal({
+export default function OkCancelModal({
 	isOpen,
-	handleClose,
-	onYes,
-	onNo,
+	onOk,
+	onCancel,
 	title,
 	bodyText
 }: modalProps) {
 	return (
 		<GenericModal
 			isOpen={isOpen}
-			handleClose={handleClose}
+			handleClose={onCancel}
 			title={title}
 			bodyText={bodyText}
 			children={
 				<Grid style={{display: "flex", justifyContent: "center"}}>
 					<Button
-						onClick={onNo}
+						onClick={onOk}
 						sx={{
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial"
 						}}>
-						NO
+						OK
 					</Button>
 					<Button
-						onClick={onYes}
+						onClick={onCancel}
 						sx={{
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial"
 						}}>
-						YES
+						Cancel
 					</Button>
 				</Grid>
 			}

@@ -10,7 +10,7 @@ interface modalProps {
 	bodyText?: string;
 }
 
-export default function YesNoModal({
+export default function OkModal({
 	isOpen,
 	handleClose,
 	onOk,

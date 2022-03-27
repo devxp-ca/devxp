@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import GenericModal from "../components/modals/GenericModal";
 import OkModal from "../components/modals/OkModal";
+import OkCancelModal from "../components/modals/OkCancelModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
 import LoadingModal from "../components/modals/loadingModal";
 import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
@@ -29,7 +30,10 @@ export default function ToolManager() {
 	const [repoList, setRepoList] = React.useState([]);
 	// The repo we are currently configuring
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+	const [previousRepo, setPreviousRepo] = React.useState<string>("");
 	const [selectedRepoSavedData, setSelectedRepoSavedData] =
+		React.useState<terraformDataSettings | null>(null);
+	const [tempRepoData, setTempRepoData] =
 		React.useState<terraformDataSettings | null>(null);
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
@@ -44,17 +48,27 @@ export default function ToolManager() {
 			})
 			.then((response: any) => {
 				setShowLoadingModal(false);
-				setSelectedRepoSavedData(response.data);
-				setSettingsHaveBeenEdited(false);
+				if (!selectedRepoSavedData && settingsHaveBeenEdited) {
+					setTempRepoData(response.data);
+					setOverwriteChoiceModalIsOpen(true);
+				} else {
+					setSelectedRepoSavedData(response.data);
+					setSettingsHaveBeenEdited(false);
+				}
 			})
 			.catch((error: any) => {
 				setShowLoadingModal(false);
-				setSelectedRepoSavedData(null);
-				setSettingsHaveBeenEdited(false);
+				if (!!selectedRepoSavedData) {
+					// Clean slate
+					setSelectedRepoSavedData(null);
+					setSettingsHaveBeenEdited(false);
+				}
 				console.error(error);
+			})
+			.finally(() => {
+				setSelectedRepo(repoName);
+				setGiveOverwriteWarning(true);
 			});
-		setGiveOverwriteWarning(true);
-		setSelectedRepo(repoName);
 	};
 
 	const setSelectedToolCardCallback = (tool_name: string) => {
@@ -65,16 +79,20 @@ export default function ToolManager() {
 	};
 
 	/* For control flow logic (loading/overwriting/copying) */
-	const [overwriteModalIsOpen, setOverwriteModalIsOpen] =
+	const [overwriteWarningModalIsOpen, setOverwriteWarningModalIsOpen] =
 		React.useState(false);
-	// We give a warning when a user switches repos with unsaved settings
+	// We give a warning when a user tries to switch repos with unsaved settings
 	const [giveOverwriteWarning, setGiveOverwriteWarning] =
 		React.useState(true);
+	// If the user comes from "no selected repo" and switches to repo with
+	// saved settings, give them a choice to back out or let the local changes be overwritten
+	const [overwriteChoiceModalIsOpen, setOverwriteChoiceModalIsOpen] =
+		React.useState(false);
 	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
 	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
 		React.useState(false);
 	const [headsUpModalIsOpen, setHeadsUpModalIsOpen] = React.useState(false);
-	// We give a warning when a user switches repos with unsaved settings
+	// We give a warning when a user tries to copy a repo with unsaved settings
 	const [giveCopyWarning, setGiveCopyWarning] = React.useState(true);
 
 	/* For the copy settings modal */
@@ -130,6 +148,7 @@ export default function ToolManager() {
 								id="repo-select"
 								disableClearable={true}
 								options={repoList}
+								value={{full_name: selectedRepo}}
 								getOptionLabel={(option: any) =>
 									option?.full_name ?? ""
 								}
@@ -142,14 +161,16 @@ export default function ToolManager() {
 								)}
 								onOpen={() => {
 									if (
+										!!selectedRepoSavedData &&
 										settingsHaveBeenEdited &&
 										giveOverwriteWarning
 									) {
 										setGiveOverwriteWarning(false);
-										setOverwriteModalIsOpen(true);
+										setOverwriteWarningModalIsOpen(true);
 									}
 								}}
 								onChange={(event: any, value: any) => {
+									setPreviousRepo(selectedRepo);
 									updateSelectedRepo(value?.full_name ?? "");
 								}}
 								isOptionEqualToValue={(
@@ -162,13 +183,31 @@ export default function ToolManager() {
 								}}
 							/>
 							<OkModal
-								isOpen={overwriteModalIsOpen}
+								isOpen={overwriteWarningModalIsOpen}
 								handleClose={handleCloseModal(
-									setOverwriteModalIsOpen
+									setOverwriteWarningModalIsOpen
 								)}
-								title={"Are you sure you want to change repos?"}
+								title={"Heads up!"}
 								bodyText={
-									"This action will discard unsaved changes."
+									"It looks like you have uncommitted changes.\
+									If you select a new repo, your uncommited changes will be lost.\
+									Consider creating a pull request before changing repos."
+								}
+							/>
+							<OkCancelModal
+								isOpen={overwriteChoiceModalIsOpen}
+								onOk={() => {
+									setSelectedRepoSavedData(tempRepoData);
+									setSettingsHaveBeenEdited(false);
+									setOverwriteChoiceModalIsOpen(false);
+								}}
+								onCancel={() => {
+									setSelectedRepo(previousRepo);
+									setOverwriteChoiceModalIsOpen(false);
+								}}
+								title={"Warning: This repo has saved settings."}
+								bodyText={
+									"Continuing will overwrite your currently unsaved settings."
 								}
 							/>
 						</Grid>
