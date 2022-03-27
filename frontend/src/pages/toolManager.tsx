@@ -166,24 +166,19 @@ export default function ToolManager() {
 										giveOverwriteWarning
 									) {
 										setGiveOverwriteWarning(false);
-										setOverwriteWarningModalIsOpen(
-											true
-										);
+										setOverwriteWarningModalIsOpen(true);
 									}
 								}}
 								onChange={(event: any, value: any) => {
 									setPreviousRepo(selectedRepo);
-									updateSelectedRepo(
-										value?.full_name ?? ""
-									);
+									updateSelectedRepo(value?.full_name ?? "");
 								}}
 								isOptionEqualToValue={(
 									option: any,
 									value: any
 								) => {
 									return (
-										option?.full_name ===
-										value?.full_name
+										option?.full_name === value?.full_name
 									);
 								}}
 							/>
@@ -210,9 +205,7 @@ export default function ToolManager() {
 									setSelectedRepo(previousRepo);
 									setOverwriteChoiceModalIsOpen(false);
 								}}
-								title={
-									"Warning: This repo has saved settings."
-								}
+								title={"Warning: This repo has saved settings."}
 								bodyText={
 									"Continuing will overwrite your currently unsaved settings."
 								}
