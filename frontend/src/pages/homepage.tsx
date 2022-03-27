@@ -18,7 +18,7 @@ export default class Homepage extends React.Component<IProps, IState> {
 					container
 					direction="column"
 					sx={{
-						backgroundColor: "#0f101a"
+						backgroundColor: "primary.dark"
 					}}>
 					<Grid
 						container

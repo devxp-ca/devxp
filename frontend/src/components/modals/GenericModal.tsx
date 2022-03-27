@@ -2,7 +2,6 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {lightTheme} from "../../style/themes";
 
 interface modalProps {
 	isOpen: boolean;
@@ -21,8 +20,6 @@ export default function GenericModal({
 	children,
 	width
 }: modalProps) {
-	const currentTheme = lightTheme;
-
 	const modalStyle = {
 		position: "absolute",
 		top: "50%",
@@ -36,7 +33,7 @@ export default function GenericModal({
 
 	const titleBoxStyle = {
 		textAlign: "center",
-		bgcolor: currentTheme.palette.primary.main,
+		bgcolor: "info.main",
 		width: "100%"
 	};
 

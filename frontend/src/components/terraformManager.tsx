@@ -34,6 +34,7 @@ import {
 
 import TerraformOptionsModal from "./modals/TerraformOptionsModal";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
+import {useTheme} from "@mui/material/styles";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -73,7 +74,7 @@ export default function TerraformManager(props: {
 	setSettingsHaveBeenEdited: (hasEdited: boolean) => void;
 	settingsHaveBeenEdited: boolean;
 }) {
-	const currentTheme = lightTheme;
+	const currentTheme = useTheme();
 	const defaultCardSize = 250;
 
 	const [selectedProvider, setSelectedProvider] = React.useState("");

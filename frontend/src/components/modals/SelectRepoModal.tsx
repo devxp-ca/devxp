@@ -2,7 +2,7 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {lightTheme} from "../../style/themes";
+import {useTheme} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 
 interface modalProps {
@@ -20,7 +20,7 @@ export default function SelectRepoModal({
 	bodyText,
 	children
 }: modalProps) {
-	const currentTheme = lightTheme;
+	const currentTheme = useTheme();
 
 	const modalStyle = {
 		position: "absolute",

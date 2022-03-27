@@ -6,6 +6,9 @@ declare module "@mui/material/styles" {
 			mode: string;
 			primary: {
 				main: string;
+				//used for the off black/white colors for backgrounds
+				light: string;
+				dark: string;
 			};
 			secondary: {
 				main: string;
@@ -16,6 +19,12 @@ declare module "@mui/material/styles" {
 			success: {
 				main: string;
 			};
+			warning: {
+				main: string;
+			};
+			error: {
+				main: string;
+			};
 		};
 	}
 }
@@ -24,16 +33,24 @@ export const lightTheme = createTheme({
 	palette: {
 		mode: "light",
 		primary: {
-			main: "#6bb8ff"
+			main: "#4DACFF",
+			light: "#FFFFFF",
+			dark: "#101423"
 		},
 		secondary: {
-			main: "#3d5afe"
+			main: "#75DEFF"
 		},
 		info: {
-			main: "#3d5afe"
+			main: "#80F6E8"
 		},
 		success: {
-			main: "#a8e371"
+			main: "#A1E561"
+		},
+		warning: {
+			main: "#FFB74D"
+		},
+		error: {
+			main: "#E57373"
 		}
 	}
 });
@@ -42,16 +59,24 @@ export const darkTheme = createTheme({
 	palette: {
 		mode: "dark",
 		primary: {
-			main: "#679062"
+			main: "#4DACFF",
+			light: "#FFFFFF",
+			dark: "#101423"
 		},
 		secondary: {
-			main: "#85cb6b"
+			main: "#4267EB"
 		},
 		info: {
-			main: "#3d5afe"
+			main: "#3BD6BA"
 		},
 		success: {
-			main: "#8ee364"
+			main: "#35E185"
+		},
+		warning: {
+			main: "#AF48FF"
+		},
+		error: {
+			main: "#ED538A"
 		}
 	}
 });
