@@ -481,6 +481,7 @@ export default function TerraformManager(props: {
 						onOk={() => {
 							props.backButton();
 							setExitWarningModalIsOpen(false);
+							props.setSettingsHaveBeenEdited(false);
 						}}
 						onCancel={() => {
 							setExitWarningModalIsOpen(false);
