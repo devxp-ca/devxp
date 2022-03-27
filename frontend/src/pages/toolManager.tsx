@@ -8,7 +8,6 @@ import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
 import {terraformDataSettings} from "../components/terraformOptions";
 import {
-	Box,
 	ThemeProvider,
 	Autocomplete,
 	TextField,
@@ -17,7 +16,6 @@ import {
 	Grid,
 	Paper
 } from "@mui/material";
-import GenericModal from "../components/modals/GenericModal";
 import OkModal from "../components/modals/OkModal";
 import OkCancelModal from "../components/modals/OkCancelModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
@@ -26,7 +24,8 @@ import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
 import ThemeButton from "../style/ThemeButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import terraformPNG from "../assets/Terraform_Vertical.png";
+import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
+import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 
 export default function ToolManager() {
 	//media query to determine if the preferred theme is light
@@ -303,7 +302,11 @@ export default function ToolManager() {
 									)}
 									title="Terraform"
 									desc="An infrastructure as code tool that can manage all your cloud resource needs"
-									image={terraformPNG}
+									image={
+										theme === darkTheme
+											? terraformPNGDark
+											: terraformPNGLight
+									}
 									color="#844FBA"
 								/>
 							</Grid>

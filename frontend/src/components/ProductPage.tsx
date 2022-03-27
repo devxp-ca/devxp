@@ -1,13 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme} from "../style/themes";
 import Grid from "@mui/material/Grid";
 
 import titleImage from "../assets/devxp-title.png";
-import terraformPNG from "../assets/Terraform_Vertical.png";
+import terraformPNG from "../assets/Terraform_Vertical_Light.png";
 import cloudProvidersPNG from "../assets/cloud_providers.png";
 import easyConfigPNG from "../assets/easy_config.png";
 import githubIcon from "../assets/github_icon.png";
