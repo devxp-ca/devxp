@@ -4,8 +4,6 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import {CardActionArea} from "@mui/material";
-import {ThemeProvider} from "@emotion/react";
-import {lightTheme, darkTheme} from "../style/themes";
 
 export default function ToolManagerCard(props: {
 	onClick: () => void;

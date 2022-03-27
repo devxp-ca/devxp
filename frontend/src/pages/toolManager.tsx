@@ -23,10 +23,32 @@ import OkCancelModal from "../components/modals/OkCancelModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
 import LoadingModal from "../components/modals/loadingModal";
 import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
+import ThemeButton from "../style/ThemeButton";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import terraformPNG from "../assets/Terraform_Vertical.png";
 
 export default function ToolManager() {
+	//media query to determine if the preferred theme is light
+	const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
+	//set local storage to the preferred theme
+	localStorage.setItem("preferredTheme", prefersLightMode ? "light" : "dark");
+	//theme state & toggle function
+	const [theme, setTheme] = React.useState(
+		//check local storage for preferred theme
+		localStorage.getItem("preferredTheme") === "light"
+			? lightTheme
+			: darkTheme
+	);
+	//function to handle theme toggle
+	const toggleTheme = () => {
+		if (theme === lightTheme) {
+			setTheme(darkTheme);
+		} else {
+			setTheme(lightTheme);
+		}
+	};
+
 	const [repoList, setRepoList] = React.useState([]);
 	// The repo we are currently configuring
 	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
@@ -113,7 +135,7 @@ export default function ToolManager() {
 	}, []);
 
 	return (
-		<ThemeProvider theme={darkTheme}>
+		<ThemeProvider theme={theme}>
 			<Paper>
 				<Grid
 					container
@@ -130,7 +152,12 @@ export default function ToolManager() {
 						sx={{
 							width: "100%"
 						}}>
-						<Navbar />
+						<Navbar
+							children={ThemeButton({
+								handleClick: toggleTheme,
+								theme: theme
+							})}
+						/>
 					</Grid>
 					<Grid
 						item
