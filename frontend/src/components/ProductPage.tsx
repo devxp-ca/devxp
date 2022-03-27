@@ -69,16 +69,25 @@ export default function ProductPage() {
 							}}
 						/>
 					</Box>
-					<Typography variant="h5" color="black" align="center">
-						DevXP is a web application designed to make your life
-						easier. We know that learning and incorporating new
-						tools into your project is necessary, but it can often
-						be time consuming, overwhelming, and down right painful.
-						DevXP helps by introducing you to new tools in an
-						easy-to-adapt manner by reducing the number of
-						configuration options, providing explanations in simple
-						language, and even writing configuration files for you.
-					</Typography>
+					<Grid item container justifyContent="center">
+						<Grid item xs={9}>
+							<Typography
+								variant="h5"
+								color="black"
+								align="center">
+								DevXP is a web application designed to make your
+								life easier. We know that learning and
+								incorporating new tools into your project is
+								necessary, but it can often be time consuming,
+								overwhelming, and down right painful. DevXP
+								helps by introducing you to new tools in an
+								easy-to-adapt manner by reducing the number of
+								configuration options, providing explanations in
+								simple language, and even writing configuration
+								files for you.
+							</Typography>
+						</Grid>
+					</Grid>
 					<Typography variant="h5" color="black" align="center">
 						DevXP...
 					</Typography>
