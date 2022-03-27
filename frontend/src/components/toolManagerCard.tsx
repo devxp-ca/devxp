@@ -4,6 +4,8 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import {CardActionArea} from "@mui/material";
+import {ThemeProvider} from "@emotion/react";
+import {lightTheme, darkTheme} from "../style/themes";
 
 export default function ToolManagerCard(props: {
 	onClick: () => void;
@@ -13,7 +15,7 @@ export default function ToolManagerCard(props: {
 	color: string;
 }) {
 	return (
-		<Card sx={{maxWidth: 345, backgroundColor: "primary.light"}}>
+		<Card sx={{maxWidth: 345, backgroundColor: "primary"}}>
 			<CardActionArea onClick={props.onClick}>
 				<CardMedia component="img" image={props.image} />
 				<CardContent sx={{backgroundColor: `${props.color}50`}}>
