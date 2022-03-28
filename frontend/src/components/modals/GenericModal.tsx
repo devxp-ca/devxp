@@ -27,7 +27,7 @@ export default function GenericModal({
 		left: "50%",
 		transform: "translate(-50%, -50%)",
 		width: width ?? 400,
-		bgcolor: "primary",
+		bgcolor: "secondary.light",
 		boxShadow: 24,
 		zIndex: 100
 	};
@@ -48,7 +48,11 @@ export default function GenericModal({
 		<Modal open={isOpen} onClose={handleClose}>
 			<Paper sx={modalStyle}>
 				<Box sx={titleBoxStyle}>
-					<Typography variant="h6" component="h2" sx={{padding: 2}}>
+					<Typography
+						variant="h6"
+						component="h2"
+						sx={{padding: 2}}
+						color="black">
 						{title}
 					</Typography>
 				</Box>

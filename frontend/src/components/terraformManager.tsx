@@ -683,7 +683,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 									borderWidth: 1,
 									borderColor: "success.main",
 									borderStyle: "solid",
-									borderRadius: 1
+									borderRadius: 1,
+									bgcolor: "secondary.light"
 								}}>
 								<Grid item>
 									<AddIcon

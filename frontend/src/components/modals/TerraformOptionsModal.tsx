@@ -53,7 +53,7 @@ export default function TerraformOptionsModal({
 									handleClick(event, value["key"]);
 								}}
 								sx={{
-									backgroundColor: "primary",
+									backgroundColor: "secondary.light",
 									"&:hover": {
 										backgroundColor: "info.dark"
 									}

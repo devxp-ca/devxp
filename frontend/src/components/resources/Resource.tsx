@@ -147,7 +147,12 @@ export default abstract class Resource<
 
 	toCard(onClick: () => void, cardSize: number) {
 		return (
-			<Card sx={{width: cardSize, height: cardSize}}>
+			<Card
+				sx={{
+					width: cardSize,
+					height: cardSize,
+					backgroundColor: "secondary.light"
+				}}>
 				<CardActionArea
 					onClick={onClick}
 					sx={{
@@ -161,6 +166,7 @@ export default abstract class Resource<
 							gutterBottom
 							variant="h5"
 							component="div"
+							color="black"
 							sx={{
 								backgroundColor: "info.main",
 								borderRadius: 1,
