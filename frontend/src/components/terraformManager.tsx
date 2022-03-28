@@ -402,9 +402,9 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				direction="row"
 				justifyContent="space-between"
 				columns={2}
-				sx={{mt: 3}}>
+				sx={{mt: 2}}>
 				<Autocomplete
-					sx={{ml: 1, width: "300px"}}
+					sx={{width: "300px"}}
 					id="repo-select"
 					disableClearable={true}
 					options={repoList}
@@ -471,6 +471,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					<Button
 						disabled={!selectedRepoSavedData}
 						variant="contained"
+						color="secondary"
 						onClick={() => {
 							if (settingsHaveBeenEdited && giveCopyWarning) {
 								setHeadsUpModalIsOpen(true);
@@ -500,7 +501,17 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					}
 				/>
 			</Grid>
-			<Grid container direction="row" spacing={2} sx={{marginLeft: 0}}>
+			<Grid
+				item
+				container
+				direction="row"
+				spacing={2}
+				sx={{
+					paddingTop: 2,
+					marginLeft: 0,
+					width: "100%",
+					paddingRight: 2
+				}}>
 				<Grid container direction="row">
 					<Typography sx={{paddingTop: 4}} variant="h4">
 						Terraform
@@ -632,7 +643,13 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				<Grid item>
 					<Button
 						variant="outlined"
-						sx={{width: 3, height: defaultCardSize}}
+						color="primary"
+						size="large"
+						sx={{
+							width: defaultCardSize / 3,
+							height: defaultCardSize,
+							borderWidth: 2
+						}}
 						onClick={() => {
 							if (settingsHaveBeenEdited) {
 								setExitWarningModalIsOpen(true);
@@ -669,8 +686,9 @@ export default function TerraformManager(props: {backButton: () => void}) {
 								}
 							}}
 							sx={{
+								backgroundColor: "secondary.light",
 								"&:hover": {
-									backgroundColor: "success.light"
+									backgroundColor: "success.dark"
 								}
 							}}>
 							<Grid
@@ -678,13 +696,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 								justifyContent="center"
 								alignItems="center"
 								sx={{
-									width: defaultCardSize / 2,
+									width: (defaultCardSize / 3) * 2 - 16,
 									height: defaultCardSize,
 									borderWidth: 1,
 									borderColor: "success.main",
 									borderStyle: "solid",
-									borderRadius: 1,
-									bgcolor: "secondary.light"
+									borderRadius: 1
 								}}>
 								<Grid item>
 									<AddIcon

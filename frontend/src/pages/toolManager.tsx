@@ -97,7 +97,7 @@ export default function ToolManager() {
 							<Grid
 								container
 								direction="row"
-								sx={{paddingTop: 3}}>
+								sx={{paddingTop: 2}}>
 								<ToolManagerCard
 									onClick={setSelectedToolCardCallback(
 										"terraform"
