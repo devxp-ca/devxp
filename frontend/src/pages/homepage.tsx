@@ -14,7 +14,7 @@ interface IState {}
 export default class Homepage extends React.Component<IProps, IState> {
 	render() {
 		return (
-			<ThemeProvider theme={lightTheme}>
+			<ThemeProvider theme={darkTheme}>
 				<Grid
 					container
 					direction="column"

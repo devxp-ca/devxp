@@ -119,7 +119,6 @@ export default function ToolManager() {
 							/>
 						)}
 					</Grid>
-					<Footer />
 				</Grid>
 			</Paper>
 		</ThemeProvider>
