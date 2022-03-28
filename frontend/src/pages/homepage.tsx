@@ -5,7 +5,6 @@ import ProductPage from "../components/ProductPage";
 import Footer from "../components/Footer";
 import Grid from "@mui/material/Grid";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import {lightTheme} from "../style/themes";
 import {darkTheme} from "../style/themes";
 import {Element, scroller} from "react-scroll";
 

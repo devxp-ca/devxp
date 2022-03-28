@@ -67,7 +67,7 @@ export default function MainLandingVisual(props: {onClick: () => void}) {
 						variant="contained"
 						size="large"
 						sx={{marginTop: 2}}>
-						Get Started
+						Learn More
 					</Button>
 				</Grid>
 			</Grid>

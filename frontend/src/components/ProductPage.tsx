@@ -2,72 +2,157 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import {lightTheme} from "../style/themes";
 
-import titleImage from "../assets/devxp-title.png";
-import terraformPNG from "../assets/Terraform_Vertical_Light.png";
+import logoBlack from "../assets/logo-black.png";
+import terraformPNG from "../assets/Terraform_Horizontal.png";
 import cloudProvidersPNG from "../assets/cloud_providers.png";
+import arrowInfo from "../assets/arrow-info.png";
+import arrowSecondary from "../assets/arrow-secondary.png";
+
 import easyConfigPNG from "../assets/easy_config.png";
 import githubIcon from "../assets/github_icon.png";
 import writeConfigPNG from "../assets/write_config.png";
 import bestPracticesPNG from "../assets/best_practices.png";
 
 export default function ProductPage() {
+	/* Might eventually want to style the scrollbar */
 	return (
-		<Grid container>
-			{/* Use this grid as the parent for the product page (put everything inside) */}
-			{/* Temporary height and backgroundColor */}
-			{/* Might eventually want to style the scrollbar */}
+		<Grid
+			item
+			container
+			direction="column"
+			sx={{
+				maxWidth: "100vw",
+				height: "100%",
+				backgroundColor: "primary.dark"
+			}}>
+			{/* FIRST PAGE */}
 			<Grid
 				item
-				container
-				direction="column"
 				sx={{
-					width: "100%",
-					height: "100%",
-					backgroundColor: "primary.main"
+					paddingTop: 4,
+					paddingBottom: 4,
+					height: "100vh",
+					marginBottom: 2
 				}}>
-				<Box sx={{textAlign: "center"}}>
-					<img
-						src={cloudProvidersPNG}
-						alt="Cloud Service Providers"
-						style={{
-							height: "200px",
-							borderRadius: 50,
-							margin: 20
-						}}
-					/>
-				</Box>
-				<Typography variant="h5" color="black" align="center">
-					is made easy by
-				</Typography>
-				<Box sx={{textAlign: "center"}}>
-					<img
-						src={terraformPNG}
-						alt="Terraform by HashiCorp"
-						style={{
-							backgroundColor: "white",
-							height: "200px",
-							borderRadius: 50,
-							margin: 20
-						}}
-					/>
-				</Box>
-				<Typography variant="h5" color="black" align="center">
-					is made easy by
-				</Typography>
-				<Box sx={{textAlign: "center"}}>
-					<img
-						src={titleImage}
-						alt="DevXP"
-						style={{
-							height: "100px",
-							margin: 50
-						}}
-					/>
-				</Box>
-				<Grid item container justifyContent="center">
-					<Grid item xs={9}>
-						<Typography variant="h5" color="black" align="center">
+				<Grid
+					container
+					direction="row"
+					sx={{
+						backgroundColor: "#FFFFFF10",
+						minHeight: "100%",
+						maxHeight: "100%",
+						width: "100%"
+					}}>
+					<Grid
+						item
+						container
+						direction="column"
+						sx={{
+							padding: "6vh 18vh 6vh 18vh",
+							width: "50%",
+							minWidth: 500,
+							flexGrow: 1,
+							minHeight: "70%"
+						}}>
+						<Grid
+							item
+							sx={{
+								padding: "2vh",
+								flexGrow: 2,
+								backgroundColor: "primary.main",
+								borderRadius: 2
+							}}>
+							<Box
+								sx={{
+									height: "100%",
+									width: "100%",
+									backgroundImage: `url(${logoBlack})`,
+									backgroundSize: "contain",
+									backgroundPosition: "center center",
+									backgroundRepeat: "no-repeat"
+								}}></Box>
+						</Grid>
+						<Grid item sx={{padding: 4, flexGrow: 1}}>
+							<Box
+								sx={{
+									height: "100%",
+									width: "100%",
+									backgroundImage: `url(${arrowSecondary})`,
+									backgroundSize: "contain",
+									backgroundPosition: "center center",
+									backgroundRepeat: "no-repeat"
+								}}></Box>
+						</Grid>
+						<Grid
+							item
+							sx={{
+								padding: "3vh",
+								flexGrow: 2,
+								backgroundColor:
+									lightTheme.palette.secondary.main,
+								borderRadius: 2
+							}}>
+							<Box
+								sx={{
+									height: "100%",
+									width: "100%",
+									backgroundImage: `url(${terraformPNG})`,
+									backgroundSize: "contain",
+									backgroundPosition: "center center",
+									backgroundRepeat: "no-repeat"
+								}}></Box>
+						</Grid>
+						<Grid item sx={{padding: 4, flexGrow: 1}}>
+							<Box
+								sx={{
+									height: "100%",
+									width: "100%",
+									backgroundImage: `url(${arrowInfo})`,
+									backgroundSize: "contain",
+									backgroundPosition: "center center",
+									backgroundRepeat: "no-repeat"
+								}}></Box>
+						</Grid>
+						<Grid
+							item
+							sx={{
+								padding: "2vh",
+								flexGrow: 2,
+								backgroundColor: lightTheme.palette.info.main,
+								borderRadius: 2
+							}}>
+							<Box
+								sx={{
+									height: "100%",
+									width: "100%",
+									backgroundImage: `url(${cloudProvidersPNG})`,
+									backgroundSize: "contain",
+									backgroundPosition: "center center",
+									backgroundRepeat: "no-repeat"
+								}}></Box>
+						</Grid>
+					</Grid>
+					<Grid
+						item
+						container
+						direction="column"
+						sx={{
+							padding: 8,
+							width: "50%",
+							flexGrow: 1,
+							flexShrink: 3,
+							justifyContent: "center"
+						}}>
+						<Typography
+							variant="h3"
+							color="primary.main"
+							align="center"
+							sx={{padding: "4vh"}}>
+							Managing cloud resources has never been easier
+						</Typography>
+						<Typography variant="h5" color="white" align="center">
 							DevXP is a web application designed to make your
 							life easier. We know that learning and incorporating
 							new tools into your project is necessary, but it can
@@ -80,7 +165,11 @@ export default function ProductPage() {
 						</Typography>
 					</Grid>
 				</Grid>
-				<Typography variant="h5" color="black" align="center">
+			</Grid>
+
+			{/* REMOVE */}
+			<Grid item sx={{paddingTop: 4, paddingBottom: 4}}>
+				<Typography variant="h5" color="white" align="center">
 					DevXP...
 				</Typography>
 				<Grid
@@ -96,7 +185,7 @@ export default function ProductPage() {
 							margin: 20
 						}}
 					/>
-					<Typography variant="h5" color="black">
+					<Typography variant="h5" color="white">
 						... integrates directly with GitHub
 					</Typography>
 				</Grid>
@@ -104,7 +193,7 @@ export default function ProductPage() {
 					item
 					container
 					sx={{alignItems: "center", justifyContent: "center"}}>
-					<Typography variant="h5" color="black">
+					<Typography variant="h5" color="white">
 						... has simple configuration options
 					</Typography>
 					<img
@@ -129,7 +218,7 @@ export default function ProductPage() {
 							margin: 20
 						}}
 					/>
-					<Typography variant="h5" color="black">
+					<Typography variant="h5" color="white">
 						... writes complex configuration files for you
 					</Typography>
 				</Grid>
@@ -137,7 +226,7 @@ export default function ProductPage() {
 					item
 					container
 					sx={{alignItems: "center", justifyContent: "center"}}>
-					<Typography variant="h5" color="black">
+					<Typography variant="h5" color="white">
 						... empowers you to follow best practices with ease
 					</Typography>
 					<img
