@@ -58,7 +58,8 @@ export default function MainLandingVisual(props: {onClick: () => void}) {
 							borderRadius: 2
 						}}>
 						<Typography variant="h5" color="white">
-							Empowering developers by making DevOps simple
+							Empowering developers to create enterprise-quality
+							cloud infrastructure in minutes
 						</Typography>
 					</Box>
 					<Button
