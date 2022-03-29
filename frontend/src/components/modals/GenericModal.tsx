@@ -39,7 +39,8 @@ export default function GenericModal({
 		bgcolor: "secondary.light",
 		boxShadow: 24,
 		zIndex: 100,
-		width: width ?? "100%"
+		marginLeft: "10%",
+		marginRight: "10%"
 	};
 
 	const titleBoxStyle = {

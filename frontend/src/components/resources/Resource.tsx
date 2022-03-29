@@ -210,21 +210,33 @@ export default abstract class Resource<
 			<Grid
 				container
 				direction="column"
-				alignItems="center"
 				sx={{
 					gridGap: "15px",
 					marginTop: "15px"
 				}}>
-				<Grid item>
-					<LabelledCheckboxInput
-						disabled={this.props.disableIam}
-						initial={this.props?.autoIam ?? true}
-						text="Enable IAM Users"
-						description="Determine if IAM Users will be setup for this resource"
-						onChange={(autoIam: boolean) =>
-							this.setState({autoIam})
-						}
-					/>
+				<Grid
+					item
+					container
+					direction="column"
+					alignItems="center"
+					sx={{
+						width: "100%"
+					}}>
+					<Grid
+						item
+						sx={{
+							paddingLeft: 2
+						}}>
+						<LabelledCheckboxInput
+							disabled={this.props.disableIam}
+							initial={this.props?.autoIam ?? true}
+							text="Enable IAM Users"
+							description="Determine if IAM Users will be setup for this resource"
+							onChange={(autoIam: boolean) =>
+								this.setState({autoIam})
+							}
+						/>
+					</Grid>
 				</Grid>
 				<Box
 					textAlign="center"
@@ -270,7 +282,7 @@ export default abstract class Resource<
 						}}
 					/>
 				</Box>
-				<Box textAlign="center" sx={{paddingTop: 3}}>
+				<Box textAlign="center" sx={{paddingTop: 3, width: "100%"}}>
 					<Grid>
 						<Button
 							disabled={!this.state.valid}

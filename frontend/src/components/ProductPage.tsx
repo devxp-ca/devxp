@@ -158,67 +158,50 @@ export default function ProductPage() {
 
 			{/* SECOND PAGE */}
 			<Grid
-				item
+				container
+				direction="column"
+				alignItems="center"
 				sx={{
-					paddingTop: 4,
-					paddingBottom: 4,
-					marginBottom: 2
+					width: "100%",
+					paddingBottom: 8
 				}}>
 				<Grid
-					container
-					direction="row"
+					item
+					direction="column"
 					sx={{
-						minHeight: "100%",
-						maxHeight: "100%",
-						width: "100%"
+						padding: 8
 					}}>
-					<Grid
-						item
-						container
-						direction="column"
-						sx={{
-							justifyContent: "center"
-						}}>
-						<Typography
-							variant="h3"
-							color="primary.main"
-							align="center">
-							Simple configuration of resource instances
-						</Typography>
-					</Grid>
-					<Grid
-						sx={{
-							paddingTop: 8,
-							paddingBottom: 8,
-							paddingLeft: 16,
-							paddingRight: 16,
-							display: "border-box"
-						}}>
-						<GenericModal
-							dummyModal={true}
-							isOpen={true}
-							title="Edit Resource"
-							children={
-								<Grid
-									container
-									direction="column"
-									alignItems="center">
-									{
-										typeToResource(
-											{
-												type: "ec2",
-												repo: "testRepo",
-												isModifying:
-													Object.keys("ec2").length >
-													1
-											},
-											false
-										) as React.ReactElement
-									}
-								</Grid>
-							}
-						/>
-					</Grid>
+					<Typography
+						variant="h3"
+						color="primary.main"
+						align="center">
+						Simple configuration of resource instances
+					</Typography>
+				</Grid>
+				<Grid item>
+					<GenericModal
+						dummyModal={true}
+						isOpen={true}
+						title="Edit Resource"
+						children={
+							<Grid
+								container
+								direction="column"
+								alignItems="center">
+								{
+									typeToResource(
+										{
+											type: "ec2",
+											repo: "testRepo",
+											isModifying:
+												Object.keys("ec2").length > 1
+										},
+										false
+									) as React.ReactElement
+								}
+							</Grid>
+						}
+					/>
 				</Grid>
 			</Grid>
 		</Grid>
