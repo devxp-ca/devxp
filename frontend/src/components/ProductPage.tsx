@@ -137,20 +137,40 @@ export default function ProductPage() {
 						<Typography
 							variant="h3"
 							color="primary.main"
-							align="center"
-							sx={{padding: 4}}>
+							align="left"
+							sx={{paddingBottom: 4}}>
 							Managing cloud resources has never been easier
 						</Typography>
-						<Typography variant="h5" color="white" align="center">
-							DevXP is a web application designed to make your
-							life easier. We know that learning and incorporating
-							new tools into your project is necessary, but it can
-							often be time consuming, overwhelming, and down
-							right painful. DevXP helps by introducing you to new
-							tools in an easy-to-adapt manner by reducing the
-							number of configuration options, providing
-							explanations in simple language, and even writing
-							configuration files for you.
+						<Typography
+							variant="h5"
+							color="white"
+							align="left"
+							sx={{paddingLeft: 2, marginBottom: 4}}>
+							We know that learning and incorporating new tools
+							into your project is necessary, but it can often be
+							time consuming, overwhelming, and down right
+							painful.
+						</Typography>
+						<Typography
+							variant="h4"
+							color="primary.main"
+							align="left">
+							DevXP provides a user friendly interface to:
+						</Typography>
+						<Typography
+							variant="h5"
+							color="white"
+							align="left"
+							sx={{paddingLeft: 2}}>
+							<p>
+								{">"} Write terraform configuration files for
+								multiple cloud providers without touching code
+							</p>
+							<p>{">"} Follow best practices by default</p>
+							<p>
+								{">"} Learn the details of cloud infrastructure
+								as you configure
+							</p>
 						</Typography>
 					</Grid>
 				</Grid>
@@ -182,7 +202,7 @@ export default function ProductPage() {
 					<GenericModal
 						dummyModal={true}
 						isOpen={true}
-						title="Edit Resource"
+						title="Edit EC2 Resource"
 						children={
 							<Grid
 								container
