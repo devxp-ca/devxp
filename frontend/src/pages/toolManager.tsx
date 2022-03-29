@@ -19,7 +19,7 @@ import {
 import OkModal from "../components/modals/OkModal";
 import OkCancelModal from "../components/modals/OkCancelModal";
 import {handleCloseModal} from "../components/modals/modalHandlers";
-import LoadingModal from "../components/modals/loadingModal";
+import LoadingModal from "../components/modals/LoadingModal";
 import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
 import ThemeButton from "../style/ThemeButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
