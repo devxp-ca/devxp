@@ -2,15 +2,17 @@ import * as React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {lightTheme} from "../../style/themes";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
 
 interface modalProps {
 	isOpen: boolean;
-	handleClose: () => void;
+	handleClose?: () => void;
 	title?: string;
 	bodyText?: string;
 	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal,
 	width?: number | string;
+	dummyModal?: boolean;
 }
 
 export default function GenericModal({
@@ -19,25 +21,33 @@ export default function GenericModal({
 	title,
 	bodyText,
 	children,
-	width
+	width,
+	dummyModal = false
 }: modalProps) {
-	const currentTheme = lightTheme;
-
 	const modalStyle = {
 		position: "absolute",
 		top: "50%",
 		left: "50%",
 		transform: "translate(-50%, -50%)",
 		width: width ?? 400,
-		bgcolor: "white",
+		bgcolor: "secondary.light",
 		boxShadow: 24,
 		zIndex: 100
 	};
 
+	const dummyModalStyle = {
+		bgcolor: "secondary.light",
+		boxShadow: 24,
+		zIndex: 100,
+		marginLeft: "10%",
+		marginRight: "10%"
+	};
+
 	const titleBoxStyle = {
 		textAlign: "center",
-		bgcolor: currentTheme.palette.primary.main,
-		width: "100%"
+		bgcolor: "info.main",
+		width: "100%",
+		borderRadius: "4px 4px 0px 0px"
 	};
 
 	const bodyStyle = {
@@ -46,24 +56,39 @@ export default function GenericModal({
 		boxSizing: "border-box"
 	};
 
-	return (
-		<div>
-			<Modal open={isOpen} onClose={handleClose}>
-				<Box sx={modalStyle}>
-					<Box sx={titleBoxStyle}>
-						<Typography
-							variant="h6"
-							component="h2"
-							sx={{padding: 2}}>
-							{title}
-						</Typography>
-					</Box>
-					<Box sx={bodyStyle}>
-						<Typography sx={{mt: 2}}>{bodyText}</Typography>
-						{children}
-					</Box>
+	return !dummyModal ? (
+		<Modal open={isOpen} onClose={handleClose}>
+			<Paper sx={modalStyle}>
+				<Box sx={titleBoxStyle}>
+					<Typography
+						variant="h5"
+						component="h2"
+						sx={{padding: 2}}
+						color="black">
+						{title}
+					</Typography>
 				</Box>
-			</Modal>
-		</div>
+				<Box sx={bodyStyle}>
+					<Typography sx={{mt: 2}}>{bodyText}</Typography>
+					{children}
+				</Box>
+			</Paper>
+		</Modal>
+	) : (
+		<Paper sx={dummyModalStyle}>
+			<Box sx={titleBoxStyle}>
+				<Typography
+					variant="h6"
+					component="h2"
+					sx={{padding: 2}}
+					color="black">
+					{title}
+				</Typography>
+			</Box>
+			<Box sx={bodyStyle}>
+				<Typography sx={{mt: 2}}>{bodyText}</Typography>
+				{children}
+			</Box>
+		</Paper>
 	);
 }

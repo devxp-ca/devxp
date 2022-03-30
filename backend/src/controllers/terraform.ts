@@ -33,7 +33,8 @@ import {BackendModel} from "../database/bucket";
 export const createTerraformSettings = (
 	req: Request,
 	res: Response,
-	bucketId?: string
+	bucketId?: string,
+	preview = false
 ): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
 
@@ -156,7 +157,7 @@ export const createTerraformSettings = (
 	}
 
 	const network =
-		networkedResources.length > 0 && provider === "aws"
+		networkedResources.length > 0 && provider === "aws" && secure
 			? prefabNetworkFromArr(networkedResources, {
 					allEgress: !secure,
 					allIngress: !secure,
@@ -171,83 +172,66 @@ export const createTerraformSettings = (
 			? new NamedAwsBackend(bucketId)
 			: new NamedGoogleBackend(project, bucketId);
 
+	//TODO: Leave this as just rootBlock()
+	// Solve chicken and egg problem
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
 		namedBackend,
 		[...google, ...network]
 	);
 
-	getHead(token, repo, "main")
-		.then(async head => {
-			//Create the new file data on the server
-			const blobRoot = await postBlob(
-				token,
-				repo,
-				jsonToHcl(root) + "\n"
-			);
+	if (preview) {
+		let hcl = jsonToHcl(root) + "\n";
 
-			/*
-				Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
+		hcl = hcl.replace(/terraform-state-[a-zA-Z0-9-_]+/, "RANDOM_ID");
 
-			const blobBackend = await postBlob(
-				token,
-				repo,
-				jsonToHcl(backend) + "\n"
-			);
-			*/
-
-			// Create a new branch to post our commit to
-			const branchName = "DevXP-Configuration";
-			const newBranch = await createBranch(
-				branchName,
-				token,
-				repo,
-				head.sha
-			);
-
-			//Grab the latest commit at the head pointer
-			const commit = await getCommitFromUrl(token, newBranch.url);
-
-			//Grab the tree referenced by the commit
-			const tree = await getTreeFromUrl(token, commit.treeUrl);
-
-			//Create a new tree within that one
-			const newTree = await createTree(token, repo, tree.sha, [
-				{
-					path: "terraform.tf",
-					mode: getModeNumber("blob"),
-					type: "blob",
-					sha: blobRoot.sha,
-					url: blobRoot.url
-				}
+		res.json({
+			preview: hcl
+		});
+	} else {
+		getHead(token, repo, "main")
+			.then(async head => {
+				//Create the new file data on the server
+				const blobRoot = await postBlob(
+					token,
+					repo,
+					jsonToHcl(root) + "\n"
+				);
 
 				/*
-				Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
-				{
-					path: "backend.tf",
-					mode: getModeNumber("blob"),
-					type: "blob",
-					sha: blobBackend.sha,
-					url: blobBackend.url
-				}
-				*/
-			]);
+					Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
 
-			//Create a new commit referencing the new tree
-			const newCommit = await createCommit(
-				token,
-				repo,
-				newTree.sha,
-				newBranch.sha,
-				"DevXP: Initialized Terraform"
-			);
-			//Update the HEAD pointer to the new commit
-			const ref = await updateHead(
-				token,
-				repo,
-				newCommit.commitSha,
-				branchName
-			);
+				const blobBackend = await postBlob(
+					token,
+					repo,
+					jsonToHcl(backend) + "\n"
+				);
+				*/
+
+				// Create a new branch to post our commit to
+				const branchName = "DevXP-Configuration";
+				const newBranch = await createBranch(
+					branchName,
+					token,
+					repo,
+					head.sha
+				);
+
+				//Grab the latest commit at the head pointer
+				const commit = await getCommitFromUrl(token, newBranch.url);
+
+				//Grab the tree referenced by the commit
+				const tree = await getTreeFromUrl(token, commit.treeUrl);
+
+				//Create a new tree within that one
+				const newTree = await createTree(token, repo, tree.sha, [
+					{
+						path: "terraform.tf",
+						mode: getModeNumber("blob"),
+						type: "blob",
+						sha: blobRoot.sha,
+						url: blobRoot.url
+					}
 
 			//Initiate a pull request to the main branch
 			await createPullRequest("DevXP-Configuration", "main", token, repo);

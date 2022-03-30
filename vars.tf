@@ -52,3 +52,8 @@ variable "gcr_domain" {
   type    = string
   default = "devxp.ca"
 }
+
+variable "gcr_domain_www" {
+  type    = string
+  default = "www.devxp.ca"
+}

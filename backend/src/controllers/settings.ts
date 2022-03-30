@@ -6,7 +6,9 @@ import {RepoSettings} from "../database/repoSettings";
 import {BackendModel, backendSchemaType} from "../database/bucket";
 
 export const postSettings = (req: Request, res: Response) => {
-	if (req.body.tool == "terraform") {
+	if (req.body.preview) {
+		createTerraformSettings(req, res, true);
+	} else if (req.body.tool == "terraform") {
 		RepoSettings.updateOne(
 			{repo: req.body.repo},
 			{repo: req.body.repo, terraformSettings: req.body.settings},

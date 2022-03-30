@@ -13,10 +13,19 @@ export default function LabelledCheckboxInput(props: {
 }) {
 	const [value, setValue] = React.useState(props.initial ?? false);
 
+	React.useEffect(() => {
+		if (props.initial) {
+			setValue(props.initial);
+		}
+	}, [props.initial]);
+
 	return (
 		<>
 			<Grid container direction="row">
-				<Typography sx={{paddingTop: 0.4}} variant="h6">
+				<Typography
+					sx={{paddingTop: 0.4}}
+					variant="h6"
+					color={props.disabled ? "#545454" : "inherit"}>
 					{props.text}
 				</Typography>
 				<MouseOverPopover

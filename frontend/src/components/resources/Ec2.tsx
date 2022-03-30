@@ -52,10 +52,11 @@ export default class Ec2 extends Resource<IProps, IState> {
 		return (
 			<Grid
 				sx={{
-					padding: "5px",
+					padding: 2,
 					gridGap: "15px",
 					display: "flex",
 					flexDirection: "column",
+					width: "100%",
 					...(this.state.valid
 						? {}
 						: {
@@ -64,8 +65,8 @@ export default class Ec2 extends Resource<IProps, IState> {
 						  })
 				}}>
 				<LabelledMultiInput
-					text="Instance OS"
-					description="Choose the type of OS you want this instance to run"
+					text="OS"
+					description="Choose the type of operating system you want this server to run."
 					options={[
 						{
 							label: "Ubuntu Server 20.04 LTS 64-bit x86",
@@ -84,53 +85,83 @@ export default class Ec2 extends Resource<IProps, IState> {
 					onChange={ami => this.setState({ami})}
 					initial={this.state.ami}
 				/>
-
-				<LabelledRadioInput
-					text="Instance Hardware"
+				<LabelledMultiInput
+					text="Hardware"
 					description={
 						<div>
 							<p>
-								Choose the computing power you want this
-								instance to have:
+								Choose the computing power you want this server
+								to have.
 							</p>
-							<p>Micro - 1 CPU 1GB RAM</p>
-							<p>Small - 1 CPU 2GB RAM</p>
-							<p>Medium - 2 CPU 4GB RAM</p>
-							<p>Large - 2 CPU 8GB RAM</p>
-							<p>Extra-Large - 4 CPU 16GB RAM</p>
+							<p>
+								Note: When MacOS is the chosen OS, there is only
+								the Mac Hardware option. See details about it{" "}
+								<a
+									href="https://aws.amazon.com/ec2/instance-types/mac/"
+									target="_blank">
+									here
+								</a>
+								, and be aware that there is a special pricing
+								plan that charges a minimum of 24 hours usage.
+							</p>
+							<a
+								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#ec2"
+								target="_blank">
+								Learn more.
+							</a>
 						</div>
 					}
 					options={
 						this.state.ami === "ami-0faefa03f7ddcd657"
-							? [{label: "MAC Hardware", key: "mac1.metal"}]
-							: [
-									{label: "Micro", key: "t2.micro"},
-									{label: "Small", key: "t2.small"},
-									{label: "Medium", key: "t2.medium"},
-									{label: "Large", key: "t2.large"},
-									{label: "Extra Large", key: "t2.xlarge"},
+							? [
 									{
-										label: "Compute Opmized",
+										label: "MAC Hardware [12 vCPUs, 32 GB RAM]",
+										key: "mac1.metal"
+									}
+							  ]
+							: [
+									{
+										label: "Micro [1 vCPU, 1GB RAM]",
+										key: "t2.micro"
+									},
+									{
+										label: "Small [1 vCPU, 2GB RAM]",
+										key: "t2.small"
+									},
+									{
+										label: "Medium [2 vCPUs, 4GB RAM]",
+										key: "t2.medium"
+									},
+									{
+										label: "Large [2 vCPUs, 8GB RAM]",
+										key: "t2.large"
+									},
+									{
+										label: "Extra Large [4 vCPUs, 16GB RAM]",
+										key: "t2.xlarge"
+									},
+									{
+										label: "Compute Opmized [8 vCPUs, 15 GB RAM, 160 GB SSD]",
 										key: "c3.2xlarge"
 									},
 									{
-										label: "Compute Optimized Extra Large",
+										label: "Compute Optimized Extra Large [32 vCPUs, 60 GB RAM, 640 GB SSD",
 										key: "c3.8xlarge"
 									},
 									{
-										label: "Storage Optimized",
-										key: "d3.2xlarge"
+										label: "Storage Optimized [8 vCPUs, 61 GB RAM, 6 x 2000 GB HDD]",
+										key: "d2.2xlarge"
 									},
 									{
-										label: "Storage Optimized Extra Large",
-										key: "d3.8xlarge"
+										label: "Storage Optimized Extra Large [36 vCPUs, 244 GB RAM, 24 x 2000 GB HDD]",
+										key: "d2.8xlarge"
 									},
 									{
-										label: "Memory Optimized",
+										label: "Memory Optimized [8 vCPUs, 61 GB RAM, 1 x 160 GB SSD]",
 										key: "r3.2xlarge"
 									},
 									{
-										label: "Memory Optimized Extra Large",
+										label: "Memory Optimized Extra Large [32 vCPUs, 244 GB RAM, 2 x 320 GB SSD]",
 										key: "r3.8xlarge"
 									}
 							  ]

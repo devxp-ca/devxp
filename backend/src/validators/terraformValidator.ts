@@ -1,4 +1,4 @@
-import {body, header} from "express-validator";
+import {body, header, oneOf} from "express-validator";
 import {validationErrorHandler} from "../types/errorHandler";
 import resourceValidator, {
 	resourceTypes,
@@ -6,8 +6,20 @@ import resourceValidator, {
 } from "./resourceValidator";
 
 export const settingsValidator = [
+	body("preview").optional().isBoolean().default(false),
+
+	//Only require repo to exist if preview is NOT true
+	oneOf(
+		[
+			body("repo").exists(),
+			body("preview")
+				.exists()
+				.custom(v => !!v)
+		],
+		"Invalid repo. Must match the form {NAME}/{REPO}."
+	),
 	body("repo")
-		.exists()
+		.optional()
 		.trim()
 		.isLength({min: 3})
 		.matches(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/)
@@ -61,6 +73,7 @@ export const settingsValidator = [
 		.isBoolean()
 		.default(false)
 		.withMessage("autoLoadBalance flag must be boolean"),
+
 	body("settings.project")
 		.if(body("tool").equals("terraform"))
 		.if(body("settings.provider").equals("google"))
@@ -100,23 +113,33 @@ export const settingsValidator = [
 		.withMessage("Invalid autoIam boolean"),
 	body("settings.resources.*.id")
 		.if(body("tool").equals("terraform"))
-		.optional()
 		.trim()
 		.escape()
 		.isLength({min: 1})
 		.matches(/^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])$/)
 		.withMessage(
-			"Invalid resource ID. Only letters, dashes, and underscores are allowed"
+			"Invalid resource ID. Only letters, dashes, and numbers are allowed (begin with letter, end with alphanumeric)."
 		),
 	body("settings.resources.*")
 		.if(body("tool").equals("terraform"))
 		.isObject()
 		.custom(resourceValidator),
-	header("token")
-		.exists()
-		.trim()
-		.escape()
-		.isLength({min: 3})
-		.withMessage("Invalid authorization token"),
+
+	//Only require token to exist if preview is NOT true
+	oneOf(
+		[
+			header("token")
+				.exists()
+				.trim()
+				.escape()
+				.isLength({min: 3})
+				.withMessage("Invalid authorization token"),
+			body("preview")
+				.exists()
+				.custom(v => !!v)
+		],
+		"Invalid authorization token"
+	),
+
 	validationErrorHandler
 ];

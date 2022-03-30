@@ -13,7 +13,7 @@ export default function ToolManagerCard(props: {
 	color: string;
 }) {
 	return (
-		<Card sx={{maxWidth: 345}}>
+		<Card sx={{maxWidth: 345, backgroundColor: "secondary.light"}}>
 			<CardActionArea onClick={props.onClick}>
 				<CardMedia component="img" image={props.image} />
 				<CardContent sx={{backgroundColor: `${props.color}50`}}>

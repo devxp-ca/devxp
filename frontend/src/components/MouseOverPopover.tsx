@@ -8,13 +8,25 @@ export default function MouseOverPopover(props: {
 	popOverInfo: JSX.Element;
 }) {
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+	const [savedAnchorEl, setSavedAnchorEl] =
+		React.useState<HTMLElement | null>(null);
 
 	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
+		setSavedAnchorEl(event.currentTarget);
 	};
 
 	const handlePopoverClose = () => {
 		setAnchorEl(null);
+	};
+
+	const handleMouseEnter = () => {
+		setAnchorEl(savedAnchorEl);
+	};
+
+	const handleMouseLeave = () => {
+		setAnchorEl(null);
+		setSavedAnchorEl(null);
 	};
 
 	const open = Boolean(anchorEl);
@@ -44,8 +56,18 @@ export default function MouseOverPopover(props: {
 					vertical: "top",
 					horizontal: "left"
 				}}
+				classes={{
+					paper: "pointerEvents: auto"
+				}}
 				onClose={handlePopoverClose}
-				disableRestoreFocus>
+				disableRestoreFocus
+				PaperProps={{
+					onMouseEnter: handleMouseEnter,
+					onMouseLeave: handleMouseLeave,
+					sx: {
+						pointerEvents: "auto"
+					}
+				}}>
 				<Typography
 					component="span"
 					sx={{
