@@ -117,7 +117,8 @@ export default function ProductPage() {
 									backgroundImage: `url(${arrowSecondary})`,
 									backgroundSize: "contain",
 									backgroundPosition: "center center",
-									backgroundRepeat: "no-repeat"
+									backgroundRepeat: "no-repeat",
+									imageRendering: "pixelated"
 								}}></Box>
 						</Grid>
 						<Grid
@@ -145,7 +146,8 @@ export default function ProductPage() {
 									backgroundImage: `url(${arrowInfo})`,
 									backgroundSize: "contain",
 									backgroundPosition: "center center",
-									backgroundRepeat: "no-repeat"
+									backgroundRepeat: "no-repeat",
+									imageRendering: "pixelated"
 								}}></Box>
 						</Grid>
 						<Grid
@@ -359,7 +361,8 @@ export default function ProductPage() {
 									backgroundSize: "contain",
 									backgroundPosition: "center center",
 									backgroundRepeat: "no-repeat",
-									transform: "rotate(90deg)"
+									transform: "rotate(90deg)",
+									imageRendering: "pixelated"
 								}}></Box>
 						</Grid>
 

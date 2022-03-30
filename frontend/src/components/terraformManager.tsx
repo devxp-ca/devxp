@@ -39,6 +39,7 @@ import TextField from "@mui/material/TextField";
 import LoadingModal from "./modals/LoadingModal";
 import Tooltip from "@mui/material/Tooltip";
 import CopyRepoSettingsModal from "./modals/CopyRepoSettingsModal";
+import PreviewWindow from "../components/livePreview/previewWindow";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -797,6 +798,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Button>
 				</Box>
 			</Grid>
+			<PreviewWindow />
 		</Box>
 	);
 }
