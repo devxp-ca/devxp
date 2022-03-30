@@ -124,11 +124,22 @@ export const settingsValidator = [
 		.if(body("tool").equals("terraform"))
 		.isObject()
 		.custom(resourceValidator),
-	header("token")
-		.exists()
-		.trim()
-		.escape()
-		.isLength({min: 3})
-		.withMessage("Invalid authorization token"),
+
+	//Only require token to exist if preview is NOT true
+	oneOf(
+		[
+			header("token")
+				.exists()
+				.trim()
+				.escape()
+				.isLength({min: 3})
+				.withMessage("Invalid authorization token"),
+			body("preview")
+				.exists()
+				.custom(v => !!v)
+		],
+		"Invalid authorization token"
+	),
+
 	validationErrorHandler
 ];
