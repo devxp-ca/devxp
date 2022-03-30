@@ -5,6 +5,9 @@ import Grid from "@mui/material/Grid";
 import {lightTheme} from "../style/themes";
 import GenericModal from "./modals/GenericModal";
 import typeToResource from "./resources/typeToResource";
+import Resource from "./resources/Resource";
+import Paper from "@mui/material/Paper";
+import {resourceSettings} from "../components/terraformOptions";
 
 import logoBlack from "../assets/logo-black.png";
 import terraformPNG from "../assets/Terraform_Horizontal.png";
@@ -12,10 +15,48 @@ import cloudProvidersPNG from "../assets/cloud_providers.png";
 import arrowInfo from "../assets/arrow-info.png";
 import arrowSecondary from "../assets/arrow-secondary.png";
 
-import easyConfigPNG from "../assets/easy_config.png";
-import githubIcon from "../assets/github_icon.png";
-import writeConfigPNG from "../assets/write_config.png";
-import bestPracticesPNG from "../assets/best_practices.png";
+const dummyResources: resourceSettings[] = [
+	{
+		type: "ec2",
+		id: "YourServer",
+		autoIam: true,
+		ami: "",
+		instance_type: "",
+		attributes: [],
+		functionName: "",
+		runtime: ""
+	},
+	{
+		type: "ec2",
+		id: "YourBucket",
+		autoIam: true,
+		ami: "",
+		instance_type: "",
+		attributes: [],
+		functionName: "",
+		runtime: ""
+	},
+	{
+		type: "ec2",
+		id: "YourDatabase",
+		autoIam: true,
+		ami: "",
+		instance_type: "",
+		attributes: [],
+		functionName: "",
+		runtime: ""
+	},
+	{
+		type: "ec2",
+		id: "YourStorage",
+		autoIam: true,
+		ami: "",
+		instance_type: "",
+		attributes: [],
+		functionName: "",
+		runtime: ""
+	}
+];
 
 export default function ProductPage() {
 	/* Might eventually want to style the scrollbar */
@@ -37,6 +78,7 @@ export default function ProductPage() {
 				<Grid
 					container
 					direction="row"
+					alignItems="center"
 					sx={{
 						backgroundColor: "#FFFFFF10"
 					}}>
@@ -129,7 +171,10 @@ export default function ProductPage() {
 						container
 						direction="column"
 						sx={{
-							padding: 8,
+							paddingTop: 8,
+							paddingBottom: 8,
+							paddingRight: 4,
+							paddingLeft: 4,
 							justifyContent: "center",
 							width: "50%",
 							flexGrow: 1
@@ -137,14 +182,14 @@ export default function ProductPage() {
 						<Typography
 							variant="h3"
 							color="primary.main"
-							align="left"
+							align="center"
 							sx={{paddingBottom: 4}}>
 							Managing cloud resources has never been easier
 						</Typography>
 						<Typography
 							variant="h5"
 							color="white"
-							align="left"
+							align="center"
 							sx={{paddingLeft: 2, marginBottom: 4}}>
 							We know that learning and incorporating new tools
 							into your project is necessary, but it can often be
@@ -154,7 +199,7 @@ export default function ProductPage() {
 						<Typography
 							variant="h4"
 							color="primary.main"
-							align="left">
+							align="center">
 							DevXP provides a user friendly interface to:
 						</Typography>
 						<Typography
@@ -183,19 +228,23 @@ export default function ProductPage() {
 				alignItems="center"
 				sx={{
 					width: "100%",
-					paddingBottom: 8
+					paddingBottom: 10,
+					marginBottom: 6
 				}}>
 				<Grid
 					item
 					direction="column"
 					sx={{
-						padding: 8
+						paddingTop: 8,
+						paddingBottom: 8,
+						paddingLeft: 2,
+						paddingRight: 2
 					}}>
 					<Typography
 						variant="h3"
 						color="primary.main"
 						align="center">
-						Simple configuration of resource instances
+						Simple configuration of resource instances...
 					</Typography>
 				</Grid>
 				<Grid item>
@@ -222,6 +271,118 @@ export default function ProductPage() {
 							</Grid>
 						}
 					/>
+				</Grid>
+			</Grid>
+
+			{/* THIRD PAGE*/}
+			<Grid
+				container
+				direction="column"
+				sx={{
+					marginBottom: 6
+				}}>
+				<Grid item>
+					<Typography
+						variant="h3"
+						color="primary.main"
+						align="center"
+						sx={{
+							paddingLeft: 2,
+							paddingRight: 2,
+							paddingBottom: 6
+						}}>
+						...and DevXP handles the tedious terraform files
+					</Typography>
+				</Grid>
+				<Grid container direction="row">
+					<Grid
+						item
+						container
+						direction="column"
+						sx={{
+							minHeight: "93vh",
+							width: "40%",
+							flexGrow: 1,
+							minWidth: 450,
+							paddingLeft: 2,
+							paddingRight: 2
+						}}>
+						<Grid
+							item
+							container
+							direction="row"
+							alignItems="center"
+							justifyContent="center"
+							sx={{
+								paddingTop: 8,
+								paddingBottom: 8,
+								flexGrow: 2,
+								borderRadius: 2
+							}}>
+							{dummyResources.map((resource, index) => (
+								<Grid
+									item
+									sx={{padding: 2}}
+									key={`prevInstanceCardGrid${index}`}>
+									{(
+										typeToResource(
+											resource,
+											true
+										) as Resource<any, any>
+									).toCard(() => {}, 250)}
+								</Grid>
+							))}
+						</Grid>
+					</Grid>
+					<Grid
+						item
+						container
+						direction="row"
+						sx={{
+							justifyContent: "center",
+							width: "60%",
+							flexGrow: 1,
+							minHeight: "93vh"
+						}}>
+						<Grid
+							item
+							sx={{
+								flexGrow: 1,
+								maxWidth: "10vh",
+								borderRadius: 2,
+								paddingLeft: 2
+							}}>
+							<Box
+								sx={{
+									height: "100%",
+									backgroundImage: `url(${arrowInfo})`,
+									backgroundSize: "contain",
+									backgroundPosition: "center center",
+									backgroundRepeat: "no-repeat",
+									transform: "rotate(90deg)"
+								}}></Box>
+						</Grid>
+
+						<Grid
+							item
+							sx={{
+								flexGrow: 1,
+								borderRadius: 2,
+								paddingLeft: 4,
+								paddingTop: 4,
+								paddingRight: 4,
+								paddingBottom: 4
+							}}>
+							<Paper
+								sx={{
+									backgroundColor: "secondary.light",
+									borderRadius: 2,
+									width: "100%",
+									height: "100%",
+									filter: "drop-shadow(0px 0px 16px #00000070)"
+								}}></Paper>
+						</Grid>
+					</Grid>
 				</Grid>
 			</Grid>
 		</Grid>
