@@ -60,7 +60,33 @@ export default function AdvancedOptionsModal({
 					justifyContent="center">
 					<LabelledCheckboxInput
 						text="Enable VPC"
-						description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
+						description={
+							<div>
+								<p>
+									Whether or not to:
+									<ul>
+										<li>
+											put your configured resources into
+											their own VPC,
+										</li>
+										<li>setup a subnet, and</li>
+										<li>
+											give them permissions to access each
+											other.
+										</li>
+									</ul>
+									Please note that there are additional costs
+									associated with setting up a VPC for your
+									resources, but it is considered best
+									practice for the security of your projects.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#secure"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={selectedSecureOption}
 						onChange={(val: boolean) => {
 							setSelectedSecureOption(val);
@@ -68,8 +94,25 @@ export default function AdvancedOptionsModal({
 						}}
 					/>
 					<LabelledCheckboxInput
-						text="Enable SSH"
-						description="Opens up port 22 for ssh access."
+						text="Allow SSH Connection"
+						description={
+							<div>
+								<p>
+									Enabling this option allows the user to set
+									up an SSH connection with the configured
+									resources on port 22.
+								</p>
+								<p>
+									If you do not need this functionality, it is
+									more secure to leave it unchecked.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#ssh"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={selectedAllowSshOption}
 						onChange={(val: boolean) => {
 							setSelectedAllowSshOption(val);
@@ -78,8 +121,29 @@ export default function AdvancedOptionsModal({
 						disabled={!selectedSecureOption}
 					/>
 					<LabelledCheckboxInput
-						text="Enable Inbound Web Traffic"
-						description="Opens up ports 443 and 80 for web traffic."
+						text="Allow Inbound Web Traffic"
+						description={
+							<div>
+								<p>
+									Opens ports 443 and 80 inbound to the VPC
+									via the network gateway.
+								</p>
+								<p>
+									Suppose you decide to run a web server, this
+									option allows outside entities to make
+									requests to it.
+								</p>
+								<p>
+									If you do not need this functionality, it is
+									more secure to leave it unchecked.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#inbound-web-traffic"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={selectedAllowIngressWebOption}
 						onChange={(val: boolean) => {
 							setSelectedAllowIngressWebOption(val);
@@ -88,8 +152,28 @@ export default function AdvancedOptionsModal({
 						disabled={!selectedSecureOption}
 					/>
 					<LabelledCheckboxInput
-						text="Enable Outbound Web Traffic"
-						description="Opens up ports 443 and 80 for software updates, web requests, etc."
+						text="Allow Outbound Web Traffic"
+						description={
+							<div>
+								<p>
+									Opens ports 443 and 80 outbound from the VPC
+									via the network gateway.
+								</p>
+								<p>
+									This means your resources can access the
+									internet (e.g. for software updates).
+								</p>
+								<p>
+									If you do not need this functionality, it is
+									more secure to leave it unchecked.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#outbound-web-traffic"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={selectedAllowEgressWebOption}
 						onChange={(val: boolean) => {
 							setSelectedAllowEgressWebOption(val);
@@ -99,7 +183,28 @@ export default function AdvancedOptionsModal({
 					/>
 					<LabelledCheckboxInput
 						text="Enable Network Load Balancing"
-						description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
+						description={
+							<div>
+								<p>
+									This allows requests to go to a single
+									service (that is, the load balancer) where
+									they are distributed across your compute
+									instances (e.g. EC2).
+								</p>
+								<p>
+									Please note that there are additional costs
+									associated with enabling network load
+									balancing, and it may not be necessary
+									unless your system receives a high rate of
+									requests.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#network-load-balancing"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={selectedAutoLoadBalanceOption}
 						onChange={(val: boolean) => {
 							setSelectedAutoLoadBalanceOption(val);
