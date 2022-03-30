@@ -265,14 +265,14 @@ export default abstract class Resource<
 						description={
 							<div>
 								<p>
-									Allows you to spin up any number of
+									Allows you to spin up any number of{" "}
 									{this.props.resource.toLowerCase()}s with
-									the same settings chosen above
+									the same settings you have chosen here.
 								</p>
 								<p>
-									They will be named consecutively with -a,
-									-b, -c... etc. appended to the name you
-									entered
+									The resources will be named consecutively
+									with -a, -b, -c... etc. appended to the name
+									you have entered.
 								</p>
 							</div>
 						}

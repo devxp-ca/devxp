@@ -584,7 +584,21 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							<Grid item>
 								<LabelledRadioSelect
 									text="Provider"
-									description="Select the provider you have a cloud services account with"
+									description={
+										<div>
+											<p>
+												Select the provider you have a cloud
+												services account with.
+											</p>
+											<p>
+												<a
+													href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
+													target="_blank">
+													Learn more.
+												</a>
+											</p>
+										</div>
+									}
 									options={[
 										{
 											key: "aws",
@@ -615,14 +629,33 @@ export default function TerraformManager(props: {backButton: () => void}) {
 										direction="row"
 										text="Google Project ID"
 										description={
-											<>
-												Can be found on the{" "}
-												<MuiLink
-													href="https://console.cloud.google.com/home/dashboard"
+											<p>
+												To locate your project ID:
+												<ol>
+													<li>
+														Go to the
+														<a
+															href="https://console.cloud.google.com/apis/dashboard"
+															target="_blank">
+															{" "}
+															API Console
+														</a>
+														.
+													</li>
+													<li>
+														From the projects list,
+														select Manage all projects.
+														The names and IDs for all
+														the projects you're a member
+														of are displayed.
+													</li>
+												</ol>
+												<a
+													href="https://support.google.com/googleapi/answer/7014113?hl=en"
 													target="_blank">
-													Google Cloud dashboard
-												</MuiLink>
-											</>
+													Learn more.
+												</a>
+											</p>
 										}
 										pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
 										initial={project}
