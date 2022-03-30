@@ -161,10 +161,10 @@ export type ec2InstanceType =
 	| "c3.8xlarge"
 
 	//Storage Optimized
-	| "d3.2xlarge"
+	| "d2.2xlarge"
 
 	//Storage Optimized extra
-	| "d3.8xlarge"
+	| "d2.8xlarge"
 
 	//Memory Optimized
 	| "r3.2xlarge"

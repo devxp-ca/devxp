@@ -5,7 +5,6 @@ import ProductPage from "../components/ProductPage";
 import Footer from "../components/Footer";
 import Grid from "@mui/material/Grid";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import {lightTheme} from "../style/themes";
 import {darkTheme} from "../style/themes";
 import {Element, scroller} from "react-scroll";
 
@@ -14,7 +13,7 @@ interface IState {}
 export default class Homepage extends React.Component<IProps, IState> {
 	render() {
 		return (
-			<ThemeProvider theme={lightTheme}>
+			<ThemeProvider theme={darkTheme}>
 				<Grid
 					container
 					direction="column"

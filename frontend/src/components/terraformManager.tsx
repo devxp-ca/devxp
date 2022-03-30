@@ -13,12 +13,10 @@ import {CardActionArea, LinearProgress} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
-import {lightTheme} from "../style/themes";
 import axios, {AxiosError} from "axios";
 import GenericModal from "./modals/GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
-import Tooltip from "@mui/material/Tooltip";
 import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
@@ -35,8 +33,17 @@ import {
 } from "./modals/modalHandlers";
 
 import TerraformOptionsModal from "./modals/TerraformOptionsModal";
+import AdvancedOptionsModal from "./modals/AdvancedOptionsModal";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
-import {useTheme} from "@mui/material/styles";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import LoadingModal from "./modals/LoadingModal";
+import Tooltip from "@mui/material/Tooltip";
+import CopyRepoSettingsModal from "./modals/CopyRepoSettingsModal";
+import PreviewWindow from "../components/livePreview/previewWindow";
+import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
+import MuiLink from "@mui/material/Link";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -69,14 +76,72 @@ export interface BackendError {
 	message?: string;
 }
 
-export default function TerraformManager(props: {
-	selectedRepo: string;
-	repoData: terraformDataSettings;
-	backButton: () => void;
-	setSettingsHaveBeenEdited: (hasEdited: boolean) => void;
-	settingsHaveBeenEdited: boolean;
-}) {
+export default function TerraformManager(props: {backButton: () => void}) {
 	const defaultCardSize = 250;
+
+	//start repo state
+	const [repoList, setRepoList] = React.useState([]);
+	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+	const [previousRepo, setPreviousRepo] = React.useState<string>("");
+	const [selectedRepoSavedData, setSelectedRepoSavedData] =
+		React.useState<terraformDataSettings | null>(null);
+	const [tempRepoData, setTempRepoData] =
+		React.useState<terraformDataSettings | null>(null);
+	//end repo state
+
+	/* For control flow logic (loading/overwriting/copying) */
+	const [overwriteWarningModalIsOpen, setOverwriteWarningModalIsOpen] =
+		React.useState(false);
+	// We give a warning when a user tries to switch repos with unsaved settings
+	const [giveOverwriteWarning, setGiveOverwriteWarning] =
+		React.useState(true);
+	// If the user comes from "no selected repo" and switches to repo with
+	// saved settings, give them a choice to back out or let the local changes be overwritten
+	const [overwriteChoiceModalIsOpen, setOverwriteChoiceModalIsOpen] =
+		React.useState(false);
+	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
+	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
+		React.useState(false);
+	const [headsUpModalIsOpen, setHeadsUpModalIsOpen] = React.useState(false);
+	// We give a warning when a user tries to copy a repo with unsaved settings
+	const [giveCopyWarning, setGiveCopyWarning] = React.useState(true);
+
+	/* For the copy settings modal */
+	const [copyRepoModalIsOpen, setCopyRepoModalIsOpen] = React.useState(false);
+
+	const updateSelectedRepo = (repoName: string) => {
+		setShowLoadingModal(true);
+		axios
+			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				headers: {
+					repo: repoName
+				}
+			})
+			.then((response: any) => {
+				setShowLoadingModal(false);
+				if (!selectedRepoSavedData && settingsHaveBeenEdited) {
+					setTempRepoData(response.data);
+					setOverwriteChoiceModalIsOpen(true);
+				} else {
+					setSelectedRepoSavedData(response.data);
+					setSettingsHaveBeenEdited(false);
+				}
+			})
+			.catch((error: any) => {
+				setShowLoadingModal(false);
+				if (!!selectedRepoSavedData) {
+					// Clean slate
+					setSelectedRepoSavedData(null);
+					setSettingsHaveBeenEdited(false);
+				}
+				console.error(error);
+			})
+			.finally(() => {
+				setSelectedRepo(repoName);
+				setGiveOverwriteWarning(true);
+			});
+	};
+	//end control flow logic
 
 	const [selectedProvider, setSelectedProvider] = React.useState("");
 	const [selectedSecureOption, setSelectedSecureOption] =
@@ -95,23 +160,68 @@ export default function TerraformManager(props: {
 	const [project, setProject] = React.useState("");
 
 	const resetRepoData = () => {
-		setTrackedResources(props.repoData?.settings?.resources ?? []);
-		setSelectedProvider(props.repoData?.settings?.provider ?? "");
-		setSelectedSecureOption(props.repoData?.settings?.secure ?? false);
-		setSelectedAllowSshOption(props.repoData?.settings?.allowSsh ?? true);
+		setTrackedResources(selectedRepoSavedData?.settings?.resources ?? []);
+		setSelectedProvider(selectedRepoSavedData?.settings?.provider ?? "");
+		setSelectedSecureOption(
+			selectedRepoSavedData?.settings?.secure ?? false
+		);
+		setSelectedAllowSshOption(
+			selectedRepoSavedData?.settings?.allowSsh ?? true
+		);
 		setSelectedAllowEgressWebOption(
-			props.repoData?.settings?.allowEgressWeb ?? true
+			selectedRepoSavedData?.settings?.allowEgressWeb ?? true
 		);
 		setSelectedAllowIngressWebOption(
-			props.repoData?.settings?.allowIngressWeb ?? false
+			selectedRepoSavedData?.settings?.allowIngressWeb ?? false
 		);
 		setSelectedAutoLoadBalanceOption(
-			props.repoData?.settings?.autoLoadBalance ?? false
+			selectedRepoSavedData?.settings?.autoLoadBalance ?? false
 		);
-		setProject(props.repoData?.settings?.project ?? "");
+		setProject(selectedRepoSavedData?.settings?.project ?? "");
 	};
 
-	React.useEffect(resetRepoData, [props.repoData]);
+	React.useEffect(resetRepoData, [selectedRepoSavedData]);
+
+	//   --------   PREVIEW CHANGES   --------   //
+
+	const [previewData, setPreviewData] = React.useState("");
+	React.useEffect(() => {
+		axios
+			.post(
+				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				removeEmptyKeys({
+					preview: true,
+					tool: "terraform",
+					repo: selectedRepo,
+					settings: {
+						provider: selectedProvider,
+						secure: selectedSecureOption,
+						allowSsh: selectedAllowSshOption,
+						allowIngressWeb: selectedAllowIngressWebOption,
+						allowEgressWeb: selectedAllowEgressWebOption,
+						autoLoadBalance: selectedAutoLoadBalanceOption,
+						resources: trackedResources,
+						project:
+							(project ?? "").length > 0 ? project : "PROJECT_ID"
+					}
+				})
+			)
+			.then(response => {
+				setPreviewData(response.data.preview);
+			})
+			.catch(console.error);
+	}, [
+		selectedRepoSavedData,
+		selectedProvider,
+		selectedSecureOption,
+		selectedAllowSshOption,
+		selectedAllowEgressWebOption,
+		selectedAllowIngressWebOption,
+		selectedAutoLoadBalanceOption,
+		trackedResources
+	]);
+
+	//   --------   -------- --------   --------   //
 
 	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
@@ -122,14 +232,14 @@ export default function TerraformManager(props: {
 		handleAwaitSuccessModal(
 			setSubmitModalInfo,
 			setSubmitModalIsOpen,
-			props.selectedRepo
+			selectedRepo
 		)();
 		axios
 			.post(
 				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
 				removeEmptyKeys({
 					tool: "terraform",
-					repo: props.selectedRepo,
+					repo: selectedRepo,
 					settings: {
 						provider: selectedProvider,
 						secure: selectedSecureOption,
@@ -147,7 +257,7 @@ export default function TerraformManager(props: {
 					setSubmitModalInfo,
 					setSubmitModalIsOpen
 				)();
-				props.setSettingsHaveBeenEdited(false);
+				setSettingsHaveBeenEdited(false);
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);
@@ -169,6 +279,9 @@ export default function TerraformManager(props: {
 
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
+	//ADVANCED OPTIONS MODAL THINGS
+	const [advancedOptionsModalIsOpen, setAdvancedOptionsModalIsOpen] =
+		React.useState(false);
 
 	// Info modal for when a user tries to add a resource without choosing a provider
 	const [addResourceWarningModalIsOpen, setAddResourceWarningModalIsOpen] =
@@ -178,11 +291,24 @@ export default function TerraformManager(props: {
 
 	useEffect(() => {
 		window.onbeforeunload = () => {
-			if (props.settingsHaveBeenEdited) {
+			if (settingsHaveBeenEdited) {
 				return "Are you sure you want to leave without submitting your configuration?";
 			}
 		};
-	});
+	}, [settingsHaveBeenEdited]);
+
+	useEffect(() => {
+		//api call to get repos
+		axios
+			.get(`${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
+			.then((response: any) => {
+				setRepoList(response.data.repos);
+			})
+			.catch((error: any) => {
+				//TODO: Render an error component
+				console.error(error);
+			});
+	}, []);
 
 	return (
 		<Box sx={{width: "100%", paddingBottom: 12}}>
@@ -199,7 +325,14 @@ export default function TerraformManager(props: {
 					setOpenOptionsModal(false);
 				}}
 				provider={selectedProvider}
-				title={`Choose your Resource for ${selectedProvider}`}
+				title={`Choose ${
+					/[aeiou]/i.test(selectedProvider[0]) ? "an" : "a"
+				} ${
+					selectedProvider === "aws"
+						? "AWS"
+						: selectedProvider.charAt(0).toUpperCase() +
+						  selectedProvider.slice(1)
+				} Resource`}
 			/>
 			<GenericModal
 				isOpen={!!currentResource}
@@ -227,7 +360,7 @@ export default function TerraformManager(props: {
 								typeToResource(
 									{
 										...currentResource,
-										repo: props.selectedRepo ?? "",
+										repo: selectedRepo ?? "",
 										isModifying:
 											Object.keys(currentResource)
 												.length > 1,
@@ -263,20 +396,14 @@ export default function TerraformManager(props: {
 												...trackedResources
 											]);
 											setCurrentResource(undefined);
-											props.setSettingsHaveBeenEdited(
-												true
-											);
+											setSettingsHaveBeenEdited(true);
 										},
 										onDelete: () => {
 											setCurrentResource(undefined);
-											props.setSettingsHaveBeenEdited(
-												true
-											);
+											setSettingsHaveBeenEdited(true);
 										},
 										onChange: () => {
-											props.setSettingsHaveBeenEdited(
-												true
-											);
+											setSettingsHaveBeenEdited(true);
 										}
 									},
 									false
@@ -326,7 +453,121 @@ export default function TerraformManager(props: {
 					</>
 				}
 			/>
-			<Grid container direction="row" spacing={2}>
+			<Grid
+				container
+				direction="row"
+				justifyContent="space-between"
+				columns={2}
+				sx={{mt: 2}}>
+				<Autocomplete
+					sx={{width: "300px"}}
+					id="repo-select"
+					disableClearable={true}
+					options={repoList}
+					value={{full_name: selectedRepo}}
+					getOptionLabel={(option: any) => option?.full_name ?? ""}
+					renderInput={(params: any) => (
+						<TextField
+							{...params}
+							label="Select A Repo"
+							variant="outlined"
+						/>
+					)}
+					onOpen={() => {
+						if (
+							!!selectedRepoSavedData &&
+							settingsHaveBeenEdited &&
+							giveOverwriteWarning
+						) {
+							setGiveOverwriteWarning(false);
+							setOverwriteWarningModalIsOpen(true);
+						}
+					}}
+					onChange={(event: any, value: any) => {
+						setPreviousRepo(selectedRepo);
+						updateSelectedRepo(value?.full_name ?? "");
+					}}
+					isOptionEqualToValue={(option: any, value: any) => {
+						return option?.full_name === value?.full_name;
+					}}
+				/>
+				<OkModal
+					isOpen={overwriteWarningModalIsOpen}
+					handleClose={handleCloseModal(
+						setOverwriteWarningModalIsOpen
+					)}
+					title={"Heads up!"}
+					bodyText={
+						"It looks like you have uncommitted changes.\
+									If you select a new repo, your uncommitted changes will be lost.\
+									Consider creating a pull request before changing repos."
+					}
+				/>
+				<OkCancelModal
+					isOpen={overwriteChoiceModalIsOpen}
+					onOk={() => {
+						setSelectedRepoSavedData(tempRepoData);
+						setSettingsHaveBeenEdited(false);
+						setOverwriteChoiceModalIsOpen(false);
+					}}
+					onCancel={() => {
+						setSelectedRepo(previousRepo);
+						setOverwriteChoiceModalIsOpen(false);
+					}}
+					title={"Warning: This repo has saved settings."}
+					bodyText={
+						"Continuing will overwrite your currently unsaved settings."
+					}
+				/>
+				<LoadingModal
+					isOpen={showLoadingModal}
+					loadingTitle={"Loading..."}
+				/>
+				<Tooltip title="Click here to copy these settings to another repo">
+					<Button
+						disabled={!selectedRepoSavedData}
+						variant="contained"
+						color="secondary"
+						onClick={() => {
+							if (settingsHaveBeenEdited && giveCopyWarning) {
+								setHeadsUpModalIsOpen(true);
+								setGiveCopyWarning(false);
+							} else {
+								setCopyRepoModalIsOpen(true);
+							}
+						}}>
+						Copy to another repo
+					</Button>
+				</Tooltip>
+				<CopyRepoSettingsModal
+					isOpen={copyRepoModalIsOpen}
+					handleClose={() => {
+						setCopyRepoModalIsOpen(false);
+					}}
+					repoList={repoList}
+					selectedRepo={selectedRepo}
+					setShowLoadingModal={setShowLoadingModal}
+				/>
+				<OkModal
+					isOpen={headsUpModalIsOpen}
+					handleClose={handleCloseModal(setHeadsUpModalIsOpen)}
+					title={"Heads Up!"}
+					bodyText={
+						"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
+					}
+				/>
+			</Grid>
+			<Grid
+				item
+				container
+				direction="row"
+				spacing={2}
+				sx={{
+					paddingTop: 2,
+					marginLeft: 0,
+					width: "100%",
+					paddingRight: 2
+				}}>
 				<Grid container direction="row">
 					<Typography sx={{paddingTop: 4}} variant="h4">
 						Terraform
@@ -334,141 +575,178 @@ export default function TerraformManager(props: {
 					<FormControl>
 						<Grid
 							container
-							direction="column"
+							direction="row"
 							sx={{
 								paddingLeft: 8,
 								paddingTop: 4.5,
 								marginBottom: 2
 							}}>
-							<LabelledRadioSelect
-								text="Provider"
-								description="Select the provider you have a cloud services account with"
-								options={[
-									{
-										key: "aws",
-										label: "Amazon",
-										disabled: trackedResources.length > 0
-									},
-									{
-										key: "google",
-										label: "Google",
-										disabled: trackedResources.length > 0
-									},
-									{
-										key: "azure",
-										label: "Azure",
-										disabled: true
-									}
-								]}
-								initial={selectedProvider}
-								onChange={(value: string) => {
-									setSelectedProvider(value);
-									props.setSettingsHaveBeenEdited(true);
-								}}
-							/>
-							{selectedProvider === "aws" && (
-								<LabelledCheckboxInput
-									text="Secure"
-									description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
-									initial={selectedSecureOption}
-									onChange={(val: boolean) => {
-										setSelectedSecureOption(val);
-										props.setSettingsHaveBeenEdited(true);
-									}}
-								/>
-							)}
-							{selectedProvider === "google" && (
-								<LabelledTextInput
-									direction="row"
-									text="Google Project ID"
+							<Grid item>
+								<LabelledRadioSelect
+									text="Provider"
 									description={
-										<p>
-											Can be found on the{" "}
-											<a
-												href="https://console.cloud.google.com/home/dashboard"
-												target="_blank">
-												Google Cloud dashboard
-											</a>
-										</p>
+										<div>
+											<p>
+												Select the provider you have a
+												cloud services account with.
+											</p>
+											<p>
+												<a
+													href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
+													target="_blank">
+													Learn more.
+												</a>
+											</p>
+										</div>
 									}
-									pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
-									initial={project}
-									onChange={(val: string) => {
-										setProject(val);
-										props.setSettingsHaveBeenEdited(true);
+									options={[
+										{
+											key: "aws",
+											label: "Amazon",
+											disabled:
+												trackedResources.length > 0
+										},
+										{
+											key: "google",
+											label: "Google",
+											disabled:
+												trackedResources.length > 0
+										},
+										{
+											key: "azure",
+											label: "Azure",
+											disabled: true
+										}
+									]}
+									initial={selectedProvider}
+									onChange={(value: string) => {
+										setSelectedProvider(value);
+										setSettingsHaveBeenEdited(true);
 									}}
 								/>
-							)}
-							{selectedProvider === "aws" &&
-								selectedSecureOption && (
-									<>
-										<LabelledCheckboxInput
-											text="Enable SSH"
-											description="Opens up port 22 for ssh access."
-											initial={selectedAllowSshOption}
-											onChange={(val: boolean) => {
-												setSelectedAllowSshOption(val);
-												props.setSettingsHaveBeenEdited(
-													true
-												);
-											}}
-										/>
-										<LabelledCheckboxInput
-											text="Enable Inbound Web Traffic"
-											description="Opens up ports 443 and 80 for web traffic."
-											initial={
-												selectedAllowIngressWebOption
-											}
-											onChange={(val: boolean) => {
-												setSelectedAllowIngressWebOption(
-													val
-												);
-												props.setSettingsHaveBeenEdited(
-													true
-												);
-											}}
-										/>
-										<LabelledCheckboxInput
-											text="Enable Outbound Web Traffic"
-											description="Opens up ports 443 and 80 for software updates, web requests, etc."
-											initial={
-												selectedAllowEgressWebOption
-											}
-											onChange={(val: boolean) => {
-												setSelectedAllowEgressWebOption(
-													val
-												);
-												props.setSettingsHaveBeenEdited(
-													true
-												);
-											}}
-										/>
-										<LabelledCheckboxInput
-											text="Enable Network Load Balancing"
-											description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
-											initial={
-												selectedAutoLoadBalanceOption
-											}
-											onChange={(val: boolean) => {
-												setSelectedAutoLoadBalanceOption(
-													val
-												);
-												props.setSettingsHaveBeenEdited(
-													true
-												);
-											}}
-										/>
-									</>
+								{selectedProvider === "google" && (
+									<LabelledTextInput
+										direction="row"
+										text="Google Project ID"
+										description={
+											<p>
+												To locate your project ID:
+												<ol>
+													<li>
+														Go to the
+														<a
+															href="https://console.cloud.google.com/apis/dashboard"
+															target="_blank">
+															{" "}
+															API Console
+														</a>
+														.
+													</li>
+													<li>
+														From the projects list,
+														select Manage all
+														projects. The names and
+														IDs for all the projects
+														you're a member of are
+														displayed.
+													</li>
+												</ol>
+												<a
+													href="https://support.google.com/googleapi/answer/7014113?hl=en"
+													target="_blank">
+													Learn more.
+												</a>
+											</p>
+										}
+										pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
+										initial={project}
+										onChange={(val: string) => {
+											setProject(val);
+											setSettingsHaveBeenEdited(true);
+										}}
+									/>
 								)}
+							</Grid>
+							<Grid item>
+								{/**Disable advanced options if provider isn't AWS
+								 */}
+								<IconButton
+									onClick={() => {
+										setAdvancedOptionsModalIsOpen(true);
+									}}
+									disabled={
+										selectedProvider === "aws"
+											? false
+											: true
+									}>
+									<Tooltip title="Advanced Options">
+										<SettingsIcon />
+									</Tooltip>
+								</IconButton>
+								<AdvancedOptionsModal
+									isOpen={advancedOptionsModalIsOpen}
+									handleClose={() => {
+										setAdvancedOptionsModalIsOpen(false);
+									}}
+									title="Advanced Options"
+									handleClick={(
+										event: any,
+										value: string
+									) => {
+										setAdvancedOptionsModalIsOpen(false);
+									}}
+									selectedProvider={selectedProvider}
+									selectedSecureOption={selectedSecureOption}
+									setSelectedSecureOption={
+										setSelectedSecureOption
+									}
+									settingsHaveBeenEdited={
+										settingsHaveBeenEdited
+									}
+									setSettingsHaveBeenEdited={
+										setSettingsHaveBeenEdited
+									}
+									selectedAllowSshOption={
+										selectedAllowSshOption
+									}
+									setSelectedAllowSshOption={
+										setSelectedAllowSshOption
+									}
+									selectedAllowIngressWebOption={
+										selectedAllowIngressWebOption
+									}
+									setSelectedAllowIngressWebOption={
+										setSelectedAllowIngressWebOption
+									}
+									selectedAllowEgressWebOption={
+										selectedAllowEgressWebOption
+									}
+									setSelectedAllowEgressWebOption={
+										setSelectedAllowEgressWebOption
+									}
+									selectedAutoLoadBalanceOption={
+										selectedAutoLoadBalanceOption
+									}
+									setSelectedAutoLoadBalanceOption={
+										setSelectedAutoLoadBalanceOption
+									}
+								/>
+							</Grid>
 						</Grid>
 					</FormControl>
 				</Grid>
 				<Grid item>
 					<Button
 						variant="outlined"
-						sx={{width: 3, height: defaultCardSize}}
+						color="primary"
+						size="large"
+						sx={{
+							width: defaultCardSize / 3,
+							height: defaultCardSize,
+							borderWidth: 2
+						}}
 						onClick={() => {
-							if (props.settingsHaveBeenEdited) {
+							if (settingsHaveBeenEdited) {
 								setExitWarningModalIsOpen(true);
 							} else {
 								props.backButton();
@@ -481,7 +759,7 @@ export default function TerraformManager(props: {
 						onOk={() => {
 							props.backButton();
 							setExitWarningModalIsOpen(false);
-							props.setSettingsHaveBeenEdited(false);
+							setSettingsHaveBeenEdited(false);
 						}}
 						onCancel={() => {
 							setExitWarningModalIsOpen(false);
@@ -503,8 +781,9 @@ export default function TerraformManager(props: {
 								}
 							}}
 							sx={{
+								backgroundColor: "secondary.light",
 								"&:hover": {
-									backgroundColor: "success.light"
+									backgroundColor: "success.dark"
 								}
 							}}>
 							<Grid
@@ -512,7 +791,7 @@ export default function TerraformManager(props: {
 								justifyContent="center"
 								alignItems="center"
 								sx={{
-									width: defaultCardSize / 2,
+									width: (defaultCardSize / 3) * 2 - 16,
 									height: defaultCardSize,
 									borderWidth: 1,
 									borderColor: "success.main",
@@ -569,9 +848,9 @@ export default function TerraformManager(props: {
 					<Button
 						disabled={
 							//openCards > 0 ||
-							!props.settingsHaveBeenEdited ||
+							!settingsHaveBeenEdited ||
 							(selectedProvider?.length ?? 0) < 1 ||
-							(props.selectedRepo?.length ?? 0) < 1 ||
+							(selectedRepo?.length ?? 0) < 1 ||
 							(selectedProvider === "google" &&
 								project.length < 6)
 						}
@@ -583,7 +862,7 @@ export default function TerraformManager(props: {
 						onClick={handleOpenSubmitModalConfirmation(
 							setSubmitModalInfo,
 							setSubmitModalIsOpen,
-							props.selectedRepo
+							selectedRepo
 						)}
 						sx={{
 							padding: 2,
@@ -594,14 +873,14 @@ export default function TerraformManager(props: {
 						Create Pull Request
 					</Button>
 					<Button
-						disabled={!props.settingsHaveBeenEdited}
+						disabled={!settingsHaveBeenEdited}
 						variant="contained"
 						color="error"
 						size="large"
 						startIcon={<CheckIcon />}
 						aria-label="discard changes"
 						onClick={() => {
-							props.setSettingsHaveBeenEdited(false);
+							setSettingsHaveBeenEdited(false);
 							resetRepoData();
 						}}
 						sx={{
@@ -613,6 +892,7 @@ export default function TerraformManager(props: {
 					</Button>
 				</Box>
 			</Grid>
+			<PreviewWindow data={previewData} />
 		</Box>
 	);
 }

@@ -53,7 +53,7 @@ export const lightTheme = createTheme({
 		info: {
 			main: "#80F6E8",
 			light: "#80F6E850",
-			dark: "#80F6E810"
+			dark: "#80F6E820"
 		},
 		success: {
 			main: "#A1E561",
@@ -85,7 +85,7 @@ export const darkTheme = createTheme({
 		info: {
 			main: "#3BD6BA",
 			light: "#3BD6BA50",
-			dark: "#3BD6BA10"
+			dark: "#3BD6BA20"
 		},
 		success: {
 			main: "#35E185",

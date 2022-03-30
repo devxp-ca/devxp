@@ -2,7 +2,7 @@ import {CustomValidator} from "express-validator";
 import {db_attribute, isRuntime} from "../types/terraform";
 
 export const resourceTypes =
-	/^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb|googleFunc|cloudRun)$/;
+	/^(ec2|gce|s3|lambdaFunc|glacierVault|dynamoDb|googleFunc|cloudRun|googleStorageBucket)$/;
 
 const hasAllKeys = (obj: any, keys: string[]) => {
 	let retVal = true;

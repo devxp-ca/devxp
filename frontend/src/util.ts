@@ -32,3 +32,8 @@ export const usePrevious = <T extends unknown>(value: T): T | undefined => {
 	});
 	return ref.current;
 };
+
+export const BTN_WIDTH = 45;
+export const OFFSET = `calc(-50vw + ${BTN_WIDTH / 2}px)`;
+export const OFFSET_NO_DIV = `calc(-50vw + ${BTN_WIDTH}px)`;
+export const TRANSITION = "all ease-in 1s";

@@ -1,4 +1,15 @@
-import {Box, Button, Card, Grid, Theme} from "@mui/material";
+import {
+	Box,
+	Button,
+	Card,
+	Grid,
+	Typography,
+	CardMedia,
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	CardActionArea
+} from "@mui/material";
 import React from "react";
 import {randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
@@ -6,10 +17,7 @@ import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWith
 import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
-import {lightTheme} from "../../style/themes";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import {CardActionArea} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const display = (content: any): string => {
 	if (Array.isArray(content)) {
@@ -147,7 +155,12 @@ export default abstract class Resource<
 
 	toCard(onClick: () => void, cardSize: number) {
 		return (
-			<Card sx={{width: cardSize, height: cardSize}}>
+			<Card
+				sx={{
+					width: cardSize,
+					height: cardSize,
+					backgroundColor: "secondary.light"
+				}}>
 				<CardActionArea
 					onClick={onClick}
 					sx={{
@@ -161,9 +174,10 @@ export default abstract class Resource<
 							gutterBottom
 							variant="h5"
 							component="div"
+							color="black"
 							sx={{
 								backgroundColor: "info.main",
-								borderRadius: 1,
+								borderRadius: "2px 2px 0px 0px",
 								padding: 2,
 								textAlign: "center",
 								boxSizing: "border-box"
@@ -204,22 +218,10 @@ export default abstract class Resource<
 			<Grid
 				container
 				direction="column"
-				alignItems="center"
 				sx={{
 					gridGap: "15px",
 					marginTop: "15px"
 				}}>
-				<Grid item>
-					<LabelledCheckboxInput
-						disabled={this.props.disableIam}
-						initial={this.props?.autoIam ?? true}
-						text="Enable IAM Users"
-						description="Determine if IAM Users will be setup for this resource"
-						onChange={(autoIam: boolean) =>
-							this.setState({autoIam})
-						}
-					/>
-				</Grid>
 				<Box
 					textAlign="center"
 					sx={{
@@ -233,8 +235,23 @@ export default abstract class Resource<
 						}
 					}}>
 					<LabelledTextInputWithRandom
-						text={`${this.props.resource} Name`}
-						description={`Give this ${this.props.resource} a specific id`}
+						text={`${this.props.resource} ID`}
+						description={
+							<div>
+								<p>
+									Checking the box allows you to give this{" "}
+									{this.props.resource} a specific ID.
+									Otherwise a randomly generated ID will be
+									used in its place.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#resource-id"
+									target="_blank">
+									Learn about the rules for IDs and storage
+									resource naming rules.
+								</a>
+							</div>
+						}
 						{...this.props}
 						onChange={(id: string) => {
 							this.setState({id});
@@ -247,14 +264,14 @@ export default abstract class Resource<
 						description={
 							<div>
 								<p>
-									Allows you to spin up any number of
+									Allows you to spin up any number of{" "}
 									{this.props.resource.toLowerCase()}s with
-									the same settings chosen above
+									the same settings you have chosen here.
 								</p>
 								<p>
-									They will be named consecutively with -a,
-									-b, -c... etc. appended to the name you
-									entered
+									The resources will be named consecutively
+									with -a, -b, -c... etc. appended to the name
+									you have entered.
 								</p>
 							</div>
 						}
@@ -264,7 +281,64 @@ export default abstract class Resource<
 						}}
 					/>
 				</Box>
-				<Box textAlign="center" sx={{paddingTop: 3}}>
+				<Accordion disableGutters={true}>
+					<AccordionSummary
+						expandIcon={<ExpandMoreIcon />}
+						id="resource-config-advanced-settings">
+						<Typography>Advanced Settings</Typography>
+					</AccordionSummary>
+					<AccordionDetails>
+						<Grid
+							item
+							container
+							direction="column"
+							alignItems="center"
+							sx={{
+								width: "100%"
+							}}>
+							<Grid
+								item
+								sx={{
+									paddingLeft: 2
+								}}>
+								<LabelledCheckboxInput
+									disabled={this.props.disableIam}
+									initial={this.props?.autoIam ?? true}
+									text="Create IAM User"
+									description={
+										<div>
+											<p>
+												Creates an{" "}
+												<a
+													href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html"
+													target="_blank">
+													IAM user
+												</a>{" "}
+												with permissions for the
+												resource in question.
+											</p>
+											<p>
+												To access/modify this resource
+												programmatically, through code,
+												or from another resource, you
+												must use an IAM user.
+											</p>
+											<a
+												href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#create-iam-user-advanced"
+												target="_blank">
+												Learn more.
+											</a>
+										</div>
+									}
+									onChange={(autoIam: boolean) =>
+										this.setState({autoIam})
+									}
+								/>
+							</Grid>
+						</Grid>
+					</AccordionDetails>
+				</Accordion>
+				<Box textAlign="center" sx={{paddingTop: 3, width: "100%"}}>
 					<Grid>
 						<Button
 							disabled={!this.state.valid}
@@ -303,6 +377,16 @@ export default abstract class Resource<
 						)}
 					</Grid>
 				</Box>
+				<Button
+					size="small"
+					variant="text"
+					onClick={event => {
+						window.open(
+							"https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#terraform-resource-configuration"
+						);
+					}}>
+					How to configure this resource.
+				</Button>
 			</Grid>
 		);
 	}

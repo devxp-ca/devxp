@@ -1,5 +1,6 @@
 import * as React from "react";
 import {useTheme} from "@mui/material/styles";
+import {lightTheme, darkTheme} from "../../style/themes";
 import Grid from "@mui/material/Grid";
 import GenericModal from "./GenericModal";
 import {
@@ -30,6 +31,7 @@ export default function TerraformOptionsModal({
 	title,
 	handleClick
 }: modalProps) {
+	const theme = useTheme();
 	const currentResources = provider ? (RESOURCE_LIST as any)[provider] : [];
 
 	return (
@@ -53,7 +55,7 @@ export default function TerraformOptionsModal({
 									handleClick(event, value["key"]);
 								}}
 								sx={{
-									backgroundColor: "primary",
+									backgroundColor: "secondary.light",
 									"&:hover": {
 										backgroundColor: "info.dark"
 									}
@@ -67,7 +69,16 @@ export default function TerraformOptionsModal({
 										justifyContent="center"
 										alignContent="center"
 										textAlign="center"
-										alignItems="stretch">
+										alignItems="stretch"
+										sx={{
+											borderColor:
+												theme == darkTheme
+													? "info.light"
+													: "primary.light",
+											borderStyle: "solid",
+											borderWidth: 2,
+											borderRadius: "5px 0px 0px 5px"
+										}}>
 										<Grid item>
 											<Typography
 												variant="overline"
@@ -105,7 +116,16 @@ export default function TerraformOptionsModal({
 										xs={9}
 										item
 										container
-										sx={{p: 0.5}}
+										sx={{
+											paddingTop: 0.5,
+											paddingBottom: 0.5,
+											paddingLeft: 2,
+											paddingRight: 2,
+											backgroundColor:
+												theme == darkTheme
+													? "primary.dark"
+													: "info.dark"
+										}}
 										alignContent="center">
 										<Grid
 											item
