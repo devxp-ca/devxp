@@ -155,7 +155,7 @@ export const createTerraformSettings = (
 	}
 
 	const network =
-		networkedResources.length > 0 && provider === "aws"
+		networkedResources.length > 0 && provider === "aws" && secure
 			? prefabNetworkFromArr(networkedResources, {
 					allEgress: !secure,
 					allIngress: !secure,
