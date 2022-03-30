@@ -14,6 +14,9 @@ import terraformPNG from "../assets/Terraform_Horizontal.png";
 import cloudProvidersPNG from "../assets/cloud_providers.png";
 import arrowInfo from "../assets/arrow-info.png";
 import arrowSecondary from "../assets/arrow-secondary.png";
+import axios from "axios";
+import {CONFIG} from "../config";
+import PreviewRender from "../components/livePreview/previewRender";
 
 const dummyResources: resourceSettings[] = [
 	{
@@ -60,13 +63,17 @@ const dummyResources: resourceSettings[] = [
 
 export default function ProductPage() {
 	/* Might eventually want to style the scrollbar */
+
+	const [previewData, setPreviewData] = React.useState("");
+
 	return (
 		<Grid
 			item
 			container
 			direction="column"
 			sx={{
-				backgroundColor: "primary.dark"
+				backgroundColor: "primary.dark",
+				overflowX: "hidden"
 			}}>
 			{/* FIRST PAGE */}
 			<Grid
@@ -264,8 +271,31 @@ export default function ProductPage() {
 										{
 											type: "ec2",
 											repo: "testRepo",
-											isModifying:
-												Object.keys("ec2").length > 1
+											isModifying: false,
+											onChange: (data: any) => {
+												axios
+													.post(
+														`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+														{
+															preview: true,
+															tool: "terraform",
+															settings: {
+																provider: "aws",
+																secure: false,
+																resources: [
+																	data
+																]
+															}
+														}
+													)
+													.then(response => {
+														setPreviewData(
+															response.data
+																.preview
+														);
+													})
+													.catch(console.error);
+											}
 										},
 										false
 									) as React.ReactElement
@@ -380,10 +410,14 @@ export default function ProductPage() {
 								sx={{
 									backgroundColor: "secondary.light",
 									borderRadius: 2,
-									width: "100%",
-									height: "100%",
+									overflowX: "hidden",
+									overflowY: "hidden",
+									maxHeight: "90vh",
+									maxWidth: "90vh",
 									filter: "drop-shadow(0px 0px 16px #00000070)"
-								}}></Paper>
+								}}>
+								<PreviewRender data={previewData} raw={true} />
+							</Paper>
 						</Grid>
 					</Grid>
 				</Grid>

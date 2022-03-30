@@ -10,6 +10,7 @@ terraform();
 export default function PreviewRender(props: {
 	flipped?: boolean;
 	data?: string;
+	raw?: boolean;
 }) {
 	const [data, setData] = React.useState(props.data ?? "");
 
@@ -28,14 +29,20 @@ export default function PreviewRender(props: {
 
 	return (
 		<Box
-			sx={{
-				width: "50vw",
-				height: "90vh",
-				transition: TRANSITION,
-				marginRight: `${OFFSET_NO_DIV}`,
-				transform: `translateX(${props.flipped ? 0 : BTN_WIDTH}px)`,
-				zIndex: 1
-			}}>
+			sx={
+				props.raw
+					? {}
+					: {
+							width: "50vw",
+							height: "90vh",
+							transition: TRANSITION,
+							marginRight: `${OFFSET_NO_DIV}`,
+							transform: `translateX(${
+								props.flipped ? 0 : BTN_WIDTH
+							}px)`,
+							zIndex: 1
+					  }
+			}>
 			<Paper
 				sx={{
 					width: "100%",
