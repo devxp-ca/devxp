@@ -239,13 +239,16 @@ export default abstract class Resource<
 						description={
 							<div>
 								<p>
-									Give this {this.props.resource} a specific
-									ID.
+									Checking the box allows you to give this{" "}
+									{this.props.resource} a specific ID.
+									Otherwise a randomly generated ID will be
+									used in its place.
 								</p>
 								<a
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#resource-id"
 									target="_blank">
-									Learn more.
+									Learn about the rules for IDs and storage
+									resource naming rules.
 								</a>
 							</div>
 						}
