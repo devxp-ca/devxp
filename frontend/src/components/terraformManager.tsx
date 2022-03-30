@@ -587,8 +587,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 									description={
 										<div>
 											<p>
-												Select the provider you have a cloud
-												services account with.
+												Select the provider you have a
+												cloud services account with.
 											</p>
 											<p>
 												<a
@@ -644,10 +644,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 													</li>
 													<li>
 														From the projects list,
-														select Manage all projects.
-														The names and IDs for all
-														the projects you're a member
-														of are displayed.
+														select Manage all
+														projects. The names and
+														IDs for all the projects
+														you're a member of are
+														displayed.
 													</li>
 												</ol>
 												<a
