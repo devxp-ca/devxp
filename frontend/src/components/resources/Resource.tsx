@@ -251,8 +251,8 @@ export default abstract class Resource<
 						}
 					}}>
 					<LabelledTextInputWithRandom
-						text={`${this.props.resource} Name`}
-						description={`Give this ${this.props.resource} a specific id`}
+						text={`${this.props.resource} ID`}
+						description={`Give this ${this.props.resource} a specific ID`}
 						{...this.props}
 						onChange={(id: string) => {
 							this.setState({id});
@@ -321,6 +321,16 @@ export default abstract class Resource<
 						)}
 					</Grid>
 				</Box>
+				<Button
+					size="small"
+					variant="text"
+					onClick={event => {
+						window.open(
+							"https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#terraform-resource-configuration"
+						);
+					}}>
+					How to configure this resource.
+				</Button>
 			</Grid>
 		);
 	}
