@@ -5,8 +5,9 @@ import {internalErrorHandler} from "../types/errorHandler";
 import {RepoSettings} from "../database/repoSettings";
 
 export const postSettings = (req: Request, res: Response) => {
-	if (req.body.tool == "terraform") {
-		console.dir(req.body.settings);
+	if (req.body.preview) {
+		createTerraformSettings(req, res, true);
+	} else if (req.body.tool == "terraform") {
 		RepoSettings.updateOne(
 			{repo: req.body.repo},
 			{repo: req.body.repo, terraformSettings: req.body.settings},

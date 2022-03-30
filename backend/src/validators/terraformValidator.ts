@@ -1,4 +1,4 @@
-import {body, header} from "express-validator";
+import {body, header, oneOf} from "express-validator";
 import {validationErrorHandler} from "../types/errorHandler";
 import resourceValidator, {
 	resourceTypes,
@@ -6,8 +6,20 @@ import resourceValidator, {
 } from "./resourceValidator";
 
 export const settingsValidator = [
+	body("preview").optional().isBoolean().default(false),
+
+	//Only require repo to exist if preview is NOT true
+	oneOf(
+		[
+			body("repo").exists(),
+			body("preview")
+				.exists()
+				.custom(v => !!v)
+		],
+		"Invalid repo. Must match the form {NAME}/{REPO}."
+	),
 	body("repo")
-		.exists()
+		.optional()
 		.trim()
 		.isLength({min: 3})
 		.matches(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/)
@@ -61,6 +73,7 @@ export const settingsValidator = [
 		.isBoolean()
 		.default(false)
 		.withMessage("autoLoadBalance flag must be boolean"),
+
 	body("settings.project")
 		.if(body("tool").equals("terraform"))
 		.if(body("settings.provider").equals("google"))
