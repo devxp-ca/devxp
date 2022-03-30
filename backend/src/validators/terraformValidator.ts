@@ -100,13 +100,12 @@ export const settingsValidator = [
 		.withMessage("Invalid autoIam boolean"),
 	body("settings.resources.*.id")
 		.if(body("tool").equals("terraform"))
-		.optional()
 		.trim()
 		.escape()
 		.isLength({min: 1})
 		.matches(/^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])$/)
 		.withMessage(
-			"Invalid resource ID. Only letters, dashes, and underscores are allowed"
+			"Invalid resource ID. Only letters, dashes, and numbers are allowed (begin with letter, end with alphanumeric)."
 		),
 	body("settings.resources.*")
 		.if(body("tool").equals("terraform"))
