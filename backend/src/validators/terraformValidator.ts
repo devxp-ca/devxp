@@ -6,6 +6,7 @@ import resourceValidator, {
 } from "./resourceValidator";
 
 export const settingsValidator = [
+	body("preview").optional().isBoolean().default(false),
 	body("repo")
 		.exists()
 		.trim()
