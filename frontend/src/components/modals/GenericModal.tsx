@@ -46,7 +46,8 @@ export default function GenericModal({
 	const titleBoxStyle = {
 		textAlign: "center",
 		bgcolor: "info.main",
-		width: "100%"
+		width: "100%",
+		borderRadius: "4px 4px 0px 0px"
 	};
 
 	const bodyStyle = {
@@ -60,7 +61,7 @@ export default function GenericModal({
 			<Paper sx={modalStyle}>
 				<Box sx={titleBoxStyle}>
 					<Typography
-						variant="h6"
+						variant="h5"
 						component="h2"
 						sx={{padding: 2}}
 						color="black">

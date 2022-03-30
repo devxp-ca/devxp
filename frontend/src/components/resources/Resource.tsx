@@ -169,7 +169,7 @@ export default abstract class Resource<
 							color="black"
 							sx={{
 								backgroundColor: "info.main",
-								borderRadius: 1,
+								borderRadius: "2px 2px 0px 0px",
 								padding: 2,
 								textAlign: "center",
 								boxSizing: "border-box"

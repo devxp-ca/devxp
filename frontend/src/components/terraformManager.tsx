@@ -276,7 +276,14 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					setOpenOptionsModal(false);
 				}}
 				provider={selectedProvider}
-				title={`Choose your Resource for ${selectedProvider}`}
+				title={`Choose ${
+					/[aeiou]/i.test(selectedProvider[0]) ? "an" : "a"
+				} ${
+					selectedProvider === "aws"
+						? "AWS"
+						: selectedProvider.charAt(0).toUpperCase() +
+						  selectedProvider.slice(1)
+				} Resource`}
 			/>
 			<GenericModal
 				isOpen={!!currentResource}
