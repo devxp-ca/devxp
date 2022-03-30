@@ -28,11 +28,13 @@ import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
 import {GoogleCloudRun} from "../terraform/googleCloudRun";
+import {BackendModel} from "../database/bucket";
 
 export const createTerraformSettings = (
 	req: Request,
 	res: Response,
-	preview = false
+	preview = false,
+	bucketId?: string
 ): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
 
@@ -167,11 +169,14 @@ export const createTerraformSettings = (
 
 	//TODO: Leave this as just rootBlock()
 	// Solve chicken and egg problem
+	const namedBackend =
+		provider === "aws"
+			? new NamedAwsBackend(bucketId)
+			: new NamedGoogleBackend(project, bucketId);
+
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
-		provider === "aws"
-			? new NamedAwsBackend()
-			: new NamedGoogleBackend(project),
+		namedBackend,
 		[...google, ...network]
 	);
 
@@ -262,6 +267,17 @@ export const createTerraformSettings = (
 					"main",
 					token,
 					repo
+				);
+
+				//Update bucket
+				await BackendModel.updateOne(
+					{repo},
+					{
+						repo,
+						provider,
+						bucketId: namedBackend.bucket
+					},
+					{upsert: true}
 				);
 				return ref;
 			})
