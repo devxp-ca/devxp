@@ -203,7 +203,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				})
 			)
 			.then(response => {
-				console.dir(response.data.preview);
 				setPreviewData(response.data.preview);
 			})
 			.catch(console.error);

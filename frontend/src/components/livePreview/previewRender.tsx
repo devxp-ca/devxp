@@ -24,7 +24,6 @@ export default function PreviewRender(props: {
 			(_match, $1) => `= <span class="hljs-literal">${$1}</span>`
 		);
 		setData(highlighted);
-		console.dir("rerun");
 	}, [props.data]);
 
 	return (
