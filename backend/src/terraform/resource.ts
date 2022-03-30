@@ -1,6 +1,6 @@
 import {model} from "mongoose";
 import {DatabaseModel, generateSchema} from "../types/database";
-import {jsonRoot} from "./util";
+import {jsonRoot, variable} from "./util";
 import {arr} from "../util";
 import {PolicyStatement, TerraformJson} from "../types/terraform";
 
@@ -18,6 +18,10 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 		this.autoIam = autoIam;
 	}
 
+	getVars(): string[] {
+		return [];
+	}
+
 	toSchema() {
 		return generateSchema<Specific>(this as unknown as Specific);
 	}
@@ -26,6 +30,8 @@ export abstract class Resource<Specific> implements DatabaseModel<Specific> {
 	}
 
 	postProcess(json: TerraformJson): TerraformJson {
+		json.variable = [...json.variable, ...this.getVars().map(variable)];
+
 		return json;
 	}
 

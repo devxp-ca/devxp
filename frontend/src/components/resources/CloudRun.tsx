@@ -2,18 +2,15 @@ import {Grid} from "@mui/material";
 import React from "react";
 import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
-
-export interface EnvVar {
-	value: string;
-	name: string;
-}
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 interface IProps {
 	image?: string;
-	env?: EnvVar[];
+	env?: string[];
 }
 interface IState extends ResourceState {
-	env: EnvVar[];
+	env: string[];
 	image: string;
 }
 export default class CloudRun extends Resource<IProps, IState> {
@@ -47,6 +44,20 @@ export default class CloudRun extends Resource<IProps, IState> {
 		};
 	}
 
+	isValid() {
+		const hash: any = {};
+		return (
+			super.isValid() &&
+			this.state.env.reduce((acc, cur) => {
+				if (hash[cur]) {
+					return false;
+				}
+				hash[cur] = true;
+				return cur.length > 0 && acc;
+			}, this.state.env.length > 0)
+		);
+	}
+
 	render() {
 		return (
 			<Grid
@@ -68,6 +79,60 @@ export default class CloudRun extends Resource<IProps, IState> {
 					description="URL for container image"
 					onChange={(image: string) => this.setState({image})}
 				/>
+
+				{this.state.env.length > 0 ? (
+					this.state.env.map((env, i) => (
+						<Grid
+							key={`cloudRun-${this.state.id}-${i}`}
+							sx={{
+								"& > div": {
+									width: "30%"
+								}
+							}}
+							container
+							direction="row">
+							<LabelledTextInput
+								direction="row"
+								text="Name"
+								description="The name which your docker image expects to be set"
+								initial={env}
+								pattern="^[a-zA-Z_]+$"
+								onChange={name => {
+									this.setState({
+										env: this.state.env.map(
+											(env0: string, j) =>
+												i === j ? name : env0
+										)
+									});
+								}}
+							/>
+							<Button
+								variant="contained"
+								color="error"
+								onClick={() => {
+									this.setState({
+										env: this.state.env.filter(
+											(_env, ii) => i !== ii
+										)
+									});
+								}}>
+								Delete
+							</Button>
+						</Grid>
+					))
+				) : (
+					<Typography>No ENV Variables Set</Typography>
+				)}
+				<Button
+					variant="contained"
+					color="success"
+					onClick={() => {
+						this.setState({
+							env: [...this.state.env, ""]
+						});
+					}}>
+					Add ENV Variable
+				</Button>
 
 				{super.render()}
 			</Grid>

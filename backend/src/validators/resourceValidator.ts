@@ -128,9 +128,11 @@ const resourceValidator: CustomValidator = async (resource: any) => {
 			if (!Array.isArray(resource.env)) {
 				return Promise.reject(new Error("Invalid env vars"));
 			}
-			resource.env.forEach((env: any) => {
-				if (!("value" in env && "name" in env)) {
-					return Promise.reject(new Error("Invalid env vars"));
+			resource.env.forEach((env: any, i: number) => {
+				if (typeof env !== "string") {
+					return Promise.reject(
+						new Error(`Invalid env variable ${env} (${i})`)
+					);
 				}
 			});
 		}

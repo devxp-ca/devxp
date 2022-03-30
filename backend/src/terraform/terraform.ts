@@ -58,7 +58,8 @@ export const rootBlock = (
 				})
 				.flat()
 		],
-		data: []
+		data: [],
+		variable: []
 	};
 
 	// Allow each resource to apply post processing

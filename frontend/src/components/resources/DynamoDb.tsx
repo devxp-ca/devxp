@@ -3,7 +3,7 @@ import React from "react";
 import LabelledMultiSelect from "../labelledInputs/LabelledMultiSelect";
 import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
-import {Typography} from "@mui/material";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 interface Attribute {
@@ -44,16 +44,16 @@ export default class DynamoDb extends Resource<IProps, IState> {
 	}
 
 	isValid() {
+		const hash: any = {};
 		return (
 			super.isValid() &&
-			this.state.attributes.reduce(
-				(acc, cur, i, arr) =>
-					cur.name.length > 0 &&
-					cur.type.length > 0 &&
-					acc &&
-					(i === 0 || cur.name !== arr[i - 1].name),
-				this.state.attributes.length > 0
-			)
+			this.state.attributes.reduce((acc, cur) => {
+				if (hash[cur.name]) {
+					return false;
+				}
+				hash[cur.name] = true;
+				return cur.name.length > 0 && cur.type.length > 0 && acc;
+			}, this.state.attributes.length > 0)
 		);
 	}
 
@@ -137,7 +137,6 @@ export default class DynamoDb extends Resource<IProps, IState> {
 								variant="contained"
 								color="error"
 								onClick={() => {
-									console.dir(i);
 									this.setState({
 										attributes:
 											this.state.attributes.filter(

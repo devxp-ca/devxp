@@ -6,7 +6,7 @@ export interface GoogleCloudRun {
 	project: string;
 	location: gcpRegion;
 	image: string;
-	env: {name: string; value: string}[];
+	env: string[];
 	domain?: string;
 }
 export class GoogleCloudRun
@@ -17,7 +17,7 @@ export class GoogleCloudRun
 		project: string,
 		id: string,
 		image: string,
-		env: {name: string; value: string}[] = [],
+		env: string[] = [],
 		domain?: string,
 		location: gcpRegion = "us-west1",
 		name?: string
@@ -28,6 +28,13 @@ export class GoogleCloudRun
 		this.image = image;
 		this.env = env;
 		this.domain = domain;
+	}
+
+	getVars() {
+		return [
+			...super.getVars(),
+			...this.env.map(name => `CLOUD_RUN_${name}`)
+		];
 	}
 
 	//Returns an array of resource blocks
@@ -44,7 +51,10 @@ export class GoogleCloudRun
 								containers: [
 									{
 										image: this.image,
-										env: this.env
+										env: this.env.map((name: string) => ({
+											name,
+											value: `\${var.CLOUD_RUN_${name}}`
+										}))
 									}
 								]
 							}
@@ -95,7 +105,6 @@ export class GoogleCloudRun
 				)
 			];
 		}
-
 		return json;
 	}
 }
