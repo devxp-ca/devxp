@@ -22,9 +22,19 @@ export default function PreviewRender(props: {
 				sx={{
 					width: "100%",
 					height: "100%",
-					padding: "4px"
+					padding: "4px",
+					overflowX: "hidden",
+					overflowY: "auto",
+					pointerEvents: "all"
 				}}>
-				<Typography paragraph={false}>
+				<Typography
+					sx={{
+						overflowX: "hidden",
+						overflowY: "auto",
+						pointerEvents: "all",
+						minHeight: "90vh"
+					}}
+					paragraph={false}>
 					<pre>{props.data ?? ""}</pre>
 				</Typography>
 			</Paper>

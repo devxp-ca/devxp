@@ -176,8 +176,12 @@ export const createTerraformSettings = (
 	);
 
 	if (preview) {
+		let hcl = jsonToHcl(root) + "\n";
+
+		hcl = hcl.replace(/terraform-state-[a-zA-Z0-9-_]+/, "RANDOM_ID");
+
 		res.json({
-			preview: jsonToHcl(root) + "\n"
+			preview: hcl
 		});
 	} else {
 		getHead(token, repo, "main")

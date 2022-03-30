@@ -178,6 +178,48 @@ export default function TerraformManager(props: {backButton: () => void}) {
 
 	React.useEffect(resetRepoData, [selectedRepoSavedData]);
 
+	//   --------   PREVIEW CHANGES   --------   //
+
+	const [previewData, setPreviewData] = React.useState("");
+	React.useEffect(() => {
+		axios
+			.post(
+				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				removeEmptyKeys({
+					preview: true,
+					tool: "terraform",
+					repo: selectedRepo,
+					settings: {
+						provider: selectedProvider,
+						secure: selectedSecureOption,
+						allowSsh: selectedAllowSshOption,
+						allowIngressWeb: selectedAllowIngressWebOption,
+						allowEgressWeb: selectedAllowEgressWebOption,
+						autoLoadBalance: selectedAutoLoadBalanceOption,
+						resources: trackedResources,
+						project:
+							(project ?? "").length > 0 ? project : "PROJECT_ID"
+					}
+				})
+			)
+			.then(response => {
+				console.dir(response.data.preview);
+				setPreviewData(response.data.preview);
+			})
+			.catch(console.error);
+	}, [
+		selectedRepoSavedData,
+		selectedProvider,
+		selectedSecureOption,
+		selectedAllowSshOption,
+		selectedAllowEgressWebOption,
+		selectedAllowIngressWebOption,
+		selectedAutoLoadBalanceOption,
+		trackedResources
+	]);
+
+	//   --------   -------- --------   --------   //
+
 	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
 		React.useState<partialResource>();
@@ -798,7 +840,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Button>
 				</Box>
 			</Grid>
-			<PreviewWindow />
+			<PreviewWindow data={previewData} />
 		</Box>
 	);
 }
