@@ -22,7 +22,10 @@ export default function LabelledCheckboxInput(props: {
 	return (
 		<>
 			<Grid container direction="row">
-				<Typography sx={{paddingTop: 0.4}} variant="h6">
+				<Typography
+					sx={{paddingTop: 0.4}}
+					variant="h6"
+					color={props.disabled ? "#545454" : "inherit"}>
 					{props.text}
 				</Typography>
 				<MouseOverPopover

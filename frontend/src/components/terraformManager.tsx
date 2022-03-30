@@ -33,6 +33,7 @@ import {
 } from "./modals/modalHandlers";
 
 import TerraformOptionsModal from "./modals/TerraformOptionsModal";
+import AdvancedOptionsModal from "./modals/AdvancedOptionsModal";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -40,6 +41,9 @@ import LoadingModal from "./modals/LoadingModal";
 import Tooltip from "@mui/material/Tooltip";
 import CopyRepoSettingsModal from "./modals/CopyRepoSettingsModal";
 import PreviewWindow from "../components/livePreview/previewWindow";
+import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
+import MuiLink from "@mui/material/Link";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -275,6 +279,9 @@ export default function TerraformManager(props: {backButton: () => void}) {
 
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
+	//ADVANCED OPTIONS MODAL THINGS
+	const [advancedOptionsModalIsOpen, setAdvancedOptionsModalIsOpen] =
+		React.useState(false);
 
 	// Info modal for when a user tries to add a resource without choosing a provider
 	const [addResourceWarningModalIsOpen, setAddResourceWarningModalIsOpen] =
@@ -568,124 +575,129 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					<FormControl>
 						<Grid
 							container
-							direction="column"
+							direction="row"
 							sx={{
 								paddingLeft: 8,
 								paddingTop: 4.5,
 								marginBottom: 2
 							}}>
-							<LabelledRadioSelect
-								text="Provider"
-								description="Select the provider you have a cloud services account with"
-								options={[
-									{
-										key: "aws",
-										label: "Amazon",
-										disabled: trackedResources.length > 0
-									},
-									{
-										key: "google",
-										label: "Google",
-										disabled: trackedResources.length > 0
-									},
-									{
-										key: "azure",
-										label: "Azure",
-										disabled: true
-									}
-								]}
-								initial={selectedProvider}
-								onChange={(value: string) => {
-									setSelectedProvider(value);
-									setSettingsHaveBeenEdited(true);
-								}}
-							/>
-							{selectedProvider === "aws" && (
-								<LabelledCheckboxInput
-									text="Secure"
-									description="Whether or not to put all the configured resources into their own VPC, setup a subnet, and give them IAM permissions to access each other."
-									initial={selectedSecureOption}
-									onChange={(val: boolean) => {
-										setSelectedSecureOption(val);
+							<Grid item>
+								<LabelledRadioSelect
+									text="Provider"
+									description="Select the provider you have a cloud services account with"
+									options={[
+										{
+											key: "aws",
+											label: "Amazon",
+											disabled:
+												trackedResources.length > 0
+										},
+										{
+											key: "google",
+											label: "Google",
+											disabled:
+												trackedResources.length > 0
+										},
+										{
+											key: "azure",
+											label: "Azure",
+											disabled: true
+										}
+									]}
+									initial={selectedProvider}
+									onChange={(value: string) => {
+										setSelectedProvider(value);
 										setSettingsHaveBeenEdited(true);
 									}}
 								/>
-							)}
-							{selectedProvider === "google" && (
-								<LabelledTextInput
-									direction="row"
-									text="Google Project ID"
-									description={
-										<p>
-											Can be found on the{" "}
-											<a
-												href="https://console.cloud.google.com/home/dashboard"
-												target="_blank">
-												Google Cloud dashboard
-											</a>
-										</p>
-									}
-									pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
-									initial={project}
-									onChange={(val: string) => {
-										setProject(val);
-										setSettingsHaveBeenEdited(true);
-									}}
-								/>
-							)}
-							{selectedProvider === "aws" &&
-								selectedSecureOption && (
-									<>
-										<LabelledCheckboxInput
-											text="Enable SSH"
-											description="Opens up port 22 for ssh access."
-											initial={selectedAllowSshOption}
-											onChange={(val: boolean) => {
-												setSelectedAllowSshOption(val);
-												setSettingsHaveBeenEdited(true);
-											}}
-										/>
-										<LabelledCheckboxInput
-											text="Enable Inbound Web Traffic"
-											description="Opens up ports 443 and 80 for web traffic."
-											initial={
-												selectedAllowIngressWebOption
-											}
-											onChange={(val: boolean) => {
-												setSelectedAllowIngressWebOption(
-													val
-												);
-												setSettingsHaveBeenEdited(true);
-											}}
-										/>
-										<LabelledCheckboxInput
-											text="Enable Outbound Web Traffic"
-											description="Opens up ports 443 and 80 for software updates, web requests, etc."
-											initial={
-												selectedAllowEgressWebOption
-											}
-											onChange={(val: boolean) => {
-												setSelectedAllowEgressWebOption(
-													val
-												);
-												setSettingsHaveBeenEdited(true);
-											}}
-										/>
-										<LabelledCheckboxInput
-											text="Enable Network Load Balancing"
-											description="Spins up a network load balancer within your VPC, connected to all ec2 instances."
-											initial={
-												selectedAutoLoadBalanceOption
-											}
-											onChange={(val: boolean) => {
-												setSelectedAutoLoadBalanceOption(
-													val
-												);
-												setSettingsHaveBeenEdited(true);
-											}}
-										/>
-									</>
+								{selectedProvider === "google" && (
+									<LabelledTextInput
+										direction="row"
+										text="Google Project ID"
+										description={
+											<>
+												Can be found on the{" "}
+												<MuiLink
+													href="https://console.cloud.google.com/home/dashboard"
+													target="_blank">
+													Google Cloud dashboard
+												</MuiLink>
+											</>
+										}
+										pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
+										initial={project}
+										onChange={(val: string) => {
+											setProject(val);
+											setSettingsHaveBeenEdited(true);
+										}}
+									/>
 								)}
+							</Grid>
+							<Grid item>
+								{/**Disable advanced options if provider isn't AWS
+								 */}
+								<IconButton
+									onClick={() => {
+										setAdvancedOptionsModalIsOpen(true);
+									}}
+									disabled={
+										selectedProvider === "aws"
+											? false
+											: true
+									}>
+									<Tooltip title="Advanced Options">
+										<SettingsIcon />
+									</Tooltip>
+								</IconButton>
+								<AdvancedOptionsModal
+									isOpen={advancedOptionsModalIsOpen}
+									handleClose={() => {
+										setAdvancedOptionsModalIsOpen(false);
+									}}
+									title="Advanced Options"
+									handleClick={(
+										event: any,
+										value: string
+									) => {
+										setAdvancedOptionsModalIsOpen(false);
+									}}
+									selectedProvider={selectedProvider}
+									selectedSecureOption={selectedSecureOption}
+									setSelectedSecureOption={
+										setSelectedSecureOption
+									}
+									settingsHaveBeenEdited={
+										settingsHaveBeenEdited
+									}
+									setSettingsHaveBeenEdited={
+										setSettingsHaveBeenEdited
+									}
+									selectedAllowSshOption={
+										selectedAllowSshOption
+									}
+									setSelectedAllowSshOption={
+										setSelectedAllowSshOption
+									}
+									selectedAllowIngressWebOption={
+										selectedAllowIngressWebOption
+									}
+									setSelectedAllowIngressWebOption={
+										setSelectedAllowIngressWebOption
+									}
+									selectedAllowEgressWebOption={
+										selectedAllowEgressWebOption
+									}
+									setSelectedAllowEgressWebOption={
+										setSelectedAllowEgressWebOption
+									}
+									selectedAutoLoadBalanceOption={
+										selectedAutoLoadBalanceOption
+									}
+									setSelectedAutoLoadBalanceOption={
+										setSelectedAutoLoadBalanceOption
+									}
+								/>
+							</Grid>
 						</Grid>
 					</FormControl>
 				</Grid>
