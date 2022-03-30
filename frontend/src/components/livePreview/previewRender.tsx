@@ -20,8 +20,8 @@ export default function PreviewRender(props: {
 		//Just in case
 		const escaped = raw.replace(/<[^>]*script>/g, "");
 		const highlighted = escaped.replace(
-			/= (false|true|null)/g,
-			(_match, $1) => `= <span class="hljs-literal">${$1}</span>`
+			/(false|true|null)/g,
+			(_match, $1) => `<span class="hljs-literal">${$1}</span>`
 		);
 		setData(highlighted);
 	}, [props.data]);
