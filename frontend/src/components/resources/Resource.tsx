@@ -1,4 +1,15 @@
-import {Box, Button, Card, Grid, Theme} from "@mui/material";
+import {
+	Box,
+	Button,
+	Card,
+	Grid,
+	Typography,
+	CardMedia,
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	CardActionArea
+} from "@mui/material";
 import React from "react";
 import {randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
@@ -6,10 +17,7 @@ import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWith
 import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
-import {lightTheme} from "../../style/themes";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import {CardActionArea} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const display = (content: any): string => {
 	if (Array.isArray(content)) {
@@ -214,30 +222,6 @@ export default abstract class Resource<
 					gridGap: "15px",
 					marginTop: "15px"
 				}}>
-				<Grid
-					item
-					container
-					direction="column"
-					alignItems="center"
-					sx={{
-						width: "100%"
-					}}>
-					<Grid
-						item
-						sx={{
-							paddingLeft: 2
-						}}>
-						<LabelledCheckboxInput
-							disabled={this.props.disableIam}
-							initial={this.props?.autoIam ?? true}
-							text="Enable IAM Users"
-							description="Determine if IAM Users will be setup for this resource"
-							onChange={(autoIam: boolean) =>
-								this.setState({autoIam})
-							}
-						/>
-					</Grid>
-				</Grid>
 				<Box
 					textAlign="center"
 					sx={{
@@ -252,7 +236,19 @@ export default abstract class Resource<
 					}}>
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} ID`}
-						description={`Give this ${this.props.resource} a specific ID`}
+						description={
+							<div>
+								<p>
+									Give this {this.props.resource} a specific
+									ID.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#resource-id"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						{...this.props}
 						onChange={(id: string) => {
 							this.setState({id});
@@ -282,6 +278,63 @@ export default abstract class Resource<
 						}}
 					/>
 				</Box>
+				<Accordion disableGutters={true}>
+					<AccordionSummary
+						expandIcon={<ExpandMoreIcon />}
+						id="resource-config-advanced-settings">
+						<Typography>Advanced Settings</Typography>
+					</AccordionSummary>
+					<AccordionDetails>
+						<Grid
+							item
+							container
+							direction="column"
+							alignItems="center"
+							sx={{
+								width: "100%"
+							}}>
+							<Grid
+								item
+								sx={{
+									paddingLeft: 2
+								}}>
+								<LabelledCheckboxInput
+									disabled={this.props.disableIam}
+									initial={this.props?.autoIam ?? true}
+									text="Create IAM User"
+									description={
+										<div>
+											<p>
+												Creates an{" "}
+												<a
+													href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html"
+													target="_blank">
+													IAM user
+												</a>{" "}
+												with permissions for the
+												resource in question.
+											</p>
+											<p>
+												To access/modify this resource
+												programmatically, through code,
+												or from another resource, you
+												must use an IAM user.
+											</p>
+											<a
+												href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#create-iam-user-advanced"
+												target="_blank">
+												Learn more.
+											</a>
+										</div>
+									}
+									onChange={(autoIam: boolean) =>
+										this.setState({autoIam})
+									}
+								/>
+							</Grid>
+						</Grid>
+					</AccordionDetails>
+				</Accordion>
 				<Box textAlign="center" sx={{paddingTop: 3, width: "100%"}}>
 					<Grid>
 						<Button
