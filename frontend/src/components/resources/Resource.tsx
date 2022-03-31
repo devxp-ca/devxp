@@ -18,6 +18,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Link from "@mui/material/Link";
 
 const display = (content: any): string => {
 	if (Array.isArray(content)) {
@@ -394,7 +395,7 @@ export default abstract class Resource<
 				<Button
 					size="small"
 					variant="text"
-					onClick={event => {
+					onClick={() => {
 						window.open(
 							"https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#terraform-resource-configuration"
 						);

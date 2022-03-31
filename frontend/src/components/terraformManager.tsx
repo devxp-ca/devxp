@@ -44,7 +44,7 @@ import CopyRepoSettingsModal from "./modals/CopyRepoSettingsModal";
 import PreviewWindow from "../components/livePreview/previewWindow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
-import MuiLink from "@mui/material/Link";
+import Link from "@mui/material/Link";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -597,11 +597,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 												cloud services account with.
 											</p>
 											<p>
-												<a
+												<Link
 													href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
-													target="_blank">
+													target="_blank"
+													rel="noopener">
 													Learn more.
-												</a>
+												</Link>
 											</p>
 										</div>
 									}
@@ -640,12 +641,13 @@ export default function TerraformManager(props: {backButton: () => void}) {
 												<ol>
 													<li>
 														Go to the
-														<a
+														<Link
 															href="https://console.cloud.google.com/apis/dashboard"
-															target="_blank">
+															target="_blank"
+															rel="noopener">
 															{" "}
 															API Console
-														</a>
+														</Link>
 														.
 													</li>
 													<li>
@@ -657,11 +659,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 														displayed.
 													</li>
 												</ol>
-												<a
+												<Link
 													href="https://support.google.com/googleapi/answer/7014113?hl=en"
-													target="_blank">
+													target="_blank"
+													rel="noopener">
 													Learn more.
-												</a>
+												</Link>
 											</p>
 										}
 										pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
