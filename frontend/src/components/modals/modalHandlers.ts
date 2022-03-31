@@ -1,5 +1,7 @@
 import React from "react";
 import {BackendError} from "../terraformManager";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 
 export interface ModalParams {
 	isSubmitModal: boolean;
@@ -47,7 +49,8 @@ export const handleOpenSubmitModalConfirmation =
 		setModalInfo({
 			isSubmitModal: true,
 			title: "Are you sure you want to submit?",
-			body: `Once confirmed, DevXP will submit changes to a temporary branch of ${repoName} for review.`
+			body: `Once confirmed, DevXP will submit changes to a temporary branch of ${repoName} for review.
+			To invoke your infrastructure you will need to run the following commands in your terminal.`
 		});
 		setOpenModal(true);
 	};

@@ -45,6 +45,8 @@ import PreviewWindow from "../components/livePreview/previewWindow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -423,16 +425,31 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				children={
 					<>
 						{!submitModalInfo.loading && (
-							<div
+							<Stack
 								style={{
 									display: "flex",
 									justifyContent: "center"
 								}}>
+								<Paper>
+									<Typography variant="body1" align="center">
+										<pre>terraform init</pre>
+									</Typography>
+									{"\n"}
+									<Typography variant="body1" align="center">
+										<pre>terraform apply</pre>
+									</Typography>
+								</Paper>
 								<Button
 									color="secondary"
 									variant="contained"
 									size="large"
-									sx={{marginTop: 2}}
+									sx={{
+										marginTop: 2,
+										":hover": {
+											bgcolor: "secondary.main",
+											opacity: 0.9
+										}
+									}}
 									onClick={
 										submitModalInfo.isSubmitModal
 											? handleSubmit
@@ -444,7 +461,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 										? "Confirm"
 										: "Ok"}
 								</Button>
-							</div>
+							</Stack>
 						)}
 						{!!submitModalInfo.loading && (
 							<div>
@@ -877,7 +894,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial",
-							marginRight: 2
+							marginRight: 2,
+							":hover": {
+								bgcolor: "success.main",
+								opacity: 0.9
+							}
 						}}>
 						Create Pull Request
 					</Button>
