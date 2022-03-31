@@ -11,8 +11,11 @@ export default function PreviewRender(props: {
 	flipped?: boolean;
 	data?: string;
 	raw?: boolean;
+	error?: boolean;
 }) {
 	const [data, setData] = React.useState(props.data ?? "");
+	const [opac, setOpac] = React.useState(1);
+	const [colour, setColour] = React.useState("inherit");
 
 	hljs.initHighlightingOnLoad();
 	React.useEffect(() => {
@@ -25,7 +28,20 @@ export default function PreviewRender(props: {
 			(_match, $1) => `<span class="hljs-literal">${$1}</span>`
 		);
 		setData(highlighted);
+		setOpac(0.25);
+		setTimeout(() => setOpac(1), 200);
 	}, [props.data]);
+
+	React.useEffect(() => {
+		if (props.error) {
+			setColour("#FF0000");
+			setOpac(0.25);
+			setTimeout(() => {
+				setOpac(1);
+				setColour("inherit");
+			}, 200);
+		}
+	}, [props.error]);
 
 	return (
 		<Box
@@ -69,10 +85,16 @@ export default function PreviewRender(props: {
 						},
 						"& .hljs-literal": {
 							color: "warning.main"
-						}
+						},
+						backgroundColor: `${colour}10`
 					}}
 					paragraph={false}>
-					<pre>
+					<pre
+						style={{
+							transition: "all ease 0.2s",
+							opacity: opac,
+							color: colour
+						}}>
 						<code
 							className="language-terraform"
 							dangerouslySetInnerHTML={{__html: data}}

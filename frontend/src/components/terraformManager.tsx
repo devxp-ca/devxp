@@ -188,6 +188,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	//   --------   PREVIEW CHANGES   --------   //
 
 	const [previewData, setPreviewData] = React.useState("");
+	const [previewError, setPreviewError] = React.useState(false);
 	React.useEffect(() => {
 		axios
 			.post(
@@ -212,7 +213,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			.then(response => {
 				setPreviewData(response.data.preview);
 			})
-			.catch(console.error);
+			.catch(err => {
+				setPreviewError(true);
+				setTimeout(() => setPreviewError(false), 400);
+			});
 	}, [
 		selectedRepoSavedData,
 		selectedProvider,
@@ -914,7 +918,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Button>
 				</Box>
 			</Grid>
-			<PreviewWindow data={previewData} />
+			<PreviewWindow data={previewData} error={previewError} />
 		</Box>
 	);
 }
