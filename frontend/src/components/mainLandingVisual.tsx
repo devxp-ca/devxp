@@ -67,7 +67,14 @@ export default function MainLandingVisual(props: {onClick: () => void}) {
 						color="info"
 						variant="contained"
 						size="large"
-						sx={{marginTop: 2}}>
+						sx={{
+							marginTop: 2,
+							":hover": {
+								bgcolor: "info.main",
+								color: "white",
+								opacity: 0.9
+							}
+						}}>
 						Learn More
 					</Button>
 				</Grid>

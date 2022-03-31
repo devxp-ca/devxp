@@ -34,7 +34,7 @@ export interface terraformResource {
 	source_dir: string;
 	trigger_http: boolean;
 	image: string;
-	env: {name: string; value: string}[];
+	env: string[];
 	domain?: string;
 }
 
@@ -79,8 +79,9 @@ export const terraformResourceSchema = new Schema({
 	source_dir: String,
 	trigger_http: Boolean,
 	image: String,
-	env: [new Schema({name: String, value: String})],
-	domain: String
+	env: [String],
+	domain: String,
+	attributes: [attributeSchema]
 });
 
 export const terraformSettingsSchema = new Schema({

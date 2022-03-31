@@ -2,7 +2,9 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
-import {Checkbox, Typography} from "@mui/material";
+
+import Checkbox from "@mui/material/Checkbox";
+import Typography from "@mui/material/Typography";
 
 export default function LabelledCheckboxInput(props: {
 	text: string | React.ReactElement;

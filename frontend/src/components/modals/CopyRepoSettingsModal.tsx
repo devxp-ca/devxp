@@ -1,5 +1,8 @@
 import * as React from "react";
-import {Button, Grid, Autocomplete, TextField} from "@mui/material";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 import GenericModal from "./GenericModal";
 import axios from "axios";
 import {CONFIG} from "../../config";
@@ -81,22 +84,44 @@ export default function CopyRepoSettingsModal({
 							return option?.full_name === value?.full_name;
 						}}
 					/>
-					<Grid style={{display: "flex", justifyContent: "center"}}>
-						<Button variant="contained" onClick={handleClose}>
-							Cancel
-						</Button>
-						<Button
-							variant="contained"
-							onClick={() => {
-								handleClose();
-								copySettings(
-									selectedRepo,
-									copyRepo,
-									setShowLoadingModal
-								);
-							}}>
-							Copy Settings
-						</Button>
+					<Grid
+						container
+						direction="row"
+						spacing={2}
+						style={{display: "flex", justifyContent: "center"}}>
+						<Grid item>
+							<Button
+								sx={{
+									":hover": {
+										bgcolor: "primary.main",
+										opacity: 0.9
+									}
+								}}
+								variant="contained"
+								onClick={handleClose}>
+								Cancel
+							</Button>
+						</Grid>
+						<Grid item>
+							<Button
+								sx={{
+									":hover": {
+										bgcolor: "primary.main",
+										opacity: 0.9
+									}
+								}}
+								variant="contained"
+								onClick={() => {
+									handleClose();
+									copySettings(
+										selectedRepo,
+										copyRepo,
+										setShowLoadingModal
+									);
+								}}>
+								Copy Settings
+							</Button>
+						</Grid>
 					</Grid>
 				</Grid>
 			}

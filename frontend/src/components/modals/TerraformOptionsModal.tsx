@@ -1,20 +1,17 @@
 import * as React from "react";
 import {useTheme} from "@mui/material/styles";
-import {lightTheme, darkTheme} from "../../style/themes";
+import {darkTheme} from "../../style/themes";
 import Grid from "@mui/material/Grid";
 import GenericModal from "./GenericModal";
-import {
-	Card,
-	CardActionArea,
-	Typography,
-	Stack,
-	Icon,
-	Button,
-	CardActions
-} from "@mui/material";
+
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+
 import {RESOURCE_LIST} from "../resources/resourceList";
 import {} from "@mui/material";
-import {Storage, BackupTable as Icons} from "@mui/icons-material";
 
 interface modalProps {
 	isOpen: boolean;

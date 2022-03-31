@@ -4,11 +4,12 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import {FormControl, RadioGroup, FormControlLabel} from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import {lightTheme} from "../style/themes";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import Pagination from "@mui/material/Pagination";
 
 const DrawerHeader = styled("div")(({theme}) => ({
 	display: "flex",

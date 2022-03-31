@@ -2,7 +2,11 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
-import {FormLabel, MenuItem, Select, Typography} from "@mui/material";
+
+import FormLabel from "@mui/material/FormLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
 
 export default function LabelledMultiInput(props: {
 	text: string | React.ReactElement;

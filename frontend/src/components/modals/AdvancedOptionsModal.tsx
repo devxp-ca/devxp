@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Typography, Stack} from "@mui/material";
-import MuiLink from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import Link from "@mui/material/Link";
 
 import GenericModal from "./GenericModal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
@@ -80,11 +80,12 @@ export default function AdvancedOptionsModal({
 									resources, but it is considered best
 									practice for the security of your projects.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#secure"
-									target="_blank">
+									target="_blank"
+									rel="noopener">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={selectedSecureOption}
@@ -106,11 +107,12 @@ export default function AdvancedOptionsModal({
 									If you do not need this functionality, it is
 									more secure to leave it unchecked.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#ssh"
-									target="_blank">
+									target="_blank"
+									rel="noopener">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={selectedAllowSshOption}
@@ -137,11 +139,12 @@ export default function AdvancedOptionsModal({
 									If you do not need this functionality, it is
 									more secure to leave it unchecked.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#inbound-web-traffic"
-									target="_blank">
+									target="_blank"
+									rel="noopener">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={selectedAllowIngressWebOption}
@@ -167,11 +170,12 @@ export default function AdvancedOptionsModal({
 									If you do not need this functionality, it is
 									more secure to leave it unchecked.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#outbound-web-traffic"
-									target="_blank">
+									target="_blank"
+									rel="noopener">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={selectedAllowEgressWebOption}
@@ -198,11 +202,12 @@ export default function AdvancedOptionsModal({
 									unless your system receives a high rate of
 									requests.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#network-load-balancing"
-									target="_blank">
+									target="_blank"
+									rel="noopener">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={selectedAutoLoadBalanceOption}

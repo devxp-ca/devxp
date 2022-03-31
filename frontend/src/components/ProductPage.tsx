@@ -7,7 +7,6 @@ import GenericModal from "./modals/GenericModal";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
 import Paper from "@mui/material/Paper";
-import {resourceSettings} from "../components/terraformOptions";
 
 import logoBlack from "../assets/logo-black.png";
 import terraformPNG from "../assets/Terraform_Horizontal.png";
@@ -17,6 +16,7 @@ import arrowSecondary from "../assets/arrow-secondary.png";
 import axios from "axios";
 import {CONFIG} from "../config";
 import PreviewRender from "../components/livePreview/previewRender";
+import {resourceSettings} from "./terraformOptions";
 
 const dummyResources: resourceSettings[] = [
 	{

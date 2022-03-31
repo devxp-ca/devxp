@@ -1,4 +1,6 @@
-import {Autocomplete, Grid, TextField} from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import React from "react";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
@@ -7,6 +9,7 @@ import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
 import {CONFIG} from "../../config";
 import axios from "axios";
+import Link from "@mui/material/Link";
 
 interface IProps {
 	runtime?: string;
@@ -29,7 +32,7 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Function",
+		resource: "Serverless Function",
 
 		//Keys of IState, hacky I know
 		data: [
@@ -62,6 +65,17 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 			trigger_http: this.props.trigger_http ?? false,
 			memory: this.props.memory ?? 128,
 			files: ["./"]
+		};
+	}
+
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			runtime: "nodejs16",
+			entry_point: "main",
+			source_dir: "./",
+			trigger_http: true
 		};
 	}
 
@@ -115,7 +129,21 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 					}}>
 					<LabelledMultiInput
 						text="Runtime"
-						description="Choose the type of runtime you want this function to use"
+						description={
+							<div>
+								<p>
+									This sets up an environment for the
+									programming language your function is
+									written in.
+								</p>
+								<Link
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank"
+									rel="noreferrer">
+									Learn more.
+								</Link>
+							</div>
+						}
 						options={[
 							{
 								label: "NodeJS 16",
@@ -153,7 +181,19 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 					<LabelledCheckboxInput
 						initial={this.state.trigger_http}
 						text="HTTP"
-						description="Is this function triggered by HTTP requests"
+						description={
+							<div>
+								<p>
+									Is this function triggered by HTTP requests?
+								</p>
+								<Link
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank"
+									rel="noreferrer">
+									Learn more.
+								</Link>
+							</div>
+						}
 						onChange={(trigger_http: boolean) =>
 							this.setState({trigger_http})
 						}
@@ -180,8 +220,21 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 
 					<LabelledTextInput
 						pattern="..*"
-						text="Exported entry point method"
-						description="Exported function (within source file) to invoke"
+						text="Exported Entry Point"
+						description={
+							<div>
+								<p>
+									The name of the exported function within the
+									source file (e.g. main).
+								</p>
+								<Link
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank"
+									rel="noreferrer">
+									Learn more.
+								</Link>
+							</div>
+						}
 						initial={this.state.entry_point}
 						onChange={entry_point => {
 							this.setState({
@@ -191,7 +244,20 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 					/>
 					<LabelledNumberInput
 						text="Memory"
-						description="Maxmimum memory given to function (mbs)"
+						description={
+							<div>
+								<p>
+									Maximum memory given to the function in
+									Megabits (Mbs).
+								</p>
+								<Link
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank"
+									rel="noreferrer">
+									Learn more.
+								</Link>
+							</div>
+						}
 						initial={this.state.memory}
 						onChange={memory => {
 							this.setState({

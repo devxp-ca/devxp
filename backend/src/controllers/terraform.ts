@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import createCommit from "../githubapi/createCommit";
 import createTree from "../githubapi/createTree";
 import createBranch from "../githubapi/createBranch";
-import createPullRequest from "../githubapi/createPullRequest";
+import {createPullRequestGetUrl} from "../githubapi/createPullRequest";
 import getCommitFromUrl from "../githubapi/getCommitFromUrl";
 import getHead from "../githubapi/getHead";
 import getTreeFromUrl from "../githubapi/getTreeFromUrl";
@@ -28,11 +28,13 @@ import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {GoogleStorageBucket} from "../terraform/googleStorageBucket";
 import {GoogleFunction} from "../terraform/googleFunction";
 import {GoogleCloudRun} from "../terraform/googleCloudRun";
+import {BackendModel} from "../database/bucket";
 
 export const createTerraformSettings = (
 	req: Request,
 	res: Response,
-	preview = false
+	preview = false,
+	bucketId?: string
 ): void => {
 	const provider = req.body.settings?.provider as "aws" | "google" | "azure";
 
@@ -167,11 +169,14 @@ export const createTerraformSettings = (
 
 	//TODO: Leave this as just rootBlock()
 	// Solve chicken and egg problem
+	const namedBackend =
+		provider === "aws"
+			? new NamedAwsBackend(bucketId)
+			: new NamedGoogleBackend(project, bucketId);
+
 	const [root, backend] = rootBlockSplitBackend(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
-		provider === "aws"
-			? new NamedAwsBackend()
-			: new NamedGoogleBackend(project),
+		namedBackend,
 		[...google, ...network]
 	);
 
@@ -257,16 +262,32 @@ export const createTerraformSettings = (
 				);
 
 				//Initiate a pull request to the main branch
-				await createPullRequest(
+				const pr = await createPullRequestGetUrl(
 					"DevXP-Configuration",
 					"main",
 					token,
 					repo
 				);
-				return ref;
+
+				console.dir(pr);
+
+				//Update bucket
+				await BackendModel.updateOne(
+					{repo},
+					{
+						repo,
+						provider,
+						bucketId: namedBackend.bucket
+					},
+					{upsert: true}
+				);
+				return {
+					ref,
+					pr
+				};
 			})
-			.then(ref => {
-				res.json({ref});
+			.then(json => {
+				res.json(json);
 			})
 			.catch(internalErrorHandler(req, res));
 	}

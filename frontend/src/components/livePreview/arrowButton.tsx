@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import arrowInfo from "../../assets/arrow-info.png";
-import {OFFSET, TRANSITION} from "../../util";
+import {TRANSITION} from "../../util";
 
 export default function ArrowButton(props: {flipped?: boolean}) {
 	return (

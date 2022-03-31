@@ -3,6 +3,40 @@ import axios from "axios";
 import {GithubPR, isGithubPR} from "../types/github";
 import {GITHUB_BASE_URL, createGithubHeader} from "./util";
 
+export const createPullRequestGetUrl = (
+	head: string, // Name of branch where changes implemented
+	base: string, // Name of branch we want to merge into
+	token: string,
+	repo: string
+): Promise<GithubPR & {html_url: string}> =>
+	new Promise<GithubPR & {html_url: string}>((resolve, reject) => {
+		createPullRequest(head, base, token, repo)
+			.then(resp0 => {
+				console.dir(resp0);
+				axios
+					.get(resp0.url, {
+						headers: {
+							Authorization: `token ${token}`,
+							Accept: "application / vnd.github.v3 + json"
+						}
+					})
+					.then(resp => {
+						if ("html_url" in resp.data) {
+							console.dir(resp.data.html_url);
+							resolve({
+								url: resp0.url,
+								title: resp0.title,
+								html_url: resp.data.html_url as string
+							});
+						} else {
+							reject(new Error("Invalid response from github"));
+						}
+					})
+					.catch(reject);
+			})
+			.catch(reject);
+	});
+
 const createPullRequest = (
 	head: string, // Name of branch where changes implemented
 	base: string, // Name of branch we want to merge into

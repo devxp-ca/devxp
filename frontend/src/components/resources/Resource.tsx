@@ -1,31 +1,35 @@
-import {
-	Box,
-	Button,
-	Card,
-	Grid,
-	Typography,
-	CardMedia,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
-	CardActionArea
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import CardMedia from "@mui/material/CardMedia";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import CardActionArea from "@mui/material/CardActionArea";
+
 import React from "react";
-import {randomIdSettings} from "../../util";
+import {getRandomId, randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWithRandom";
 import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import valueToLabel from "./valueToLabel";
+import Link from "@mui/material/Link";
 
 const display = (content: any): string => {
 	if (Array.isArray(content)) {
-		if (content.length > 0) {
-			return `[${display(content[0]).slice(0, 10)}...]`;
-		} else {
-			return `[]`;
-		}
+		// if (content.length > 0) {
+		// 	return `[${display(content[0]).slice(0, 10)}...]`;
+		// } else {
+		// 	return `[]`;
+		// }
+		return `[${content.length} item${
+			content.length > 1 || content.length === 0 ? "s" : ""
+		}]`;
 	} else {
 		if (typeof content === "object") {
 			return JSON.stringify(content);
@@ -90,6 +94,7 @@ export default abstract class Resource<
 		this.getResourceData = this.getResourceData.bind(this);
 		this.getInternalData = this.getInternalData.bind(this);
 		this.isValid = this.isValid.bind(this);
+		this.populateDefault = this.populateDefault.bind(this);
 	}
 
 	componentDidUpdate(_prevProps: IProps & Props, prevState: State) {
@@ -124,6 +129,13 @@ export default abstract class Resource<
 			}
 		});
 		return data;
+	}
+
+	populateDefault() {
+		this.state = {
+			...this.state,
+			id: getRandomId({...this.props})
+		};
 	}
 
 	getData(state: State = this.state) {
@@ -182,7 +194,7 @@ export default abstract class Resource<
 								textAlign: "center",
 								boxSizing: "border-box"
 							}}>
-							{this.props.id}
+							{this.props.resource}
 						</Typography>
 						<Typography
 							variant="body2"
@@ -190,22 +202,25 @@ export default abstract class Resource<
 							component="div"
 							sx={{padding: 2, paddingTop: 0}}>
 							<div>
-								<p>Resource: {this.props.resourceType}</p>
-							</div>
-							<div>
-								<p>AutoIam: {String(this.props.autoIam)}</p>
+								<p>ID: {this.props.id}</p>
 							</div>
 							{this.props.data.slice(0, 2).map((key, i) => (
 								<div key={`resourceCard-${this.props.id}-${i}`}>
 									<p>
-										{key.slice(0, 1).toUpperCase()}
-										{key.slice(1).toLowerCase()}:{" "}
-										{display(
-											(this.state as unknown as any)[key]
+										{valueToLabel(key)}:{" "}
+										{valueToLabel(
+											display(
+												(this.state as unknown as any)[
+													key
+												]
+											)
 										)}
 									</p>
 								</div>
 							))}
+							<div>
+								<p>AutoIam: {String(this.props.autoIam)}</p>
+							</div>
 						</Typography>
 					</CardMedia>
 				</CardActionArea>
@@ -244,12 +259,13 @@ export default abstract class Resource<
 									Otherwise a randomly generated ID will be
 									used in its place.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#resource-id"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									Learn about the rules for IDs and storage
 									resource naming rules.
-								</a>
+								</Link>
 							</div>
 						}
 						{...this.props}
@@ -309,11 +325,12 @@ export default abstract class Resource<
 										<div>
 											<p>
 												Creates an{" "}
-												<a
+												<Link
 													href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html"
-													target="_blank">
+													target="_blank"
+													rel="noreferrer">
 													IAM user
-												</a>{" "}
+												</Link>{" "}
 												with permissions for the
 												resource in question.
 											</p>
@@ -323,11 +340,12 @@ export default abstract class Resource<
 												or from another resource, you
 												must use an IAM user.
 											</p>
-											<a
+											<Link
 												href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#create-iam-user-advanced"
-												target="_blank">
+												target="_blank"
+												rel="noreferrer">
 												Learn more.
-											</a>
+											</Link>
 										</div>
 									}
 									onChange={(autoIam: boolean) =>
@@ -341,6 +359,14 @@ export default abstract class Resource<
 				<Box textAlign="center" sx={{paddingTop: 3, width: "100%"}}>
 					<Grid>
 						<Button
+							sx={{
+								":hover": {
+									bgcolor: this.state.valid
+										? "success.main"
+										: "warning.main",
+									opacity: 0.9
+								}
+							}}
 							disabled={!this.state.valid}
 							variant="contained"
 							color={this.state.valid ? "success" : "warning"}
@@ -362,7 +388,13 @@ export default abstract class Resource<
 						</Button>
 						{this.props.isModifying && (
 							<Button
-								sx={{marginLeft: 3}}
+								sx={{
+									marginLeft: 3,
+									":hover": {
+										bgcolor: "error",
+										opacity: 0.9
+									}
+								}}
 								variant="contained"
 								color="error"
 								size="large"
@@ -380,7 +412,7 @@ export default abstract class Resource<
 				<Button
 					size="small"
 					variant="text"
-					onClick={event => {
+					onClick={() => {
 						window.open(
 							"https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#terraform-resource-configuration"
 						);

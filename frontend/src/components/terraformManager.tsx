@@ -9,7 +9,8 @@ import {
 	terraformDataSettings
 } from "../components/terraformOptions";
 import Card from "@mui/material/Card";
-import {CardActionArea, LinearProgress} from "@mui/material";
+import CardActionArea from "@mui/material/CardActionArea";
+import LinearProgress from "@mui/material/LinearProgress";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
@@ -17,7 +18,7 @@ import axios, {AxiosError} from "axios";
 import GenericModal from "./modals/GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
-import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
+import DeleteIcon from "@mui/icons-material/Delete";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
@@ -26,7 +27,6 @@ import OkCancelModal from "./modals/OkCancelModal";
 import {
 	handleCloseModal,
 	handleOpenFailModal,
-	handleOpenSubmitModalNoRepo,
 	handleOpenSubmitModalConfirmation,
 	handleOpenSuccessModal,
 	handleAwaitSuccessModal
@@ -43,7 +43,8 @@ import CopyRepoSettingsModal from "./modals/CopyRepoSettingsModal";
 import PreviewWindow from "../components/livePreview/previewWindow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
-import MuiLink from "@mui/material/Link";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -129,7 +130,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			})
 			.catch((error: any) => {
 				setShowLoadingModal(false);
-				if (!!selectedRepoSavedData) {
+				if (selectedRepoSavedData) {
 					// Clean slate
 					setSelectedRepoSavedData(null);
 					setSettingsHaveBeenEdited(false);
@@ -185,6 +186,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	//   --------   PREVIEW CHANGES   --------   //
 
 	const [previewData, setPreviewData] = React.useState("");
+	const [previewError, setPreviewError] = React.useState(false);
 	React.useEffect(() => {
 		axios
 			.post(
@@ -209,7 +211,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			.then(response => {
 				setPreviewData(response.data.preview);
 			})
-			.catch(console.error);
+			.catch(err => {
+				setPreviewError(true);
+				setTimeout(() => setPreviewError(false), 400);
+			});
 	}, [
 		selectedRepoSavedData,
 		selectedProvider,
@@ -226,6 +231,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
 		React.useState<partialResource>();
+	const [nextResource, setNextResource] = React.useState<partialResource>();
 
 	const handleSubmit = () => {
 		setSubmitModalIsOpen(true);
@@ -255,7 +261,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			.then(response => {
 				handleOpenSuccessModal(
 					setSubmitModalInfo,
-					setSubmitModalIsOpen
+					setSubmitModalIsOpen,
+					response.data?.pr?.html_url ?? ""
 				)();
 				setSettingsHaveBeenEdited(false);
 			})
@@ -274,7 +281,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 		isSubmitModal: true,
 		title: "",
 		body: "",
-		loading: false
+		loading: false,
+		width: ""
 	});
 
 	//OPTIONS MODAL THINGS
@@ -310,8 +318,66 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			});
 	}, []);
 
+	//Default or customize
+	const [openDefaultsModal, setOpenDefaultsModal] = React.useState(false);
+
 	return (
 		<Box sx={{width: "100%", paddingBottom: 12}}>
+			<GenericModal
+				isOpen={!!openDefaultsModal}
+				handleClose={() => {
+					setOpenDefaultsModal(false);
+				}}
+				title="Customize or Quickstart"
+				children={
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-evenly"
+						}}>
+						<Button
+							sx={{
+								":hover": {
+									bgcolor: "primary.main",
+									opacity: 0.9
+								}
+							}}
+							size="large"
+							variant="contained"
+							onClick={() => {
+								setCurrentResource(nextResource);
+								setOpenDefaultsModal(false);
+							}}>
+							Customize
+						</Button>
+						<Button
+							sx={{
+								":hover": {
+									bgcolor: "primary.main",
+									opacity: 0.9
+								}
+							}}
+							size="large"
+							variant="contained"
+							onClick={() => {
+								const resource = typeToResource(
+									nextResource,
+									true
+								) as Resource<unknown, any>;
+								resource.populateDefault();
+								setTrackedResources([
+									...trackedResources,
+									resource.getData() as unknown as resourceSettings
+								]);
+								setOpenDefaultsModal(false);
+							}}>
+							Quickstart
+						</Button>
+					</div>
+				}
+			/>
 			<TerraformOptionsModal
 				isOpen={!!openOptionsModal}
 				handleClose={() => {
@@ -319,10 +385,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					setOpenOptionsModal(false);
 				}}
 				handleClick={(event: any, value: string) => {
-					setCurrentResource({
+					setOpenDefaultsModal(true);
+					setOpenOptionsModal(false);
+					setNextResource({
 						type: value
 					});
-					setOpenOptionsModal(false);
 				}}
 				provider={selectedProvider}
 				title={`Choose ${
@@ -419,10 +486,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				handleClose={handleCloseModal(setSubmitModalIsOpen)}
 				title={submitModalInfo.title}
 				bodyText={submitModalInfo.body}
+				width={submitModalInfo.width}
 				children={
 					<>
 						{!submitModalInfo.loading && (
-							<div
+							<Stack
 								style={{
 									display: "flex",
 									justifyContent: "center"
@@ -431,7 +499,13 @@ export default function TerraformManager(props: {backButton: () => void}) {
 									color="secondary"
 									variant="contained"
 									size="large"
-									sx={{marginTop: 2}}
+									sx={{
+										marginTop: 2,
+										":hover": {
+											bgcolor: "secondary.main",
+											opacity: 0.9
+										}
+									}}
 									onClick={
 										submitModalInfo.isSubmitModal
 											? handleSubmit
@@ -443,13 +517,14 @@ export default function TerraformManager(props: {backButton: () => void}) {
 										? "Confirm"
 										: "Ok"}
 								</Button>
-							</div>
+							</Stack>
 						)}
 						{!!submitModalInfo.loading && (
 							<div>
 								<LinearProgress></LinearProgress>
 							</div>
 						)}
+						{}
 					</>
 				}
 			/>
@@ -525,7 +600,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				/>
 				<Tooltip title="Click here to copy these settings to another repo">
 					<Button
-						disabled={!selectedRepoSavedData}
+						sx={{
+							":hover": {
+								bgcolor: "secondary.main",
+								opacity: 0.9
+							}
+						}}
 						variant="contained"
 						color="secondary"
 						onClick={() => {
@@ -591,11 +671,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 												cloud services account with.
 											</p>
 											<p>
-												<a
+												<Link
 													href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
-													target="_blank">
+													target="_blank"
+													rel="noopener">
 													Learn more.
-												</a>
+												</Link>
 											</p>
 										</div>
 									}
@@ -634,12 +715,13 @@ export default function TerraformManager(props: {backButton: () => void}) {
 												<ol>
 													<li>
 														Go to the
-														<a
-															href="https://console.cloud.google.com/apis/dashboard"
-															target="_blank">
+														<Link
+															href="https://console.cloud.google.com/home/dashboard"
+															target="_blank"
+															rel="noopener">
 															{" "}
 															API Console
-														</a>
+														</Link>
 														.
 													</li>
 													<li>
@@ -651,11 +733,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 														displayed.
 													</li>
 												</ol>
-												<a
+												<Link
 													href="https://support.google.com/googleapi/answer/7014113?hl=en"
-													target="_blank">
+													target="_blank"
+													rel="noopener">
 													Learn more.
-												</a>
+												</Link>
 											</p>
 										}
 										pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
@@ -774,7 +857,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					<Card>
 						<CardActionArea
 							onClick={() => {
-								if (!!selectedProvider) {
+								if (selectedProvider) {
 									setOpenOptionsModal(true);
 								} else {
 									setAddResourceWarningModalIsOpen(true);
@@ -868,7 +951,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial",
-							marginRight: 2
+							marginRight: 2,
+							":hover": {
+								bgcolor: "success.main",
+								opacity: 0.9
+							}
 						}}>
 						Create Pull Request
 					</Button>
@@ -877,7 +964,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 						variant="contained"
 						color="error"
 						size="large"
-						startIcon={<CheckIcon />}
+						startIcon={<DeleteIcon />}
 						aria-label="discard changes"
 						onClick={() => {
 							setSettingsHaveBeenEdited(false);
@@ -892,7 +979,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Button>
 				</Box>
 			</Grid>
-			<PreviewWindow data={previewData} />
+			<PreviewWindow data={previewData} error={previewError} />
 		</Box>
 	);
 }

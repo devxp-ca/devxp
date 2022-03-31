@@ -1,1 +1,4 @@
-*[^g][^i][^t]*
+*
+!*/
+!.gitignore
+!logo-black-16.png

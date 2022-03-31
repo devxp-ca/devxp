@@ -7,10 +7,6 @@ import {generateId, removeName} from "./util";
 export interface NamedAwsBackend extends named<AwsBackend, "s3"> {}
 export class NamedAwsBackend implements DatabaseModel<NamedAwsBackend> {
 	name: "s3";
-	constructor();
-	constructor(bucket: string);
-	constructor(bucket: string, region: string);
-	constructor(bucket: string, key: string, region: string);
 	constructor(
 		bucket = `terraform-state-${generateId(45)}`,
 		key = "terraform/state",

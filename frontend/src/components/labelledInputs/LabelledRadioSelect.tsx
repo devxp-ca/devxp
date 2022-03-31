@@ -2,7 +2,10 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
-import {FormControlLabel, Radio, RadioGroup, Typography} from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import Typography from "@mui/material/Typography";
 
 export default function LabelledRadioInput(props: {
 	text: string | React.ReactElement;
