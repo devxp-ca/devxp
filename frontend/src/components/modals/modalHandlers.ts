@@ -18,7 +18,9 @@ export const handleOpenSuccessModal =
 		setModalInfo({
 			isSubmitModal: false,
 			title: "Success",
-			body: "Your changes have been successfully pushed to your repository"
+			body: `Your changes have been successfully pushed to your repository. 
+			You can find the pull request at the following URL: ${"url here"}.
+			To invoke your infrastructure, you will need to run the following commands: ${"commands here"}`
 		});
 		setOpenModal(true);
 	};
@@ -49,8 +51,7 @@ export const handleOpenSubmitModalConfirmation =
 		setModalInfo({
 			isSubmitModal: true,
 			title: "Are you sure you want to submit?",
-			body: `Once confirmed, DevXP will submit changes to a temporary branch of ${repoName} for review.
-			To invoke your infrastructure you will need to run the following commands in your terminal.`
+			body: `Once confirmed, DevXP will submit changes to a temporary branch of ${repoName} for review.`
 		});
 		setOpenModal(true);
 	};

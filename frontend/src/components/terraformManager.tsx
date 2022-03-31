@@ -430,15 +430,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 									display: "flex",
 									justifyContent: "center"
 								}}>
-								<Paper>
-									<Typography variant="body1" align="center">
-										<pre>terraform init</pre>
-									</Typography>
-									{"\n"}
-									<Typography variant="body1" align="center">
-										<pre>terraform apply</pre>
-									</Typography>
-								</Paper>
 								<Button
 									color="secondary"
 									variant="contained"
@@ -468,6 +459,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 								<LinearProgress></LinearProgress>
 							</div>
 						)}
+						{}
 					</>
 				}
 			/>
