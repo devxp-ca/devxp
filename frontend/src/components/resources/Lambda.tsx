@@ -49,7 +49,7 @@ export default class Lambda extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Function",
+		resource: "Serverless Function",
 
 		//Keys of IState, hacky I know
 		data: ["runtime", "handler", "filename", "keepWarm"],

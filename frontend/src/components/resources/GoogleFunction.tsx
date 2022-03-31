@@ -29,7 +29,7 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Function",
+		resource: "Serverless Function",
 
 		//Keys of IState, hacky I know
 		data: [

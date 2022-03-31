@@ -18,7 +18,7 @@ export default class CloudRun extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Cloud Run",
+		resource: "Serverless (Docker)",
 
 		//Keys of IState, hacky I know
 		data: ["env", "image"],
