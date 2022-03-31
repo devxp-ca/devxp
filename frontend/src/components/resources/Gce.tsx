@@ -59,8 +59,8 @@ export default class Gce extends Resource<IProps, IState> {
 						  })
 				}}>
 				<LabelledMultiInput
-					text="Instance OS"
-					description="Choose the type of OS you want this instance to run"
+					text="OS"
+					description="Choose the type of operating system you want this server to run."
 					options={[
 						{
 							label: "Ubuntu Server 20.04 LTS 64-bit x86",
@@ -80,25 +80,38 @@ export default class Gce extends Resource<IProps, IState> {
 					initial={this.state.disk_image}
 				/>
 
-				<LabelledRadioInput
-					text="Instance Hardware"
+				<LabelledMultiInput
+					text="Hardware"
 					description={
 						<div>
 							<p>
-								Choose the computing power you want this engine
-								to have:
+								Choose the computing power you want this server
+								to have.
 							</p>
-							<p>Micro - 1 CPU 614mB RAM</p>
-							<p>Small - 1 CPU 3.75gB RAM</p>
-							<p>Large - 2 CPU 8GB RAM</p>
-							<p>Extra-Large - 4 CPU 16GB RAM</p>
+							<a
+								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#gce"
+								target="_blank">
+								Learn more.
+							</a>
 						</div>
 					}
 					options={[
-						{label: "Micro", key: "f1-micro"},
-						{label: "Standard", key: "n1-standard-1"},
-						{label: "Large", key: "e2-standard-2"},
-						{label: "Extra Large", key: "e2-standard-8"}
+						{
+							label: "Micro [0.2 vCPU, 0.6 GB RAM]",
+							key: "f1-micro"
+						},
+						{
+							label: "Standard [1 vCPU, 3.75 GB RAM]",
+							key: "n1-standard-1"
+						},
+						{
+							label: "Large [2 vCPUs, 8 GB RAM]",
+							key: "e2-standard-2"
+						},
+						{
+							label: "Extra Large [8 vCPUs, 32 GB RAM]",
+							key: "e2-standard-8"
+						}
 					]}
 					onChange={machine_type => this.setState({machine_type})}
 					initial={this.state.machine_type}

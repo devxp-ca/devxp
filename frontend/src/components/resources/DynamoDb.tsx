@@ -85,8 +85,21 @@ export default class DynamoDb extends Resource<IProps, IState> {
 							direction="row">
 							<LabelledTextInput
 								direction="row"
-								text="Name"
-								description="A name to identify this DB attribute with"
+								text="Attribute Name"
+								description={
+									<div>
+										<p>
+											This is the name of an attribute
+											within the database (lowercase or
+											uppercase letters only).
+										</p>
+										<a
+											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#dynamo-db"
+											target="_blank">
+											Learn more.
+										</a>
+									</div>
+								}
 								initial={att.name}
 								pattern="^[a-zA-Z]+$"
 								onChange={name => {
@@ -109,7 +122,19 @@ export default class DynamoDb extends Resource<IProps, IState> {
 							<LabelledMultiSelect
 								formStyle={true}
 								text="Type"
-								description="String, Number, or Binary"
+								description={
+									<div>
+										<p>
+											This determines the datatype of the
+											attribute.
+										</p>
+										<a
+											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#dynamo-db"
+											target="_blank">
+											Learn more.
+										</a>
+									</div>
+								}
 								initial={att.type}
 								options={[
 									{key: "S", label: "String"},

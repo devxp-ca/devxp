@@ -115,7 +115,20 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 					}}>
 					<LabelledMultiInput
 						text="Runtime"
-						description="Choose the type of runtime you want this function to use"
+						description={
+							<div>
+								<p>
+									This sets up an environment for the
+									programming language your function is
+									written in.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						options={[
 							{
 								label: "NodeJS 16",
@@ -153,7 +166,18 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 					<LabelledCheckboxInput
 						initial={this.state.trigger_http}
 						text="HTTP"
-						description="Is this function triggered by HTTP requests"
+						description={
+							<div>
+								<p>
+									Is this function triggered by HTTP requests?
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						onChange={(trigger_http: boolean) =>
 							this.setState({trigger_http})
 						}
@@ -180,8 +204,20 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 
 					<LabelledTextInput
 						pattern="..*"
-						text="Exported entry point method"
-						description="Exported function (within source file) to invoke"
+						text="Exported Entry Point"
+						description={
+							<div>
+								<p>
+									The name of the exported function within the
+									source file (e.g. main).
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={this.state.entry_point}
 						onChange={entry_point => {
 							this.setState({
@@ -191,7 +227,19 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 					/>
 					<LabelledNumberInput
 						text="Memory"
-						description="Maxmimum memory given to function (mbs)"
+						description={
+							<div>
+								<p>
+									Maximum memory given to the function in
+									Megabits (Mbs).
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={this.state.memory}
 						onChange={memory => {
 							this.setState({
