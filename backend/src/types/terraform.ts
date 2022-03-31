@@ -332,6 +332,7 @@ export interface TerraformJson {
 	terraform: Record<string, any>[];
 	resource: Record<string, any>[];
 	variable: Record<string, any>[];
+	output: Record<string, any>[];
 }
 
 export interface AwsRoute {

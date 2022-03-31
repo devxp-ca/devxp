@@ -67,6 +67,15 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 	//Remove the hanging closing tags
 	hcl = hcl.replace(/ {2}}\n}/g, "}");
 
+	//Unpack outputs
+	hcl = hcl.replace(
+		/"output" = {\n {2}"([^"]+)" = {/g,
+		(_match, $1) => `output "${$1}" {`
+	);
+
+	//Remove the hanging closing tags
+	hcl = hcl.replace(/ {2}}\n}/g, "}");
+
 	//Formatting
 	hcl = hcl.replace(/\n\n/g, "\n");
 	hcl = hcl.replace(/^}$/gm, "}\n");
@@ -86,7 +95,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Remove incorrect block as attribute styles
 	hcl = hcl.replace(
-		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config|initialize_params|boot_disk|network_interface|template|spec|containers|env|traffic|metadata|variable) = {/g,
+		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config|initialize_params|boot_disk|network_interface|template|spec|containers|env|traffic|metadata|variable|output) = {/g,
 		(_match, $1) => `${$1} {`
 	);
 
@@ -103,6 +112,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 	hcl = hcl.replace(/ *data = \[\]/, "");
 	hcl = hcl.replace(/ *env = \[\]/, "");
 	hcl = hcl.replace(/ *variable = \[\]/, "");
+	hcl = hcl.replace(/ *output = \[\]/, "");
 	/*
 	//Merge duplicate blocks into arrays
 	let matches: Record<string, string[]> = {}

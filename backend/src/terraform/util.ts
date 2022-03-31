@@ -43,6 +43,16 @@ export const variable = (name: string) => {
 	return json;
 };
 
+export const output = (name: string, value: string) => {
+	const json: Record<string, any> = {};
+	json[name] = [
+		{
+			value
+		}
+	];
+	return json;
+};
+
 export const jsonRoot = (
 	name: string,
 	id: string,

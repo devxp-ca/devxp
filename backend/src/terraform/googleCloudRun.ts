@@ -1,5 +1,5 @@
-import {gcpRegion} from "../types/terraform";
-import {jsonRoot} from "./util";
+import {gcpRegion, TerraformJson} from "../types/terraform";
+import {jsonRoot, output} from "./util";
 import {Resource} from "./resource";
 
 export interface GoogleCloudRun {
@@ -105,6 +105,20 @@ export class GoogleCloudRun
 				)
 			];
 		}
+		return json;
+	}
+
+	postProcess(json: TerraformJson) {
+		json = super.postProcess(json);
+
+		json.output = [
+			...json.output,
+			output(
+				`${this.id}-service-url`,
+				`\${google_cloud_run_service.${this.id}.status[0].url}`
+			)
+		];
+
 		return json;
 	}
 }
