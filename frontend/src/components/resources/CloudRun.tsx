@@ -4,6 +4,7 @@ import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 
 interface IProps {
 	image?: string;
@@ -87,12 +88,12 @@ export default class CloudRun extends Resource<IProps, IState> {
 					description={
 						<div>
 							<p>The URL for your container image.</p>
-							<a
+							<Link
 								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-cloud-run"
 								target="_blank"
 								rel="noreferrer">
 								Learn more.
-							</a>
+							</Link>
 						</div>
 					}
 					onChange={(image: string) => this.setState({image})}
@@ -129,12 +130,12 @@ export default class CloudRun extends Resource<IProps, IState> {
 											uppercase and lowercase letters as
 											well as underscores.
 										</p>
-										<a
+										<Link
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-cloud-run"
 											target="_blank"
 											rel="noreferrer">
 											Learn more.
-										</a>
+										</Link>
 									</div>
 								}
 								initial={env}

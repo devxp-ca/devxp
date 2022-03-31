@@ -18,6 +18,7 @@ import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import valueToLabel from "./valueToLabel";
+import Link from "@mui/material/Link";
 
 const display = (content: any): string => {
 	if (Array.isArray(content)) {
@@ -258,13 +259,13 @@ export default abstract class Resource<
 									Otherwise a randomly generated ID will be
 									used in its place.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#resource-id"
 									target="_blank"
 									rel="noreferrer">
 									Learn about the rules for IDs and storage
 									resource naming rules.
-								</a>
+								</Link>
 							</div>
 						}
 						{...this.props}
@@ -324,12 +325,12 @@ export default abstract class Resource<
 										<div>
 											<p>
 												Creates an{" "}
-												<a
+												<Link
 													href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html"
 													target="_blank"
 													rel="noreferrer">
 													IAM user
-												</a>{" "}
+												</Link>{" "}
 												with permissions for the
 												resource in question.
 											</p>
@@ -339,12 +340,12 @@ export default abstract class Resource<
 												or from another resource, you
 												must use an IAM user.
 											</p>
-											<a
+											<Link
 												href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#create-iam-user-advanced"
 												target="_blank"
 												rel="noreferrer">
 												Learn more.
-											</a>
+											</Link>
 										</div>
 									}
 									onChange={(autoIam: boolean) =>

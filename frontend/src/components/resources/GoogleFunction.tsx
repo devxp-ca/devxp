@@ -9,6 +9,7 @@ import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
 import {CONFIG} from "../../config";
 import axios from "axios";
+import Link from "@mui/material/Link";
 
 interface IProps {
 	runtime?: string;
@@ -135,12 +136,12 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 									programming language your function is
 									written in.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						options={[
@@ -185,12 +186,12 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 								<p>
 									Is this function triggered by HTTP requests?
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						onChange={(trigger_http: boolean) =>
@@ -226,12 +227,12 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 									The name of the exported function within the
 									source file (e.g. main).
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={this.state.entry_point}
@@ -249,12 +250,12 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 									Maximum memory given to the function in
 									Megabits (Mbs).
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={this.state.memory}

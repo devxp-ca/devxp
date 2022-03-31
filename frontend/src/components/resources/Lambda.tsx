@@ -6,6 +6,7 @@ import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
 import {CONFIG} from "../../config";
+import Link from "@mui/material/Link";
 
 const extToKey = (ext?: string) => {
 	if (!ext || ext.length < 1) {
@@ -139,12 +140,12 @@ export default class Lambda extends Resource<IProps, IState> {
 									programming language your function is
 									written in.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						options={[
@@ -194,12 +195,12 @@ export default class Lambda extends Resource<IProps, IState> {
 									your function every minute to keep it
 									responsive.
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						onChange={(keepWarm: boolean) =>
@@ -225,12 +226,12 @@ export default class Lambda extends Resource<IProps, IState> {
 											"src/file.js" without quotation
 											marks).
 										</p>
-										<a
+										<Link
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
 											target="_blank"
 											rel="noreferrer">
 											Learn more.
-										</a>
+										</Link>
 									</div>
 								}
 								initial={this.state.filename}
@@ -296,12 +297,12 @@ export default class Lambda extends Resource<IProps, IState> {
 									The name of the exported function within the
 									file given by Filename (e.g. main).
 								</p>
-								<a
+								<Link
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
 									target="_blank"
 									rel="noreferrer">
 									Learn more.
-								</a>
+								</Link>
 							</div>
 						}
 						initial={this.state.handler}

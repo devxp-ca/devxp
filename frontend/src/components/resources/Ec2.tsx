@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid";
 import React from "react";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import Resource, {ResourceState} from "./Resource";
+import Link from "@mui/material/Link";
 
 interface IProps {
 	ami?: string;
@@ -104,21 +105,21 @@ export default class Ec2 extends Resource<IProps, IState> {
 							<p>
 								Note: When MacOS is the chosen OS, there is only
 								the Mac Hardware option. See details about it{" "}
-								<a
+								<Link
 									href="https://aws.amazon.com/ec2/instance-types/mac/"
 									target="_blank"
 									rel="noreferrer">
 									here
-								</a>
+								</Link>
 								, and be aware that there is a special pricing
 								plan that charges a minimum of 24 hours usage.
 							</p>
-							<a
+							<Link
 								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#ec2"
 								target="_blank"
 								rel="noreferrer">
 								Learn more.
-							</a>
+							</Link>
 						</div>
 					}
 					options={

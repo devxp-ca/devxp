@@ -338,6 +338,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							justifyContent: "space-evenly"
 						}}>
 						<Button
+							sx={{
+								":hover": {
+									bgcolor: "primary.main",
+									opacity: 0.9
+								}
+							}}
 							size="large"
 							variant="contained"
 							onClick={() => {
@@ -347,6 +353,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							Customize
 						</Button>
 						<Button
+							sx={{
+								":hover": {
+									bgcolor: "primary.main",
+									opacity: 0.9
+								}
+							}}
 							size="large"
 							variant="contained"
 							onClick={() => {

@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid";
 import React from "react";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
 import Resource, {ResourceState} from "./Resource";
+import Link from "@mui/material/Link";
 
 interface IProps {
 	disk_image?: string;
@@ -96,12 +97,12 @@ export default class Gce extends Resource<IProps, IState> {
 								Choose the computing power you want this server
 								to have.
 							</p>
-							<a
+							<Link
 								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#gce"
 								target="_blank"
 								rel="noreferrer">
 								Learn more.
-							</a>
+							</Link>
 						</div>
 					}
 					options={[

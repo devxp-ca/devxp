@@ -5,6 +5,7 @@ import LabelledTextInput from "../labelledInputs/LabelledTextInput";
 import Resource, {ResourceState} from "./Resource";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 
 interface Attribute {
 	name: string;
@@ -107,12 +108,12 @@ export default class DynamoDb extends Resource<IProps, IState> {
 											within the database (lowercase or
 											uppercase letters only).
 										</p>
-										<a
+										<Link
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#dynamo-db"
 											target="_blank"
 											rel="noreferrer">
 											Learn more.
-										</a>
+										</Link>
 									</div>
 								}
 								initial={att.name}
@@ -143,12 +144,12 @@ export default class DynamoDb extends Resource<IProps, IState> {
 											This determines the datatype of the
 											attribute.
 										</p>
-										<a
+										<Link
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#dynamo-db"
 											target="_blank"
 											rel="noreferrer">
 											Learn more.
-										</a>
+										</Link>
 									</div>
 								}
 								initial={att.type}
