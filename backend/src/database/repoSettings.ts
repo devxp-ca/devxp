@@ -80,7 +80,8 @@ export const terraformResourceSchema = new Schema({
 	trigger_http: Boolean,
 	image: String,
 	env: [String],
-	domain: String
+	domain: String,
+	attributes: [attributeSchema]
 });
 
 export const terraformSettingsSchema = new Schema({
