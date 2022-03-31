@@ -18,7 +18,7 @@ export default class CloudRun extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Cloud Run",
+		resource: "Serverless (Docker)",
 
 		//Keys of IState, hacky I know
 		data: ["env", "image"],
@@ -41,6 +41,14 @@ export default class CloudRun extends Resource<IProps, IState> {
 			...this.state,
 			image: this.props.image ?? "",
 			env: this.props.env ?? []
+		};
+	}
+
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			image: "gcr.io/cloudrun/hello"
 		};
 	}
 

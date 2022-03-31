@@ -49,7 +49,7 @@ export default class Lambda extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Function",
+		resource: "Serverless Function",
 
 		//Keys of IState, hacky I know
 		data: ["runtime", "handler", "filename", "keepWarm"],
@@ -72,6 +72,16 @@ export default class Lambda extends Resource<IProps, IState> {
 			filename: this.props.filename ?? "",
 			keepWarm: this.props.keepWarm ?? false,
 			files: []
+		};
+	}
+
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			runtime: "nodejs14.x",
+			handler: "main",
+			filename: "index.js"
 		};
 	}
 

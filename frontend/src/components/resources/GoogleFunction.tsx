@@ -29,7 +29,7 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 		...Resource.defaultProps,
 
 		//Type of resource for labels
-		resource: "Function",
+		resource: "Serverless Function",
 
 		//Keys of IState, hacky I know
 		data: [
@@ -62,6 +62,17 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 			trigger_http: this.props.trigger_http ?? false,
 			memory: this.props.memory ?? 128,
 			files: ["./"]
+		};
+	}
+
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			runtime: "nodejs16",
+			entry_point: "main",
+			source_dir: "./",
+			trigger_http: true
 		};
 	}
 

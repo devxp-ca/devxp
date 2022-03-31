@@ -11,22 +11,25 @@ import {
 	CardActionArea
 } from "@mui/material";
 import React from "react";
-import {randomIdSettings} from "../../util";
+import {getRandomId, randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWithRandom";
 import CheckIcon from "@mui/icons-material/Check";
 import equal from "deep-equal";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Link from "@mui/material/Link";
+import valueToLabel from "./valueToLabel";
 
 const display = (content: any): string => {
 	if (Array.isArray(content)) {
-		if (content.length > 0) {
-			return `[${display(content[0]).slice(0, 10)}...]`;
-		} else {
-			return `[]`;
-		}
+		// if (content.length > 0) {
+		// 	return `[${display(content[0]).slice(0, 10)}...]`;
+		// } else {
+		// 	return `[]`;
+		// }
+		return `[${content.length} item${
+			content.length > 1 || content.length === 0 ? "s" : ""
+		}]`;
 	} else {
 		if (typeof content === "object") {
 			return JSON.stringify(content);
@@ -91,6 +94,7 @@ export default abstract class Resource<
 		this.getResourceData = this.getResourceData.bind(this);
 		this.getInternalData = this.getInternalData.bind(this);
 		this.isValid = this.isValid.bind(this);
+		this.populateDefault = this.populateDefault.bind(this);
 	}
 
 	componentDidUpdate(_prevProps: IProps & Props, prevState: State) {
@@ -125,6 +129,13 @@ export default abstract class Resource<
 			}
 		});
 		return data;
+	}
+
+	populateDefault() {
+		this.state = {
+			...this.state,
+			id: getRandomId({...this.props})
+		};
 	}
 
 	getData(state: State = this.state) {
@@ -183,7 +194,7 @@ export default abstract class Resource<
 								textAlign: "center",
 								boxSizing: "border-box"
 							}}>
-							{this.props.id}
+							{this.props.resource}
 						</Typography>
 						<Typography
 							variant="body2"
@@ -191,22 +202,25 @@ export default abstract class Resource<
 							component="div"
 							sx={{padding: 2, paddingTop: 0}}>
 							<div>
-								<p>Resource: {this.props.resourceType}</p>
-							</div>
-							<div>
-								<p>AutoIam: {String(this.props.autoIam)}</p>
+								<p>ID: {this.props.id}</p>
 							</div>
 							{this.props.data.slice(0, 2).map((key, i) => (
 								<div key={`resourceCard-${this.props.id}-${i}`}>
 									<p>
-										{key.slice(0, 1).toUpperCase()}
-										{key.slice(1).toLowerCase()}:{" "}
-										{display(
-											(this.state as unknown as any)[key]
+										{valueToLabel(key)}:{" "}
+										{valueToLabel(
+											display(
+												(this.state as unknown as any)[
+													key
+												]
+											)
 										)}
 									</p>
 								</div>
 							))}
+							<div>
+								<p>AutoIam: {String(this.props.autoIam)}</p>
+							</div>
 						</Typography>
 					</CardMedia>
 				</CardActionArea>

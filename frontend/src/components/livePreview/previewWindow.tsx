@@ -1,12 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import SlidingWindow from "./slidingWindow";
 import ArrowButton from "./arrowButton";
 import PreviewRender from "./previewRender";
-import {OFFSET_NO_DIV, BTN_WIDTH, TRANSITION} from "../../util";
 
-export default function PreviewWindow(props: {data?: string}) {
+export default function PreviewWindow(props: {data?: string; error?: boolean}) {
 	const [flipped, setFlipped] = React.useState(false);
 
 	return (
@@ -24,7 +22,11 @@ export default function PreviewWindow(props: {data?: string}) {
 				</Box>
 			</SlidingWindow>
 			<SlidingWindow flipped={flipped}>
-				<PreviewRender flipped={flipped} data={props.data} />
+				<PreviewRender
+					flipped={flipped}
+					data={props.data}
+					error={props.error}
+				/>
 			</SlidingWindow>
 		</>
 	);

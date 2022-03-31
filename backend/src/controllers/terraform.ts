@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import createCommit from "../githubapi/createCommit";
 import createTree from "../githubapi/createTree";
 import createBranch from "../githubapi/createBranch";
-import createPullRequest from "../githubapi/createPullRequest";
+import {createPullRequestGetUrl} from "../githubapi/createPullRequest";
 import getCommitFromUrl from "../githubapi/getCommitFromUrl";
 import getHead from "../githubapi/getHead";
 import getTreeFromUrl from "../githubapi/getTreeFromUrl";
@@ -262,12 +262,14 @@ export const createTerraformSettings = (
 				);
 
 				//Initiate a pull request to the main branch
-				await createPullRequest(
+				const pr = await createPullRequestGetUrl(
 					"DevXP-Configuration",
 					"main",
 					token,
 					repo
 				);
+
+				console.dir(pr);
 
 				//Update bucket
 				await BackendModel.updateOne(
@@ -279,10 +281,13 @@ export const createTerraformSettings = (
 					},
 					{upsert: true}
 				);
-				return ref;
+				return {
+					ref,
+					pr
+				};
 			})
-			.then(ref => {
-				res.json({ref});
+			.then(json => {
+				res.json(json);
 			})
 			.catch(internalErrorHandler(req, res));
 	}

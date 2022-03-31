@@ -188,6 +188,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	//   --------   PREVIEW CHANGES   --------   //
 
 	const [previewData, setPreviewData] = React.useState("");
+	const [previewError, setPreviewError] = React.useState(false);
 	React.useEffect(() => {
 		axios
 			.post(
@@ -212,7 +213,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			.then(response => {
 				setPreviewData(response.data.preview);
 			})
-			.catch(console.error);
+			.catch(err => {
+				setPreviewError(true);
+				setTimeout(() => setPreviewError(false), 400);
+			});
 	}, [
 		selectedRepoSavedData,
 		selectedProvider,
@@ -229,6 +233,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
 		React.useState<partialResource>();
+	const [nextResource, setNextResource] = React.useState<partialResource>();
 
 	const handleSubmit = () => {
 		setSubmitModalIsOpen(true);
@@ -258,7 +263,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			.then(response => {
 				handleOpenSuccessModal(
 					setSubmitModalInfo,
-					setSubmitModalIsOpen
+					setSubmitModalIsOpen,
+					response.data?.pr?.html_url ?? ""
 				)();
 				setSettingsHaveBeenEdited(false);
 			})
@@ -277,7 +283,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 		isSubmitModal: true,
 		title: "",
 		body: "",
-		loading: false
+		loading: false,
+		width: ""
 	});
 
 	//OPTIONS MODAL THINGS
@@ -313,8 +320,54 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			});
 	}, []);
 
+	//Default or customize
+	const [openDefaultsModal, setOpenDefaultsModal] = React.useState(false);
+
 	return (
 		<Box sx={{width: "100%", paddingBottom: 12}}>
+			<GenericModal
+				isOpen={!!openDefaultsModal}
+				handleClose={() => {
+					setOpenDefaultsModal(false);
+				}}
+				title="Customize or Quickstart"
+				children={
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-evenly"
+						}}>
+						<Button
+							size="large"
+							variant="contained"
+							onClick={() => {
+								setCurrentResource(nextResource);
+								setOpenDefaultsModal(false);
+							}}>
+							Customize
+						</Button>
+						<Button
+							size="large"
+							variant="contained"
+							onClick={() => {
+								const resource = typeToResource(
+									nextResource,
+									true
+								) as Resource<unknown, any>;
+								resource.populateDefault();
+								setTrackedResources([
+									...trackedResources,
+									resource.getData() as unknown as resourceSettings
+								]);
+								setOpenDefaultsModal(false);
+							}}>
+							Quickstart
+						</Button>
+					</div>
+				}
+			/>
 			<TerraformOptionsModal
 				isOpen={!!openOptionsModal}
 				handleClose={() => {
@@ -322,10 +375,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					setOpenOptionsModal(false);
 				}}
 				handleClick={(event: any, value: string) => {
-					setCurrentResource({
+					setOpenDefaultsModal(true);
+					setOpenOptionsModal(false);
+					setNextResource({
 						type: value
 					});
-					setOpenOptionsModal(false);
 				}}
 				provider={selectedProvider}
 				title={`Choose ${
@@ -422,6 +476,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				handleClose={handleCloseModal(setSubmitModalIsOpen)}
 				title={submitModalInfo.title}
 				bodyText={submitModalInfo.body}
+				width={submitModalInfo.width}
 				children={
 					<>
 						{!submitModalInfo.loading && (
@@ -651,7 +706,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 													<li>
 														Go to the
 														<Link
-															href="https://console.cloud.google.com/apis/dashboard"
+															href="https://console.cloud.google.com/home/dashboard"
 															target="_blank"
 															rel="noopener">
 															{" "}
@@ -914,7 +969,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Button>
 				</Box>
 			</Grid>
-			<PreviewWindow data={previewData} />
+			<PreviewWindow data={previewData} error={previewError} />
 		</Box>
 	);
 }
