@@ -337,44 +337,48 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							alignItems: "center",
 							justifyContent: "space-evenly"
 						}}>
-						<Button
-							sx={{
-								":hover": {
-									bgcolor: "primary.main",
-									opacity: 0.9
-								}
-							}}
-							size="large"
-							variant="contained"
-							onClick={() => {
-								setCurrentResource(nextResource);
-								setOpenDefaultsModal(false);
-							}}>
-							Customize
-						</Button>
-						<Button
-							sx={{
-								":hover": {
-									bgcolor: "primary.main",
-									opacity: 0.9
-								}
-							}}
-							size="large"
-							variant="contained"
-							onClick={() => {
-								const resource = typeToResource(
-									nextResource,
-									true
-								) as Resource<unknown, any>;
-								resource.populateDefault();
-								setTrackedResources([
-									...trackedResources,
-									resource.getData() as unknown as resourceSettings
-								]);
-								setOpenDefaultsModal(false);
-							}}>
-							Quickstart
-						</Button>
+						<Tooltip title="Populate the resources on your own">
+							<Button
+								sx={{
+									":hover": {
+										bgcolor: "primary.main",
+										opacity: 0.9
+									}
+								}}
+								size="large"
+								variant="contained"
+								onClick={() => {
+									setCurrentResource(nextResource);
+									setOpenDefaultsModal(false);
+								}}>
+								Customize
+							</Button>
+						</Tooltip>
+						<Tooltip title="Populate the resource with default values">
+							<Button
+								sx={{
+									":hover": {
+										bgcolor: "primary.main",
+										opacity: 0.9
+									}
+								}}
+								size="large"
+								variant="contained"
+								onClick={() => {
+									const resource = typeToResource(
+										nextResource,
+										true
+									) as Resource<unknown, any>;
+									resource.populateDefault();
+									setTrackedResources([
+										...trackedResources,
+										resource.getData() as unknown as resourceSettings
+									]);
+									setOpenDefaultsModal(false);
+								}}>
+								Quickstart
+							</Button>
+						</Tooltip>
 					</div>
 				}
 			/>
