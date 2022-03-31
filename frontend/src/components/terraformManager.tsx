@@ -262,7 +262,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			.then(response => {
 				handleOpenSuccessModal(
 					setSubmitModalInfo,
-					setSubmitModalIsOpen
+					setSubmitModalIsOpen,
+					response.data?.pr?.html_url ?? ""
 				)();
 				setSettingsHaveBeenEdited(false);
 			})
@@ -281,7 +282,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 		isSubmitModal: true,
 		title: "",
 		body: "",
-		loading: false
+		loading: false,
+		width: ""
 	});
 
 	//OPTIONS MODAL THINGS
@@ -426,6 +428,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				handleClose={handleCloseModal(setSubmitModalIsOpen)}
 				title={submitModalInfo.title}
 				bodyText={submitModalInfo.body}
+				width={submitModalInfo.width}
 				children={
 					<>
 						{!submitModalInfo.loading && (
