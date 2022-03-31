@@ -74,9 +74,18 @@ export default class CloudRun extends Resource<IProps, IState> {
 						  })
 				}}>
 				<LabelledTextInput
-					text="Docker image"
+					text="Docker Image"
 					initial={this.state.image}
-					description="URL for container image"
+					description={
+						<div>
+							<p>The URL for your container image.</p>
+							<a
+								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-cloud-run"
+								target="_blank">
+								Learn more.
+							</a>
+						</div>
+					}
 					onChange={(image: string) => this.setState({image})}
 				/>
 
@@ -93,8 +102,31 @@ export default class CloudRun extends Resource<IProps, IState> {
 							direction="row">
 							<LabelledTextInput
 								direction="row"
-								text="Name"
-								description="The name which your docker image expects to be set"
+								text="Variable Name"
+								description={
+									<div>
+										<p>
+											A variable name that should be set
+											at runtime, such as a secret.
+										</p>
+										<p>
+											You can create a terraform.tfvars
+											file or manually enter the variable
+											value when prompted while running
+											Terraform apply.
+										</p>
+										<p>
+											The variable name can include
+											uppercase and lowercase letters as
+											well as underscores.
+										</p>
+										<a
+											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-cloud-run"
+											target="_blank">
+											Learn more.
+										</a>
+									</div>
+								}
 								initial={env}
 								pattern="^[a-zA-Z_]+$"
 								onChange={name => {
