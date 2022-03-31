@@ -75,6 +75,16 @@ export default class Lambda extends Resource<IProps, IState> {
 		};
 	}
 
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			runtime: "nodejs14.x",
+			handler: "main",
+			filename: "index.js"
+		};
+	}
+
 	componentDidMount() {
 		axios
 			.get(

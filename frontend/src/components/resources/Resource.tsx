@@ -11,7 +11,7 @@ import {
 	CardActionArea
 } from "@mui/material";
 import React from "react";
-import {randomIdSettings} from "../../util";
+import {getRandomId, randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWithRandom";
 import CheckIcon from "@mui/icons-material/Check";
@@ -27,7 +27,9 @@ const display = (content: any): string => {
 		// } else {
 		// 	return `[]`;
 		// }
-		return `[${content.length} item${content.length > 1 ? "s" : ""}]`;
+		return `[${content.length} item${
+			content.length > 1 || content.length === 0 ? "s" : ""
+		}]`;
 	} else {
 		if (typeof content === "object") {
 			return JSON.stringify(content);
@@ -92,6 +94,7 @@ export default abstract class Resource<
 		this.getResourceData = this.getResourceData.bind(this);
 		this.getInternalData = this.getInternalData.bind(this);
 		this.isValid = this.isValid.bind(this);
+		this.populateDefault = this.populateDefault.bind(this);
 	}
 
 	componentDidUpdate(_prevProps: IProps & Props, prevState: State) {
@@ -126,6 +129,13 @@ export default abstract class Resource<
 			}
 		});
 		return data;
+	}
+
+	populateDefault() {
+		this.state = {
+			...this.state,
+			id: getRandomId({...this.props})
+		};
 	}
 
 	getData(state: State = this.state) {

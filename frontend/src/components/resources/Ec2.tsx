@@ -40,6 +40,15 @@ export default class Ec2 extends Resource<IProps, IState> {
 		};
 	}
 
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			ami: "AUTO_UBUNTU",
+			instance_type: "t2.micro"
+		};
+	}
+
 	isValid() {
 		return (
 			super.isValid() &&

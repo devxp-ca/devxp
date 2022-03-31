@@ -43,6 +43,20 @@ export default class DynamoDb extends Resource<IProps, IState> {
 		};
 	}
 
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			attributes: [
+				{
+					name: "id",
+					type: "S",
+					isHash: true
+				}
+			]
+		};
+	}
+
 	isValid() {
 		const hash: any = {};
 		return (

@@ -65,6 +65,17 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 		};
 	}
 
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			runtime: "nodejs16",
+			entry_point: "main",
+			source_dir: "./",
+			trigger_http: true
+		};
+	}
+
 	componentDidMount() {
 		axios
 			.get(

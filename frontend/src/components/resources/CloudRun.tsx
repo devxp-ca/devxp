@@ -44,6 +44,14 @@ export default class CloudRun extends Resource<IProps, IState> {
 		};
 	}
 
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			image: "gcr.io/cloudrun/hello"
+		};
+	}
+
 	isValid() {
 		const hash: any = {};
 		return (

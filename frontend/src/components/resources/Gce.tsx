@@ -43,6 +43,15 @@ export default class Gce extends Resource<IProps, IState> {
 		};
 	}
 
+	populateDefault() {
+		super.populateDefault();
+		this.state = {
+			...this.state,
+			disk_image: "ubuntu-2004-focal-v20220204",
+			machine_type: "f1-micro"
+		};
+	}
+
 	render() {
 		return (
 			<Grid
