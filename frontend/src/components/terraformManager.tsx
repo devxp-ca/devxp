@@ -14,7 +14,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import GenericModal from "./modals/GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";

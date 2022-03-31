@@ -16,6 +16,7 @@ import arrowSecondary from "../assets/arrow-secondary.png";
 import axios from "axios";
 import {CONFIG} from "../config";
 import PreviewRender from "../components/livePreview/previewRender";
+import {resourceSettings} from "./terraformOptions";
 
 const dummyResources: resourceSettings[] = [
 	{

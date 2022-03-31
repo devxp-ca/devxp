@@ -10,7 +10,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import CardActionArea from "@mui/material/CardActionArea";
 
 import React from "react";
-import {getRandomId} from "../../util";
+import {getRandomId, randomIdSettings} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWithRandom";
 import CheckIcon from "@mui/icons-material/Check";
