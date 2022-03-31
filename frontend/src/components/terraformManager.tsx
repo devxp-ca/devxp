@@ -17,6 +17,7 @@ import axios, {AxiosError} from "axios";
 import GenericModal from "./modals/GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
+import DeleteIcon from "@mui/icons-material/Delete";
 import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
@@ -877,7 +878,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 						variant="contained"
 						color="error"
 						size="large"
-						startIcon={<CheckIcon />}
+						startIcon={<DeleteIcon />}
 						aria-label="discard changes"
 						onClick={() => {
 							setSettingsHaveBeenEdited(false);
