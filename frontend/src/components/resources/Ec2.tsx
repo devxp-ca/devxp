@@ -1,7 +1,6 @@
 import Grid from "@mui/material/Grid";
 import React from "react";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
-import LabelledRadioInput from "../labelledInputs/LabelledRadioSelect";
 import Resource, {ResourceState} from "./Resource";
 
 interface IProps {
@@ -107,7 +106,8 @@ export default class Ec2 extends Resource<IProps, IState> {
 								the Mac Hardware option. See details about it{" "}
 								<a
 									href="https://aws.amazon.com/ec2/instance-types/mac/"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									here
 								</a>
 								, and be aware that there is a special pricing
@@ -115,7 +115,8 @@ export default class Ec2 extends Resource<IProps, IState> {
 							</p>
 							<a
 								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#ec2"
-								target="_blank">
+								target="_blank"
+								rel="noreferrer">
 								Learn more.
 							</a>
 						</div>

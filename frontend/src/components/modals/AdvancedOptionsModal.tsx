@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Stack} from "@mui/material";
+import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
 
 import GenericModal from "./GenericModal";

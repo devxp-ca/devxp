@@ -9,16 +9,16 @@ import {
 	terraformDataSettings
 } from "../components/terraformOptions";
 import Card from "@mui/material/Card";
-import {CardActionArea, LinearProgress} from "@mui/material";
+import CardActionArea from "@mui/material/CardActionArea";
+import LinearProgress from "@mui/material/LinearProgress";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
-import axios, {AxiosError} from "axios";
+import axios from "axios";
 import GenericModal from "./modals/GenericModal";
 import {CONFIG} from "../config";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LabelledCheckboxInput from "./labelledInputs/LabelledCheckboxInput";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
@@ -27,7 +27,6 @@ import OkCancelModal from "./modals/OkCancelModal";
 import {
 	handleCloseModal,
 	handleOpenFailModal,
-	handleOpenSubmitModalNoRepo,
 	handleOpenSubmitModalConfirmation,
 	handleOpenSuccessModal,
 	handleAwaitSuccessModal
@@ -45,7 +44,6 @@ import PreviewWindow from "../components/livePreview/previewWindow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
@@ -132,7 +130,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			})
 			.catch((error: any) => {
 				setShowLoadingModal(false);
-				if (!!selectedRepoSavedData) {
+				if (selectedRepoSavedData) {
 					// Clean slate
 					setSelectedRepoSavedData(null);
 					setSettingsHaveBeenEdited(false);
@@ -847,7 +845,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					<Card>
 						<CardActionArea
 							onClick={() => {
-								if (!!selectedProvider) {
+								if (selectedProvider) {
 									setOpenOptionsModal(true);
 								} else {
 									setAddResourceWarningModalIsOpen(true);

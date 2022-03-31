@@ -1,7 +1,6 @@
 import Grid from "@mui/material/Grid";
 import React from "react";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
-import LabelledRadioInput from "../labelledInputs/LabelledRadioSelect";
 import Resource, {ResourceState} from "./Resource";
 
 interface IProps {
@@ -99,7 +98,8 @@ export default class Gce extends Resource<IProps, IState> {
 							</p>
 							<a
 								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#gce"
-								target="_blank">
+								target="_blank"
+								rel="noreferrer">
 								Learn more.
 							</a>
 						</div>

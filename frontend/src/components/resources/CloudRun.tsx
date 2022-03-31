@@ -89,7 +89,8 @@ export default class CloudRun extends Resource<IProps, IState> {
 							<p>The URL for your container image.</p>
 							<a
 								href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-cloud-run"
-								target="_blank">
+								target="_blank"
+								rel="noreferrer">
 								Learn more.
 							</a>
 						</div>
@@ -130,7 +131,8 @@ export default class CloudRun extends Resource<IProps, IState> {
 										</p>
 										<a
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-cloud-run"
-											target="_blank">
+											target="_blank"
+											rel="noreferrer">
 											Learn more.
 										</a>
 									</div>

@@ -1,9 +1,9 @@
 import * as React from "react";
-import {
-	Accordion as MUIAccordion,
-	AccordionSummary as MUIAccordionSummary,
-	AccordionDetails as MUIAccordionDetails
-} from "@mui/material";
+
+import MUIAccordion from "@mui/material/Accordion";
+import MUIAccordionSummary from "@mui/material/AccordionSummary";
+import MUIAccordionDetails from "@mui/material/AccordionDetails";
+
 import Typography from "@mui/material/Typography";
 import {ThemeProvider} from "@mui/material/styles";
 import {lightTheme} from "../style/themes";

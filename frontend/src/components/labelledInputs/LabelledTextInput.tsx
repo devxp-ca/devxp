@@ -6,7 +6,6 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import HelpIcon from "@mui/icons-material/Help";
 import {usePrevious} from "../../util";
-import Typography from "@mui/material/Typography";
 
 export interface LabelledTextInputProps {
 	text: string | React.ReactElement;

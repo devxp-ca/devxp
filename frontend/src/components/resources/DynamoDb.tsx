@@ -109,7 +109,8 @@ export default class DynamoDb extends Resource<IProps, IState> {
 										</p>
 										<a
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#dynamo-db"
-											target="_blank">
+											target="_blank"
+											rel="noreferrer">
 											Learn more.
 										</a>
 									</div>
@@ -144,7 +145,8 @@ export default class DynamoDb extends Resource<IProps, IState> {
 										</p>
 										<a
 											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#dynamo-db"
-											target="_blank">
+											target="_blank"
+											rel="noreferrer">
 											Learn more.
 										</a>
 									</div>

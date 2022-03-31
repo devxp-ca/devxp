@@ -1,5 +1,8 @@
 import * as React from "react";
-import {Button, Grid, Autocomplete, TextField} from "@mui/material";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 import GenericModal from "./GenericModal";
 import axios from "axios";
 import {CONFIG} from "../../config";

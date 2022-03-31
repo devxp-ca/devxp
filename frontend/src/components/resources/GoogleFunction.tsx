@@ -1,4 +1,6 @@
-import {Autocomplete, Grid, TextField} from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import React from "react";
 import LabelledCheckboxInput from "../labelledInputs/LabelledCheckboxInput";
 import LabelledMultiInput from "../labelledInputs/LabelledMultiSelect";
@@ -135,7 +137,8 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 								</p>
 								<a
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									Learn more.
 								</a>
 							</div>
@@ -184,7 +187,8 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 								</p>
 								<a
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									Learn more.
 								</a>
 							</div>
@@ -224,7 +228,8 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 								</p>
 								<a
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									Learn more.
 								</a>
 							</div>
@@ -246,7 +251,8 @@ export default class GoogleFunction extends Resource<IProps, IState> {
 								</p>
 								<a
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#google-functions"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									Learn more.
 								</a>
 							</div>

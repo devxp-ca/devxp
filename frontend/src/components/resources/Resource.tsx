@@ -1,17 +1,16 @@
-import {
-	Box,
-	Button,
-	Card,
-	Grid,
-	Typography,
-	CardMedia,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
-	CardActionArea
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import CardMedia from "@mui/material/CardMedia";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import CardActionArea from "@mui/material/CardActionArea";
+
 import React from "react";
-import {getRandomId, randomIdSettings} from "../../util";
+import {getRandomId} from "../../util";
 import LabelledNumberInput from "../labelledInputs/LabelledNumberInput";
 import LabelledTextInputWithRandom from "../labelledInputs/LabelledTextInputWithRandom";
 import CheckIcon from "@mui/icons-material/Check";
@@ -261,7 +260,8 @@ export default abstract class Resource<
 								</p>
 								<a
 									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#resource-id"
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									Learn about the rules for IDs and storage
 									resource naming rules.
 								</a>
@@ -326,7 +326,8 @@ export default abstract class Resource<
 												Creates an{" "}
 												<a
 													href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html"
-													target="_blank">
+													target="_blank"
+													rel="noreferrer">
 													IAM user
 												</a>{" "}
 												with permissions for the
@@ -340,7 +341,8 @@ export default abstract class Resource<
 											</p>
 											<a
 												href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#create-iam-user-advanced"
-												target="_blank">
+												target="_blank"
+												rel="noreferrer">
 												Learn more.
 											</a>
 										</div>

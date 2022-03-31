@@ -1,26 +1,12 @@
 import * as React from "react";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import {lightTheme, darkTheme} from "../style/themes";
-import axios from "axios";
-import {CONFIG} from "../config";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
-import {terraformDataSettings} from "../components/terraformOptions";
-import {
-	ThemeProvider,
-	Autocomplete,
-	TextField,
-	Button,
-	Tooltip,
-	Grid,
-	Paper
-} from "@mui/material";
-import OkModal from "../components/modals/OkModal";
-import OkCancelModal from "../components/modals/OkCancelModal";
-import {handleCloseModal} from "../components/modals/modalHandlers";
-import LoadingModal from "../components/modals/LoadingModal";
-import CopyRepoSettingsModal from "../components/modals/CopyRepoSettingsModal";
+import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+
 import ThemeButton from "../style/ThemeButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
 

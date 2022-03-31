@@ -1,8 +1,8 @@
 import React from "react";
-import {BackendError} from "../terraformManager";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import {Link, Divider, Box} from "@mui/material";
+
+import Link from "@mui/material/Link";
+import Divider from "@mui/material/Divider";
 
 export interface ModalParams {
 	isSubmitModal: boolean;

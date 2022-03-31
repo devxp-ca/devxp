@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import {getRandomId, randomIdSettings, usePrevious} from "../../util";
-import LabelledTextInput, {LabelledTextInputProps} from "./LabelledTextInput";
+import {getRandomId, usePrevious} from "../../util";
+import LabelledTextInput from "./LabelledTextInput";
 import Checkbox from "@mui/material/Checkbox";
 
 export default function LabelledTextInputWithRandom(

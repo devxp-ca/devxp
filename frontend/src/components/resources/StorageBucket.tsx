@@ -1,4 +1,3 @@
-import React from "react";
 import Resource, {ResourceState} from "./Resource";
 
 interface IProps {}
