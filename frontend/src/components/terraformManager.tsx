@@ -526,7 +526,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				/>
 				<Tooltip title="Click here to copy these settings to another repo">
 					<Button
-						disabled={!selectedRepoSavedData}
+						sx={{
+							":hover": {
+								bgcolor: "secondary.main",
+								opacity: 0.9
+							}
+						}}
 						variant="contained"
 						color="secondary"
 						onClick={() => {

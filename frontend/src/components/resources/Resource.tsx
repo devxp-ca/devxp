@@ -341,6 +341,14 @@ export default abstract class Resource<
 				<Box textAlign="center" sx={{paddingTop: 3, width: "100%"}}>
 					<Grid>
 						<Button
+							sx={{
+								":hover": {
+									bgcolor: this.state.valid
+										? "success.main"
+										: "warning.main",
+									opacity: 0.9
+								}
+							}}
 							disabled={!this.state.valid}
 							variant="contained"
 							color={this.state.valid ? "success" : "warning"}
@@ -362,7 +370,13 @@ export default abstract class Resource<
 						</Button>
 						{this.props.isModifying && (
 							<Button
-								sx={{marginLeft: 3}}
+								sx={{
+									marginLeft: 3,
+									":hover": {
+										bgcolor: "error",
+										opacity: 0.9
+									}
+								}}
 								variant="contained"
 								color="error"
 								size="large"
