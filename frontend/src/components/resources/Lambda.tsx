@@ -122,7 +122,20 @@ export default class Lambda extends Resource<IProps, IState> {
 					}}>
 					<LabelledMultiInput
 						text="Runtime"
-						description="Choose the type of runtime you want this function to use"
+						description={
+							<div>
+								<p>
+									This sets up an environment for the
+									programming language your function is
+									written in.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						options={[
 							{
 								label: "NodeJS 14",
@@ -163,7 +176,20 @@ export default class Lambda extends Resource<IProps, IState> {
 					<LabelledCheckboxInput
 						initial={this.state.keepWarm}
 						text="Keep Warm"
-						description="Automatically trigger lambda function every one minute"
+						description={
+							<div>
+								<p>
+									Sets up a CloudWatch timer that triggers
+									your function every minute to keep it
+									responsive.
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						onChange={(keepWarm: boolean) =>
 							this.setState({keepWarm})
 						}
@@ -174,7 +200,26 @@ export default class Lambda extends Resource<IProps, IState> {
 							<LabelledTextInput
 								pattern=".*\.(js|py|java|go|cs|rb)$"
 								text="Filename"
-								description="Absolute path to function source within repo"
+								description={
+									<div>
+										<p>
+											A relative path (beginning in the
+											root of your repository) to the
+											source file containing the function.
+										</p>
+										<p>
+											Note that you must include the file
+											extension (e.g. "./src/file.js" or
+											"src/file.js" without quotation
+											marks).
+										</p>
+										<a
+											href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
+											target="_blank">
+											Learn more.
+										</a>
+									</div>
+								}
 								initial={this.state.filename}
 								onChange={filename => {
 									this.setState({
@@ -232,7 +277,19 @@ export default class Lambda extends Resource<IProps, IState> {
 					<LabelledTextInput
 						pattern="..*"
 						text="Exported Handler"
-						description="Exported function (within source file) to invoke"
+						description={
+							<div>
+								<p>
+									The name of the exported function within the
+									file given by Filename (e.g. main).
+								</p>
+								<a
+									href="https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration#lambda-functions"
+									target="_blank">
+									Learn more.
+								</a>
+							</div>
+						}
 						initial={this.state.handler}
 						onChange={handler => {
 							this.setState({
