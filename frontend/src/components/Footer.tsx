@@ -11,7 +11,8 @@ export default function Footer() {
 			sx={{
 				backgroundColor: "primary.dark",
 				position: "relative",
-				bottom: 0
+				bottom: 0,
+				pointerEvents: "none"
 			}}>
 			<Grid
 				container
@@ -30,6 +31,9 @@ export default function Footer() {
 					<Typography variant="h6" color="primary.light">
 						Contact the{" "}
 						<MuiLink
+							sx={{
+								pointerEvents: "all"
+							}}
 							href="https://github.com/orgs/devxp-ca/people"
 							color="inherit"
 							target="_blank"
@@ -42,6 +46,9 @@ export default function Footer() {
 					<Typography variant="h6" color="primary.light">
 						Find more on the{" "}
 						<MuiLink
+							sx={{
+								pointerEvents: "all"
+							}}
 							href="https://github.com/devxp-ca/devxp/wiki"
 							color="inherit"
 							target="_blank"
@@ -59,6 +66,9 @@ export default function Footer() {
 				sx={{padding: 2}}>
 				{"Copyright © "}
 				<MuiLink
+					sx={{
+						pointerEvents: "all"
+					}}
 					href="https://github.com/devxp-ca"
 					color="inherit"
 					target="_blank"
