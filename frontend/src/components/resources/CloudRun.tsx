@@ -167,6 +167,12 @@ export default class CloudRun extends Resource<IProps, IState> {
 					<Typography>No ENV Variables Set</Typography>
 				)}
 				<Button
+					sx={{
+						":hover": {
+							bgcolor: "success.main",
+							opacity: 0.9
+						}
+					}}
 					variant="contained"
 					color="success"
 					onClick={() => {
@@ -176,7 +182,6 @@ export default class CloudRun extends Resource<IProps, IState> {
 					}}>
 					Add ENV Variable
 				</Button>
-
 				{super.render()}
 			</Grid>
 		);
