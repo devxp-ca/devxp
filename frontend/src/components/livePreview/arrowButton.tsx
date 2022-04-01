@@ -7,13 +7,8 @@ export default function ArrowButton(props: {flipped?: boolean}) {
 	return (
 		<Box
 			sx={{
-				width: "70px",
-				height: "35px",
-				borderTopLeftRadius: "110px",
-				borderTopRightRadius: "110px",
-				borderWidth: "2px",
-				borderStyle: "solid",
-				borderColor: "info.main",
+				width: "80px",
+				height: "40px",
 				paddingTop: "8px",
 				paddingBottom: "0px",
 				paddingLeft: "8px",

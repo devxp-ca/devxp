@@ -63,7 +63,9 @@ export default function PreviewRender(props: {
 				sx={{
 					width: "100%",
 					height: "100%",
-					padding: "4px",
+					paddingLeft: 6,
+					paddingRight: 2,
+					paddingTop: 2,
 					overflowX: "hidden",
 					overflowY: "auto",
 					pointerEvents: "all"
