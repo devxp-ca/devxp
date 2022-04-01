@@ -376,6 +376,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 										resource.getData() as unknown as resourceSettings
 									]);
 									setOpenDefaultsModal(false);
+									setSettingsHaveBeenEdited(true);
 								}}>
 								Quickstart
 							</Button>
