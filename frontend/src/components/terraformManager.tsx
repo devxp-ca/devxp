@@ -337,7 +337,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							alignItems: "center",
 							justifyContent: "space-evenly"
 						}}>
-						<Tooltip title="Populate the resources on your own">
+						<Tooltip title="Populate the resource on your own">
 							<Button
 								sx={{
 									":hover": {
