@@ -432,7 +432,13 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				}`}
 				children={
 					currentResource && (
-						<Grid container direction="column" alignItems="center">
+						<Grid
+							container
+							direction="column"
+							alignItems="center"
+							sx={{
+								"& > div": {width: "90%"}
+							}}>
 							{
 								typeToResource(
 									{
