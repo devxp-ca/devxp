@@ -235,19 +235,17 @@ export default abstract class Resource<
 				direction="column"
 				sx={{
 					gridGap: "15px",
-					marginTop: "15px"
+					marginTop: "15px",
+					width: "100%"
 				}}>
-				<Box
+				<Grid
 					textAlign="center"
 					sx={{
 						display: "flex",
-						width: "80vw",
+						width: "100%",
 						alignItems: "center",
 						justifyContent: "space-evenly",
-						flexDirection: "row",
-						"& > div": {
-							width: "30%"
-						}
+						flexDirection: "row"
 					}}>
 					<LabelledTextInputWithRandom
 						text={`${this.props.resource} ID`}
@@ -296,8 +294,8 @@ export default abstract class Resource<
 							this.setState({resources});
 						}}
 					/>
-				</Box>
-				<Accordion disableGutters={true}>
+				</Grid>
+				<Accordion disableGutters={true} sx={{width: "100%"}}>
 					<AccordionSummary
 						expandIcon={<ExpandMoreIcon />}
 						id="resource-config-advanced-settings">

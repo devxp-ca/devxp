@@ -57,7 +57,7 @@ export default class Gce extends Resource<IProps, IState> {
 			<Grid
 				sx={{
 					gridGap: "15px",
-					padding: "5px",
+					padding: 2,
 					display: "flex",
 					flexDirection: "column",
 					...(this.state.valid

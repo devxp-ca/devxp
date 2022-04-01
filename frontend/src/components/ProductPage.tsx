@@ -256,11 +256,12 @@ export default function ProductPage() {
 						Simple configuration of resource instances...
 					</Typography>
 				</Grid>
-				<Grid item>
+				<Grid item sx={{width: "100%"}}>
 					<GenericModal
 						dummyModal={true}
 						isOpen={true}
 						title="Edit EC2 Resource"
+						width="100%"
 						children={
 							<Grid
 								container
@@ -404,7 +405,9 @@ export default function ProductPage() {
 								paddingLeft: 4,
 								paddingTop: 4,
 								paddingRight: 4,
-								paddingBottom: 4
+								paddingBottom: 4,
+								alignContent: "center",
+								justifyContent: "center"
 							}}>
 							<Paper
 								sx={{

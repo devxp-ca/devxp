@@ -53,10 +53,7 @@ export default function LabelledMultiInput(props: {
 			/>
 			<Select
 				sx={{
-					minWidth: `${props.options.reduce(
-						(acc, opt) => Math.max(acc, opt.label.length),
-						0
-					)}ch`
+					minWidth: 320
 				}}
 				value={value}
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
