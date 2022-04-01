@@ -24,7 +24,7 @@ export const handleOpenSuccessModal =
 			isSubmitModal: false,
 			isSuccessModal: true,
 			title: "Success",
-			width: "65vw",
+			width: "40vw",
 			body: (
 				<div>
 					<div style={{marginBottom: "18px"}}>

@@ -64,10 +64,10 @@ export default function GenericModal({
 
 	const successPlusAnimation = () => {
 		const particles: JSX.Element[] = [];
-		const numPluses = 25;
+		const numPluses = 30;
 		for (let i = 0; i < numPluses; i++) {
-			const endTop = Math.floor(Math.random() * (50 - 10 + 1)) + 10; //(max - min + 1)) + min
-			const endLeft = Math.floor(Math.random() * (75 - 25 + 1)) + 25; //(max - min + 1)) + min
+			const endTop = Math.floor(Math.random() * (50 - 2 + 1)) + 2; //(max - min + 1)) + min
+			const endLeft = Math.floor(Math.random() * (90 - 10 + 1)) + 10; //(max - min + 1)) + min
 			const delay = Math.random() / 3;
 
 			let explode = keyframes`
