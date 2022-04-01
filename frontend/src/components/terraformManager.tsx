@@ -279,6 +279,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
 	const [submitModalInfo, setSubmitModalInfo] = React.useState({
 		isSubmitModal: true,
+		isSuccessModal: false,
 		title: "",
 		body: "",
 		loading: false,
@@ -491,6 +492,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				title={submitModalInfo.title}
 				bodyText={submitModalInfo.body}
 				width={submitModalInfo.width}
+				isSuccess={submitModalInfo.isSuccessModal}
 				children={
 					<>
 						{!submitModalInfo.loading && (

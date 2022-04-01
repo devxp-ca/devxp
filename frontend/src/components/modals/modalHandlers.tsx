@@ -7,6 +7,7 @@ import {BackendError} from "../terraformManager";
 
 export interface ModalParams {
 	isSubmitModal: boolean;
+	isSuccessModal: boolean;
 	title: string;
 	body: string | JSX.Element | JSX.Element[];
 	loading?: boolean;
@@ -21,6 +22,7 @@ export const handleOpenSuccessModal =
 	() => {
 		setModalInfo({
 			isSubmitModal: false,
+			isSuccessModal: true,
 			title: "Success",
 			width: "65vw",
 			body: (
@@ -79,6 +81,7 @@ export const handleAwaitSuccessModal =
 	() => {
 		setModalInfo({
 			isSubmitModal: false,
+			isSuccessModal: false,
 			title: `Pushing to ${repoName}`,
 			body: "",
 			loading: true
@@ -95,6 +98,7 @@ export const handleOpenSubmitModalConfirmation =
 	() => {
 		setModalInfo({
 			isSubmitModal: true,
+			isSuccessModal: false,
 			title: "Are you sure you want to submit?",
 			body: (
 				<>
@@ -117,6 +121,7 @@ export const handleOpenSubmitModalNoRepo =
 	(setModalInfo: modalSetter, setOpenModal: modalBoolSetter) => () => {
 		setModalInfo({
 			isSubmitModal: false,
+			isSuccessModal: false,
 			title: "Please select a repository",
 			body: "You must select a repository before submitting"
 		});
@@ -128,6 +133,7 @@ export const handleOpenFailModal =
 	(errors: BackendError[]) => {
 		setModalInfo({
 			isSubmitModal: false,
+			isSuccessModal: false,
 			title: "Submission Failed",
 			body:
 				errors[0]?.message ??

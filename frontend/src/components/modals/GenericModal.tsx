@@ -3,6 +3,11 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import {keyframes} from "@mui/system";
+import {styled} from "@mui/material";
+
+import plusIcon from "../../assets/plus-icon.png";
+import arrowSecondary from "../../assets/arrow-secondary.png";
 
 interface modalProps {
 	isOpen: boolean;
@@ -11,6 +16,7 @@ interface modalProps {
 	bodyText?: string;
 	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal,
 	width?: number | string;
+	isSuccess?: boolean;
 	dummyModal?: boolean;
 }
 
@@ -21,6 +27,7 @@ export default function GenericModal({
 	bodyText,
 	children,
 	width,
+	isSuccess = false,
 	dummyModal = false
 }: modalProps) {
 	const modalStyle = {
@@ -55,23 +62,148 @@ export default function GenericModal({
 		boxSizing: "border-box"
 	};
 
+	const successPlusAnimation = () => {
+		const particles: JSX.Element[] = [];
+		const numPluses = 25;
+		for (let i = 0; i < numPluses; i++) {
+			const endTop = Math.floor(Math.random() * (50 - 10 + 1)) + 10; //(max - min + 1)) + min
+			const endLeft = Math.floor(Math.random() * (75 - 25 + 1)) + 25; //(max - min + 1)) + min
+			const delay = Math.random() / 3;
+
+			let explode = keyframes`
+	  		0% {
+					transform: translate(50vw, 50vh);
+					opacity: 1;
+				}
+			80% {
+					opacity: 1;
+				}
+			100% {
+					transform: translate(${endLeft}vw, ${endTop}vh);
+					opacity: 0;
+				}
+			`;
+
+			const PlusParticle = styled("div")({
+				backgroundImage: `url(${plusIcon})`,
+				backgroundSize: "contain",
+				backgroundPosition: "center center",
+				backgroundRepeat: "no-repeat",
+				width: "32px",
+				height: "32px",
+				opacity: 0,
+				animation: `${explode} 0.8s ease`,
+				position: "absolute",
+				animationDelay: `${delay}s`
+			});
+
+			particles.push(<PlusParticle />);
+		}
+		return particles;
+	};
+
+	const successArrowAnimation = () => {
+		const particles: JSX.Element[] = [];
+		const numArrows = 2;
+		for (let i = 0; i < numArrows; i++) {
+			let delay = 0.2;
+			let bottom = 10;
+			const secondRow = i > 0;
+			if (secondRow) {
+				delay = 0.6;
+				bottom = -40;
+			}
+
+			let up = keyframes`
+	  		0% {
+					opacity: 0;
+				}
+			30% {
+					opacity: 1;
+				}
+			60% {
+					opacity: 1;
+				}
+			100% {
+					transform: translate(0, -40px);
+					opacity: 0;
+				}
+			`;
+
+			let up2 = keyframes`
+			0% {
+				  opacity: 0;
+			  }
+			20% {
+				opacity: 1;
+				}
+		  66% {
+				  opacity: 1;
+				  transform: translate(0, -20px);
+			  }
+		  100% {
+				  opacity: 0;
+				  transform: translate(0, -20px);
+			  }
+		  `;
+
+			const ArrowParticle = styled("div")({
+				backgroundImage: `url(${arrowSecondary})`,
+				backgroundSize: "contain",
+				backgroundPosition: "center center",
+				backgroundRepeat: "no-repeat",
+				width: "48px",
+				height: "48px",
+				left: "-30px",
+				marginTop: `${bottom}px`,
+				opacity: 0,
+				animation: `${secondRow ? up2 : up} ${secondRow ? 1.0 : 1.5}s`,
+				position: "absolute",
+				animationDelay: `${delay}s`
+			});
+
+			const ArrowParticle2 = styled("div")({
+				backgroundImage: `url(${arrowSecondary})`,
+				backgroundSize: "contain",
+				backgroundPosition: "center center",
+				backgroundRepeat: "no-repeat",
+				width: "48px",
+				height: "48px",
+				right: "-30px",
+				marginTop: `${bottom}px`,
+				opacity: 0,
+				animation: `${secondRow ? up2 : up} ${secondRow ? 1.0 : 1.5}s`,
+				position: "absolute",
+				animationDelay: `${delay}s`
+			});
+
+			particles.push(<ArrowParticle />);
+			particles.push(<ArrowParticle2 />);
+		}
+		return particles;
+	};
+
 	return !dummyModal ? (
 		<Modal open={isOpen} onClose={handleClose}>
-			<Paper sx={modalStyle}>
-				<Box sx={titleBoxStyle}>
-					<Typography
-						variant="h5"
-						component="h2"
-						sx={{padding: 2}}
-						color="black">
-						{title}
-					</Typography>
-				</Box>
-				<Box sx={bodyStyle}>
-					<Typography sx={{mt: 2}}>{bodyText}</Typography>
-					{children}
-				</Box>
-			</Paper>
+			<div>
+				{isSuccess && successPlusAnimation()}
+				<Paper sx={modalStyle}>
+					<Box sx={titleBoxStyle}>
+						<Typography
+							variant="h5"
+							component="h2"
+							sx={{padding: 2}}
+							color="black">
+							{title}
+						</Typography>
+					</Box>
+					<Box sx={bodyStyle}>
+						<Typography sx={{mt: 2}}>{bodyText}</Typography>
+						{children}
+					</Box>
+					{isSuccess && successArrowAnimation()}
+				</Paper>
+			</div>
 		</Modal>
 	) : (
 		<Paper sx={dummyModalStyle}>
