@@ -18,46 +18,43 @@ import {CONFIG} from "../config";
 import PreviewRender from "../components/livePreview/previewRender";
 import {resourceSettings} from "./terraformOptions";
 
-const dummyResources: resourceSettings[] = [
+const dummyResources: (resourceSettings & any)[] = [
 	{
 		type: "ec2",
 		id: "YourServer",
 		autoIam: true,
-		ami: "",
-		instance_type: "",
-		attributes: [],
-		functionName: "",
-		runtime: ""
+		ami: "AUTO_UBUNTU",
+		instance_type: "t2.micro"
 	},
 	{
-		type: "ec2",
+		type: "s3",
 		id: "YourBucket",
-		autoIam: true,
-		ami: "",
-		instance_type: "",
-		attributes: [],
-		functionName: "",
-		runtime: ""
+		autoIam: true
 	},
 	{
-		type: "ec2",
+		type: "dynamoDb",
 		id: "YourDatabase",
 		autoIam: true,
-		ami: "",
-		instance_type: "",
-		attributes: [],
-		functionName: "",
-		runtime: ""
+		attributes: [
+			{
+				name: "id",
+				type: "S",
+				isHash: true
+			}
+		]
 	},
 	{
-		type: "ec2",
-		id: "YourStorage",
+		type: "lambdaFunc",
+		id: "YourFunction",
 		autoIam: true,
 		ami: "",
 		instance_type: "",
 		attributes: [],
-		functionName: "",
-		runtime: ""
+		functionName: "serverless",
+		runtime: "nodejs14.x",
+		handler: "main",
+		filename: "index.js",
+		keepWarm: true
 	}
 ];
 
@@ -65,6 +62,25 @@ export default function ProductPage() {
 	/* Might eventually want to style the scrollbar */
 
 	const [previewData, setPreviewData] = React.useState("");
+
+	const [dynamicDummy, setDynamicDummy] = React.useState(dummyResources);
+
+	React.useEffect(() => {
+		axios
+			.post(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
+				preview: true,
+				tool: "terraform",
+				settings: {
+					provider: "aws",
+					secure: false,
+					resources: dynamicDummy
+				}
+			})
+			.then(response => {
+				setPreviewData(response.data.preview);
+			})
+			.catch(console.error);
+	}, dynamicDummy);
 
 	return (
 		<Grid
@@ -273,29 +289,15 @@ export default function ProductPage() {
 											type: "ec2",
 											repo: "testRepo",
 											isModifying: false,
-											onChange: (data: any) => {
-												axios
-													.post(
-														`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-														{
-															preview: true,
-															tool: "terraform",
-															settings: {
-																provider: "aws",
-																secure: false,
-																resources: [
-																	data
-																]
-															}
-														}
-													)
-													.then(response => {
-														setPreviewData(
-															response.data
-																.preview
-														);
-													})
-													.catch(console.error);
+											ami: "AUTO_UBUNTU",
+											instance_type: "t2.micro",
+											onChange: (
+												data: resourceSettings
+											) => {
+												setDynamicDummy([
+													data,
+													...dynamicDummy.slice(1)
+												]);
 											}
 										},
 										false
@@ -352,7 +354,7 @@ export default function ProductPage() {
 								flexGrow: 2,
 								borderRadius: 2
 							}}>
-							{dummyResources.map((resource, index) => (
+							{dynamicDummy.map((resource, index) => (
 								<Grid
 									item
 									sx={{padding: 2}}
