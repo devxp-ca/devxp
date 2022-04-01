@@ -282,6 +282,9 @@ export default function ProductPage() {
 							<Grid
 								container
 								direction="column"
+								sx={{
+									"& > div": {width: "90%"}
+								}}
 								alignItems="center">
 								{
 									typeToResource(
