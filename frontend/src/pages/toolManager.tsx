@@ -14,10 +14,16 @@ import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 
 export default function ToolManager() {
-	//media query to determine if the preferred theme is light
-	const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
-	//set local storage to the preferred theme
-	localStorage.setItem("preferredTheme", prefersLightMode ? "light" : "dark");
+	if (!localStorage.getItem("preferredTheme")) {
+		//media query to determine if the preferred theme is light
+		const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
+		//set local storage to the preferred theme
+		localStorage.setItem(
+			"preferredTheme",
+			prefersLightMode ? "light" : "dark"
+		);
+	}
+
 	//theme state & toggle function
 	const [theme, setTheme] = React.useState(
 		//check local storage for preferred theme
@@ -29,8 +35,10 @@ export default function ToolManager() {
 	const toggleTheme = () => {
 		if (theme === lightTheme) {
 			setTheme(darkTheme);
+			localStorage.setItem("preferredTheme", "dark");
 		} else {
 			setTheme(lightTheme);
+			localStorage.setItem("preferredTheme", "light");
 		}
 	};
 
