@@ -53,7 +53,7 @@ export class GoogleCloudRun
 										image: this.image,
 										env: this.env.map((name: string) => ({
 											name,
-											value: `\${var.CLOUD_RUN_${name}}`
+											value: `\${var.${name}}`
 										}))
 									}
 								]
