@@ -27,7 +27,13 @@ export default function Footer() {
 						padding: 0
 					}
 				}}>
-				<Grid item sx={{paddingTop: "2px"}}>
+				<Grid
+					item
+					sx={{
+						paddingTop: "2px",
+						marginLeft: "10px",
+						marginRight: "10px"
+					}}>
 					<Typography variant="h6" color="primary.light">
 						Contact the{" "}
 						<MuiLink
@@ -42,7 +48,13 @@ export default function Footer() {
 						</MuiLink>
 					</Typography>
 				</Grid>
-				<Grid item sx={{paddingTop: "2px"}}>
+				<Grid
+					item
+					sx={{
+						paddingTop: "2px",
+						marginLeft: "10px",
+						marginRight: "10px"
+					}}>
 					<Typography variant="h6" color="primary.light">
 						Find more on the{" "}
 						<MuiLink
