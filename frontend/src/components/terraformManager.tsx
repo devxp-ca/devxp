@@ -425,7 +425,11 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					currentResource && Object.keys(currentResource).length > 1
 						? "Edit"
 						: "Add New"
-				} Resource`}
+				} ${
+					(currentResource
+						? typeToResource(currentResource, true)?.props?.resource
+						: undefined) ?? "Resource"
+				}`}
 				children={
 					currentResource && (
 						<Grid container direction="column" alignItems="center">
