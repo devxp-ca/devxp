@@ -33,7 +33,7 @@ export class GoogleCloudRun
 	getVars() {
 		return [
 			...super.getVars(),
-			...this.env.map(name => `CLOUD_RUN_${name}`)
+			...this.env.map(name => `${name}`)
 		];
 	}
 
