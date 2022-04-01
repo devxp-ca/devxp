@@ -18,7 +18,8 @@ export default class Homepage extends React.Component<IProps, IState> {
 					container
 					direction="column"
 					sx={{
-						backgroundColor: "primary.dark"
+						backgroundColor: "primary.dark",
+						width: "auto"
 					}}>
 					<Grid
 						container
@@ -26,7 +27,7 @@ export default class Homepage extends React.Component<IProps, IState> {
 						sx={{
 							minHeight: "100vh",
 							backgroundColor: "primary.dark",
-							width: "initial"
+							width: "auto"
 						}}>
 						<Grid
 							item
