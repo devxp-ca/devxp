@@ -9,7 +9,20 @@ resource "google_cloud_run_service" "devxp_deployment" {
   location                   = var.gcr_location
   autogenerate_revision_name = true
 
+  metadata {
+    annotations = {
+      "run.googleapis.com/launch-stage" = "BETA"
+    }
+  }
+
   template {
+    metadata {
+      annotations = {
+        "run.googleapis.com/launch-stage"  = "BETA"
+        "autoscaling.knative.dev/minScale" = "1"
+      }
+    }
+
     spec {
       containers {
         image = "gcr.io/${var.gc_project_id}/${var.gcr_image_name}:${var.SHA}"
