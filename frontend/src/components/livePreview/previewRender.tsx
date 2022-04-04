@@ -3,9 +3,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import {BTN_WIDTH, OFFSET_NO_DIV, TRANSITION} from "../../util";
-import hljs from "highlight.js";
-import terraform from "../../style/terraform";
-terraform();
 
 export default function PreviewRender(props: {
 	flipped?: boolean;
@@ -17,16 +14,28 @@ export default function PreviewRender(props: {
 	const [opac, setOpac] = React.useState(1);
 	const [colour, setColour] = React.useState("inherit");
 
-	hljs.initHighlightingOnLoad();
 	React.useEffect(() => {
-		const raw = hljs.highlightAuto(props.data).value;
+		const raw = props.data; //hljs.highlightAuto(props.data).value;
 
 		//Just in case
 		const escaped = raw.replace(/<[^>]*script>/g, "");
-		const highlighted = escaped.replace(
-			/(false|true|null)/g,
-			(_match, $1) => `<span class="hljs-literal">${$1}</span>`
+		let highlighted = escaped.replace(
+			/"([^"]+)"/g,
+			(_match, $1) => `<span class="highlight-string">"${$1}"</span>`
 		);
+		highlighted = highlighted.replace(
+			/(false|true|null)/g,
+			(_match, $1) => `<span class="highlight-literal">${$1}</span>`
+		);
+		highlighted = highlighted.replace(
+			/^([a-zA-Z-_0-9]+) /gm,
+			(_match, $1) => `<span class="highlight-keyword">${$1}</span> `
+		);
+		highlighted = highlighted.replace(
+			/ ([0-9]+)$/gm,
+			(_match, $1) => ` <span class="highlight-number">${$1}</span>`
+		);
+
 		setData(highlighted);
 		setOpac(0.25);
 		setTimeout(() => setOpac(1), 200);
@@ -76,16 +85,16 @@ export default function PreviewRender(props: {
 						overflowY: "auto",
 						pointerEvents: "all",
 						minHeight: "90vh",
-						"& .hljs-string": {
+						"& .highlight-string": {
 							color: "error.main"
 						},
-						"& .hljs-number": {
+						"& .highlight-number": {
 							color: "secondary.main"
 						},
-						"& .hljs-keyword": {
+						"& .highlight-keyword": {
 							color: "primary.main"
 						},
-						"& .hljs-literal": {
+						"& .highlight-literal": {
 							color: "warning.main"
 						},
 						backgroundColor: `${colour}10`
