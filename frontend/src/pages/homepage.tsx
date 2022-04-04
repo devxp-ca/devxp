@@ -1,6 +1,10 @@
 import React from "react";
 import Navbar from "../components/Navbar";
-import MainLandingVisual from "../components/mainLandingVisual";
+//import MainLandingVisual from "../components/mainLandingVisual";
+const MainLandingVisual = React.lazy(
+	() => import("../components/mainLandingVisual")
+);
+
 import ProductPage from "../components/ProductPage";
 import Footer from "../components/Footer";
 import Grid from "@mui/material/Grid";
@@ -47,15 +51,30 @@ export default class Homepage extends React.Component<IProps, IState> {
 								paddingTop: 2,
 								paddingBottom: 3
 							}}>
-							<MainLandingVisual
-								onClick={() => {
-									scroller.scrollTo("DevXP-Product-Title", {
-										duration: 1000,
-										delay: 100,
-										smooth: true
-									});
-								}}
-							/>
+							<React.Suspense
+								fallback={
+									<Grid
+										item
+										sx={{
+											width: "100%",
+											backgroundColor: "primary.dark",
+											zIndex: 3
+										}}
+									/>
+								}>
+								<MainLandingVisual
+									onClick={() => {
+										scroller.scrollTo(
+											"DevXP-Product-Title",
+											{
+												duration: 1000,
+												delay: 100,
+												smooth: true
+											}
+										);
+									}}
+								/>
+							</React.Suspense>
 						</Grid>
 					</Grid>
 					<Element name="DevXP-Product-Title">
