@@ -12,7 +12,6 @@ export const createPullRequestGetUrl = (
 	new Promise<GithubPR & {html_url: string}>((resolve, reject) => {
 		createPullRequest(head, base, token, repo)
 			.then(resp0 => {
-				console.dir(resp0);
 				axios
 					.get(resp0.url, {
 						headers: {
@@ -22,7 +21,6 @@ export const createPullRequestGetUrl = (
 					})
 					.then(resp => {
 						if ("html_url" in resp.data) {
-							console.dir(resp.data.html_url);
 							resolve({
 								url: resp0.url,
 								title: resp0.title,

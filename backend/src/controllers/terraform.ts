@@ -269,8 +269,6 @@ export const createTerraformSettings = (
 					repo
 				);
 
-				console.dir(pr);
-
 				//Update bucket
 				await BackendModel.updateOne(
 					{repo},

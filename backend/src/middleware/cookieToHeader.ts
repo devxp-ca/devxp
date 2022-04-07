@@ -1,4 +1,5 @@
 import {Request, Response, NextFunction} from "express";
+import {header} from "express-validator";
 
 // Ensures that any requests coming without a token set
 // in the authorization header, but with the correct cookies
@@ -10,5 +11,6 @@ export default [
 			req.headers.token = String(req.cookies.token);
 		}
 		next();
-	}
+	},
+	header("token").isString().escape().trim()
 ];

@@ -4,6 +4,7 @@ import {getRepoFiles} from "../controllers/getRepoFiles";
 import {getRepoList} from "../controllers/getRepoList";
 // import {getNumRepoPages} from "../controllers/getRepoPages";
 import {postSettings, getSettings} from "../controllers/settings";
+import {submitPr} from "../middleware/analytics";
 import getRepoFilesValidator from "../validators/getRepoFilesValidator";
 import getSettingsValidator from "../validators/getSettingsValidator";
 import {settingsValidator} from "../validators/terraformValidator";
@@ -27,7 +28,11 @@ apiV1Router.get("/repo/file", getRepoFilesValidator, getRepoFiles);
 //Number of pages of repos
 // apiV1Router.get("/repoPages", getNumRepoPages);
 
-apiV1Router.post("/settings", settingsValidator, postSettings);
+apiV1Router.post(
+	"/settings",
+	[...settingsValidator, ...submitPr],
+	postSettings
+);
 apiV1Router.get("/settings", getSettingsValidator, getSettings);
 
 //Edit terraform settings

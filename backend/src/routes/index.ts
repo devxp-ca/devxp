@@ -1,7 +1,7 @@
 import {Router} from "express";
 import apiV1Router from "./v1";
 import authRouter from "./auth";
-import cookieToHeader from "../validators/cookieToHeader";
+import cookieToHeader from "../middleware/cookieToHeader";
 
 //Initialize main router object
 const mainRouter = Router();
