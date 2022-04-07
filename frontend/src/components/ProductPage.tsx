@@ -6,7 +6,9 @@ import {lightTheme} from "../style/themes";
 import GenericModal from "./modals/GenericModal";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
+import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import {Cookies} from "react-cookie";
 
 import logoBlack from "../assets/logo-black.png";
 import terraformPNG from "../assets/Terraform_Horizontal.png";
@@ -82,6 +84,34 @@ export default function ProductPage() {
 			.catch(console.error);
 	}, dynamicDummy);
 
+	//for the get started button
+	const [isLoggedIn, setIsLoggedIn] = React.useState(() => {
+		const cookies = new Cookies();
+		const token = cookies.get("token");
+		if (token) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	const handleLogin = () => {
+		if (isLoggedIn) {
+			// set the state to logged out
+			setIsLoggedIn(false);
+			//remove the access_token from the cookies
+			const cookies = new Cookies();
+			cookies.remove("token", {path: "/", domain: ""});
+			// redirect to the homepage
+			window.location.href = "/";
+		} else {
+			// set the state to logged in
+			setIsLoggedIn(true);
+			// call the API to login with github
+			window.location.href = `${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`;
+		}
+	};
+
 	return (
 		<Grid
 			item
@@ -89,7 +119,8 @@ export default function ProductPage() {
 			direction="column"
 			sx={{
 				backgroundColor: "primary.dark",
-				overflowX: "hidden"
+				overflowX: "hidden",
+				paddingBottom: 8
 			}}>
 			{/* FIRST PAGE */}
 			<Grid
@@ -428,6 +459,30 @@ export default function ProductPage() {
 							</Paper>
 						</Grid>
 					</Grid>
+				</Grid>
+			</Grid>
+			<Grid
+				item
+				container
+				alignItems="center"
+				justifyContent="center"
+				sx={{width: "100%", p: 4, backgroundColor: "#FFFFFF10"}}>
+				<Grid item>
+					<Button
+						onClick={handleLogin}
+						color="primary"
+						variant="contained"
+						size="large"
+						sx={{
+							":hover": {
+								bgcolor: "info.main",
+								color: "white",
+								opacity: 0.9
+							},
+							fontSize: 24
+						}}>
+						Get Started
+					</Button>
 				</Grid>
 			</Grid>
 		</Grid>
