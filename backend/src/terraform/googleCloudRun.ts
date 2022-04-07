@@ -31,10 +31,7 @@ export class GoogleCloudRun
 	}
 
 	getVars() {
-		return [
-			...super.getVars(),
-			...this.env.map(name => `${name}`)
-		];
+		return [...super.getVars(), ...this.env.map(name => `${name}`)];
 	}
 
 	//Returns an array of resource blocks
