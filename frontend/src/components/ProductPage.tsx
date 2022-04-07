@@ -97,13 +97,8 @@ export default function ProductPage() {
 
 	const handleLogin = () => {
 		if (isLoggedIn) {
-			// set the state to logged out
-			setIsLoggedIn(false);
-			//remove the access_token from the cookies
-			const cookies = new Cookies();
-			cookies.remove("token", {path: "/", domain: ""});
-			// redirect to the homepage
-			window.location.href = "/";
+			// redirect to toolmanager
+			window.location.href = "/toolManager";
 		} else {
 			// set the state to logged in
 			setIsLoggedIn(true);
