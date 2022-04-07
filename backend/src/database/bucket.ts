@@ -12,4 +12,4 @@ export const backendSchema = new Schema({
 	provider: String,
 	bucketId: String
 });
-export const BackendModel = mongoose.model("BackendModel", backendSchema);
+export const BackendModel = mongoose.model("Backend", backendSchema);

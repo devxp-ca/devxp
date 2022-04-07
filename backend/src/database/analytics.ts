@@ -12,4 +12,4 @@ export const analyticSchema = new Schema({
 	user: String,
 	pullRequests: Number
 });
-export const AnalyticModal = mongoose.model("AnalyticModal", analyticSchema);
+export const AnalyticModal = mongoose.model("Analytic", analyticSchema);

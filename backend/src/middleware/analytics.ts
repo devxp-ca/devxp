@@ -4,37 +4,47 @@ import getUser from "../githubapi/getUser";
 
 export const submitPr = [
 	async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-		getUser(req.headers.token as string)
-			.then(profile => {
-				let pullRequests = 0;
-				AnalyticModal.findOne({
-					repo: req.body.repo,
-					user: profile.id
-				})
-					.then((results?: AnalyticSchema) => {
-						if (results) {
-							pullRequests = results.pullRequests;
-						}
+		if (req.body.preview) {
+			next();
+		} else {
+			getUser(req.headers.token as string)
+				.then(profile => {
+					AnalyticModal.findOne({
+						repo: req.body.repo,
+						user: profile.login
 					})
-					.catch(console.error)
-					.finally(() => {
-						AnalyticModal.updateOne(
-							{
-								repo: req.body.repo,
-								user: profile.id,
-								pullRequests: pullRequests
-							},
-							{upsert: true},
-							() => {
-								next();
+						.then(async (results?: AnalyticSchema) => {
+							if (results) {
+								AnalyticModal.updateOne(
+									{
+										repo: req.body.repo,
+										user: profile.login,
+										pullRequests: results.pullRequests + 1
+									},
+									() => next()
+								);
+							} else {
+								new AnalyticModal({
+									repo: req.body.repo,
+									user: profile.login,
+									pullRequests: 1
+								}).save();
 							}
-						);
-					});
-			})
-			.catch(err => {
-				//API request will prob fail at a later date, but that's another controllers problem
-				console.error(err);
-				next();
-			});
+						})
+						.catch(_err => {
+							new AnalyticModal({
+								repo: req.body.repo,
+								user: profile.login,
+								pullRequests: 1
+							}).save();
+							next();
+						});
+				})
+				.catch(err => {
+					//API request will prob fail at a later date, but that's another controllers problem
+					console.error(err);
+					next();
+				});
+		}
 	}
 ];

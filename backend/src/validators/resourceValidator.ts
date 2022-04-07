@@ -31,7 +31,6 @@ export const uniquenessValidator: CustomValidator = (resources: any) => {
 };
 
 const resourceValidator: CustomValidator = async (resource: any) => {
-	console.dir(resource);
 	if (resource.type === "ec2") {
 		if (!hasAllKeys(resource, ["ami", "instance_type", "id"])) {
 			return Promise.reject(new Error("Resource is missing keys"));
