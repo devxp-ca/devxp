@@ -12,5 +12,10 @@ export default [
 		}
 		next();
 	},
-	header("token").isString().escape().trim()
+	header("token")
+		.optional()
+		.isString()
+		.escape()
+		.trim()
+		.withMessage("AGHHHHHHHH")
 ];
