@@ -77,6 +77,18 @@ export interface BackendError {
 	message?: string;
 }
 
+/* Give me two test repos in a list called repoListTest*/
+const repoListTest = [
+	{
+		name: "test",
+		full_name: "user/test"
+	},
+	{
+		name: "test2",
+		full_name: "user/test2"
+	}
+];
+
 export default function TerraformManager(props: {backButton: () => void}) {
 	const defaultCardSize = 250;
 
@@ -555,7 +567,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					sx={{width: "300px"}}
 					id="repo-select"
 					disableClearable={true}
-					options={repoList}
+					options={repoListTest}
 					value={{full_name: selectedRepo}}
 					getOptionLabel={(option: any) => option?.full_name ?? ""}
 					renderInput={(params: any) => (
@@ -935,16 +947,19 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Grid>
 				))}
 			</Grid>
-			<Grid>
-				<Box
-					textAlign="center"
-					sx={{
-						paddingTop: 3,
-						position: "fixed",
-						bottom: 75,
-						width: "calc(100vw - 76px)",
-						pointerEvents: "none"
-					}}>
+			<Grid
+				container
+				columns={2}
+				justifyContent="center"
+				spacing={2}
+				sx={{
+					paddingTop: 3,
+					position: "fixed",
+					bottom: 25,
+					width: "calc(100vw - 76px)",
+					pointerEvents: "none"
+				}}>
+				<Grid item>
 					<Button
 						disabled={
 							//openCards > 0 ||
@@ -965,10 +980,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							selectedRepo
 						)}
 						sx={{
+							width: "281px",
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial",
-							marginRight: 2,
 							":hover": {
 								bgcolor: "success.main",
 								opacity: 0.9
@@ -976,6 +991,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 						}}>
 						Create Pull Request
 					</Button>
+				</Grid>
+				<Grid item>
 					<Button
 						disabled={!settingsHaveBeenEdited}
 						variant="contained"
@@ -988,13 +1005,14 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							resetRepoData();
 						}}
 						sx={{
+							width: "281px",
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial"
 						}}>
 						Discard Changes
 					</Button>
-				</Box>
+				</Grid>
 			</Grid>
 			<PreviewWindow data={previewData} error={previewError} />
 		</Box>
