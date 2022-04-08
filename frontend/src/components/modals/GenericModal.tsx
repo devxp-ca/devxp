@@ -3,6 +3,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 import {keyframes} from "@mui/system";
 import {styled} from "@mui/material";
 
@@ -196,6 +198,18 @@ export default function GenericModal({
 							color="black">
 							{title}
 						</Typography>
+						<IconButton
+							aria-label="close"
+							onClick={handleClose}
+							sx={{
+								position: "absolute",
+								right: "0",
+								top: "0",
+								padding: "0",
+								margin: "0"
+							}}>
+							<CloseIcon />
+						</IconButton>
 					</Box>
 					<Box sx={bodyStyle}>
 						<Typography sx={{mt: 2}}>{bodyText}</Typography>
