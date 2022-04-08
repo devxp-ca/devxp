@@ -37,6 +37,7 @@ export default function TerraformOptionsModal({
 				isOpen={isOpen}
 				handleClose={handleClose}
 				width="90vw"
+				height="90vh"
 				title={title || ""}>
 				<Stack
 					spacing={2}
