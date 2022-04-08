@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
 
 export default function ToolManagerCard(props: {
-	onClick: () => void;
+	onClick?: () => void;
 	title: string;
 	desc: string;
 	image: string;
