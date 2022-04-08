@@ -77,18 +77,6 @@ export interface BackendError {
 	message?: string;
 }
 
-/* Give me two test repos in a list called repoListTest*/
-const repoListTest = [
-	{
-		name: "test",
-		full_name: "user/test"
-	},
-	{
-		name: "test2",
-		full_name: "user/test2"
-	}
-];
-
 export default function TerraformManager(props: {backButton: () => void}) {
 	const defaultCardSize = 250;
 
@@ -567,7 +555,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					sx={{width: "300px"}}
 					id="repo-select"
 					disableClearable={true}
-					options={repoListTest}
+					options={repoList}
 					value={{full_name: selectedRepo}}
 					getOptionLabel={(option: any) => option?.full_name ?? ""}
 					renderInput={(params: any) => (
