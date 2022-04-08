@@ -186,7 +186,7 @@ export default function GenericModal({
 	};
 
 	return !dummyModal ? (
-		<Modal open={isOpen} onClose={handleClose}>
+		<Modal sx={{overflow: "scroll"}} open={isOpen} onClose={handleClose}>
 			<div>
 				{isSuccess && successPlusAnimation()}
 				<Paper sx={modalStyle}>
