@@ -12,6 +12,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
+import logoPNG from "../assets/logo.png";
 
 export default function ToolManager() {
 	if (!localStorage.getItem("preferredTheme")) {
@@ -58,7 +59,6 @@ export default function ToolManager() {
 					container
 					direction="column"
 					sx={{
-						width: "100%",
 						minHeight: "100vh",
 						backgroundColor: "secondary.light",
 						paddingLeft: 6,
@@ -91,20 +91,31 @@ export default function ToolManager() {
 							<Grid
 								container
 								direction="row"
+								spacing={2}
 								sx={{paddingTop: 2}}>
-								<ToolManagerCard
-									onClick={setSelectedToolCardCallback(
-										"terraform"
-									)}
-									title="Terraform"
-									desc="An infrastructure as code tool that can manage all your cloud resource needs"
-									image={
-										theme === darkTheme
-											? terraformPNGDark
-											: terraformPNGLight
-									}
-									color="#844FBA"
-								/>
+								<Grid item>
+									<ToolManagerCard
+										onClick={setSelectedToolCardCallback(
+											"terraform"
+										)}
+										title="Terraform"
+										desc="An infrastructure as code tool that can manage all your cloud resource needs"
+										image={
+											theme === darkTheme
+												? terraformPNGDark
+												: terraformPNGLight
+										}
+										color="#844FBA"
+									/>
+								</Grid>
+								<Grid item>
+									<ToolManagerCard
+										title="Under Construction"
+										desc="The remaining tools we plan to support are currently under construction"
+										image={logoPNG}
+										color="#4DACFF"
+									/>
+								</Grid>
 							</Grid>
 						)}
 						{selectedTool == "terraform" && (
