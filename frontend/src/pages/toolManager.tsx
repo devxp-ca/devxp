@@ -114,6 +114,10 @@ export default function ToolManager() {
 										desc="The remaining tools we plan to support are currently under construction"
 										image={logoPNG}
 										color="#4DACFF"
+										imagesx={{
+											height: "364.781px",
+											objectFit: "contain"
+										}}
 									/>
 								</Grid>
 							</Grid>
