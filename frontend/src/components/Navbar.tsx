@@ -49,7 +49,7 @@ export default function Navbar({children}: NavbarProps) {
 	};
 
 	//True if screen width > 600px, else false
-	const mobile = useMediaQuery("(max-width:600px)");
+	const isMobile = useMediaQuery("(max-width:600px)");
 
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -68,7 +68,7 @@ export default function Navbar({children}: NavbarProps) {
 				position="relative"
 				sx={{borderRadius: "0px 0px 4px 4px"}}>
 				<Toolbar>
-					{mobile ? (
+					{isMobile ? (
 						<>
 							<Box sx={{display: "flex"}}>
 								<Button
