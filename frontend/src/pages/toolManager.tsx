@@ -122,7 +122,8 @@ export default function ToolManager() {
 										color="#4DACFF"
 										imagesx={{
 											height: "364.781px",
-											objectFit: "contain"
+											objectFit: "contain",
+											imageRendering: "pixelated"
 										}}
 									/>
 								</Grid>
