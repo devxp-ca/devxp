@@ -15,6 +15,7 @@ export interface Config {
 	};
 }
 
+
 const envCheck = <T>(env: T | undefined, name = "every") => {
 	if (!env) {
 		console.error(`${name} env variable must be set`);
