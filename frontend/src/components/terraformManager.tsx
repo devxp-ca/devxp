@@ -1019,7 +1019,9 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Button>
 				</Grid>
 			</Grid>
-			<PreviewWindow data={previewData} error={previewError} />
+			{isMobile === false && (
+				<PreviewWindow data={previewData} error={previewError} />
+			)}
 		</Box>
 	);
 }
