@@ -687,11 +687,12 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					<FormControl>
 						<Grid
 							container
-							direction="row"
+							direction={isMobile ? "column" : "row"}
 							sx={{
 								paddingLeft: 4,
 								paddingTop: 4.5,
-								marginBottom: 2
+								marginBottom: 2,
+								flexWrap: isMobile === true ? "inherit" : "wrap"
 							}}>
 							<Grid
 								item
