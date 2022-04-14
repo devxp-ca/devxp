@@ -11,8 +11,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Menu from "@mui/material/Menu";
 import Stack from "@mui/material/Stack";
-import {ThemeProvider} from "@mui/material/styles";
-import {lightTheme, darkTheme} from "../style/themes";
 import {Cookies} from "react-cookie";
 import {CONFIG} from "../config";
 
