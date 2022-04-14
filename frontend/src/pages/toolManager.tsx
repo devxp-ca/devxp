@@ -15,6 +15,9 @@ import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 import logoPNG from "../assets/logo.png";
 
 export default function ToolManager() {
+	//True if screen width > 600px, else false
+	const isMobile = useMediaQuery("(max-width:600px)");
+
 	if (!localStorage.getItem("preferredTheme")) {
 		//media query to determine if the preferred theme is light
 		const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
@@ -61,8 +64,8 @@ export default function ToolManager() {
 					sx={{
 						minHeight: "100vh",
 						backgroundColor: "secondary.light",
-						paddingLeft: 6,
-						paddingRight: 6
+						paddingLeft: isMobile === true ? 0 : 6,
+						paddingRight: isMobile === true ? 0 : 6
 					}}>
 					<Grid
 						item
@@ -91,6 +94,9 @@ export default function ToolManager() {
 							<Grid
 								container
 								direction="row"
+								justifyContent={
+									isMobile === true ? "center" : "auto"
+								}
 								spacing={2}
 								sx={{paddingTop: 2}}>
 								<Grid item>
