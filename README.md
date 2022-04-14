@@ -24,4 +24,8 @@ DevXP is a web application designed to make your life easier. We know that learn
 
 **Application Deployment**: https://devxp.ca/
 
+Check out this interview to hear our story and see a live demo of the tool.
+[<img src="https://i.ytimg.com/vi/TST7qI6yUDQ/maxresdefault.jpg" width="500" />](https://www.youtube.com/watch?v=TST7qI6yUDQ)
+
+Thanks for stopping by! -The DevXP Team
 ![](https://github.com/devxp-ca/devxp/blob/main/frontend/src/assets/memories.gif)
