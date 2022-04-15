@@ -71,7 +71,7 @@ export default function Navbar({children}: NavbarProps) {
 							</Button>
 							<Button
 								startIcon={<PersonSearchIcon />}
-								href="/aboutpage"
+								href="/about"
 								color="inherit">
 								About
 							</Button>

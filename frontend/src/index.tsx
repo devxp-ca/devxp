@@ -10,7 +10,7 @@ render(
 		<Routes>
 			<Route path="/" element={<Homepage />} />
 			<Route path="/toolManager" element={<ToolManager />} />
-			<Route path="/aboutpage" element={<AboutPage />} />
+			<Route path="/about" element={<AboutPage />} />
 		</Routes>
 	</BrowserRouter>,
 	document.getElementById("root")
