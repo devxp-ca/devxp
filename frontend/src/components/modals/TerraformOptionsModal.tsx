@@ -39,7 +39,8 @@ export default function TerraformOptionsModal({
 				isOpen={isOpen}
 				handleClose={handleClose}
 				width="90vw"
-				height="80vh"
+				height="auto"
+				maxHeight="80vh"
 				title={title || ""}>
 				<Stack
 					spacing={2}
@@ -47,7 +48,9 @@ export default function TerraformOptionsModal({
 					alignItems="stretch"
 					justifyContent="center">
 					{currentResources.map((value: any, i: number) => (
-						<Card key={`options-modal-${i}`}>
+						<Card
+							sx={{alignItems: "center"}}
+							key={`options-modal-${i}`}>
 							{/* Would like to add some kind of icons down the road */}
 							<CardActionArea
 								component="a"
