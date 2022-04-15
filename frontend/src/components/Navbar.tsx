@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Menu from "@mui/material/Menu";
 import Stack from "@mui/material/Stack";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import {Cookies} from "react-cookie";
 import {CONFIG} from "../config";
 
@@ -113,6 +114,12 @@ export default function Navbar({children}: NavbarProps) {
 											color="inherit">
 											Wiki
 										</Button>
+                    <Button
+                      startIcon={<PersonSearchIcon />}
+                      href="/about"
+                      color="inherit">
+                      About Us
+                    </Button>
 										{isLoggedIn && (
 											<Button
 												startIcon={<ConstructionIcon />}
@@ -148,6 +155,12 @@ export default function Navbar({children}: NavbarProps) {
 									color="inherit">
 									Wiki
 								</Button>
+                <Button
+                  startIcon={<PersonSearchIcon />}
+                  href="/about"
+                  color="inherit">
+                  About Us
+                </Button>
 								{isLoggedIn ? (
 									<Button
 										startIcon={<ConstructionIcon />}

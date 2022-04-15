@@ -287,6 +287,16 @@ export const createTerraformSettings = (
 			.then(json => {
 				res.json(json);
 			})
-			.catch(internalErrorHandler(req, res));
+			.catch(err => {
+				//If this error occures it's likely that the repo is empty
+				internalErrorHandler(
+					req,
+					res
+				)(
+					new Error(
+						`Failed to find last commit for:\n"${repo}"\nIs your repo empty? Repos must have atleast one file, such as a README or .gitignore`
+					)
+				);
+			});
 	}
 };

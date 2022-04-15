@@ -13,15 +13,25 @@ DevXP is a web application designed to make your life easier. We know that learn
 [![Deployment](https://img.shields.io/website?label=Deployment&style=plastic&url=https%3A%2F%2Fdevxp.ca)](https://devxp.ca)  
 ![contributors](https://img.shields.io/github/contributors/devxp-ca/devxp?style=plastic)  
 ![commits](https://img.shields.io/github/commit-activity/m/devxp-ca/devxp?style=plastic)  
-![last commit](https://img.shields.io/github/last-commit/devxp-ca/devxp?style=plastic)  
+![last commit](https://img.shields.io/github/last-commit/devxp-ca/devxp?style=plastic)
 
-## To learn more, please visit the [wiki](https://github.com/devxp-ca/devxp/wiki).
+**Application Deployment**: https://devxp.ca/
+
+### Here's a Demo!
+[<img src="https://user-images.githubusercontent.com/43152879/163626316-90717c17-e21f-450e-852d-ab28126b54c8.png" width="500" />](https://drive.google.com/file/d/1H_F8_e-6ZiGtTncqqFqk2Mcpewb5uYyJ/view?usp=sharing)
+
+
+### To learn more, please visit the [wiki](https://github.com/devxp-ca/devxp/wiki).
 ### Quick Reference:
 - [Example Workflow](https://github.com/devxp-ca/devxp/wiki/An-Example-Workflow)
 - [Tool Manager Configuration](https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration)
 - [Terraform](https://github.com/devxp-ca/devxp/wiki/Terraform)
-- [Contributions](https://github.com/devxp-ca/devxp/wiki/Development)
+- [Development and Architectural Overview](https://github.com/devxp-ca/devxp/wiki/Development-and-Architectural-Overview)
 
-**Application Deployment**: https://devxp.ca/
+### For some "Behind the Scenes" info, checkout the [resources](./resources) folder
 
+### Check out this interview to hear our story and see a live demo of the tool.
+[<img src="https://i.ytimg.com/vi/TST7qI6yUDQ/maxresdefault.jpg" width="500" />](https://www.youtube.com/watch?v=TST7qI6yUDQ)
+
+### Thanks for stopping by! -The DevXP Team
 ![](https://github.com/devxp-ca/devxp/blob/main/frontend/src/assets/memories.gif)

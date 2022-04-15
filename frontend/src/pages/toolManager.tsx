@@ -17,10 +17,11 @@ import logoPNG from "../assets/logo.png";
 export default function ToolManager() {
 	//True if screen width > 600px, else false
 	const isMobile = useMediaQuery("(max-width:600px)");
+  
+	const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
 
 	if (!localStorage.getItem("preferredTheme")) {
 		//media query to determine if the preferred theme is light
-		const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
 		//set local storage to the preferred theme
 		localStorage.setItem(
 			"preferredTheme",
@@ -47,13 +48,6 @@ export default function ToolManager() {
 	};
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
-
-	const setSelectedToolCardCallback = (tool_name: string) => {
-		const callback = () => {
-			setSelectedTool(tool_name);
-		};
-		return callback;
-	};
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -131,7 +125,7 @@ export default function ToolManager() {
 						)}
 						{selectedTool == "terraform" && (
 							<TerraformManager
-								backButton={setSelectedToolCardCallback("none")}
+								backButton={() => setSelectedTool("none")}
 							/>
 						)}
 					</Grid>
