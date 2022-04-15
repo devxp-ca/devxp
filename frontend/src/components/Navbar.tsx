@@ -114,12 +114,12 @@ export default function Navbar({children}: NavbarProps) {
 											color="inherit">
 											Wiki
 										</Button>
-                    <Button
-                      startIcon={<PersonSearchIcon />}
-                      href="/about"
-                      color="inherit">
-                      About Us
-                    </Button>
+										<Button
+											startIcon={<PersonSearchIcon />}
+											href="/about"
+											color="inherit">
+											About Us
+										</Button>
 										{isLoggedIn && (
 											<Button
 												startIcon={<ConstructionIcon />}
@@ -155,12 +155,12 @@ export default function Navbar({children}: NavbarProps) {
 									color="inherit">
 									Wiki
 								</Button>
-                <Button
-                  startIcon={<PersonSearchIcon />}
-                  href="/about"
-                  color="inherit">
-                  About Us
-                </Button>
+								<Button
+									startIcon={<PersonSearchIcon />}
+									href="/about"
+									color="inherit">
+									About Us
+								</Button>
 								{isLoggedIn ? (
 									<Button
 										startIcon={<ConstructionIcon />}
