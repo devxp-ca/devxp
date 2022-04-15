@@ -17,7 +17,7 @@ import logoPNG from "../assets/logo.png";
 export default function ToolManager() {
 	//True if screen width > 600px, else false
 	const isMobile = useMediaQuery("(max-width:600px)");
-  
+
 	const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
 
 	if (!localStorage.getItem("preferredTheme")) {
@@ -95,9 +95,9 @@ export default function ToolManager() {
 								sx={{paddingTop: 2}}>
 								<Grid item>
 									<ToolManagerCard
-										onClick={setSelectedToolCardCallback(
-											"terraform"
-										)}
+										onClick={() =>
+											setSelectedTool("terraform")
+										}
 										title="Terraform"
 										desc="An infrastructure as code tool that can manage all your cloud resource needs"
 										image={
