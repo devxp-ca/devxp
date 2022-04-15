@@ -183,13 +183,46 @@ export const handleOpenSubmitModalNoRepo =
 export const handleOpenFailModal =
 	(setModalInfo: modalSetter, setOpenModal: modalBoolSetter) =>
 	(errors: BackendError[]) => {
+		const message: string =
+			errors[0]?.message ??
+			"Something went wrong, please make sure all the fields are filled out and try again";
+		const messageSplit = message.split("\n").map(str =>
+			str.match(/^"([^/"]+\/[^/"]+)"$/g) ? (
+				<Paper
+					sx={{
+						boxShadow: 6,
+						marginTop: "4px",
+						marginBottom: "4px"
+					}}>
+					<pre style={{margin: "0"}}>
+						<code>{str.replace(/"/g, "")}</code>
+					</pre>
+				</Paper>
+			) : (
+				<>
+					{str}
+					<br />
+				</>
+			)
+		);
+
 		setModalInfo({
 			isSubmitModal: false,
 			isSuccessModal: false,
 			title: "Submission Failed",
-			body:
-				errors[0]?.message ??
-				"Something went wrong, please make sure all the fields are filled out and try again"
+			body: (
+				<div
+					style={{
+						marginTop: "-16px",
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						justifyContent: "center",
+						textAlign: "justify"
+					}}>
+					{messageSplit}
+				</div>
+			)
 		});
 		setOpenModal(true);
 	};
