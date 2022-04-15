@@ -21,7 +21,7 @@ DevXP is a web application designed to make your life easier. We know that learn
 [<img src="https://user-images.githubusercontent.com/43152879/163626316-90717c17-e21f-450e-852d-ab28126b54c8.png" width="500" />](https://drive.google.com/file/d/1H_F8_e-6ZiGtTncqqFqk2Mcpewb5uYyJ/view?usp=sharing)
 
 
-## To learn more, please visit the [wiki](https://github.com/devxp-ca/devxp/wiki).
+### To learn more, please visit the [wiki](https://github.com/devxp-ca/devxp/wiki).
 ### Quick Reference:
 - [Example Workflow](https://github.com/devxp-ca/devxp/wiki/An-Example-Workflow)
 - [Tool Manager Configuration](https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration)
