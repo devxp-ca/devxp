@@ -81,7 +81,8 @@ export default class AboutPage extends React.Component<IProps, IState> {
 								justifyContent="space-around"
 								alignItems="flex-start"
 								sx={{
-									width: "100%"
+									width: "100%",
+									paddingBottom: 4
 								}}>
 								<ProfileCard
 									onClick={() => {
