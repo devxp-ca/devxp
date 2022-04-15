@@ -91,7 +91,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 										);
 									}}
 									title="Brennan Wilkes"
-									desc="Lead Developer"
+									desc="Lead Developer and Technical Architect"
 									image={brennan}
 								/>
 								<ProfileCard
@@ -131,7 +131,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 										);
 									}}
 									title="Sabrina Korsch"
-									desc="Artist/Designer and Frontend Developer"
+									desc="Artist, Designer and Frontend Developer"
 									image={sabrina}
 								/>
 							</Grid>
