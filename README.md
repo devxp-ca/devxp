@@ -21,6 +21,8 @@ DevXP is a web application designed to make your life easier. We know that learn
 - [Tool Manager Configuration](https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration)
 - [Terraform](https://github.com/devxp-ca/devxp/wiki/Terraform)
 - [Development and Architectural Overview](https://github.com/devxp-ca/devxp/wiki/Development-and-Architectural-Overview)
+- [Design Document](https://www.figma.com/file/WUylmAldBpOkbjQmOgFrk2/Sabrina-Korsch's-team-library?node-id=0%3A1)
+- [Logo Brainstorm](https://www.figma.com/file/NzxePe3ust4bLwp16BpalY/Logo?node-id=0%3A1)
 
 **Application Deployment**: https://devxp.ca/
 
