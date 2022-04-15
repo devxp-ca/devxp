@@ -22,7 +22,7 @@ export const handleOpenSuccessModal =
 		setModalInfo: modalSetter,
 		setOpenModal: modalBoolSetter,
 		url: string,
-		provider: string = "aws"
+		provider: string
 	) =>
 	() => {
 		setModalInfo({
