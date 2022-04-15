@@ -45,6 +45,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const removeEmptyKeys = (obj: Record<string, any>) => {
 	Object.keys(obj).forEach(key => {
@@ -323,8 +324,15 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	//Default or customize
 	const [openDefaultsModal, setOpenDefaultsModal] = React.useState(false);
 
+	//True if screen width > 600px, else false
+	const isMobile = useMediaQuery("(max-width:600px)");
+
 	return (
-		<Box sx={{width: "100%", paddingBottom: 12}}>
+		<Box
+			id="topMostBox"
+			justifyContent={isMobile ? "center" : "flex-start"}
+			alignItems="center"
+			sx={{width: "100%", paddingBottom: 12}}>
 			<GenericModal
 				isOpen={!!openDefaultsModal}
 				handleClose={() => {
@@ -548,112 +556,119 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			/>
 			<Grid
 				container
-				direction="row"
-				justifyContent="space-between"
+				display="flex"
+				alignItems="center"
 				columns={2}
-				sx={{mt: 2}}>
-				<Autocomplete
-					sx={{width: "300px"}}
-					id="repo-select"
-					disableClearable={true}
-					options={repoList}
-					value={{full_name: selectedRepo}}
-					getOptionLabel={(option: any) => option?.full_name ?? ""}
-					renderInput={(params: any) => (
-						<TextField
-							{...params}
-							label="Select A Repo"
-							variant="outlined"
-						/>
-					)}
-					onOpen={() => {
-						if (
-							!!selectedRepoSavedData &&
-							settingsHaveBeenEdited &&
-							giveOverwriteWarning
-						) {
-							setGiveOverwriteWarning(false);
-							setOverwriteWarningModalIsOpen(true);
+				spacing={2}
+				sx={{width: "inherit"}}>
+				<Grid item>
+					<Autocomplete
+						sx={{width: "250px"}}
+						id="repo-select"
+						disableClearable={true}
+						options={repoList}
+						value={{full_name: selectedRepo}}
+						getOptionLabel={(option: any) =>
+							option?.full_name ?? ""
 						}
-					}}
-					onChange={(event: any, value: any) => {
-						setPreviousRepo(selectedRepo);
-						updateSelectedRepo(value?.full_name ?? "");
-					}}
-					isOptionEqualToValue={(option: any, value: any) => {
-						return option?.full_name === value?.full_name;
-					}}
-				/>
-				<OkModal
-					isOpen={overwriteWarningModalIsOpen}
-					handleClose={handleCloseModal(
-						setOverwriteWarningModalIsOpen
-					)}
-					title={"Heads up!"}
-					bodyText={
-						"It looks like you have uncommitted changes.\
-									If you select a new repo, your uncommitted changes will be lost.\
-									Consider creating a pull request before changing repos."
-					}
-				/>
-				<OkCancelModal
-					isOpen={overwriteChoiceModalIsOpen}
-					onOk={() => {
-						setSelectedRepoSavedData(tempRepoData);
-						setSettingsHaveBeenEdited(false);
-						setOverwriteChoiceModalIsOpen(false);
-					}}
-					onCancel={() => {
-						setSelectedRepo(previousRepo);
-						setOverwriteChoiceModalIsOpen(false);
-					}}
-					title={"Warning: This repo has saved settings."}
-					bodyText={
-						"Continuing will overwrite your currently unsaved settings."
-					}
-				/>
-				<LoadingModal
-					isOpen={showLoadingModal}
-					loadingTitle={"Loading..."}
-				/>
-				<Tooltip title="Click here to copy these settings to another repo">
-					<Button
-						sx={{
-							":hover": {
-								bgcolor: "secondary.main",
-								opacity: 0.9
+						renderInput={(params: any) => (
+							<TextField
+								{...params}
+								label="Select A Repo"
+								variant="outlined"
+							/>
+						)}
+						onOpen={() => {
+							if (
+								!!selectedRepoSavedData &&
+								settingsHaveBeenEdited &&
+								giveOverwriteWarning
+							) {
+								setGiveOverwriteWarning(false);
+								setOverwriteWarningModalIsOpen(true);
 							}
 						}}
-						variant="contained"
-						color="secondary"
-						onClick={() => {
-							if (settingsHaveBeenEdited && giveCopyWarning) {
-								setHeadsUpModalIsOpen(true);
-								setGiveCopyWarning(false);
-							} else {
-								setCopyRepoModalIsOpen(true);
-							}
-						}}>
-						Copy to another repo
-					</Button>
-				</Tooltip>
-				<CopyRepoSettingsModal
-					isOpen={copyRepoModalIsOpen}
-					handleClose={() => {
-						setCopyRepoModalIsOpen(false);
-					}}
-					repoList={repoList}
-					selectedRepo={selectedRepo}
-					setShowLoadingModal={setShowLoadingModal}
-				/>
-				<OkModal
-					isOpen={headsUpModalIsOpen}
-					handleClose={handleCloseModal(setHeadsUpModalIsOpen)}
-					title={"Heads Up!"}
-					bodyText={
-						"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
-					}
-				/>
+						onChange={(event: any, value: any) => {
+							setPreviousRepo(selectedRepo);
+							updateSelectedRepo(value?.full_name ?? "");
+						}}
+						isOptionEqualToValue={(option: any, value: any) => {
+							return option?.full_name === value?.full_name;
+						}}
+					/>
+					<OkModal
+						isOpen={overwriteWarningModalIsOpen}
+						handleClose={handleCloseModal(
+							setOverwriteWarningModalIsOpen
+						)}
+						title={"Heads up!"}
+						bodyText={
+							"It looks like you have uncommitted changes.\
+										If you select a new repo, your uncommitted changes will be lost.\
+										Consider creating a pull request before changing repos."
+						}
+					/>
+					<OkCancelModal
+						isOpen={overwriteChoiceModalIsOpen}
+						onOk={() => {
+							setSelectedRepoSavedData(tempRepoData);
+							setSettingsHaveBeenEdited(false);
+							setOverwriteChoiceModalIsOpen(false);
+						}}
+						onCancel={() => {
+							setSelectedRepo(previousRepo);
+							setOverwriteChoiceModalIsOpen(false);
+						}}
+						title={"Warning: This repo has saved settings."}
+						bodyText={
+							"Continuing will overwrite your currently unsaved settings."
+						}
+					/>
+					<LoadingModal
+						isOpen={showLoadingModal}
+						loadingTitle={"Loading..."}
+					/>
+				</Grid>
+				<Grid item>
+					<Tooltip title="Click here to copy these settings to another repo">
+						<Button
+							sx={{
+								":hover": {
+									bgcolor: "secondary.main",
+									opacity: 0.9
+								}
+							}}
+							variant="contained"
+							color="secondary"
+							onClick={() => {
+								if (settingsHaveBeenEdited && giveCopyWarning) {
+									setHeadsUpModalIsOpen(true);
+									setGiveCopyWarning(false);
+								} else {
+									setCopyRepoModalIsOpen(true);
+								}
+							}}>
+							Copy to another repo
+						</Button>
+					</Tooltip>
+					<CopyRepoSettingsModal
+						isOpen={copyRepoModalIsOpen}
+						handleClose={() => {
+							setCopyRepoModalIsOpen(false);
+						}}
+						repoList={repoList}
+						selectedRepo={selectedRepo}
+						setShowLoadingModal={setShowLoadingModal}
+					/>
+					<OkModal
+						isOpen={headsUpModalIsOpen}
+						handleClose={handleCloseModal(setHeadsUpModalIsOpen)}
+						title={"Heads Up!"}
+						bodyText={
+							"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
+						}
+					/>
+				</Grid>
 			</Grid>
 			<Grid
 				item
@@ -663,7 +678,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 				sx={{
 					paddingTop: 2,
 					marginLeft: 0,
-					width: "100%",
+					width: "inherit",
 					paddingRight: 2
 				}}>
 				<Grid container direction="row">
@@ -673,13 +688,18 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					<FormControl>
 						<Grid
 							container
-							direction="row"
+							direction={isMobile ? "column" : "row"}
 							sx={{
-								paddingLeft: 8,
+								paddingLeft: 4,
 								paddingTop: 4.5,
-								marginBottom: 2
+								marginBottom: 2,
+								flexWrap: isMobile === true ? "inherit" : "wrap"
 							}}>
-							<Grid item>
+							<Grid
+								item
+								xs={11}
+								justifyContent="center"
+								alignItems="center">
 								<LabelledRadioSelect
 									text="Provider"
 									description={
@@ -768,9 +788,7 @@ export default function TerraformManager(props: {backButton: () => void}) {
 									/>
 								)}
 							</Grid>
-							<Grid item>
-								{/**Disable advanced options if provider isn't AWS
-								 */}
+							<Grid item xs={1}>
 								<IconButton
 									onClick={() => {
 										setAdvancedOptionsModalIsOpen(true);
@@ -936,16 +954,19 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Grid>
 				))}
 			</Grid>
-			<Grid>
-				<Box
-					textAlign="center"
-					sx={{
-						paddingTop: 3,
-						position: "fixed",
-						bottom: 75,
-						width: "calc(100vw - 76px)",
-						pointerEvents: "none"
-					}}>
+			<Grid
+				container
+				columns={2}
+				justifyContent="center"
+				spacing={2}
+				sx={{
+					paddingTop: 3,
+					position: "fixed",
+					bottom: 25,
+					width: isMobile === true ? "100%" : "calc(100vw - 76px)",
+					pointerEvents: "none"
+				}}>
+				<Grid item>
 					<Button
 						disabled={
 							//openCards > 0 ||
@@ -966,10 +987,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							selectedRepo
 						)}
 						sx={{
+							width: "281px",
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial",
-							marginRight: 2,
 							":hover": {
 								bgcolor: "success.main",
 								opacity: 0.9
@@ -977,6 +998,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 						}}>
 						Create Pull Request
 					</Button>
+				</Grid>
+				<Grid item>
 					<Button
 						disabled={!settingsHaveBeenEdited}
 						variant="contained"
@@ -989,15 +1012,18 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							resetRepoData();
 						}}
 						sx={{
+							width: "281px",
 							padding: 2,
 							fontSize: 18,
 							pointerEvents: "initial"
 						}}>
 						Discard Changes
 					</Button>
-				</Box>
+				</Grid>
 			</Grid>
-			<PreviewWindow data={previewData} error={previewError} />
+			{isMobile === false && (
+				<PreviewWindow data={previewData} error={previewError} />
+			)}
 		</Box>
 	);
 }

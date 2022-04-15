@@ -1,5 +1,5 @@
 import React from "react";
-import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import MouseOverPopover from "../MouseOverPopover";
 import HelpIcon from "@mui/icons-material/Help";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -25,7 +25,7 @@ export default function LabelledRadioInput(props: {
 	}, [props.initial]);
 
 	return (
-		<Grid container direction="row">
+		<Stack direction="row">
 			<Typography sx={{paddingTop: 0.4}} variant="h6">
 				{props.text}
 			</Typography>
@@ -62,6 +62,6 @@ export default function LabelledRadioInput(props: {
 					/>
 				))}
 			</RadioGroup>
-		</Grid>
+		</Stack>
 	);
 }

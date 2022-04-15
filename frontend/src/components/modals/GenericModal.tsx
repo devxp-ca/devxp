@@ -18,6 +18,7 @@ interface modalProps {
 	bodyText?: string;
 	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal,
 	width?: number | string;
+	height?: number | string;
 	isSuccess?: boolean;
 	dummyModal?: boolean;
 }
@@ -29,6 +30,7 @@ export default function GenericModal({
 	bodyText,
 	children,
 	width,
+	height,
 	isSuccess = false,
 	dummyModal = false
 }: modalProps) {
@@ -38,9 +40,12 @@ export default function GenericModal({
 		left: "50%",
 		transform: "translate(-50%, -50%)",
 		width: width ?? 400,
+		height: height ?? "auto",
 		bgcolor: "secondary.light",
 		boxShadow: 24,
-		zIndex: 100
+		zIndex: 100,
+		overflowY: "auto",
+		overflowX: "hidden"
 	};
 
 	const dummyModalStyle = {
@@ -186,7 +191,10 @@ export default function GenericModal({
 	};
 
 	return !dummyModal ? (
-		<Modal open={isOpen} onClose={handleClose}>
+		<Modal
+			sx={{overflowY: "auto", overflowX: "hidden"}}
+			open={isOpen}
+			onClose={handleClose}>
 			<div>
 				{isSuccess && successPlusAnimation()}
 				<Paper sx={modalStyle}>

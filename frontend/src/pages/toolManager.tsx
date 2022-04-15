@@ -12,8 +12,12 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
+import logoPNG from "../assets/logo.png";
 
 export default function ToolManager() {
+	//True if screen width > 600px, else false
+	const isMobile = useMediaQuery("(max-width:600px)");
+  
 	const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
 
 	if (!localStorage.getItem("preferredTheme")) {
@@ -52,11 +56,10 @@ export default function ToolManager() {
 					container
 					direction="column"
 					sx={{
-						width: "100%",
 						minHeight: "100vh",
 						backgroundColor: "secondary.light",
-						paddingLeft: 6,
-						paddingRight: 6
+						paddingLeft: isMobile === true ? 0 : 6,
+						paddingRight: isMobile === true ? 0 : 6
 					}}>
 					<Grid
 						item
@@ -85,18 +88,39 @@ export default function ToolManager() {
 							<Grid
 								container
 								direction="row"
+								justifyContent={
+									isMobile === true ? "center" : "auto"
+								}
+								spacing={2}
 								sx={{paddingTop: 2}}>
-								<ToolManagerCard
-									onClick={() => setSelectedTool("terraform")}
-									title="Terraform"
-									desc="An infrastructure as code tool that can manage all your cloud resource needs"
-									image={
-										theme === darkTheme
-											? terraformPNGDark
-											: terraformPNGLight
-									}
-									color="#844FBA"
-								/>
+								<Grid item>
+									<ToolManagerCard
+										onClick={setSelectedToolCardCallback(
+											"terraform"
+										)}
+										title="Terraform"
+										desc="An infrastructure as code tool that can manage all your cloud resource needs"
+										image={
+											theme === darkTheme
+												? terraformPNGDark
+												: terraformPNGLight
+										}
+										color="#844FBA"
+									/>
+								</Grid>
+								<Grid item>
+									<ToolManagerCard
+										title="Under Construction"
+										desc="The remaining tools we plan to support are currently under construction"
+										image={logoPNG}
+										color="#4DACFF"
+										imagesx={{
+											height: "364.781px",
+											objectFit: "contain",
+											imageRendering: "pixelated"
+										}}
+									/>
+								</Grid>
 							</Grid>
 						)}
 						{selectedTool == "terraform" && (

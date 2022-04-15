@@ -9,9 +9,9 @@ import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import {RESOURCE_LIST} from "../resources/resourceList";
-import {} from "@mui/material";
 
 interface modalProps {
 	isOpen: boolean;
@@ -28,6 +28,8 @@ export default function TerraformOptionsModal({
 	title,
 	handleClick
 }: modalProps) {
+	const isMobile = useMediaQuery("(max-width:600px)");
+
 	const theme = useTheme();
 	const currentResources = provider ? (RESOURCE_LIST as any)[provider] : [];
 
@@ -37,6 +39,7 @@ export default function TerraformOptionsModal({
 				isOpen={isOpen}
 				handleClose={handleClose}
 				width="90vw"
+				height="80vh"
 				title={title || ""}>
 				<Stack
 					spacing={2}
@@ -61,7 +64,7 @@ export default function TerraformOptionsModal({
 									<Grid
 										item
 										container
-										xs={3}
+										xs={isMobile ? 12 : 4}
 										direction="column"
 										justifyContent="center"
 										alignContent="center"
@@ -84,7 +87,7 @@ export default function TerraformOptionsModal({
 											</Typography>
 										</Grid>
 										<Grid item>
-											<Typography variant="h5">
+											<Typography variant="h6">
 												{value["name"]}
 											</Typography>
 										</Grid>
@@ -109,31 +112,35 @@ export default function TerraformOptionsModal({
 											</div>
 										</Grid>
 									</Grid>
-									<Grid
-										xs={9}
-										item
-										container
-										sx={{
-											paddingTop: 0.5,
-											paddingBottom: 0.5,
-											paddingLeft: 2,
-											paddingRight: 2,
-											backgroundColor:
-												theme == darkTheme
-													? "primary.dark"
-													: "info.dark"
-										}}
-										alignContent="center">
-										<Grid
-											item
-											xs={12}
-											justifyContent="center">
-											<Typography variant="body2">
-												{value["description"] ||
-													"No description provided."}
-											</Typography>
-										</Grid>
-									</Grid>
+									{
+										/** Render the resource description if the screen width is greater than 600px */
+										!isMobile && (
+											<Grid
+												xs={8}
+												item
+												container
+												sx={{
+													paddingTop: 0.5,
+													paddingBottom: 0.5,
+													paddingLeft: 2,
+													paddingRight: 2,
+													backgroundColor:
+														theme == darkTheme
+															? "primary.dark"
+															: "info.dark"
+												}}
+												alignContent="center">
+												<Grid
+													item
+													justifyContent="center">
+													<Typography variant="body2">
+														{value["description"] ||
+															"No description provided."}
+													</Typography>
+												</Grid>
+											</Grid>
+										)
+									}
 								</Grid>
 							</CardActionArea>
 						</Card>
