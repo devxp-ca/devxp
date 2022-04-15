@@ -65,7 +65,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 									paddingBottom={6}>
 									DevXP was started in January 2022 as part of
 									a startup programming course at the
-									Univerity of Victoria.
+									University of Victoria.
 								</Typography>
 								<Typography
 									variant="h4"
@@ -91,7 +91,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 										);
 									}}
 									title="Brennan Wilkes"
-									desc=""
+									desc="Lead Developer"
 									image={brennan}
 								/>
 								<ProfileCard
@@ -101,7 +101,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 										);
 									}}
 									title="Christopher Petrone"
-									desc=""
+									desc="Full Stack Developer"
 									image={chris}
 								/>
 								<ProfileCard
@@ -121,7 +121,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 										);
 									}}
 									title="Keanelek Enns"
-									desc=""
+									desc="Technical Project Manager"
 									image={keanu}
 								/>
 								<ProfileCard
