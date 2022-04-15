@@ -111,7 +111,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 										);
 									}}
 									title="Derek Robinson"
-									desc=""
+									desc="User Researcher and Full Stack Developer"
 									image={derek}
 								/>
 								<ProfileCard
