@@ -17,6 +17,7 @@ DevXP is a web application designed to make your life easier. We know that learn
 
 ## To learn more, please visit the [wiki](https://github.com/devxp-ca/devxp/wiki).
 ### Quick Reference:
+- [Short Tool Demo](https://drive.google.com/file/d/1H_F8_e-6ZiGtTncqqFqk2Mcpewb5uYyJ/view?usp=sharing)
 - [Example Workflow](https://github.com/devxp-ca/devxp/wiki/An-Example-Workflow)
 - [Tool Manager Configuration](https://github.com/devxp-ca/devxp/wiki/Tool-Manager-Configuration)
 - [Terraform](https://github.com/devxp-ca/devxp/wiki/Terraform)
