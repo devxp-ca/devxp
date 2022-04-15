@@ -7,6 +7,7 @@ import LoginWithGithub from "./loginWithGithub";
 import HomeIcon from "@mui/icons-material/Home";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ConstructionIcon from "@mui/icons-material/Construction";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import {ThemeProvider} from "@mui/material/styles";
 import {lightTheme} from "../style/themes";
 import {Cookies} from "react-cookie";
@@ -67,6 +68,12 @@ export default function Navbar({children}: NavbarProps) {
 								}}
 								color="inherit">
 								Wiki
+							</Button>
+							<Button
+								startIcon={<PersonSearchIcon />}
+								href="/aboutpage"
+								color="inherit">
+								About
 							</Button>
 							{isLoggedIn ? (
 								<Button
