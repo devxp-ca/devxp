@@ -14,9 +14,10 @@ import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 
 export default function ToolManager() {
+	const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
+
 	if (!localStorage.getItem("preferredTheme")) {
 		//media query to determine if the preferred theme is light
-		const prefersLightMode = useMediaQuery("(prefers-color-scheme: light)");
 		//set local storage to the preferred theme
 		localStorage.setItem(
 			"preferredTheme",
@@ -43,13 +44,6 @@ export default function ToolManager() {
 	};
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
-
-	const setSelectedToolCardCallback = (tool_name: string) => {
-		const callback = () => {
-			setSelectedTool(tool_name);
-		};
-		return callback;
-	};
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -93,9 +87,7 @@ export default function ToolManager() {
 								direction="row"
 								sx={{paddingTop: 2}}>
 								<ToolManagerCard
-									onClick={setSelectedToolCardCallback(
-										"terraform"
-									)}
+									onClick={() => setSelectedTool("terraform")}
 									title="Terraform"
 									desc="An infrastructure as code tool that can manage all your cloud resource needs"
 									image={
@@ -109,7 +101,7 @@ export default function ToolManager() {
 						)}
 						{selectedTool == "terraform" && (
 							<TerraformManager
-								backButton={setSelectedToolCardCallback("none")}
+								backButton={() => setSelectedTool("none")}
 							/>
 						)}
 					</Grid>
