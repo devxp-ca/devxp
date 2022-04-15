@@ -19,6 +19,7 @@ interface modalProps {
 	children?: JSX.Element | JSX.Element[]; // Can be used for buttons or any other custom element we want on a modal,
 	width?: number | string;
 	height?: number | string;
+	maxHeight?: number | string;
 	isSuccess?: boolean;
 	dummyModal?: boolean;
 }
@@ -31,6 +32,7 @@ export default function GenericModal({
 	children,
 	width,
 	height,
+	maxHeight,
 	isSuccess = false,
 	dummyModal = false
 }: modalProps) {
@@ -41,6 +43,7 @@ export default function GenericModal({
 		transform: "translate(-50%, -50%)",
 		width: width ?? 400,
 		height: height ?? "auto",
+		maxHeight: maxHeight ?? "80vh",
 		bgcolor: "secondary.light",
 		boxShadow: 24,
 		zIndex: 100,
