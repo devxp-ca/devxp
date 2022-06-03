@@ -19,7 +19,7 @@ COPY frontend/package*.json frontend/*-lock.* ./frontend/
 
 # Install production dependencies.
 RUN cd backend/ && pnpm install --prefer-frozen-lockfile
-RUN cd frontend/ && pnpm install --prefer-frozen-lockfile
+RUN cd frontend/ && npm ci
 
 # Copy local code to the container image.
 COPY ./backend ./backend/
