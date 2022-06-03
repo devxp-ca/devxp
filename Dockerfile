@@ -10,13 +10,16 @@ WORKDIR /usr/src/app
 RUN mkdir backend/
 RUN mkdir frontend/
 
+RUN npm install -g pnpm@7
+
 # Copying this separately prevents re-running npm install on every code change.
-COPY backend/package*.json ./backend/
-COPY frontend/package*.json ./frontend/
+COPY backend/package*.json backend/*-lock.* ./backend/
+COPY frontend/package*.json frontend/*-lock.* ./frontend/
+
 
 # Install production dependencies.
-RUN cd backend/ && npm install
-RUN cd frontend/ && npm install
+RUN cd backend/ && pnpm install --prefer-frozen-lockfile
+RUN cd frontend/ && pnpm install --prefer-frozen-lockfile
 
 # Copy local code to the container image.
 COPY ./backend ./backend/
@@ -29,13 +32,15 @@ FROM base as production
 ENV NODE_PATH=./build
 
 #run backend builder
-RUN cd backend/ && npm run build
+RUN cd backend/ && pnpm run build
 
 #run frontend builder
-RUN cd frontend/ && npm run build
+RUN cd frontend/ && pnpm run build
 
 #Copy frontend build files into backend public folder
 RUN cp frontend/dist/* backend/public/
+
+RUN cd frontend && pnpm prune --prod && cd ../backend && pnpm prune --prod
 
 WORKDIR /usr/src/app/backend
 
