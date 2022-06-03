@@ -5,7 +5,6 @@ import Homepage from "./pages/homepage";
 import ToolManager from "./pages/toolManager";
 import AboutPage from "./pages/aboutpage";
 
-//Render
 render(
 	<BrowserRouter>
 		<Routes>

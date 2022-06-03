@@ -40,7 +40,7 @@ RUN cd frontend/ && pnpm run build
 #Copy frontend build files into backend public folder
 RUN cp frontend/dist/* backend/public/
 
-RUN cd frontend && pnpm prune --prod && cd ../backend && pnpm prune --prod
+RUN cd frontend && pnpm prune --prod || echo 'Probably Husky' && cd ../backend && pnpm prune --prod || echo 'Probably Husky' 
 
 WORKDIR /usr/src/app/backend
 
