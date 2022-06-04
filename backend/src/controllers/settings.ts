@@ -4,17 +4,26 @@ import {createTerraformSettings} from "./terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {RepoSettings} from "../database/repoSettings";
 import {BackendModel, backendSchemaType} from "../database/bucket";
+import {TerraformResource} from "../types/terraform";
+import {reqToResources} from "../terraform/objectToResource";
 
 export const postSettings = (req: Request, res: Response) => {
 	if (req.body.preview) {
 		createTerraformSettings(req, res, true);
 	} else if (req.body.tool == "terraform") {
+		const resources = reqToResources(req) as TerraformResource[];
+		if (!resources.reduce((acc, nxt) => !!acc && !!nxt, true)) {
+			internalErrorHandler(req, res)(new Error("Unknown resource type"));
+			return;
+		}
+
 		RepoSettings.updateOne(
+			//(resources)
 			{repo: req.body.repo},
 			{repo: req.body.repo, terraformSettings: req.body.settings},
 			{upsert: true}
 		)
-			.then(result => {
+			.then(() => {
 				BackendModel.findOne(
 					{repo: req.body.repo},
 					(err: Error, results: backendSchemaType) => {
@@ -50,6 +59,13 @@ export const postSettings = (req: Request, res: Response) => {
 };
 
 export const getSettings = (req: Request, res: Response) => {
+	const resources = reqToResources(req) as TerraformResource[];
+	if (!resources.reduce((acc, nxt) => !!acc && !!nxt, true)) {
+		internalErrorHandler(req, res)(new Error("Unknown resource type"));
+		return;
+	}
+
+	//RepoSettings(resources).findOne(
 	RepoSettings.findOne(
 		{repo: req.headers.repo},
 		(err: Error, settings: any) => {
