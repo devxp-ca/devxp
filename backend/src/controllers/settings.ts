@@ -17,12 +17,12 @@ export const postSettings = (req: Request, res: Response) => {
 			return;
 		}
 
-		RepoSettings(resources)
-			.updateOne(
-				{repo: req.body.repo},
-				{repo: req.body.repo, terraformSettings: req.body.settings},
-				{upsert: true}
-			)
+		RepoSettings.updateOne(
+			//(resources)
+			{repo: req.body.repo},
+			{repo: req.body.repo, terraformSettings: req.body.settings},
+			{upsert: true}
+		)
 			.then(() => {
 				BackendModel.findOne(
 					{repo: req.body.repo},
@@ -65,7 +65,8 @@ export const getSettings = (req: Request, res: Response) => {
 		return;
 	}
 
-	RepoSettings(resources).findOne(
+	//RepoSettings(resources).findOne(
+	RepoSettings.findOne(
 		{repo: req.headers.repo},
 		(err: Error, settings: any) => {
 			if (err) {

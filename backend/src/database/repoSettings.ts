@@ -15,43 +15,43 @@ export interface terraformSettings {
 	project: string;
 }
 
-export const terraformSettingsSchema = (resources: TerraformResource[] = []) =>
-	new Schema({
-		provider: String,
-		secure: {
-			default: false,
-			type: Boolean
-		},
-		allowSsh: {
-			default: false,
-			type: Boolean
-		},
-		project: {
-			default: "",
-			type: String
-		},
-		allowEgressWeb: {
-			default: false,
-			type: Boolean
-		},
-		allowIngressWeb: {
-			default: false,
-			type: Boolean
-		},
-		autoLoadBalance: {
-			default: false,
-			type: Boolean
-		},
-		resources: resources.map(resource => resource.toSchema())
-	});
+// export const terraformSettingsSchema = (resources: TerraformResource[] = []) =>
+export const terraformSettingsSchema = new Schema({
+	provider: String,
+	secure: {
+		default: false,
+		type: Boolean
+	},
+	allowSsh: {
+		default: false,
+		type: Boolean
+	},
+	project: {
+		default: "",
+		type: String
+	},
+	allowEgressWeb: {
+		default: false,
+		type: Boolean
+	},
+	allowIngressWeb: {
+		default: false,
+		type: Boolean
+	},
+	autoLoadBalance: {
+		default: false,
+		type: Boolean
+	},
+	resources: [Schema.Types.Mixed] //resources.map(resource => resource.toSchema())
+});
 
 //================================ Repo ====================================//
 
-export const repoSettingsSchema = (resources: TerraformResource[] = []) =>
-	new Schema({
-		repo: {type: String, required: true, unique: true},
-		terraformSettings: terraformSettingsSchema(resources)
-	});
+// export const repoSettingsSchema = (resources: TerraformResource[] = []) =>
+export const repoSettingsSchema = new Schema({
+	repo: {type: String, required: true, unique: true},
+	terraformSettings: terraformSettingsSchema //(resources)
+});
 
-export const RepoSettings = (resources: TerraformResource[] = []) =>
-	mongoose.model("RepoSettings", repoSettingsSchema(resources));
+// export const RepoSettings = (resources: TerraformResource[] = []) =>
+export const RepoSettings = mongoose.model("RepoSettings", repoSettingsSchema); //(resources));

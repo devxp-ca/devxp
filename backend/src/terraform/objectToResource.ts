@@ -16,7 +16,7 @@ export const reqToResources = (req: Request) => {
 	const project =
 		provider === "google" ? (req.body.settings?.project as string) : "";
 	return (
-		req.body.settings?.resources as (TerraformResource & {
+		(req.body.settings?.resources ?? []) as (TerraformResource & {
 			type:
 				| "ec2"
 				| "gce"
