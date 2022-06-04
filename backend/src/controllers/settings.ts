@@ -23,7 +23,7 @@ export const postSettings = (req: Request, res: Response) => {
 				{repo: req.body.repo, terraformSettings: req.body.settings},
 				{upsert: true}
 			)
-			.then(result => {
+			.then(() => {
 				BackendModel.findOne(
 					{repo: req.body.repo},
 					(err: Error, results: backendSchemaType) => {

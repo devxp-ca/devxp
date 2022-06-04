@@ -1,10 +1,4 @@
-import {
-	gcpRegion,
-	googleRuntime,
-	machineType,
-	runtime,
-	TerraformResource
-} from "../types/terraform";
+import {TerraformResource} from "../types/terraform";
 import {mongoose} from "./connection";
 const {Schema} = mongoose;
 

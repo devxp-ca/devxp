@@ -5,8 +5,6 @@ import {AwsInternetGateway} from "./AwsInternetGateway";
 import {AwsRouteTable} from "./AwsRouteTable";
 import {AwsRoute} from "./AwsRoute";
 import {awsRegion} from "../types/terraform";
-import {Eip} from "./Eip";
-import {AwsNatGateway} from "./awsNatGateway";
 
 export interface AwsVpc {
 	cidr_block: string;

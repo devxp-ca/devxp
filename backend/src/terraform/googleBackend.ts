@@ -1,7 +1,7 @@
 import {model} from "mongoose";
 import CONFIG from "../config";
 import {DatabaseModel, generateSchema} from "../types/database";
-import {gcpRegion, GoogleBackend, named} from "../types/terraform";
+import {GoogleBackend, named} from "../types/terraform";
 import {generateId, removeName} from "./util";
 
 export interface NamedGoogleBackend extends named<GoogleBackend, "gcs"> {}
