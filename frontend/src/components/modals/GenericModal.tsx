@@ -48,7 +48,12 @@ export default function GenericModal({
 		boxShadow: 24,
 		zIndex: 100,
 		overflowY: "auto",
-		overflowX: "hidden"
+		overflowX: "visible",
+		"::-webkit-scrollbar": {
+			display: "none"
+		},
+		"-ms-overflow-style": "none" /* IE and Edge */,
+		"scrollbar-width": "none" /* Firefox */
 	};
 
 	const dummyModalStyle = {
@@ -164,7 +169,8 @@ export default function GenericModal({
 				backgroundRepeat: "no-repeat",
 				width: "48px",
 				height: "48px",
-				left: "-30px",
+				left: "70vw",
+				top: "80vh",
 				marginTop: `${bottom}px`,
 				opacity: 0,
 				animation: `${secondRow ? up2 : up} ${secondRow ? 1.0 : 1.5}s`,
@@ -179,7 +185,8 @@ export default function GenericModal({
 				backgroundRepeat: "no-repeat",
 				width: "48px",
 				height: "48px",
-				right: "-30px",
+				right: "70vw",
+				top: "80vh",
 				marginTop: `${bottom}px`,
 				opacity: 0,
 				animation: `${secondRow ? up2 : up} ${secondRow ? 1.0 : 1.5}s`,
@@ -226,8 +233,8 @@ export default function GenericModal({
 						<Typography sx={{mt: 2}}>{bodyText}</Typography>
 						{children}
 					</Box>
-					{isSuccess && successArrowAnimation()}
 				</Paper>
+				{isSuccess && successArrowAnimation()}
 			</div>
 		</Modal>
 	) : (
