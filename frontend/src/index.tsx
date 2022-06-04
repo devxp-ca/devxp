@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Homepage from "./pages/homepage";
 import ToolManager from "./pages/toolManager";
 import AboutPage from "./pages/aboutpage";
+import "./style/index.css";
 
 render(
 	<BrowserRouter>

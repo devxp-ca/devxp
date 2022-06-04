@@ -12,6 +12,7 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {darkTheme} from "../style/themes";
 import {Element, scroller} from "react-scroll";
+import GlobalStyles from "@mui/material/GlobalStyles";
 
 export default function Homepage() {
 	//True if screen width > 600px, else false
@@ -19,6 +20,11 @@ export default function Homepage() {
 
 	return (
 		<ThemeProvider theme={darkTheme}>
+			<GlobalStyles
+				styles={theme => ({
+					html: {backgroundColor: theme.palette.secondary.light}
+				})}
+			/>
 			<Grid
 				container
 				direction="column"

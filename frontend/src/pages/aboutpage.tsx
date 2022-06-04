@@ -7,6 +7,7 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import {darkTheme} from "../style/themes";
 import ProfileCard from "../components/profileCard";
 import Typography from "@mui/material/Typography";
+import GlobalStyles from "@mui/material/GlobalStyles";
 
 import brennan from "../assets/brennan.jpg";
 import chris from "../assets/chris.jpg";
@@ -21,6 +22,11 @@ export default class AboutPage extends React.Component<IProps, IState> {
 	render() {
 		return (
 			<ThemeProvider theme={darkTheme}>
+				<GlobalStyles
+					styles={theme => ({
+						html: {backgroundColor: theme.palette.secondary.light}
+					})}
+				/>
 				<Grid
 					container
 					direction="column"

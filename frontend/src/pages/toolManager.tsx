@@ -6,6 +6,7 @@ import TerraformManager from "../components/terraformManager";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import GlobalStyles from "@mui/material/GlobalStyles";
 
 import ThemeButton from "../style/ThemeButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -51,6 +52,11 @@ export default function ToolManager() {
 
 	return (
 		<ThemeProvider theme={theme}>
+			<GlobalStyles
+				styles={theme => ({
+					html: {backgroundColor: theme.palette.secondary.light}
+				})}
+			/>
 			<Paper>
 				<Grid
 					container
