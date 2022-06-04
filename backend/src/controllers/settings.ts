@@ -4,16 +4,25 @@ import {createTerraformSettings} from "./terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {RepoSettings} from "../database/repoSettings";
 import {BackendModel, backendSchemaType} from "../database/bucket";
+import {TerraformResource} from "../types/terraform";
+import {reqToResources} from "../terraform/objectToResource";
 
 export const postSettings = (req: Request, res: Response) => {
 	if (req.body.preview) {
 		createTerraformSettings(req, res, true);
 	} else if (req.body.tool == "terraform") {
-		RepoSettings.updateOne(
-			{repo: req.body.repo},
-			{repo: req.body.repo, terraformSettings: req.body.settings},
-			{upsert: true}
-		)
+		const resources = reqToResources(req) as TerraformResource[];
+		if (!resources.reduce((acc, nxt) => !!acc && !!nxt, true)) {
+			internalErrorHandler(req, res)(new Error("Unknown resource type"));
+			return;
+		}
+
+		RepoSettings(resources)
+			.updateOne(
+				{repo: req.body.repo},
+				{repo: req.body.repo, terraformSettings: req.body.settings},
+				{upsert: true}
+			)
 			.then(result => {
 				BackendModel.findOne(
 					{repo: req.body.repo},
@@ -50,7 +59,13 @@ export const postSettings = (req: Request, res: Response) => {
 };
 
 export const getSettings = (req: Request, res: Response) => {
-	RepoSettings.findOne(
+	const resources = reqToResources(req) as TerraformResource[];
+	if (!resources.reduce((acc, nxt) => !!acc && !!nxt, true)) {
+		internalErrorHandler(req, res)(new Error("Unknown resource type"));
+		return;
+	}
+
+	RepoSettings(resources).findOne(
 		{repo: req.headers.repo},
 		(err: Error, settings: any) => {
 			if (err) {
