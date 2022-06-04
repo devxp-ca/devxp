@@ -57,12 +57,14 @@ export default function ToolManager() {
 					html: {backgroundColor: theme.palette.secondary.light}
 				})}
 			/>
-			<Paper>
+			<Paper
+				sx={{
+					minHeight: "100vh"
+				}}>
 				<Grid
 					container
 					direction="column"
 					sx={{
-						minHeight: "100vh",
 						backgroundColor: "secondary.light",
 						paddingLeft: isMobile === true ? 0 : 6,
 						paddingRight: isMobile === true ? 0 : 6

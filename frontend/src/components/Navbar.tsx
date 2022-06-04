@@ -12,6 +12,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Menu from "@mui/material/Menu";
 import Stack from "@mui/material/Stack";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
 import {Cookies} from "react-cookie";
 import {CONFIG} from "../config";
 
@@ -103,7 +104,11 @@ export default function Navbar({children}: NavbarProps) {
 									sx={{
 										display: {xs: "block", md: "none"}
 									}}>
-									<Stack>
+									<Stack
+										sx={{
+											paddingRight: "8px",
+											paddingLeft: "8px"
+										}}>
 										<Button
 											startIcon={<QuestionMarkIcon />}
 											onClick={() => {
@@ -120,6 +125,13 @@ export default function Navbar({children}: NavbarProps) {
 											color="inherit">
 											About Us
 										</Button>
+										<Button
+											startIcon={<NewspaperIcon />}
+											href="/news"
+											color="inherit">
+											News
+										</Button>
+
 										{isLoggedIn && (
 											<Button
 												startIcon={<ConstructionIcon />}
@@ -160,6 +172,12 @@ export default function Navbar({children}: NavbarProps) {
 									href="/about"
 									color="inherit">
 									About Us
+								</Button>
+								<Button
+									startIcon={<NewspaperIcon />}
+									href="/news"
+									color="inherit">
+									News
 								</Button>
 								{isLoggedIn ? (
 									<Button

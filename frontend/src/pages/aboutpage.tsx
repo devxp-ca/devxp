@@ -31,6 +31,7 @@ export default class AboutPage extends React.Component<IProps, IState> {
 					container
 					direction="column"
 					sx={{
+						minHeight: "100vh",
 						backgroundColor: "primary.dark",
 						width: "auto"
 					}}>
@@ -38,7 +39,6 @@ export default class AboutPage extends React.Component<IProps, IState> {
 						container
 						direction="column"
 						sx={{
-							minHeight: "100vh",
 							backgroundColor: "primary.dark",
 							width: "auto"
 						}}>

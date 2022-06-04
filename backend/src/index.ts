@@ -13,6 +13,7 @@ server.serve("/");
 server.serve("/toolManager");
 server.serve("/about");
 server.serve("/contact");
+server.serve("/news");
 server.route("/", mainRouter);
 
 mongoose.connection.on(

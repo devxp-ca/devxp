@@ -12,7 +12,8 @@ export default function Footer() {
 				backgroundColor: "primary.dark",
 				position: "relative",
 				bottom: 0,
-				pointerEvents: "none"
+				pointerEvents: "none",
+				marginTop: "auto"
 			}}>
 			<Grid
 				container
