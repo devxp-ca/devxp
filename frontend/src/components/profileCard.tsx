@@ -37,7 +37,14 @@ export default function profileCard(props: {
 							<Typography
 								variant="body2"
 								color={"primary.light"}
-								align="center">
+								align="center"
+								sx={{
+									lineHeight: "2.5ex",
+									height: "4ex",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center"
+								}}>
 								{props.desc}
 							</Typography>
 						</CardContent>
