@@ -7,6 +7,8 @@ import Grid from "@mui/material/Grid";
 import Backsplash from "../assets/memories-transparent.gif";
 import titleImage from "../assets/logo-lettering.png";
 import logo from "../assets/logo.png";
+import {Cookies} from "react-cookie";
+import {CONFIG} from "../config";
 
 export default function MainLandingVisual(props: {onClick: () => void}) {
 	return (
@@ -62,21 +64,46 @@ export default function MainLandingVisual(props: {onClick: () => void}) {
 							cloud infrastructure in minutes
 						</Typography>
 					</Box>
-					<Button
-						onClick={props.onClick}
-						color="info"
-						variant="contained"
-						size="large"
-						sx={{
-							marginTop: 2,
-							":hover": {
-								bgcolor: "info.main",
-								color: "white",
-								opacity: 0.9
-							}
-						}}>
-						Learn More
-					</Button>
+					<Grid>
+						<Button
+							onClick={props.onClick}
+							color="info"
+							variant="contained"
+							size="large"
+							sx={{
+								marginTop: 2,
+								marginRight: 1,
+								":hover": {
+									bgcolor: "info.main",
+									color: "white",
+									opacity: 0.9
+								}
+							}}>
+							Learn More
+						</Button>
+						<Button
+							onClick={() => {
+								if (!!new Cookies().get("token")) {
+									window.location.href = "/toolManager";
+								} else {
+									window.location.href = `${CONFIG.BACKEND_URL}${CONFIG.AUTH_PATH}`;
+								}
+							}}
+							color="info"
+							variant="contained"
+							size="large"
+							sx={{
+								marginTop: 2,
+								marginLeft: 1,
+								":hover": {
+									bgcolor: "info.main",
+									color: "white",
+									opacity: 0.9
+								}
+							}}>
+							Get Started
+						</Button>
+					</Grid>
 				</Grid>
 			</Grid>
 		</Grid>
