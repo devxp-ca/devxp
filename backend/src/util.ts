@@ -1,3 +1,4 @@
+import axios from "axios";
 import fs from "fs";
 import {NamedAwsBackend} from "./terraform/awsBackend";
 import {AwsProvider} from "./terraform/awsProvider";
@@ -12,6 +13,22 @@ import {
 const HCL = require("js-hcl-parser");
 
 export const arr = <T>(data: T | T[]) => (Array.isArray(data) ? data : [data]);
+
+export const bucketExists = (bucket: string) =>
+	new Promise<boolean>((resolve, reject) => {
+		axios
+			.get(`https://${bucket}.s3.amazonaws.com`)
+			.then(() => resolve(true))
+			.catch(err => {
+				if (err.response?.status === 403) {
+					resolve(true);
+				} else if (err.response?.status === 404) {
+					resolve(false);
+				} else {
+					reject(err);
+				}
+			});
+	});
 
 export const testToFile = (
 	filename: string,
@@ -33,6 +50,22 @@ export const testToFileAws = (
 	filename: string,
 	resources: TerraformResource[] = []
 ) => testToFile(filename, new AwsProvider(), new NamedAwsBackend(), resources);
+
+export const backendToHcl = (backend: any) => {
+	const name = Object.keys(backend.terraform[0].backend[0])[0];
+	const keys = Object.keys(backend.terraform[0].backend[0][name][0]);
+
+	return `terraform {
+  backend "${name}" {
+${keys
+	.map(
+		key =>
+			`    ${key} = "${backend.terraform[0].backend[0][name][0][key]}"\n`
+	)
+	.reduce((s, a) => s + a)}  }
+}
+`;
+};
 
 export const jsonToHcl = (json: string | Record<string, any>) => {
 	if (typeof json !== "string") {

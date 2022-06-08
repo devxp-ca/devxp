@@ -17,10 +17,11 @@ import {prefabNetworkFromArr, splitForPrefab} from "../terraform/prefab";
 import {rootBlockSplitBackend} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
-import {jsonToHcl} from "../util";
+import {backendToHcl, jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {BackendModel} from "../database/bucket";
 import {reqToResources} from "../terraform/objectToResource";
+import {GithubTreeNode} from "../types/github";
 
 export const createTerraformSettings = (
 	req: Request,
@@ -98,6 +99,13 @@ export const createTerraformSettings = (
 		[...google, ...network]
 	);
 
+	if (!root) {
+		return internalErrorHandler(
+			req,
+			res
+		)(new Error("Something went wrong generating terraform code"));
+	}
+
 	if (preview) {
 		let hcl = jsonToHcl(root) + "\n";
 
@@ -116,15 +124,11 @@ export const createTerraformSettings = (
 					jsonToHcl(root) + "\n"
 				);
 
-				/*
-					Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
-
-				const blobBackend = await postBlob(
-					token,
-					repo,
-					jsonToHcl(backend) + "\n"
-				);
-				*/
+				const blobBackend = backend
+					? await postBlob(token, repo, backendToHcl(backend)).catch(
+							console.error
+					  )
+					: undefined;
 
 				// Create a new branch to post our commit to
 				const branchName = "DevXP-Configuration";
@@ -141,8 +145,7 @@ export const createTerraformSettings = (
 				//Grab the tree referenced by the commit
 				const tree = await getTreeFromUrl(token, commit.treeUrl);
 
-				//Create a new tree within that one
-				const newTree = await createTree(token, repo, tree.sha, [
+				let trees: GithubTreeNode[] = [
 					{
 						path: "terraform.tf",
 						mode: getModeNumber("blob"),
@@ -150,18 +153,22 @@ export const createTerraformSettings = (
 						sha: blobRoot.sha,
 						url: blobRoot.url
 					}
+				];
+				if (blobBackend) {
+					trees = [
+						...trees,
+						{
+							path: "backend.tf",
+							mode: getModeNumber("blob"),
+							type: "blob",
+							sha: blobBackend.sha,
+							url: blobBackend.url
+						}
+					];
+				}
 
-					/*
-					Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
-					{
-						path: "backend.tf",
-						mode: getModeNumber("blob"),
-						type: "blob",
-						sha: blobBackend.sha,
-						url: blobBackend.url
-					}
-					*/
-				]);
+				//Create a new tree within that one
+				const newTree = await createTree(token, repo, tree.sha, trees);
 
 				//Create a new commit referencing the new tree
 				const newCommit = await createCommit(
