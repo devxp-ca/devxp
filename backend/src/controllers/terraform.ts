@@ -14,14 +14,13 @@ import {AwsProvider} from "../terraform/awsProvider";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
 import {prefabNetworkFromArr, splitForPrefab} from "../terraform/prefab";
-import {rootBlockSplitBackend} from "../terraform/terraform";
+import {rootBlock} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
 import {TerraformResource} from "../types/terraform";
-import {backendToHcl, jsonToHcl} from "../util";
+import {jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {BackendModel} from "../database/bucket";
 import {reqToResources} from "../terraform/objectToResource";
-import {GithubTreeNode} from "../types/github";
 
 export const createTerraformSettings = (
 	req: Request,
@@ -86,29 +85,23 @@ export const createTerraformSettings = (
 			  })
 			: networkedResources;
 
-	//TODO: Leave this as just rootBlock()
-	// Solve chicken and egg problem
 	const namedBackend =
 		provider === "aws"
 			? new NamedAwsBackend(bucketId)
 			: new NamedGoogleBackend(project, bucketId);
 
-	const [root, backend] = rootBlockSplitBackend(
+	const [root, backend] = rootBlock(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
 		namedBackend,
 		[...google, ...network]
 	);
 
-	if (!root) {
-		return internalErrorHandler(
-			req,
-			res
-		)(new Error("Something went wrong generating terraform code"));
-	}
-
 	if (preview) {
-		let hcl = jsonToHcl(root) + "\n";
-
+		let hcl =
+			jsonToHcl(root) +
+			"\n\n#Initialization setup\n\n" +
+			jsonToHcl(backend) +
+			"\n";
 		hcl = hcl.replace(/terraform-state-[a-zA-Z0-9-_]+/, "RANDOM_ID");
 
 		res.json({
@@ -124,11 +117,11 @@ export const createTerraformSettings = (
 					jsonToHcl(root) + "\n"
 				);
 
-				const blobBackend = backend
-					? await postBlob(token, repo, backendToHcl(backend)).catch(
-							console.error
-					  )
-					: undefined;
+				const blobBackend = await postBlob(
+					token,
+					repo,
+					jsonToHcl(backend) + "\n"
+				);
 
 				// Create a new branch to post our commit to
 				const branchName = "DevXP-Configuration";
@@ -145,30 +138,23 @@ export const createTerraformSettings = (
 				//Grab the tree referenced by the commit
 				const tree = await getTreeFromUrl(token, commit.treeUrl);
 
-				let trees: GithubTreeNode[] = [
+				//Create a new tree within that one
+				const newTree = await createTree(token, repo, tree.sha, [
 					{
 						path: "terraform.tf",
 						mode: getModeNumber("blob"),
 						type: "blob",
 						sha: blobRoot.sha,
 						url: blobRoot.url
+					},
+					{
+						path: "backend.tf",
+						mode: getModeNumber("blob"),
+						type: "blob",
+						sha: blobBackend.sha,
+						url: blobBackend.url
 					}
-				];
-				if (blobBackend) {
-					trees = [
-						...trees,
-						{
-							path: "backend.tf",
-							mode: getModeNumber("blob"),
-							type: "blob",
-							sha: blobBackend.sha,
-							url: blobBackend.url
-						}
-					];
-				}
-
-				//Create a new tree within that one
-				const newTree = await createTree(token, repo, tree.sha, trees);
+				]);
 
 				//Create a new commit referencing the new tree
 				const newCommit = await createCommit(

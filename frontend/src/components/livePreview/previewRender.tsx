@@ -36,6 +36,11 @@ export default function PreviewRender(props: {
 			(_match, $1) => ` <span class="highlight-number">${$1}</span>`
 		);
 
+		highlighted = highlighted.replace(
+			/^#(.*)$/gm,
+			(_match, $1) => `<span class="highlight-comment">#${$1}</span>`
+		);
+
 		setData(highlighted);
 		setOpac(0.25);
 		setTimeout(() => setOpac(1), 200);
@@ -96,6 +101,9 @@ export default function PreviewRender(props: {
 						},
 						"& .highlight-literal": {
 							color: "warning.main"
+						},
+						"& .highlight-comment": {
+							color: "#888"
 						},
 						backgroundColor: `${colour}10`
 					}}

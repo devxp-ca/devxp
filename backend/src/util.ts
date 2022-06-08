@@ -2,7 +2,7 @@ import axios from "axios";
 import fs from "fs";
 import {NamedAwsBackend} from "./terraform/awsBackend";
 import {AwsProvider} from "./terraform/awsProvider";
-import {rootBlockSplitBackend} from "./terraform/terraform";
+import {rootBlock} from "./terraform/terraform";
 import {
 	NamedRequiredProvider,
 	namedTerraformBackend,
@@ -36,13 +36,12 @@ export const testToFile = (
 	backends: namedTerraformBackend,
 	resources: TerraformResource[] = []
 ) => {
-	const [root, backend] = rootBlockSplitBackend(
-		providers,
-		backends,
-		resources
-	);
+	const [root, backend] = rootBlock(providers, backends, resources);
 
 	fs.writeFileSync(filename, jsonToHcl(root), {
+		flag: "w"
+	});
+	fs.writeFileSync(`backend_${filename}`, jsonToHcl(backend), {
 		flag: "w"
 	});
 };
@@ -50,22 +49,6 @@ export const testToFileAws = (
 	filename: string,
 	resources: TerraformResource[] = []
 ) => testToFile(filename, new AwsProvider(), new NamedAwsBackend(), resources);
-
-export const backendToHcl = (backend: any) => {
-	const name = Object.keys(backend.terraform[0].backend[0])[0];
-	const keys = Object.keys(backend.terraform[0].backend[0][name][0]);
-
-	return `terraform {
-  backend "${name}" {
-${keys
-	.map(
-		key =>
-			`    ${key} = "${backend.terraform[0].backend[0][name][0][key]}"\n`
-	)
-	.reduce((s, a) => s + a)}  }
-}
-`;
-};
 
 export const jsonToHcl = (json: string | Record<string, any>) => {
 	if (typeof json !== "string") {
@@ -108,6 +91,12 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 
 	//Remove the hanging closing tags
 	hcl = hcl.replace(/ {2}}\n}/g, "}");
+
+	//Unback backend block
+	hcl = hcl.replace(
+		/"backend" = {\n {4}"([^"]+)" = {([^}]+)}/g,
+		(_match, $1, $2) => `backend "${$1}" {${$2}  }\n}`
+	);
 
 	//Formatting
 	hcl = hcl.replace(/\n\n/g, "\n");
