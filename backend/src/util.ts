@@ -115,6 +115,9 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 			`terraform {\n  ${$1} {\n    ${$2} = ${$3}}\n}\n}`
 	);
 
+	//Fix up backend block
+	hcl = hcl.replace(/terraform = {/g, "terraform {");
+
 	//Remove incorrect block as attribute styles
 	hcl = hcl.replace(
 		/(lifecycle|ingress|egress|statement|filter|route|notification|ttl|attribute|default_action|vpc_config|initialize_params|boot_disk|network_interface|template|spec|containers|env|traffic|metadata|variable|output) = {/g,
