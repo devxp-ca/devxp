@@ -264,7 +264,8 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					setSubmitModalInfo,
 					setSubmitModalIsOpen,
 					response.data?.pr?.html_url ?? "",
-					selectedProvider
+					selectedProvider,
+					response.data?.initialization?.pr?.html_url
 				)();
 				setSettingsHaveBeenEdited(false);
 			})

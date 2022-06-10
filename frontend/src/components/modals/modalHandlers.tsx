@@ -22,7 +22,8 @@ export const handleOpenSuccessModal =
 		setModalInfo: modalSetter,
 		setOpenModal: modalBoolSetter,
 		url: string,
-		provider: string
+		provider: string,
+		initUrl?: string
 	) =>
 	() => {
 		setModalInfo({
@@ -39,15 +40,6 @@ export const handleOpenSuccessModal =
 					<Divider />
 					<ol>
 						<li>
-							Merge or locally checkout your{" "}
-							<Link href={url} target="_blank">
-								Pull Request
-							</Link>
-						</li>
-					</ol>
-					<Divider />
-					<ol start={2}>
-						<li>
 							Install{" "}
 							<Link
 								href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
@@ -58,7 +50,7 @@ export const handleOpenSuccessModal =
 						</li>
 					</ol>
 					<Divider />
-					<ol start={3}>
+					<ol start={2}>
 						<li>
 							Authenticate with your provider. We{" "}
 							<Link
@@ -93,29 +85,128 @@ export const handleOpenSuccessModal =
 						</pre>
 					</Paper>
 					<Divider />
-					<ol start={4}>
-						<li>
-							Invoke your infrastructure, by running the following{" "}
-							<Link
-								href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
-								target="_blank">
-								terraform
-							</Link>{" "}
-							commands:
-						</li>
-					</ol>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform init</code>
-						</pre>
-					</Paper>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform apply</code>
-						</pre>
-					</Paper>
+					{!initUrl ? (
+						<ol start={3}>
+							<li>
+								Merge or locally checkout your{" "}
+								<Link href={url} target="_blank">
+									Pull Request
+								</Link>
+							</li>
+						</ol>
+					) : (
+						<>
+							{" "}
+							<div
+								style={{
+									margin: "1rem",
+									marginBottom: "inherit"
+								}}>
+								We've noticed this is the{" "}
+								<span style={{fontWeight: "bolder"}}>
+									first time
+								</span>{" "}
+								you've worked with DevXP!
+							</div>
+							<div
+								style={{
+									margin: "1rem",
+									marginBottom: "inherit"
+								}}>
+								Because of this, you will need to merge{" "}
+								<span style={{fontWeight: "bolder"}}>two</span>{" "}
+								pull requests.
+							</div>
+							<ol start={3}>
+								<li>
+									First merge the{" "}
+									<Link href={initUrl} target="_blank">
+										Initialization
+									</Link>{" "}
+									Pull Request.
+								</li>
+								<li>
+									Then initialize your infrastructure, by
+									running the following{" "}
+									<Link
+										href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
+										target="_blank">
+										terraform
+									</Link>{" "}
+									commands:
+								</li>
+							</ol>
+							<Paper sx={{boxShadow: 6}}>
+								<pre style={{padding: "10px"}}>
+									<code>terraform init</code>
+								</pre>
+							</Paper>
+							<Paper sx={{boxShadow: 6}}>
+								<pre style={{padding: "10px"}}>
+									<code>terraform apply</code>
+								</pre>
+							</Paper>
+							<Divider />
+							<ol start={5}>
+								<li>
+									Next merge the{" "}
+									<Link href={url} target="_blank">
+										Configuration
+									</Link>{" "}
+									Pull Request.
+								</li>
+								<li>
+									Then invoke your infrastructure, by running
+									the following{" "}
+									<Link
+										href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
+										target="_blank">
+										terraform
+									</Link>{" "}
+									commands:
+								</li>
+							</ol>
+							<Paper sx={{boxShadow: 6}}>
+								<pre style={{padding: "10px"}}>
+									<code>terraform init</code>
+								</pre>
+							</Paper>
+							<Paper sx={{boxShadow: 6}}>
+								<pre style={{padding: "10px"}}>
+									<code>terraform apply</code>
+								</pre>
+							</Paper>
+						</>
+					)}
 					<Divider />
-					<ol start={5}>
+					{!initUrl && (
+						<>
+							<ol start={4}>
+								<li>
+									Invoke your infrastructure, by running the
+									following{" "}
+									<Link
+										href="https://learn.hashicorp.com/tutorials/terraform/install-cli"
+										target="_blank">
+										terraform
+									</Link>{" "}
+									commands:
+								</li>
+							</ol>
+							<Paper sx={{boxShadow: 6}}>
+								<pre style={{padding: "10px"}}>
+									<code>terraform init</code>
+								</pre>
+							</Paper>
+							<Paper sx={{boxShadow: 6}}>
+								<pre style={{padding: "10px"}}>
+									<code>terraform apply</code>
+								</pre>
+							</Paper>
+							<Divider />
+						</>
+					)}
+					<ol start={initUrl ? 7 : 5}>
 						<li>Focus on writing awesome software!</li>
 					</ol>
 				</div>

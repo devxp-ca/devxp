@@ -8,11 +8,12 @@ export const createPullRequestGetUrl = (
 	base: string, // Name of branch we want to merge into
 	token: string,
 	repo: string,
-	title = "DevXP Config",
-	body = "Merge DevXP Config branch with main branch"
+	title: string,
+	body: string,
+	offset = 0
 ): Promise<GithubPR & {html_url: string}> =>
 	new Promise<GithubPR & {html_url: string}>((resolve, reject) => {
-		createPullRequest(head, base, token, repo, title, body)
+		createPullRequest(head, base, token, repo, title, body, offset)
 			.then(resp0 => {
 				axios
 					.get(resp0.url, {
@@ -42,8 +43,9 @@ const createPullRequest = (
 	base: string, // Name of branch we want to merge into
 	token: string,
 	repo: string,
-	title = "DevXP Config",
-	body = "Merge DevXP Config branch with main branch"
+	title: string,
+	body: string,
+	offset = 0
 ): Promise<GithubPR> =>
 	new Promise<GithubPR>((resolve, reject) => {
 		const header = {
@@ -98,7 +100,7 @@ const createPullRequest = (
 					const pulls = await axios.get(
 						`${GITHUB_BASE_URL}/repos/${repo}/pulls`
 					);
-					const pullNumber = pulls.data[0].number;
+					const pullNumber = pulls.data[0].number - offset;
 
 					// Update the most recent Pull Request with the new changes.
 					const resp = await axios.patch(
@@ -106,6 +108,7 @@ const createPullRequest = (
 						{},
 						createGithubHeader(token)
 					);
+					console.dir(resp.data.url);
 					resolve(resp.data as GithubPR);
 				} catch {
 					console.log(err.response.data);

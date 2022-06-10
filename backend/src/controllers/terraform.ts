@@ -115,7 +115,6 @@ export const createTerraformSettings = (
 					namedBackend.bucket,
 					provider as providerName
 				);
-				console.dir(devxpAlreadyInitialized);
 
 				//Create the new file data on the server
 				const blobRoot = await postBlob(
@@ -131,7 +130,9 @@ export const createTerraformSettings = (
 				);
 
 				// Create a new branch to post our commit to
-				const branchName = "DevXP-Configuration";
+				const branchName = !devxpAlreadyInitialized
+					? "DevXP-Initialization"
+					: "DevXP-Configuration";
 				const newBranch = await createBranch(
 					branchName,
 					token,
@@ -173,7 +174,9 @@ export const createTerraformSettings = (
 					repo,
 					newTree.sha,
 					newBranch.sha,
-					"DevXP: Configured Terraform"
+					!devxpAlreadyInitialized
+						? "DevXP: Initialized Terraform"
+						: "DevXP: Configured Terraform"
 				);
 				//Update the HEAD pointer to the new commit
 				const ref = await updateHead(
@@ -182,13 +185,19 @@ export const createTerraformSettings = (
 					newCommit.commitSha,
 					branchName
 				);
-
 				//Initiate a pull request to the main branch
 				const pr = await createPullRequestGetUrl(
-					"DevXP-Configuration",
+					branchName,
 					"main",
 					token,
-					repo
+					repo,
+					!devxpAlreadyInitialized
+						? "DevXP Initialization"
+						: "DevXP Config",
+					`Merge DevXP ${
+						!devxpAlreadyInitialized ? "Initialization" : "Config"
+					} branch with main branch`,
+					devxpAlreadyInitialized ? 0 : 1
 				);
 
 				//Update bucket
@@ -204,7 +213,7 @@ export const createTerraformSettings = (
 
 				if (!devxpAlreadyInitialized) {
 					// Create a new branch to post our commit to
-					const branchNameInit = "DevXP-Initialization";
+					const branchNameInit = "DevXP-Configuration";
 					const newBranchInit = await createBranch(
 						branchNameInit,
 						token,
@@ -225,7 +234,7 @@ export const createTerraformSettings = (
 						repo,
 						newTreeInit.sha,
 						newBranchInit.sha,
-						"DevXP: Initialized Terraform"
+						"DevXP: Configured Terraform"
 					);
 					//Update the HEAD pointer to the new commit
 					const refInit = await updateHead(
@@ -237,20 +246,20 @@ export const createTerraformSettings = (
 
 					//Initiate a pull request to the main branch
 					const prInit = await createPullRequestGetUrl(
-						"DevXP-Initialization",
+						branchNameInit,
 						"main",
 						token,
 						repo,
-						"DevXP Initialization",
-						"Merge DevXP Initialization branch with the main branch"
+						"DevXP Configuration",
+						"Merge DevXP Configuration branch with the main branch"
 					);
 
 					return {
-						ref,
-						pr,
+						ref: refInit,
+						pr: prInit,
 						initialization: {
-							ref: refInit,
-							pr: prInit
+							ref,
+							pr
 						}
 					};
 				}
