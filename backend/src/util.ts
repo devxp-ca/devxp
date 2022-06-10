@@ -1,11 +1,13 @@
 import axios from "axios";
 import fs from "fs";
+import {BackendModel} from "./database/bucket";
 import {NamedAwsBackend} from "./terraform/awsBackend";
 import {AwsProvider} from "./terraform/awsProvider";
 import {rootBlock} from "./terraform/terraform";
 import {
 	NamedRequiredProvider,
 	namedTerraformBackend,
+	providerName,
 	TerraformResource
 } from "./types/terraform";
 
@@ -14,7 +16,25 @@ const HCL = require("js-hcl-parser");
 
 export const arr = <T>(data: T | T[]) => (Array.isArray(data) ? data : [data]);
 
-export const bucketExists = (bucket: string) =>
+export const bucketExists = (bucket: string, mode: providerName) => {
+	if (mode === "aws") {
+		return awsBucketExists(bucket);
+	}
+	// else if(mode === "google"){
+	else {
+		return googleBucketExists(bucket);
+	}
+};
+
+export const googleBucketExists = (bucket: string): Promise<boolean> => {
+	return BackendModel.findOne({
+		bucketId: bucket
+	}).then(backend => {
+		return Promise.resolve(!!backend);
+	});
+};
+
+export const awsBucketExists = (bucket: string) =>
 	new Promise<boolean>((resolve, reject) => {
 		axios
 			.get(`https://${bucket}.s3.amazonaws.com`)
