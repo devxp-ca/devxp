@@ -7,10 +7,13 @@ export const createPullRequestGetUrl = (
 	head: string, // Name of branch where changes implemented
 	base: string, // Name of branch we want to merge into
 	token: string,
-	repo: string
+	repo: string,
+	title: string,
+	body: string,
+	offset = 0
 ): Promise<GithubPR & {html_url: string}> =>
 	new Promise<GithubPR & {html_url: string}>((resolve, reject) => {
-		createPullRequest(head, base, token, repo)
+		createPullRequest(head, base, token, repo, title, body, offset)
 			.then(resp0 => {
 				axios
 					.get(resp0.url, {
@@ -39,7 +42,10 @@ const createPullRequest = (
 	head: string, // Name of branch where changes implemented
 	base: string, // Name of branch we want to merge into
 	token: string,
-	repo: string
+	repo: string,
+	title: string,
+	body: string,
+	offset = 0
 ): Promise<GithubPR> =>
 	new Promise<GithubPR>((resolve, reject) => {
 		const header = {
@@ -52,10 +58,10 @@ const createPullRequest = (
 			.post(
 				`${GITHUB_BASE_URL}/repos/${repo}/pulls`,
 				{
-					head: head,
-					base: base,
-					title: "DevXP Config",
-					body: "Merge DevXP Config branch with main branch"
+					head,
+					base,
+					title,
+					body
 				},
 				header
 			)
@@ -65,10 +71,10 @@ const createPullRequest = (
 					return axios.post(
 						`${GITHUB_BASE_URL}/repos/${repo}/pulls`,
 						{
-							head: head,
+							head,
 							base: "master",
-							title: "DevXP Config",
-							body: "Merge DevXP Config branch with main branch"
+							title,
+							body
 						},
 						header
 					);
@@ -94,7 +100,7 @@ const createPullRequest = (
 					const pulls = await axios.get(
 						`${GITHUB_BASE_URL}/repos/${repo}/pulls`
 					);
-					const pullNumber = pulls.data[0].number;
+					const pullNumber = pulls.data[0].number - offset;
 
 					// Update the most recent Pull Request with the new changes.
 					const resp = await axios.patch(
@@ -102,6 +108,7 @@ const createPullRequest = (
 						{},
 						createGithubHeader(token)
 					);
+					console.dir(resp.data.url);
 					resolve(resp.data as GithubPR);
 				} catch {
 					console.log(err.response.data);

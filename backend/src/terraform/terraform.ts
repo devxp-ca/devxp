@@ -16,20 +16,28 @@ import {IamUserForId} from "./awsIamUser";
 
 export const terraformBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
-	backend: namedTerraformBackend
+	backend: namedTerraformBackend,
+	forBackend = false
 ) => {
+	const reqProviders = [
+		namedDestructure(providers, (p: RequiredProvider) => ({
+			source: p.source,
+			version: p.version
+		}))
+	];
+
+	const backendBlock = [backend].map(namedBackend =>
+		(namedBackend as NamedAwsBackend | NamedGoogleBackend).toJSON()
+	);
+
 	return [
-		{
-			required_providers: [
-				namedDestructure(providers, (p: RequiredProvider) => ({
-					source: p.source,
-					version: p.version
-				}))
-			],
-			backend: [backend].map(namedBackend =>
-				(namedBackend as NamedAwsBackend | NamedGoogleBackend).toJSON()
-			)
-		}
+		forBackend
+			? {
+					required_providers: reqProviders
+			  }
+			: {
+					backend: backendBlock
+			  }
 	];
 };
 
@@ -37,27 +45,21 @@ export const rootBlock = (
 	providers: NamedRequiredProvider[] | NamedRequiredProvider,
 	backend: namedTerraformBackend,
 	resources: TerraformResource[] = []
-) => {
+): [any, any] => {
 	let json: TerraformJson = {
-		terraform: terraformBlock(providers, backend),
+		terraform: terraformBlock(providers, backend, false),
 		provider: arr(providers).map(provider =>
 			(provider as AwsProvider | GoogleProvider).toJSON()
 		),
-		resource: [
-			(backend as NamedAwsBackend | NamedGoogleBackend).toResource(),
-			...resources
-				.map(r => {
-					let json = [r.toJSON()].flat();
-					if (r.allowsIam && r.autoIam) {
-						json = [
-							...json,
-							new IamUserForId(r.id).toJSON()
-						].flat();
-					}
-					return json;
-				})
-				.flat()
-		],
+		resource: resources
+			.map(r => {
+				let json = [r.toJSON()].flat();
+				if (r.allowsIam && r.autoIam) {
+					json = [...json, new IamUserForId(r.id).toJSON()].flat();
+				}
+				return json;
+			})
+			.flat(),
 		data: [],
 		variable: [],
 		output: []
@@ -67,27 +69,14 @@ export const rootBlock = (
 	resources.forEach(r => {
 		json = r.postProcess(json);
 	});
-	return json;
-};
 
-export const rootBlockSplitBackend = (
-	providers: NamedRequiredProvider[] | NamedRequiredProvider,
-	backend: namedTerraformBackend,
-	resources: TerraformResource[] = []
-) => {
-	const root = rootBlock(providers, backend, resources);
-	const backendBlock = root.terraform[0].backend;
-	const noBackend = root.terraform[0].required_providers;
-
-	(root.terraform as any) = [{required_providers: noBackend}];
 	return [
-		root,
+		json,
 		{
-			terraform: [
-				{
-					backend: backendBlock
-				}
-			]
+			resource: [
+				(backend as NamedAwsBackend | NamedGoogleBackend).toResource()
+			],
+			terraform: terraformBlock(providers, backend, true)
 		}
 	];
 };

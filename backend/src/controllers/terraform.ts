@@ -14,13 +14,14 @@ import {AwsProvider} from "../terraform/awsProvider";
 import {NamedGoogleBackend} from "../terraform/googleBackend";
 import {GoogleProvider} from "../terraform/googleProvider";
 import {prefabNetworkFromArr, splitForPrefab} from "../terraform/prefab";
-import {rootBlockSplitBackend} from "../terraform/terraform";
+import {rootBlock} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
-import {TerraformResource} from "../types/terraform";
-import {jsonToHcl} from "../util";
+import {providerName, TerraformResource} from "../types/terraform";
+import {bucketExists, jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {BackendModel} from "../database/bucket";
 import {reqToResources} from "../terraform/objectToResource";
+import {GithubTreeNode} from "../types/github";
 
 export const createTerraformSettings = (
 	req: Request,
@@ -85,22 +86,23 @@ export const createTerraformSettings = (
 			  })
 			: networkedResources;
 
-	//TODO: Leave this as just rootBlock()
-	// Solve chicken and egg problem
 	const namedBackend =
 		provider === "aws"
 			? new NamedAwsBackend(bucketId)
 			: new NamedGoogleBackend(project, bucketId);
 
-	const [root, backend] = rootBlockSplitBackend(
+	const [root, backend] = rootBlock(
 		provider === "aws" ? new AwsProvider() : new GoogleProvider(project),
 		namedBackend,
 		[...google, ...network]
 	);
 
 	if (preview) {
-		let hcl = jsonToHcl(root) + "\n";
-
+		let hcl =
+			jsonToHcl(root) +
+			"\n\n#Initialization setup\n\n" +
+			jsonToHcl(backend) +
+			"\n";
 		hcl = hcl.replace(/terraform-state-[a-zA-Z0-9-_]+/, "RANDOM_ID");
 
 		res.json({
@@ -109,6 +111,11 @@ export const createTerraformSettings = (
 	} else {
 		getHead(token, repo, "main")
 			.then(async head => {
+				const devxpAlreadyInitialized = await bucketExists(
+					namedBackend.bucket,
+					provider as providerName
+				);
+
 				//Create the new file data on the server
 				const blobRoot = await postBlob(
 					token,
@@ -116,18 +123,16 @@ export const createTerraformSettings = (
 					jsonToHcl(root) + "\n"
 				);
 
-				/*
-					Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
-
 				const blobBackend = await postBlob(
 					token,
 					repo,
 					jsonToHcl(backend) + "\n"
 				);
-				*/
 
 				// Create a new branch to post our commit to
-				const branchName = "DevXP-Configuration";
+				const branchName = !devxpAlreadyInitialized
+					? "DevXP-Initialization"
+					: "DevXP-Configuration";
 				const newBranch = await createBranch(
 					branchName,
 					token,
@@ -142,17 +147,7 @@ export const createTerraformSettings = (
 				const tree = await getTreeFromUrl(token, commit.treeUrl);
 
 				//Create a new tree within that one
-				const newTree = await createTree(token, repo, tree.sha, [
-					{
-						path: "terraform.tf",
-						mode: getModeNumber("blob"),
-						type: "blob",
-						sha: blobRoot.sha,
-						url: blobRoot.url
-					}
-
-					/*
-					Removed for M1 presentation. We'll solve the chicken and egg for milestone 2
+				let files: GithubTreeNode[] = [
 					{
 						path: "backend.tf",
 						mode: getModeNumber("blob"),
@@ -160,8 +155,18 @@ export const createTerraformSettings = (
 						sha: blobBackend.sha,
 						url: blobBackend.url
 					}
-					*/
-				]);
+				];
+				const terraformTF: GithubTreeNode = {
+					path: "terraform.tf",
+					mode: getModeNumber("blob"),
+					type: "blob",
+					sha: blobRoot.sha,
+					url: blobRoot.url
+				};
+				if (devxpAlreadyInitialized) {
+					files = [...files, terraformTF];
+				}
+				const newTree = await createTree(token, repo, tree.sha, files);
 
 				//Create a new commit referencing the new tree
 				const newCommit = await createCommit(
@@ -169,7 +174,9 @@ export const createTerraformSettings = (
 					repo,
 					newTree.sha,
 					newBranch.sha,
-					"DevXP: Initialized Terraform"
+					!devxpAlreadyInitialized
+						? "DevXP: Initialized Terraform"
+						: "DevXP: Configured Terraform"
 				);
 				//Update the HEAD pointer to the new commit
 				const ref = await updateHead(
@@ -178,13 +185,19 @@ export const createTerraformSettings = (
 					newCommit.commitSha,
 					branchName
 				);
-
 				//Initiate a pull request to the main branch
 				const pr = await createPullRequestGetUrl(
-					"DevXP-Configuration",
+					branchName,
 					"main",
 					token,
-					repo
+					repo,
+					!devxpAlreadyInitialized
+						? "DevXP Initialization"
+						: "DevXP Config",
+					`Merge DevXP ${
+						!devxpAlreadyInitialized ? "Initialization" : "Config"
+					} branch with main branch`,
+					devxpAlreadyInitialized ? 0 : 1
 				);
 
 				//Update bucket
@@ -197,6 +210,59 @@ export const createTerraformSettings = (
 					},
 					{upsert: true}
 				);
+
+				if (!devxpAlreadyInitialized) {
+					// Create a new branch to post our commit to
+					const branchNameInit = "DevXP-Configuration";
+					const newBranchInit = await createBranch(
+						branchNameInit,
+						token,
+						repo,
+						head.sha
+					);
+
+					const newTreeInit = await createTree(
+						token,
+						repo,
+						tree.sha,
+						terraformTF
+					);
+
+					//Create a new commit referencing the new tree
+					const newCommitInit = await createCommit(
+						token,
+						repo,
+						newTreeInit.sha,
+						newBranchInit.sha,
+						"DevXP: Configured Terraform"
+					);
+					//Update the HEAD pointer to the new commit
+					const refInit = await updateHead(
+						token,
+						repo,
+						newCommitInit.commitSha,
+						branchNameInit
+					);
+
+					//Initiate a pull request to the main branch
+					const prInit = await createPullRequestGetUrl(
+						branchNameInit,
+						"main",
+						token,
+						repo,
+						"DevXP Configuration",
+						"Merge DevXP Configuration branch with the main branch"
+					);
+
+					return {
+						ref: refInit,
+						pr: prInit,
+						initialization: {
+							ref,
+							pr
+						}
+					};
+				}
 				return {
 					ref,
 					pr
