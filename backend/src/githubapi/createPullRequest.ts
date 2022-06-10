@@ -7,10 +7,12 @@ export const createPullRequestGetUrl = (
 	head: string, // Name of branch where changes implemented
 	base: string, // Name of branch we want to merge into
 	token: string,
-	repo: string
+	repo: string,
+	title = "DevXP Config",
+	body = "Merge DevXP Config branch with main branch"
 ): Promise<GithubPR & {html_url: string}> =>
 	new Promise<GithubPR & {html_url: string}>((resolve, reject) => {
-		createPullRequest(head, base, token, repo)
+		createPullRequest(head, base, token, repo, title, body)
 			.then(resp0 => {
 				axios
 					.get(resp0.url, {
@@ -39,7 +41,9 @@ const createPullRequest = (
 	head: string, // Name of branch where changes implemented
 	base: string, // Name of branch we want to merge into
 	token: string,
-	repo: string
+	repo: string,
+	title = "DevXP Config",
+	body = "Merge DevXP Config branch with main branch"
 ): Promise<GithubPR> =>
 	new Promise<GithubPR>((resolve, reject) => {
 		const header = {
@@ -52,10 +56,10 @@ const createPullRequest = (
 			.post(
 				`${GITHUB_BASE_URL}/repos/${repo}/pulls`,
 				{
-					head: head,
-					base: base,
-					title: "DevXP Config",
-					body: "Merge DevXP Config branch with main branch"
+					head,
+					base,
+					title,
+					body
 				},
 				header
 			)
@@ -65,10 +69,10 @@ const createPullRequest = (
 					return axios.post(
 						`${GITHUB_BASE_URL}/repos/${repo}/pulls`,
 						{
-							head: head,
+							head,
 							base: "master",
-							title: "DevXP Config",
-							body: "Merge DevXP Config branch with main branch"
+							title,
+							body
 						},
 						header
 					);

@@ -16,11 +16,12 @@ import {GoogleProvider} from "../terraform/googleProvider";
 import {prefabNetworkFromArr, splitForPrefab} from "../terraform/prefab";
 import {rootBlock} from "../terraform/terraform";
 import {internalErrorHandler} from "../types/errorHandler";
-import {TerraformResource} from "../types/terraform";
-import {jsonToHcl} from "../util";
+import {providerName, TerraformResource} from "../types/terraform";
+import {bucketExists, jsonToHcl} from "../util";
 import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {BackendModel} from "../database/bucket";
 import {reqToResources} from "../terraform/objectToResource";
+import {GithubTreeNode} from "../types/github";
 
 export const createTerraformSettings = (
 	req: Request,
@@ -110,6 +111,12 @@ export const createTerraformSettings = (
 	} else {
 		getHead(token, repo, "main")
 			.then(async head => {
+				const devxpAlreadyInitialized = await bucketExists(
+					namedBackend.bucket,
+					provider as providerName
+				);
+				console.dir(devxpAlreadyInitialized);
+
 				//Create the new file data on the server
 				const blobRoot = await postBlob(
 					token,
@@ -139,14 +146,7 @@ export const createTerraformSettings = (
 				const tree = await getTreeFromUrl(token, commit.treeUrl);
 
 				//Create a new tree within that one
-				const newTree = await createTree(token, repo, tree.sha, [
-					{
-						path: "terraform.tf",
-						mode: getModeNumber("blob"),
-						type: "blob",
-						sha: blobRoot.sha,
-						url: blobRoot.url
-					},
+				let files: GithubTreeNode[] = [
 					{
 						path: "backend.tf",
 						mode: getModeNumber("blob"),
@@ -154,7 +154,18 @@ export const createTerraformSettings = (
 						sha: blobBackend.sha,
 						url: blobBackend.url
 					}
-				]);
+				];
+				const terraformTF: GithubTreeNode = {
+					path: "terraform.tf",
+					mode: getModeNumber("blob"),
+					type: "blob",
+					sha: blobRoot.sha,
+					url: blobRoot.url
+				};
+				if (devxpAlreadyInitialized) {
+					files = [...files, terraformTF];
+				}
+				const newTree = await createTree(token, repo, tree.sha, files);
 
 				//Create a new commit referencing the new tree
 				const newCommit = await createCommit(
@@ -162,7 +173,7 @@ export const createTerraformSettings = (
 					repo,
 					newTree.sha,
 					newBranch.sha,
-					"DevXP: Initialized Terraform"
+					"DevXP: Configured Terraform"
 				);
 				//Update the HEAD pointer to the new commit
 				const ref = await updateHead(
@@ -190,6 +201,59 @@ export const createTerraformSettings = (
 					},
 					{upsert: true}
 				);
+
+				if (!devxpAlreadyInitialized) {
+					// Create a new branch to post our commit to
+					const branchNameInit = "DevXP-Initialization";
+					const newBranchInit = await createBranch(
+						branchNameInit,
+						token,
+						repo,
+						head.sha
+					);
+
+					const newTreeInit = await createTree(
+						token,
+						repo,
+						tree.sha,
+						terraformTF
+					);
+
+					//Create a new commit referencing the new tree
+					const newCommitInit = await createCommit(
+						token,
+						repo,
+						newTreeInit.sha,
+						newBranchInit.sha,
+						"DevXP: Initialized Terraform"
+					);
+					//Update the HEAD pointer to the new commit
+					const refInit = await updateHead(
+						token,
+						repo,
+						newCommitInit.commitSha,
+						branchNameInit
+					);
+
+					//Initiate a pull request to the main branch
+					const prInit = await createPullRequestGetUrl(
+						"DevXP-Initialization",
+						"main",
+						token,
+						repo,
+						"DevXP Initialization",
+						"Merge DevXP Initialization branch with the main branch"
+					);
+
+					return {
+						ref,
+						pr,
+						initialization: {
+							ref: refInit,
+							pr: prInit
+						}
+					};
+				}
 				return {
 					ref,
 					pr
