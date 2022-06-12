@@ -29,7 +29,7 @@ export class Eip extends Resource<Eip> implements Eip {
 		json = super.postProcess(json);
 		json.output = [
 			...json.output,
-			output(`${this.id}-public-ip`, `\${aws_eip.${this.id}.*.public_ip}`)
+			output(`${this.id}-public-ip`, `\${aws_eip.${this.id}.public_ip}`)
 		];
 		return json;
 	}

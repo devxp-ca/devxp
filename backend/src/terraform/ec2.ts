@@ -1,4 +1,9 @@
-import {ec2InstanceType, amiType, TerraformJson} from "../types/terraform";
+import {
+	ec2InstanceType,
+	amiType,
+	TerraformJson,
+	defaultEc2User
+} from "../types/terraform";
 import {jsonRoot, output} from "./util";
 import {ResourceWithIam} from "./resource";
 import {Eip} from "./Eip";
@@ -105,13 +110,29 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 	postProcess(json: TerraformJson): TerraformJson {
 		json = super.postProcess(json);
-		json.output = [
-			...json.output,
-			output(
-				`${this.id}-public-ip`,
-				`\${aws_instance.${this.id}.public_ip}`
-			)
-		];
+		// json.output = [
+		// 	...json.output,
+		// 	output(
+		// 		`${this.id}-public-ip`,
+		// 		`\${aws_instance.${this.id}.public_ip}`
+		// 	)
+		// ];
+
+		if (this.eip > 0) {
+			json = this.eipInstance.postProcess(json);
+		}
+		if (this.awsKeyPair) {
+			json = this.awsKeyPair.postProcess(json);
+			json.output = [
+				...json.output,
+				output(
+					`${this.id}-ssh_instructions`,
+					`To access ${this.name}, use: ssh -i ~/.ssh/${
+						this.id
+					}_keyPair.pem ${defaultEc2User(this.ami)}@<OUTPUTTED_IP)>`
+				)
+			];
+		}
 
 		if (/^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami)) {
 			const os = this.ami.slice(5).toLowerCase();
@@ -145,12 +166,7 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 				];
 			}
 		}
-		if (this.eip > 0) {
-			json = this.eipInstance.postProcess(json);
-		}
-		if (this.awsKeyPair) {
-			json = this.awsKeyPair.postProcess(json);
-		}
+
 		return json;
 	}
 

@@ -145,7 +145,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 	);
 
 	//Remove quote escaping for functions
-	hcl = hcl.replace(/\(\\\"([^\\]+)\\\"\)/, (_match, $1) => `("${$1}")`);
+	hcl = hcl.replace(/\(\\\"([^\\]+)\\\"\)/g, (_match, $1) => `("${$1}")`);
 
 	//Remove incorrect ignore quotes
 	hcl = hcl.replace(/(ignore_changes = \[[^\]]+\])/g, (_match, $1) =>

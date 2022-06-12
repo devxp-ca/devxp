@@ -136,6 +136,21 @@ export type amiType =
 	| "AUTO_Amazon"
 	| "AUTO_WINDOWS";
 
+export const defaultEc2User = (ami: amiType): string => {
+	switch (ami) {
+		case "AUTO_Amazon":
+		case "ami-0341aeea105412b57":
+			return "ec2-user";
+		case "AUTO_UBUNTU":
+		case "ami-0892d3c7ee96c0bf7":
+			return "ubuntu";
+		case "ami-0faefa03f7ddcd657":
+			return "ec2-user";
+		default:
+			return "Administrator";
+	}
+};
+
 //Check here for information about these types:
 //https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html
 export type ec2InstanceType =
