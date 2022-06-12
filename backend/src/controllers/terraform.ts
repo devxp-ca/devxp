@@ -111,23 +111,16 @@ export const createTerraformSettings = (
 	} else {
 		getHead(token, repo, "main")
 			.then(async head => {
-				const devxpAlreadyInitialized = await bucketExists(
-					namedBackend.bucket,
-					provider as providerName
-				);
-
 				//Create the new file data on the server
-				const blobRoot = await postBlob(
-					token,
-					repo,
-					jsonToHcl(root) + "\n"
-				);
-
-				const blobBackend = await postBlob(
-					token,
-					repo,
-					jsonToHcl(backend) + "\n"
-				);
+				const [devxpAlreadyInitialized, blobRoot, blobBackend] =
+					await Promise.all([
+						bucketExists(
+							namedBackend.bucket,
+							provider as providerName
+						),
+						postBlob(token, repo, jsonToHcl(root) + "\n"),
+						postBlob(token, repo, jsonToHcl(backend) + "\n")
+					]);
 
 				// Create a new branch to post our commit to
 				const branchName = !devxpAlreadyInitialized
