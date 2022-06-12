@@ -34,7 +34,7 @@ export default function LabelledTextInputWithRandom(
 
 	React.useEffect(() => {
 		if (props.onChange) {
-			props.onChange(id);
+			props.onChange(!checked ? id : innerValue);
 		}
 	}, []);
 
@@ -49,6 +49,9 @@ export default function LabelledTextInputWithRandom(
 				}}
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 					setChecked(event.target.checked);
+					if (props.onChange) {
+						props.onChange(!event.target.checked ? id : innerValue);
+					}
 				}}
 				checked={checked}
 			/>
