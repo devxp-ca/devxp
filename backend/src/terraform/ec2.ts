@@ -145,7 +145,9 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 				];
 			}
 		}
-		json = this.eipInstance.postProcess(json);
+		if (this.eip > 0) {
+			json = this.eipInstance.postProcess(json);
+		}
 		if (this.awsKeyPair) {
 			json = this.awsKeyPair.postProcess(json);
 		}
