@@ -11,6 +11,7 @@ export interface Ec2 {
 	subnet?: string;
 	securityGroups?: string[] | string;
 	iam_instance_profile?: string;
+	eipInstance: Eip;
 }
 export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	constructor(
@@ -30,10 +31,13 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		this.subnet = subnet;
 		this.securityGroups = securityGroups;
 		this.iam_instance_profile = iam_instance_profile;
+		this.eipInstance = new Eip(`${this.id}_eip`, this.id, this.eip === 2);
 	}
 
 	//Returns a resource block
 	toJSON() {
+		this.eipInstance = new Eip(`${this.id}_eip`, this.id, this.eip === 2);
+
 		const isAutoAmi = /^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami);
 		const ami = isAutoAmi
 			? `\${data.aws_ami.${this.ami.slice(5).toLowerCase()}_latest.id}`
@@ -70,11 +74,7 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		let output = [jsonRoot("aws_instance", this.id, json)];
 
 		if (this.eip > 0) {
-			output = [
-				...output,
-
-				new Eip(`${this.id}_eip`, this.id, this.eip === 2)
-			];
+			output = [...output, this.eipInstance];
 		}
 
 		return output;
@@ -124,6 +124,7 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 				];
 			}
 		}
+		json = this.eipInstance.postProcess(json);
 		return json;
 	}
 
