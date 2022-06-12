@@ -132,7 +132,9 @@ export const prefabNetwork = (
 				//TODO: Find a way to put this in the private subnet
 				`${vpc}_subnet_public0`,
 				//`${vpc}_subnet_private`,
-				securityGroup
+				securityGroup,
+				undefined,
+				rules.ssh
 			)
 	);
 	const buckets = arr(resources.s3 ?? []).map(

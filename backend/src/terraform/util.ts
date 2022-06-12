@@ -43,11 +43,12 @@ export const variable = (name: string) => {
 	return json;
 };
 
-export const output = (name: string, value: string) => {
+export const output = (name: string, value: string, sensitive = false) => {
 	const json: Record<string, any> = {};
 	json[name] = [
 		{
-			value
+			value,
+			sensitive
 		}
 	];
 	return json;

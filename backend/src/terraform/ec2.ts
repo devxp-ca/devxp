@@ -1,8 +1,9 @@
 import {ec2InstanceType, amiType, TerraformJson} from "../types/terraform";
-import {jsonRoot} from "./util";
+import {jsonRoot, output} from "./util";
 import {ResourceWithIam} from "./resource";
 import {Eip} from "./Eip";
 import {arr} from "../util";
+import {AwsKeyPair} from "./awsKeyPair";
 
 export interface Ec2 {
 	ami: amiType;
@@ -12,6 +13,7 @@ export interface Ec2 {
 	securityGroups?: string[] | string;
 	iam_instance_profile?: string;
 	eipInstance: Eip;
+	awsKeyPair?: AwsKeyPair;
 }
 export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 	constructor(
@@ -22,7 +24,8 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		eip?: number,
 		subnet?: string,
 		securityGroups?: string[] | string,
-		iam_instance_profile?: string
+		iam_instance_profile?: string,
+		ssh = false
 	) {
 		super(id, "Ec2", autoIam);
 		this.ami = ami;
@@ -32,6 +35,9 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		this.securityGroups = securityGroups;
 		this.iam_instance_profile = iam_instance_profile;
 		this.eipInstance = new Eip(`${this.id}_eip`, this.id, this.eip === 2);
+		if (ssh) {
+			this.awsKeyPair = new AwsKeyPair(`${this.id}_keyPair`);
+		}
 	}
 
 	//Returns a resource block
@@ -71,10 +77,18 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 			json.iam_instance_profile = `\${aws_iam_instance_profile.${this.iam_instance_profile}.name}`;
 		}
 
+		if (this.awsKeyPair) {
+			json.key_name = this.awsKeyPair.id;
+		}
+
 		let output = [jsonRoot("aws_instance", this.id, json)];
 
 		if (this.eip > 0) {
 			output = [...output, this.eipInstance];
+		}
+
+		if (this.awsKeyPair) {
+			output = [...output, ...this.awsKeyPair.toJSON()];
 		}
 
 		return output;
@@ -91,6 +105,13 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 	postProcess(json: TerraformJson): TerraformJson {
 		json = super.postProcess(json);
+		json.output = [
+			...json.output,
+			output(
+				`${this.id}-public-ip`,
+				`\${aws_instance.${this.id}.public_ip}`
+			)
+		];
 
 		if (/^AUTO_(UBUNTU|WINDOWS|AMAZON)$/.test(this.ami)) {
 			const os = this.ami.slice(5).toLowerCase();
@@ -125,6 +146,9 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 			}
 		}
 		json = this.eipInstance.postProcess(json);
+		if (this.awsKeyPair) {
+			json = this.awsKeyPair.postProcess(json);
+		}
 		return json;
 	}
 
