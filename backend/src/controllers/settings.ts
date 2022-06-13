@@ -6,11 +6,12 @@ import {RepoSettings} from "../database/repoSettings";
 import {BackendModel, backendSchemaType} from "../database/bucket";
 import {TerraformResource} from "../types/terraform";
 import {reqToResources} from "../terraform/objectToResource";
+import {pipelineController} from "./pipeline";
 
 export const postSettings = (req: Request, res: Response) => {
-	if (req.body.preview) {
+	if (req.body.preview && req.body.tool === "terraform") {
 		createTerraformSettings(req, res, true);
-	} else if (req.body.tool == "terraform") {
+	} else if (req.body.tool === "terraform") {
 		const resources = reqToResources(req) as TerraformResource[];
 		if (!resources.reduce((acc, nxt) => !!acc && !!nxt, true)) {
 			internalErrorHandler(req, res)(new Error("Unknown resource type"));
@@ -51,6 +52,8 @@ export const postSettings = (req: Request, res: Response) => {
 			.catch(err => {
 				internalErrorHandler(req, res)(err);
 			});
+	} else if (req.body.tool === "pipeline") {
+		pipelineController(req, res);
 	} else {
 		res.status(404).json(
 			new NotFoundError(req.body.tool, req.originalUrl).toResponse()
