@@ -14,6 +14,7 @@ import chris from "../assets/chris.jpg";
 import derek from "../assets/derek.jpg";
 import keanu from "../assets/keanu.jpg";
 import sabrina from "../assets/sabrina.jpg";
+import {Link} from "@mui/material";
 
 //Trigger deployment
 interface IProps {}
@@ -71,7 +72,27 @@ export default class AboutPage extends React.Component<IProps, IState> {
 									paddingBottom={6}>
 									DevXP was started in January 2022 as part of
 									a startup programming course at the
-									University of Victoria.
+									University of Victoria. <br />
+									The project is still under development, and
+									whilst certain features are production
+									ready, most are best suited to personal
+									projects.
+								</Typography>
+								<Typography
+									variant="h6"
+									component="div"
+									color="gray"
+									paddingBottom={6}>
+									Got ideas, questions, or want to use DevXP
+									for your business or project? <br />
+									We'd be stoked to hear from you! Give
+									Brennan an email at{" "}
+									<Link
+										href="mailto:brennan@codexwilkes.com"
+										target="_blank">
+										brennan@codexwilkes.com
+									</Link>
+									, or message one of us on LinkedIn!
 								</Typography>
 								<Typography
 									variant="h4"
@@ -91,51 +112,31 @@ export default class AboutPage extends React.Component<IProps, IState> {
 									paddingBottom: 4
 								}}>
 								<ProfileCard
-									onClick={() => {
-										window.open(
-											"https://www.linkedin.com/in/brennan-wilkes/"
-										);
-									}}
+									url="https://www.linkedin.com/in/brennan-wilkes"
 									title="Brennan Wilkes"
 									desc="Lead Developer and Technical Architect"
 									image={brennan}
 								/>
 								<ProfileCard
-									onClick={() => {
-										window.open(
-											"https://www.linkedin.com/in/cpetrone/"
-										);
-									}}
+									url="https://www.linkedin.com/in/cpetrone"
 									title="Christopher Petrone"
 									desc="Full Stack Developer"
 									image={chris}
 								/>
 								<ProfileCard
-									onClick={() => {
-										window.open(
-											"https://www.linkedin.com/in/derek-robinson1020/"
-										);
-									}}
+									url="https://www.linkedin.com/in/derek-robinson1020"
 									title="Derek Robinson"
 									desc="User Researcher and Full Stack Developer"
 									image={derek}
 								/>
 								<ProfileCard
-									onClick={() => {
-										window.open(
-											"https://www.linkedin.com/in/keanelek-enns-750419156/"
-										);
-									}}
+									url="https://www.linkedin.com/in/keanelek-enns-750419156"
 									title="Keanelek Enns"
 									desc="Technical Project Manager"
 									image={keanu}
 								/>
 								<ProfileCard
-									onClick={() => {
-										window.open(
-											"https://www.linkedin.com/in/sabrina-korsch/"
-										);
-									}}
+									url="https://www.linkedin.com/in/sabrina-korsch"
 									title="Sabrina Korsch"
 									desc="Artist, Designer and Frontend Developer"
 									image={sabrina}
