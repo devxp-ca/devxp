@@ -25,7 +25,16 @@ export default function ToolManagerCard(props: {
 					<Typography gutterBottom variant="h5" component="div">
 						{props.title}
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
+					<Typography
+						variant="body2"
+						color="text.secondary"
+						sx={{
+							lineHeight: "2.5ex",
+							height: "5.25ex",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center"
+						}}>
 						{props.desc}
 					</Typography>
 				</CardContent>

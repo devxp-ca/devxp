@@ -14,6 +14,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 import logoPNG from "../assets/logo.png";
+import githubPNG from "../assets/github.png";
 
 export default function ToolManager() {
 	//True if screen width > 600px, else false
@@ -116,7 +117,22 @@ export default function ToolManager() {
 								</Grid>
 								<Grid item>
 									<ToolManagerCard
-										title="Under Construction"
+										title="Pipelines"
+										onClick={() => {
+											setSelectedTool("pipeline");
+										}}
+										desc="Build, provision, and deployment pipelines using Github Actions"
+										image={githubPNG}
+										color="#262b32"
+										imagesx={{
+											height: "364.781px",
+											objectFit: "contain"
+										}}
+									/>
+								</Grid>
+								<Grid item>
+									<ToolManagerCard
+										title="Under Development"
 										desc="The remaining tools we plan to support are currently under construction"
 										image={logoPNG}
 										color="#4DACFF"
@@ -130,6 +146,11 @@ export default function ToolManager() {
 							</Grid>
 						)}
 						{selectedTool == "terraform" && (
+							<TerraformManager
+								backButton={() => setSelectedTool("none")}
+							/>
+						)}
+						{selectedTool == "pipeline" && (
 							<TerraformManager
 								backButton={() => setSelectedTool("none")}
 							/>
