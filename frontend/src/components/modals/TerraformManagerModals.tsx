@@ -1,9 +1,8 @@
 import React, {Dispatch} from "react";
 import {partialResource, SubmitModalInfoInterface} from "../terraformManager";
-import {resourceSettings, terraformDataSettings} from "../terraformOptions";
+import {resourceSettings} from "../terraformOptions";
 import AddNewResourceModal from "./AddNewResourceModal";
 import AdvancedOptionsModal from "./AdvancedOptionsModal";
-import CopyRepoSettingsModal from "./CopyRepoSettingsModal";
 import CustomizeOrQuickstartModal from "./CustomizeOrQuickstartModal";
 import LoadingModal from "./LoadingModal";
 import {handleCloseModal} from "./modalHandlers";
@@ -34,19 +33,6 @@ export default ({
 	setOpenOptionsModal,
 	overwriteWarningModalIsOpen,
 	setOverwriteWarningModalIsOpen,
-	overwriteChoiceModalIsOpen,
-	setOverwriteChoiceModalIsOpen,
-	setSelectedRepoSavedData,
-	tempRepoData,
-	previousRepo,
-	setSelectedRepo,
-	showLoadingModal,
-	copyRepoModalIsOpen,
-	setCopyRepoModalIsOpen,
-	repoList,
-	setShowLoadingModal,
-	headsUpModalIsOpen,
-	setHeadsUpModalIsOpen,
 	addResourceWarningModalIsOpen,
 	setAddResourceWarningModalIsOpen,
 	exitWarningModalIsOpen,
@@ -82,19 +68,6 @@ export default ({
 	setOpenOptionsModal: Dispatch<boolean>;
 	overwriteWarningModalIsOpen: boolean;
 	setOverwriteWarningModalIsOpen: Dispatch<boolean>;
-	overwriteChoiceModalIsOpen: boolean;
-	setOverwriteChoiceModalIsOpen: Dispatch<boolean>;
-	setSelectedRepoSavedData: Dispatch<terraformDataSettings | null>;
-	tempRepoData: terraformDataSettings | null;
-	previousRepo: string;
-	setSelectedRepo: Dispatch<string>;
-	showLoadingModal: boolean;
-	copyRepoModalIsOpen: boolean;
-	setCopyRepoModalIsOpen: Dispatch<boolean>;
-	repoList: any[];
-	setShowLoadingModal: Dispatch<boolean>;
-	headsUpModalIsOpen: boolean;
-	setHeadsUpModalIsOpen: Dispatch<boolean>;
 	addResourceWarningModalIsOpen: boolean;
 	setAddResourceWarningModalIsOpen: Dispatch<boolean>;
 	exitWarningModalIsOpen: boolean;
@@ -185,43 +158,6 @@ export default ({
 					"It looks like you have uncommitted changes.\
 							If you select a new repo, your uncommitted changes will be lost.\
 							Consider creating a pull request before changing repos."
-				}
-			/>
-			<OkCancelModal
-				isOpen={overwriteChoiceModalIsOpen}
-				onOk={() => {
-					setSelectedRepoSavedData(tempRepoData);
-					setSettingsHaveBeenEdited(false);
-					setOverwriteChoiceModalIsOpen(false);
-				}}
-				onCancel={() => {
-					setSelectedRepo(previousRepo);
-					setOverwriteChoiceModalIsOpen(false);
-				}}
-				title={"Warning: This repo has saved settings."}
-				bodyText={
-					"Continuing will overwrite your currently unsaved settings."
-				}
-			/>
-			<LoadingModal
-				isOpen={showLoadingModal}
-				loadingTitle={"Loading..."}
-			/>
-			<CopyRepoSettingsModal
-				isOpen={copyRepoModalIsOpen}
-				handleClose={() => {
-					setCopyRepoModalIsOpen(false);
-				}}
-				repoList={repoList}
-				selectedRepo={selectedRepo}
-				setShowLoadingModal={setShowLoadingModal}
-			/>
-			<OkModal
-				isOpen={headsUpModalIsOpen}
-				handleClose={handleCloseModal(setHeadsUpModalIsOpen)}
-				title={"Heads Up!"}
-				bodyText={
-					"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
 				}
 			/>
 			<OkModal

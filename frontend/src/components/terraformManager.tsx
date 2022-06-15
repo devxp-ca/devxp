@@ -71,67 +71,21 @@ export const SubmitModalInfoDefaults: SubmitModalInfoInterface = {
 export default function TerraformManager(props: {backButton: () => void}) {
 	const defaultCardSize = 250;
 
-	//start repo state
-	const [repoList, setRepoList] = React.useState([]);
-	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	const [previousRepo, setPreviousRepo] = React.useState<string>("");
-	const [selectedRepoSavedData, setSelectedRepoSavedData] =
-		React.useState<terraformDataSettings | null>(null);
-	const [tempRepoData, setTempRepoData] =
-		React.useState<terraformDataSettings | null>(null);
-	//end repo state
-
 	/* For control flow logic (loading/overwriting/copying) */
 	const [overwriteWarningModalIsOpen, setOverwriteWarningModalIsOpen] =
 		React.useState(false);
+
+	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
+	const [selectedRepoSavedData, setSelectedRepoSavedData] =
+		React.useState<terraformDataSettings | null>(null);
+
 	// We give a warning when a user tries to switch repos with unsaved settings
 	const [giveOverwriteWarning, setGiveOverwriteWarning] =
 		React.useState(true);
-	// If the user comes from "no selected repo" and switches to repo with
-	// saved settings, give them a choice to back out or let the local changes be overwritten
-	const [overwriteChoiceModalIsOpen, setOverwriteChoiceModalIsOpen] =
-		React.useState(false);
-	const [showLoadingModal, setShowLoadingModal] = React.useState(false);
 	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
 		React.useState(false);
-	const [headsUpModalIsOpen, setHeadsUpModalIsOpen] = React.useState(false);
 	// We give a warning when a user tries to copy a repo with unsaved settings
 
-	/* For the copy settings modal */
-	const [copyRepoModalIsOpen, setCopyRepoModalIsOpen] = React.useState(false);
-
-	const updateSelectedRepo = (repoName: string) => {
-		setShowLoadingModal(true);
-		axios
-			.get(`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`, {
-				headers: {
-					repo: repoName
-				}
-			})
-			.then((response: any) => {
-				setShowLoadingModal(false);
-				if (!selectedRepoSavedData && settingsHaveBeenEdited) {
-					setTempRepoData(response.data);
-					setOverwriteChoiceModalIsOpen(true);
-				} else {
-					setSelectedRepoSavedData(response.data);
-					setSettingsHaveBeenEdited(false);
-				}
-			})
-			.catch((error: any) => {
-				setShowLoadingModal(false);
-				if (selectedRepoSavedData) {
-					// Clean slate
-					setSelectedRepoSavedData(null);
-					setSettingsHaveBeenEdited(false);
-				}
-				console.error(error);
-			})
-			.finally(() => {
-				setSelectedRepo(repoName);
-				setGiveOverwriteWarning(true);
-			});
-	};
 	//end control flow logic
 
 	const [selectedProvider, setSelectedProvider] = React.useState("");
@@ -247,19 +201,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 		};
 	}, [settingsHaveBeenEdited]);
 
-	useEffect(() => {
-		//api call to get repos
-		axios
-			.get(`${CONFIG.BACKEND_URL}${CONFIG.REPO_PATH}`)
-			.then((response: any) => {
-				setRepoList(response.data.repos);
-			})
-			.catch((error: any) => {
-				//TODO: Render an error component
-				console.error(error);
-			});
-	}, []);
-
 	//True if screen width > 600px, else false
 	const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -292,19 +233,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					setOpenOptionsModal,
 					overwriteWarningModalIsOpen,
 					setOverwriteWarningModalIsOpen,
-					overwriteChoiceModalIsOpen,
-					setOverwriteChoiceModalIsOpen,
-					setSelectedRepoSavedData,
-					tempRepoData,
-					previousRepo,
-					setSelectedRepo,
-					showLoadingModal,
-					copyRepoModalIsOpen,
-					setCopyRepoModalIsOpen,
-					repoList,
-					setShowLoadingModal,
-					headsUpModalIsOpen,
-					setHeadsUpModalIsOpen,
 					addResourceWarningModalIsOpen,
 					setAddResourceWarningModalIsOpen,
 					exitWarningModalIsOpen,
@@ -322,17 +250,14 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			/>
 			<RepoSelector
 				{...{
-					repoList,
-					selectedRepo,
-					updateSelectedRepo,
-					selectedRepoSavedData,
 					settingsHaveBeenEdited,
 					giveOverwriteWarning,
 					setOverwriteWarningModalIsOpen,
 					setGiveOverwriteWarning,
-					setCopyRepoModalIsOpen,
-					setHeadsUpModalIsOpen,
-					setPreviousRepo
+					setSettingsHaveBeenEdited,
+					selectedRepoSavedData,
+					setSelectedRepoSavedData,
+					onRepoChange: setSelectedRepo
 				}}
 			/>
 			<Grid
