@@ -33,6 +33,7 @@ import {removeEmptyKeys} from "../util";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
+import RepoSelector from "./RepoSelector";
 
 export type partialResource = resourceSettings | {type: string} | undefined;
 export interface BackendError {
@@ -96,7 +97,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 		React.useState(false);
 	const [headsUpModalIsOpen, setHeadsUpModalIsOpen] = React.useState(false);
 	// We give a warning when a user tries to copy a repo with unsaved settings
-	const [giveCopyWarning, setGiveCopyWarning] = React.useState(true);
 
 	/* For the copy settings modal */
 	const [copyRepoModalIsOpen, setCopyRepoModalIsOpen] = React.useState(false);
@@ -321,73 +321,21 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					setSelectedAutoLoadBalanceOption
 				}}
 			/>
-			<Grid
-				container
-				display="flex"
-				alignItems="center"
-				columns={2}
-				spacing={2}
-				sx={{width: "inherit"}}>
-				<Grid item>
-					<Autocomplete
-						sx={{width: "250px"}}
-						id="repo-select"
-						disableClearable={true}
-						options={repoList}
-						value={{full_name: selectedRepo}}
-						getOptionLabel={(option: any) =>
-							option?.full_name ?? ""
-						}
-						renderInput={(params: any) => (
-							<TextField
-								{...params}
-								label="Select A Repo"
-								variant="outlined"
-							/>
-						)}
-						onOpen={() => {
-							if (
-								!!selectedRepoSavedData &&
-								settingsHaveBeenEdited &&
-								giveOverwriteWarning
-							) {
-								setGiveOverwriteWarning(false);
-								setOverwriteWarningModalIsOpen(true);
-							}
-						}}
-						onChange={(event: any, value: any) => {
-							setPreviousRepo(selectedRepo);
-							updateSelectedRepo(value?.full_name ?? "");
-						}}
-						isOptionEqualToValue={(option: any, value: any) => {
-							return option?.full_name === value?.full_name;
-						}}
-					/>
-				</Grid>
-				<Grid item>
-					<Tooltip title="Click here to copy these settings to another repo">
-						<Button
-							sx={{
-								":hover": {
-									bgcolor: "secondary.main",
-									opacity: 0.9
-								}
-							}}
-							variant="contained"
-							color="secondary"
-							onClick={() => {
-								if (settingsHaveBeenEdited && giveCopyWarning) {
-									setHeadsUpModalIsOpen(true);
-									setGiveCopyWarning(false);
-								} else {
-									setCopyRepoModalIsOpen(true);
-								}
-							}}>
-							Copy to another repo
-						</Button>
-					</Tooltip>
-				</Grid>
-			</Grid>
+			<RepoSelector
+				{...{
+					repoList,
+					selectedRepo,
+					updateSelectedRepo,
+					selectedRepoSavedData,
+					settingsHaveBeenEdited,
+					giveOverwriteWarning,
+					setOverwriteWarningModalIsOpen,
+					setGiveOverwriteWarning,
+					setCopyRepoModalIsOpen,
+					setHeadsUpModalIsOpen,
+					setPreviousRepo
+				}}
+			/>
 			<Grid
 				item
 				container
