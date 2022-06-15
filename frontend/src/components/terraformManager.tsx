@@ -3,7 +3,6 @@ import {useEffect} from "react";
 import Button from "@mui/material/Button";
 import {Box} from "@mui/system";
 import Grid from "@mui/material/Grid";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
 	resourceSettings,
 	terraformDataSettings
@@ -13,15 +12,11 @@ import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
-import CheckIcon from "@mui/icons-material/Check";
-import DeleteIcon from "@mui/icons-material/Delete";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
 import {handleOpenSubmitModalConfirmation} from "./modals/modalHandlers";
 
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
 import PreviewWindow from "../components/livePreview/previewWindow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
@@ -34,6 +29,10 @@ import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
 import RepoSelector from "./RepoSelector";
+import Discard from "./buttons/Discard";
+import CreatePullRequest from "./buttons/CreatePullRequest";
+import BottomActionButtons from "./buttons/BottomActionButtons";
+import BackButton from "./buttons/BackButton";
 
 export type partialResource = resourceSettings | {type: string} | undefined;
 export interface BackendError {
@@ -472,26 +471,16 @@ export default function TerraformManager(props: {backButton: () => void}) {
 						</Grid>
 					</FormControl>
 				</Grid>
-				<Grid item>
-					<Button
-						variant="outlined"
-						color="primary"
-						size="large"
-						sx={{
-							width: defaultCardSize / 3,
-							height: defaultCardSize,
-							borderWidth: 2
-						}}
-						onClick={() => {
-							if (settingsHaveBeenEdited) {
-								setExitWarningModalIsOpen(true);
-							} else {
-								props.backButton();
-							}
-						}}>
-						<ArrowBackIcon />
-					</Button>
-				</Grid>
+				<BackButton
+					defaultCardSize={defaultCardSize}
+					onClick={() => {
+						if (settingsHaveBeenEdited) {
+							setExitWarningModalIsOpen(true);
+						} else {
+							props.backButton();
+						}
+					}}
+				/>
 				<Grid item>
 					<Card>
 						<CardActionArea
@@ -547,73 +536,25 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Grid>
 				))}
 			</Grid>
-			<Grid
-				container
-				columns={2}
-				justifyContent="center"
-				spacing={2}
-				sx={{
-					paddingTop: 3,
-					position: "fixed",
-					bottom: 25,
-					width: isMobile === true ? "100%" : "calc(100vw - 76px)",
-					pointerEvents: "none"
-				}}>
-				<Grid item>
-					<Button
-						disabled={
-							//openCards > 0 ||
-							!settingsHaveBeenEdited ||
-							(selectedProvider?.length ?? 0) < 1 ||
-							(selectedRepo?.length ?? 0) < 1 ||
-							(selectedProvider === "google" &&
-								project.length < 6)
-						}
-						variant="contained"
-						color="success"
-						size="large"
-						startIcon={<CheckIcon />}
-						aria-label="submit to repo"
-						onClick={handleOpenSubmitModalConfirmation(
-							setSubmitModalInfo,
-							setSubmitModalIsOpen,
-							selectedRepo
-						)}
-						sx={{
-							width: "281px",
-							padding: 2,
-							fontSize: 18,
-							pointerEvents: "initial",
-							":hover": {
-								bgcolor: "success.main",
-								opacity: 0.9
-							}
-						}}>
-						Create Pull Request
-					</Button>
-				</Grid>
-				<Grid item>
-					<Button
-						disabled={!settingsHaveBeenEdited}
-						variant="contained"
-						color="error"
-						size="large"
-						startIcon={<DeleteIcon />}
-						aria-label="discard changes"
-						onClick={() => {
-							setSettingsHaveBeenEdited(false);
-							resetRepoData();
-						}}
-						sx={{
-							width: "281px",
-							padding: 2,
-							fontSize: 18,
-							pointerEvents: "initial"
-						}}>
-						Discard Changes
-					</Button>
-				</Grid>
-			</Grid>
+			<BottomActionButtons
+				pullRequestDisabled={
+					//openCards > 0 ||
+					!settingsHaveBeenEdited ||
+					(selectedProvider?.length ?? 0) < 1 ||
+					(selectedRepo?.length ?? 0) < 1 ||
+					(selectedProvider === "google" && project.length < 6)
+				}
+				pullRequestOnClick={handleOpenSubmitModalConfirmation(
+					setSubmitModalInfo,
+					setSubmitModalIsOpen,
+					selectedRepo
+				)}
+				discardDisabled={!settingsHaveBeenEdited}
+				discardOnClick={() => {
+					setSettingsHaveBeenEdited(false);
+					resetRepoData();
+				}}
+			/>
 			{isMobile === false && (
 				<PreviewWindow data={previewData} error={previewError} />
 			)}
