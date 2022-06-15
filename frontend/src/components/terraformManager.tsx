@@ -18,15 +18,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
-import OkModal from "./modals/OkModal";
-import OkCancelModal from "./modals/OkCancelModal";
-import {
-	handleCloseModal,
-	handleOpenSubmitModalConfirmation
-} from "./modals/modalHandlers";
+import {handleOpenSubmitModalConfirmation} from "./modals/modalHandlers";
 
-import AdvancedOptionsModal from "./modals/AdvancedOptionsModal";
-import LabelledTextInput from "./labelledInputs/LabelledTextInput";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import PreviewWindow from "../components/livePreview/previewWindow";
@@ -39,6 +32,7 @@ import TerraformManagerModals from "./modals/TerraformManagerModals";
 import {removeEmptyKeys} from "../util";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
+import LabelledTextInput from "./labelledInputs/LabelledTextInput";
 
 export type partialResource = resourceSettings | {type: string} | undefined;
 export interface BackendError {
@@ -311,7 +305,20 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					repoList,
 					setShowLoadingModal,
 					headsUpModalIsOpen,
-					setHeadsUpModalIsOpen
+					setHeadsUpModalIsOpen,
+					addResourceWarningModalIsOpen,
+					setAddResourceWarningModalIsOpen,
+					exitWarningModalIsOpen,
+					setExitWarningModalIsOpen,
+					backButton: props.backButton,
+					advancedOptionsModalIsOpen,
+					setAdvancedOptionsModalIsOpen,
+					setSelectedSecureOption,
+					settingsHaveBeenEdited,
+					setSelectedAllowSshOption,
+					setSelectedAllowIngressWebOption,
+					setSelectedAllowEgressWebOption,
+					setSelectedAutoLoadBalanceOption
 				}}
 			/>
 			<Grid
@@ -513,54 +520,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 										<SettingsIcon />
 									</Tooltip>
 								</IconButton>
-								<AdvancedOptionsModal
-									isOpen={advancedOptionsModalIsOpen}
-									handleClose={() => {
-										setAdvancedOptionsModalIsOpen(false);
-									}}
-									title="Advanced Options"
-									handleClick={(
-										event: any,
-										value: string
-									) => {
-										setAdvancedOptionsModalIsOpen(false);
-									}}
-									selectedProvider={selectedProvider}
-									selectedSecureOption={selectedSecureOption}
-									setSelectedSecureOption={
-										setSelectedSecureOption
-									}
-									settingsHaveBeenEdited={
-										settingsHaveBeenEdited
-									}
-									setSettingsHaveBeenEdited={
-										setSettingsHaveBeenEdited
-									}
-									selectedAllowSshOption={
-										selectedAllowSshOption
-									}
-									setSelectedAllowSshOption={
-										setSelectedAllowSshOption
-									}
-									selectedAllowIngressWebOption={
-										selectedAllowIngressWebOption
-									}
-									setSelectedAllowIngressWebOption={
-										setSelectedAllowIngressWebOption
-									}
-									selectedAllowEgressWebOption={
-										selectedAllowEgressWebOption
-									}
-									setSelectedAllowEgressWebOption={
-										setSelectedAllowEgressWebOption
-									}
-									selectedAutoLoadBalanceOption={
-										selectedAutoLoadBalanceOption
-									}
-									setSelectedAutoLoadBalanceOption={
-										setSelectedAutoLoadBalanceOption
-									}
-								/>
 							</Grid>
 						</Grid>
 					</FormControl>
@@ -584,21 +543,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 						}}>
 						<ArrowBackIcon />
 					</Button>
-					<OkCancelModal
-						isOpen={exitWarningModalIsOpen}
-						onOk={() => {
-							props.backButton();
-							setExitWarningModalIsOpen(false);
-							setSettingsHaveBeenEdited(false);
-						}}
-						onCancel={() => {
-							setExitWarningModalIsOpen(false);
-						}}
-						title={"Hold Up!"}
-						bodyText={
-							"If you leave, you will lose your currently unsaved settings."
-						}
-					/>
 				</Grid>
 				<Grid item>
 					<Card>
@@ -640,16 +584,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 								</Grid>
 							</Grid>
 						</CardActionArea>
-						<OkModal
-							isOpen={addResourceWarningModalIsOpen}
-							handleClose={handleCloseModal(
-								setAddResourceWarningModalIsOpen
-							)}
-							title={"Howdy,"}
-							bodyText={
-								"You'll need to select a provider before we can add resources for you."
-							}
-						/>
 					</Card>
 				</Grid>
 				{trackedResources.map((resource, index) => (

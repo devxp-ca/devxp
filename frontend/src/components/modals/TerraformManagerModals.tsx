@@ -2,6 +2,7 @@ import React, {Dispatch} from "react";
 import {partialResource, SubmitModalInfoInterface} from "../terraformManager";
 import {resourceSettings, terraformDataSettings} from "../terraformOptions";
 import AddNewResourceModal from "./AddNewResourceModal";
+import AdvancedOptionsModal from "./AdvancedOptionsModal";
 import CopyRepoSettingsModal from "./CopyRepoSettingsModal";
 import CustomizeOrQuickstartModal from "./CustomizeOrQuickstartModal";
 import LoadingModal from "./LoadingModal";
@@ -45,7 +46,20 @@ export default ({
 	repoList,
 	setShowLoadingModal,
 	headsUpModalIsOpen,
-	setHeadsUpModalIsOpen
+	setHeadsUpModalIsOpen,
+	addResourceWarningModalIsOpen,
+	setAddResourceWarningModalIsOpen,
+	exitWarningModalIsOpen,
+	setExitWarningModalIsOpen,
+	backButton,
+	advancedOptionsModalIsOpen,
+	setAdvancedOptionsModalIsOpen,
+	setSelectedSecureOption,
+	settingsHaveBeenEdited,
+	setSelectedAllowSshOption,
+	setSelectedAllowIngressWebOption,
+	setSelectedAllowEgressWebOption,
+	setSelectedAutoLoadBalanceOption
 }: {
 	submitModalIsOpen: boolean;
 	setSubmitModalIsOpen: Dispatch<boolean>;
@@ -81,6 +95,19 @@ export default ({
 	setShowLoadingModal: Dispatch<boolean>;
 	headsUpModalIsOpen: boolean;
 	setHeadsUpModalIsOpen: Dispatch<boolean>;
+	addResourceWarningModalIsOpen: boolean;
+	setAddResourceWarningModalIsOpen: Dispatch<boolean>;
+	exitWarningModalIsOpen: boolean;
+	setExitWarningModalIsOpen: Dispatch<boolean>;
+	backButton: () => void;
+	advancedOptionsModalIsOpen: boolean;
+	setAdvancedOptionsModalIsOpen: Dispatch<boolean>;
+	setSelectedSecureOption: Dispatch<boolean>;
+	setSelectedAllowSshOption: Dispatch<boolean>;
+	setSelectedAllowIngressWebOption: Dispatch<boolean>;
+	setSelectedAllowEgressWebOption: Dispatch<boolean>;
+	setSelectedAutoLoadBalanceOption: Dispatch<boolean>;
+	settingsHaveBeenEdited: boolean;
 }) => {
 	//Default or customize
 	const [openDefaultsModal, setOpenDefaultsModal] = React.useState(false);
@@ -195,6 +222,58 @@ export default ({
 				title={"Heads Up!"}
 				bodyText={
 					"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
+				}
+			/>
+			<OkModal
+				isOpen={addResourceWarningModalIsOpen}
+				handleClose={handleCloseModal(setAddResourceWarningModalIsOpen)}
+				title={"Howdy,"}
+				bodyText={
+					"You'll need to select a provider before we can add resources for you."
+				}
+			/>
+			<OkCancelModal
+				isOpen={exitWarningModalIsOpen}
+				onOk={() => {
+					backButton();
+					setExitWarningModalIsOpen(false);
+					setSettingsHaveBeenEdited(false);
+				}}
+				onCancel={() => {
+					setExitWarningModalIsOpen(false);
+				}}
+				title={"Hold Up!"}
+				bodyText={
+					"If you leave, you will lose your currently unsaved settings."
+				}
+			/>
+			<AdvancedOptionsModal
+				isOpen={advancedOptionsModalIsOpen}
+				handleClose={() => {
+					setAdvancedOptionsModalIsOpen(false);
+				}}
+				title="Advanced Options"
+				handleClick={(event: any, value: string) => {
+					setAdvancedOptionsModalIsOpen(false);
+				}}
+				selectedProvider={selectedProvider}
+				selectedSecureOption={selectedSecureOption}
+				setSelectedSecureOption={setSelectedSecureOption}
+				settingsHaveBeenEdited={settingsHaveBeenEdited}
+				setSettingsHaveBeenEdited={setSettingsHaveBeenEdited}
+				selectedAllowSshOption={selectedAllowSshOption}
+				setSelectedAllowSshOption={setSelectedAllowSshOption}
+				selectedAllowIngressWebOption={selectedAllowIngressWebOption}
+				setSelectedAllowIngressWebOption={
+					setSelectedAllowIngressWebOption
+				}
+				selectedAllowEgressWebOption={selectedAllowEgressWebOption}
+				setSelectedAllowEgressWebOption={
+					setSelectedAllowEgressWebOption
+				}
+				selectedAutoLoadBalanceOption={selectedAutoLoadBalanceOption}
+				setSelectedAutoLoadBalanceOption={
+					setSelectedAutoLoadBalanceOption
 				}
 			/>
 		</>
