@@ -10,13 +10,9 @@ import {
 } from "../components/terraformOptions";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
-import LinearProgress from "@mui/material/LinearProgress";
-import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
-import axios, {AxiosError} from "axios";
-import GenericModal from "./modals/GenericModal";
-import {CONFIG} from "../config";
+import axios from "axios";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
@@ -26,42 +22,25 @@ import OkModal from "./modals/OkModal";
 import OkCancelModal from "./modals/OkCancelModal";
 import {
 	handleCloseModal,
-	handleOpenFailModal,
-	handleOpenSubmitModalConfirmation,
-	handleOpenSuccessModal,
-	handleAwaitSuccessModal
+	handleOpenSubmitModalConfirmation
 } from "./modals/modalHandlers";
 
-import TerraformOptionsModal from "./modals/TerraformOptionsModal";
 import AdvancedOptionsModal from "./modals/AdvancedOptionsModal";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import LoadingModal from "./modals/LoadingModal";
-import Tooltip from "@mui/material/Tooltip";
-import CopyRepoSettingsModal from "./modals/CopyRepoSettingsModal";
 import PreviewWindow from "../components/livePreview/previewWindow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import {CONFIG} from "../config";
+import TerraformManagerModals from "./modals/TerraformManagerModals";
+import {removeEmptyKeys} from "../util";
+import Tooltip from "@mui/material/Tooltip";
+import AddIcon from "@mui/icons-material/Add";
 
-const removeEmptyKeys = (obj: Record<string, any>) => {
-	Object.keys(obj).forEach(key => {
-		if (typeof obj[key] === "object") {
-			obj[key] = removeEmptyKeys(obj[key]);
-		} else if (Array.isArray(obj[key])) {
-			for (let i = 0; i < obj[key].length; i++) {
-				obj[key][i] = removeEmptyKeys(obj[key][i]);
-			}
-		} else if (typeof obj[key] === "string" && obj[key].length === 0) {
-			delete obj[key];
-		}
-	});
-	return obj;
-};
-
+export type partialResource = resourceSettings | {type: string} | undefined;
 export interface BackendError {
 	timestamp: Date;
 
@@ -77,6 +56,23 @@ export interface BackendError {
 	//Detailed error message
 	message?: string;
 }
+
+export interface SubmitModalInfoInterface {
+	isSubmitModal: boolean;
+	isSuccessModal: boolean;
+	title: string;
+	body: string;
+	loading: boolean;
+	width: string;
+}
+export const SubmitModalInfoDefaults: SubmitModalInfoInterface = {
+	isSubmitModal: true,
+	isSuccessModal: false,
+	title: "",
+	body: "",
+	loading: false,
+	width: ""
+};
 
 export default function TerraformManager(props: {backButton: () => void}) {
 	const defaultCardSize = 250;
@@ -229,65 +225,14 @@ export default function TerraformManager(props: {backButton: () => void}) {
 
 	//   --------   -------- --------   --------   //
 
-	type partialResource = resourceSettings | {type: string} | undefined;
 	const [currentResource, setCurrentResource] =
 		React.useState<partialResource>();
-	const [nextResource, setNextResource] = React.useState<partialResource>();
-
-	const handleSubmit = () => {
-		setSubmitModalIsOpen(true);
-		handleAwaitSuccessModal(
-			setSubmitModalInfo,
-			setSubmitModalIsOpen,
-			selectedRepo
-		)();
-		axios
-			.post(
-				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
-				removeEmptyKeys({
-					tool: "terraform",
-					repo: selectedRepo,
-					settings: {
-						provider: selectedProvider,
-						secure: selectedSecureOption,
-						allowSsh: selectedAllowSshOption,
-						allowIngressWeb: selectedAllowIngressWebOption,
-						allowEgressWeb: selectedAllowEgressWebOption,
-						autoLoadBalance: selectedAutoLoadBalanceOption,
-						resources: trackedResources,
-						project
-					}
-				})
-			)
-			.then(response => {
-				handleOpenSuccessModal(
-					setSubmitModalInfo,
-					setSubmitModalIsOpen,
-					response.data?.pr?.html_url ?? "",
-					selectedProvider,
-					response.data?.initialization?.pr?.html_url
-				)();
-				setSettingsHaveBeenEdited(false);
-			})
-			.catch((error: AxiosError) => {
-				console.dir(error.response.data);
-				handleOpenFailModal(
-					setSubmitModalInfo,
-					setSubmitModalIsOpen
-				)(error.response?.data?.errors ?? []);
-			});
-	};
 
 	//SUBMIT MODAL THINGS
 	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
-	const [submitModalInfo, setSubmitModalInfo] = React.useState({
-		isSubmitModal: true,
-		isSuccessModal: false,
-		title: "",
-		body: "",
-		loading: false,
-		width: ""
-	});
+	const [submitModalInfo, setSubmitModalInfo] = React.useState(
+		SubmitModalInfoDefaults
+	);
 
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
@@ -322,9 +267,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			});
 	}, []);
 
-	//Default or customize
-	const [openDefaultsModal, setOpenDefaultsModal] = React.useState(false);
-
 	//True if screen width > 600px, else false
 	const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -334,226 +276,43 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			justifyContent={isMobile ? "center" : "flex-start"}
 			alignItems="center"
 			sx={{width: "100%", paddingBottom: 12}}>
-			<GenericModal
-				isOpen={!!openDefaultsModal}
-				handleClose={() => {
-					setOpenDefaultsModal(false);
+			<TerraformManagerModals
+				{...{
+					submitModalIsOpen,
+					setSubmitModalIsOpen,
+					submitModalInfo,
+					setSubmitModalInfo,
+					selectedRepo,
+					selectedProvider,
+					selectedSecureOption,
+					selectedAllowSshOption,
+					selectedAllowIngressWebOption,
+					selectedAllowEgressWebOption,
+					selectedAutoLoadBalanceOption,
+					trackedResources,
+					project,
+					setSettingsHaveBeenEdited,
+					setCurrentResource,
+					setTrackedResources,
+					currentResource,
+					openOptionsModal,
+					setOpenOptionsModal,
+					overwriteWarningModalIsOpen,
+					setOverwriteWarningModalIsOpen,
+					overwriteChoiceModalIsOpen,
+					setOverwriteChoiceModalIsOpen,
+					setSelectedRepoSavedData,
+					tempRepoData,
+					previousRepo,
+					setSelectedRepo,
+					showLoadingModal,
+					copyRepoModalIsOpen,
+					setCopyRepoModalIsOpen,
+					repoList,
+					setShowLoadingModal,
+					headsUpModalIsOpen,
+					setHeadsUpModalIsOpen
 				}}
-				title="Customize or Quickstart"
-				children={
-					<div
-						style={{
-							display: "flex",
-							flexDirection: "row",
-							alignItems: "center",
-							justifyContent: "space-evenly"
-						}}>
-						<Tooltip title="Populate the resource on your own">
-							<Button
-								sx={{
-									":hover": {
-										bgcolor: "primary.main",
-										opacity: 0.9
-									}
-								}}
-								size="large"
-								variant="contained"
-								onClick={() => {
-									setCurrentResource(nextResource);
-									setOpenDefaultsModal(false);
-								}}>
-								Customize
-							</Button>
-						</Tooltip>
-						<Tooltip title="Populate the resource with default values">
-							<Button
-								sx={{
-									":hover": {
-										bgcolor: "primary.main",
-										opacity: 0.9
-									}
-								}}
-								size="large"
-								variant="contained"
-								onClick={() => {
-									const resource = typeToResource(
-										nextResource,
-										true
-									) as Resource<unknown, any>;
-									resource.populateDefault();
-									setTrackedResources([
-										...trackedResources,
-										resource.getData() as unknown as resourceSettings
-									]);
-									setOpenDefaultsModal(false);
-									setSettingsHaveBeenEdited(true);
-								}}>
-								Quickstart
-							</Button>
-						</Tooltip>
-					</div>
-				}
-			/>
-			<TerraformOptionsModal
-				isOpen={!!openOptionsModal}
-				handleClose={() => {
-					setCurrentResource(undefined);
-					setOpenOptionsModal(false);
-				}}
-				handleClick={(event: any, value: string) => {
-					setOpenDefaultsModal(true);
-					setOpenOptionsModal(false);
-					setNextResource({
-						type: value
-					});
-				}}
-				provider={selectedProvider}
-				title={`Choose ${
-					/[aeiou]/i.test(selectedProvider[0]) ? "an" : "a"
-				} ${
-					selectedProvider === "aws"
-						? "AWS"
-						: selectedProvider.charAt(0).toUpperCase() +
-						  selectedProvider.slice(1)
-				} Resource`}
-			/>
-			<GenericModal
-				isOpen={!!currentResource}
-				handleClose={() => {
-					if (
-						currentResource &&
-						Object.keys(currentResource).length > 1
-					) {
-						setTrackedResources([
-							...trackedResources,
-							currentResource as resourceSettings
-						]);
-					}
-					setCurrentResource(undefined);
-				}}
-				title={`${
-					currentResource && Object.keys(currentResource).length > 1
-						? "Edit"
-						: "Add New"
-				} ${
-					(currentResource
-						? typeToResource(currentResource, true)?.props?.resource
-						: undefined) ?? "Resource"
-				}`}
-				children={
-					currentResource && (
-						<Grid
-							container
-							direction="column"
-							alignItems="center"
-							sx={{
-								"& > div": {width: "90%"}
-							}}>
-							{
-								typeToResource(
-									{
-										...currentResource,
-										repo: selectedRepo ?? "",
-										isModifying:
-											Object.keys(currentResource)
-												.length > 1,
-										onSave: (
-											data: resourceSettings & {
-												resources: number;
-											}
-										) => {
-											let newResources: resourceSettings[] =
-												[];
-											for (
-												let i = 0;
-												i < data.resources;
-												i++
-											) {
-												newResources = [
-													...newResources,
-													data.resources > 1
-														? {
-																...data,
-																id: `${
-																	data.id
-																}-${String.fromCharCode(
-																	97 + i
-																)}`
-														  }
-														: data
-												];
-											}
-
-											setTrackedResources([
-												...newResources,
-												...trackedResources
-											]);
-											setCurrentResource(undefined);
-											setSettingsHaveBeenEdited(true);
-										},
-										onDelete: () => {
-											setCurrentResource(undefined);
-											setSettingsHaveBeenEdited(true);
-										},
-										onChange: () => {
-											setSettingsHaveBeenEdited(true);
-										}
-									},
-									false
-								) as React.ReactElement
-							}
-						</Grid>
-					)
-				}
-				width="90vw"
-			/>
-			<GenericModal
-				isOpen={submitModalIsOpen}
-				handleClose={handleCloseModal(setSubmitModalIsOpen)}
-				title={submitModalInfo.title}
-				bodyText={submitModalInfo.body}
-				width={submitModalInfo.width}
-				isSuccess={submitModalInfo.isSuccessModal}
-				children={
-					<>
-						{!submitModalInfo.loading && (
-							<Stack
-								style={{
-									display: "flex",
-									justifyContent: "center"
-								}}>
-								<Button
-									color="secondary"
-									variant="contained"
-									size="large"
-									sx={{
-										marginTop: 2,
-										":hover": {
-											bgcolor: "secondary.main",
-											opacity: 0.9
-										}
-									}}
-									onClick={
-										submitModalInfo.isSubmitModal
-											? handleSubmit
-											: handleCloseModal(
-													setSubmitModalIsOpen
-											  )
-									}>
-									{submitModalInfo.isSubmitModal
-										? "Confirm"
-										: "Ok"}
-								</Button>
-							</Stack>
-						)}
-						{!!submitModalInfo.loading && (
-							<div>
-								<LinearProgress></LinearProgress>
-							</div>
-						)}
-						{}
-					</>
-				}
 			/>
 			<Grid
 				container
@@ -597,38 +356,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							return option?.full_name === value?.full_name;
 						}}
 					/>
-					<OkModal
-						isOpen={overwriteWarningModalIsOpen}
-						handleClose={handleCloseModal(
-							setOverwriteWarningModalIsOpen
-						)}
-						title={"Heads up!"}
-						bodyText={
-							"It looks like you have uncommitted changes.\
-										If you select a new repo, your uncommitted changes will be lost.\
-										Consider creating a pull request before changing repos."
-						}
-					/>
-					<OkCancelModal
-						isOpen={overwriteChoiceModalIsOpen}
-						onOk={() => {
-							setSelectedRepoSavedData(tempRepoData);
-							setSettingsHaveBeenEdited(false);
-							setOverwriteChoiceModalIsOpen(false);
-						}}
-						onCancel={() => {
-							setSelectedRepo(previousRepo);
-							setOverwriteChoiceModalIsOpen(false);
-						}}
-						title={"Warning: This repo has saved settings."}
-						bodyText={
-							"Continuing will overwrite your currently unsaved settings."
-						}
-					/>
-					<LoadingModal
-						isOpen={showLoadingModal}
-						loadingTitle={"Loading..."}
-					/>
 				</Grid>
 				<Grid item>
 					<Tooltip title="Click here to copy these settings to another repo">
@@ -652,23 +379,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 							Copy to another repo
 						</Button>
 					</Tooltip>
-					<CopyRepoSettingsModal
-						isOpen={copyRepoModalIsOpen}
-						handleClose={() => {
-							setCopyRepoModalIsOpen(false);
-						}}
-						repoList={repoList}
-						selectedRepo={selectedRepo}
-						setShowLoadingModal={setShowLoadingModal}
-					/>
-					<OkModal
-						isOpen={headsUpModalIsOpen}
-						handleClose={handleCloseModal(setHeadsUpModalIsOpen)}
-						title={"Heads Up!"}
-						bodyText={
-							"It looks like you have unsubmitted changes. Unsubmitted changes will not be copied to other repos."
-						}
-					/>
 				</Grid>
 			</Grid>
 			<Grid

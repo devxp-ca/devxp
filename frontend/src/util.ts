@@ -37,3 +37,18 @@ export const BTN_WIDTH = 45;
 export const OFFSET = `calc(-50vw + ${BTN_WIDTH / 2}px)`;
 export const OFFSET_NO_DIV = `calc(-50vw + ${BTN_WIDTH}px)`;
 export const TRANSITION = "all ease-in 1s";
+
+export const removeEmptyKeys = (obj: Record<string, any>) => {
+	Object.keys(obj).forEach(key => {
+		if (typeof obj[key] === "object") {
+			obj[key] = removeEmptyKeys(obj[key]);
+		} else if (Array.isArray(obj[key])) {
+			for (let i = 0; i < obj[key].length; i++) {
+				obj[key][i] = removeEmptyKeys(obj[key][i]);
+			}
+		} else if (typeof obj[key] === "string" && obj[key].length === 0) {
+			delete obj[key];
+		}
+	});
+	return obj;
+};
