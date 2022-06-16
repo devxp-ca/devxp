@@ -14,11 +14,14 @@ import ProviderSelector from "./providerSelector";
 
 export default function PipelineManager(props: ManagedToolProps) {
 	const {
+		overwriteWarningModalIsOpen,
+		exitWarningModalIsOpen,
 		selectedRepo,
 		prButtonClicked,
 		defaultCardSize,
 		setSettingsHaveBeenEdited,
 		settingsHaveBeenEdited,
+		setOverwriteWarningModalIsOpen,
 		setExitWarningModalIsOpen,
 		setPrButtonClicked,
 		selectedRepoSavedData,
@@ -36,6 +39,7 @@ export default function PipelineManager(props: ManagedToolProps) {
 
 	const resetRepoData = () => {
 		setShouldResetData(false);
+		setSelectedProvider(selectedRepoSavedData?.settings?.provider ?? "");
 	};
 
 	React.useEffect(resetRepoData, [selectedRepoSavedData, shouldResetData]);

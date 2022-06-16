@@ -11,6 +11,21 @@ export default ({
 	onChange?: (value: string) => void;
 	initial?: string;
 }) => {
+	const [initialInternal, setInitialInternal] = React.useState<
+		string | undefined
+	>(
+		initial && initial !== ""
+			? initial
+			: localStorage.getItem("cachedSelectedProvider")
+	);
+	React.useEffect(() => {
+		if (initial && initial !== "") {
+			setInitialInternal(initial);
+			localStorage.setItem("cachedSelectedProvider", initial);
+		}
+		console.log(initial, initialInternal);
+	}, [initial]);
+
 	return (
 		<div
 			style={{
@@ -51,10 +66,11 @@ export default ({
 						disabled: true
 					}
 				]}
-				initial={initial}
+				initial={initialInternal}
 				onChange={(value: string) => {
 					if (onChange) {
 						onChange(value);
+						localStorage.setItem("cachedSelectedProvider", value);
 					}
 				}}
 			/>
