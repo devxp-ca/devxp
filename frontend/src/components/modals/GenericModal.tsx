@@ -52,8 +52,8 @@ export default function GenericModal({
 		"::-webkit-scrollbar": {
 			display: "none"
 		},
-		"-ms-overflow-style": "none" /* IE and Edge */,
-		"scrollbar-width": "none" /* Firefox */
+		msOverflowStyle: "none" /* IE and Edge */,
+		scrollbarWidth: "none" /* Firefox */
 	};
 
 	const dummyModalStyle = {

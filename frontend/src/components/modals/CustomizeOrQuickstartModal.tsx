@@ -3,7 +3,7 @@ import Tooltip from "@mui/material/Tooltip";
 import React, {Dispatch} from "react";
 import Resource from "../resources/Resource";
 import typeToResource from "../resources/typeToResource";
-import {partialResource} from "../terraformManager";
+import {partialResource} from "../managedToolWrapper";
 import {resourceSettings} from "../terraformOptions";
 import GenericModal from "./GenericModal";
 

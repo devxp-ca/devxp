@@ -9,7 +9,7 @@ import {
 	handleOpenSuccessModal,
 	handleOpenFailModal
 } from "./modalHandlers";
-import {SubmitModalInfoInterface} from "../terraformManager";
+import {SubmitModalInfoInterface} from "../managedToolWrapper";
 import {CONFIG} from "../../config";
 import {removeEmptyKeys} from "../../util";
 import axios, {AxiosError} from "axios";

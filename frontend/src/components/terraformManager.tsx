@@ -1,12 +1,7 @@
 import React from "react";
 import {useEffect} from "react";
-import Button from "@mui/material/Button";
-import {Box} from "@mui/system";
 import Grid from "@mui/material/Grid";
-import {
-	resourceSettings,
-	terraformDataSettings
-} from "../components/terraformOptions";
+import {resourceSettings} from "../components/terraformOptions";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
@@ -28,65 +23,30 @@ import {removeEmptyKeys} from "../util";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import LabelledTextInput from "./labelledInputs/LabelledTextInput";
-import RepoSelector from "./RepoSelector";
-import Discard from "./buttons/Discard";
-import CreatePullRequest from "./buttons/CreatePullRequest";
-import BottomActionButtons from "./buttons/BottomActionButtons";
+import {
+	ManagedToolProps,
+	partialResource,
+	SubmitModalInfoDefaults
+} from "./managedToolWrapper";
 import BackButton from "./buttons/BackButton";
 
-export type partialResource = resourceSettings | {type: string} | undefined;
-export interface BackendError {
-	timestamp: Date;
-
-	//HTTP Status
-	status: number;
-
-	//Error type / high level description
-	error: string;
-
-	//Path which created error
-	path: string;
-
-	//Detailed error message
-	message?: string;
-}
-
-export interface SubmitModalInfoInterface {
-	isSubmitModal: boolean;
-	isSuccessModal: boolean;
-	title: string;
-	body: string;
-	loading: boolean;
-	width: string;
-}
-export const SubmitModalInfoDefaults: SubmitModalInfoInterface = {
-	isSubmitModal: true,
-	isSuccessModal: false,
-	title: "",
-	body: "",
-	loading: false,
-	width: ""
-};
-
-export default function TerraformManager(props: {backButton: () => void}) {
-	const defaultCardSize = 250;
-
-	/* For control flow logic (loading/overwriting/copying) */
-	const [overwriteWarningModalIsOpen, setOverwriteWarningModalIsOpen] =
-		React.useState(false);
-
-	const [selectedRepo, setSelectedRepo] = React.useState<string>("");
-	const [selectedRepoSavedData, setSelectedRepoSavedData] =
-		React.useState<terraformDataSettings | null>(null);
-
-	// We give a warning when a user tries to switch repos with unsaved settings
-	const [giveOverwriteWarning, setGiveOverwriteWarning] =
-		React.useState(true);
-	const [settingsHaveBeenEdited, setSettingsHaveBeenEdited] =
-		React.useState(false);
-	// We give a warning when a user tries to copy a repo with unsaved settings
-
-	//end control flow logic
+export default function TerraformManager(props: ManagedToolProps) {
+	const {
+		overwriteWarningModalIsOpen,
+		exitWarningModalIsOpen,
+		selectedRepo,
+		prButtonClicked,
+		defaultCardSize,
+		setSettingsHaveBeenEdited,
+		settingsHaveBeenEdited,
+		setOverwriteWarningModalIsOpen,
+		setExitWarningModalIsOpen,
+		setPrButtonClicked,
+		selectedRepoSavedData,
+		backButton,
+		shouldResetData,
+		setShouldResetData
+	} = props;
 
 	const [selectedProvider, setSelectedProvider] = React.useState("");
 	const [selectedSecureOption, setSelectedSecureOption] =
@@ -103,6 +63,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 		resourceSettings[]
 	>([]);
 	const [project, setProject] = React.useState("");
+	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
+	const [submitModalInfo, setSubmitModalInfo] = React.useState(
+		SubmitModalInfoDefaults
+	);
 
 	const resetRepoData = () => {
 		setTrackedResources(selectedRepoSavedData?.settings?.resources ?? []);
@@ -123,9 +87,10 @@ export default function TerraformManager(props: {backButton: () => void}) {
 			selectedRepoSavedData?.settings?.autoLoadBalance ?? false
 		);
 		setProject(selectedRepoSavedData?.settings?.project ?? "");
+		setShouldResetData(false);
 	};
 
-	React.useEffect(resetRepoData, [selectedRepoSavedData]);
+	React.useEffect(resetRepoData, [selectedRepoSavedData, shouldResetData]);
 
 	//   --------   PREVIEW CHANGES   --------   //
 
@@ -175,12 +140,6 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	const [currentResource, setCurrentResource] =
 		React.useState<partialResource>();
 
-	//SUBMIT MODAL THINGS
-	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
-	const [submitModalInfo, setSubmitModalInfo] = React.useState(
-		SubmitModalInfoDefaults
-	);
-
 	//OPTIONS MODAL THINGS
 	const [openOptionsModal, setOpenOptionsModal] = React.useState(false);
 	//ADVANCED OPTIONS MODAL THINGS
@@ -190,264 +149,237 @@ export default function TerraformManager(props: {backButton: () => void}) {
 	// Info modal for when a user tries to add a resource without choosing a provider
 	const [addResourceWarningModalIsOpen, setAddResourceWarningModalIsOpen] =
 		React.useState(false);
-	const [exitWarningModalIsOpen, setExitWarningModalIsOpen] =
-		React.useState(false);
-
-	useEffect(() => {
-		window.onbeforeunload = () => {
-			if (settingsHaveBeenEdited) {
-				return "Are you sure you want to leave without submitting your configuration?";
-			}
-		};
-	}, [settingsHaveBeenEdited]);
 
 	//True if screen width > 600px, else false
 	const isMobile = useMediaQuery("(max-width:600px)");
 
+	useEffect(() => {
+		if (prButtonClicked) {
+			handleOpenSubmitModalConfirmation(
+				setSubmitModalInfo,
+				setSubmitModalIsOpen,
+				selectedRepo
+			)();
+			setPrButtonClicked(false);
+		}
+	}, [prButtonClicked]);
+
 	return (
-		<Box
-			id="topMostBox"
-			justifyContent={isMobile ? "center" : "flex-start"}
-			alignItems="center"
-			sx={{width: "100%", paddingBottom: 12}}>
-			<TerraformManagerModals
-				{...{
-					submitModalIsOpen,
-					setSubmitModalIsOpen,
-					submitModalInfo,
-					setSubmitModalInfo,
-					selectedRepo,
-					selectedProvider,
-					selectedSecureOption,
-					selectedAllowSshOption,
-					selectedAllowIngressWebOption,
-					selectedAllowEgressWebOption,
-					selectedAutoLoadBalanceOption,
-					trackedResources,
-					project,
-					setSettingsHaveBeenEdited,
-					setCurrentResource,
-					setTrackedResources,
-					currentResource,
-					openOptionsModal,
-					setOpenOptionsModal,
-					overwriteWarningModalIsOpen,
-					setOverwriteWarningModalIsOpen,
-					addResourceWarningModalIsOpen,
-					setAddResourceWarningModalIsOpen,
-					exitWarningModalIsOpen,
-					setExitWarningModalIsOpen,
-					backButton: props.backButton,
-					advancedOptionsModalIsOpen,
-					setAdvancedOptionsModalIsOpen,
-					setSelectedSecureOption,
-					settingsHaveBeenEdited,
-					setSelectedAllowSshOption,
-					setSelectedAllowIngressWebOption,
-					setSelectedAllowEgressWebOption,
-					setSelectedAutoLoadBalanceOption
-				}}
-			/>
-			<RepoSelector
-				{...{
-					settingsHaveBeenEdited,
-					giveOverwriteWarning,
-					setOverwriteWarningModalIsOpen,
-					setGiveOverwriteWarning,
-					setSettingsHaveBeenEdited,
-					selectedRepoSavedData,
-					setSelectedRepoSavedData,
-					onRepoChange: setSelectedRepo
-				}}
-			/>
-			<Grid
-				item
-				container
-				direction="row"
-				spacing={2}
-				sx={{
-					paddingTop: 2,
-					marginLeft: 0,
-					width: "inherit",
-					paddingRight: 2
-				}}>
-				<Grid container direction="row">
-					<Typography sx={{paddingTop: 4}} variant="h4">
-						Terraform
-					</Typography>
-					<FormControl>
+		<>
+			<Grid item>
+				<TerraformManagerModals
+					{...{
+						submitModalIsOpen,
+						setSubmitModalIsOpen,
+						submitModalInfo,
+						setSubmitModalInfo,
+						selectedRepo,
+						selectedProvider,
+						selectedSecureOption,
+						selectedAllowSshOption,
+						selectedAllowIngressWebOption,
+						selectedAllowEgressWebOption,
+						selectedAutoLoadBalanceOption,
+						trackedResources,
+						project,
+						setSettingsHaveBeenEdited,
+						setCurrentResource,
+						setTrackedResources,
+						currentResource,
+						openOptionsModal,
+						setOpenOptionsModal,
+						overwriteWarningModalIsOpen,
+						setOverwriteWarningModalIsOpen,
+						setExitWarningModalIsOpen,
+						addResourceWarningModalIsOpen,
+						setAddResourceWarningModalIsOpen,
+						exitWarningModalIsOpen,
+						backButton,
+						advancedOptionsModalIsOpen,
+						setAdvancedOptionsModalIsOpen,
+						setSelectedSecureOption,
+						settingsHaveBeenEdited,
+						setSelectedAllowSshOption,
+						setSelectedAllowIngressWebOption,
+						setSelectedAllowEgressWebOption,
+						setSelectedAutoLoadBalanceOption
+					}}
+				/>
+				<Typography sx={{paddingTop: 4}} variant="h4">
+					Terraform
+				</Typography>
+				<FormControl>
+					<Grid
+						container
+						direction={isMobile ? "column" : "row"}
+						sx={{
+							paddingLeft: 4,
+							paddingTop: 4.5,
+							marginBottom: 2,
+							flexWrap: isMobile === true ? "inherit" : "wrap"
+						}}>
 						<Grid
-							container
-							direction={isMobile ? "column" : "row"}
-							sx={{
-								paddingLeft: 4,
-								paddingTop: 4.5,
-								marginBottom: 2,
-								flexWrap: isMobile === true ? "inherit" : "wrap"
-							}}>
-							<Grid
-								item
-								xs={11}
-								justifyContent="center"
-								alignItems="center">
-								<LabelledRadioSelect
-									text="Provider"
-									description={
-										<div>
-											<p>
-												Select the provider you have a
-												cloud services account with.
-											</p>
-											<p>
-												<Link
-													href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
-													target="_blank"
-													rel="noopener">
-													Learn more.
-												</Link>
-											</p>
-										</div>
+							item
+							xs={11}
+							justifyContent="center"
+							alignItems="center">
+							<LabelledRadioSelect
+								text="Provider"
+								description={
+									<div>
+										<p>
+											Select the provider you have a cloud
+											services account with.
+										</p>
+										<p>
+											<Link
+												href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
+												target="_blank"
+												rel="noopener">
+												Learn more.
+											</Link>
+										</p>
+									</div>
+								}
+								options={[
+									{
+										key: "aws",
+										label: "Amazon",
+										disabled: trackedResources.length > 0
+									},
+									{
+										key: "google",
+										label: "Google",
+										disabled: trackedResources.length > 0
+									},
+									{
+										key: "azure",
+										label: "Azure",
+										disabled: true
 									}
-									options={[
-										{
-											key: "aws",
-											label: "Amazon",
-											disabled:
-												trackedResources.length > 0
-										},
-										{
-											key: "google",
-											label: "Google",
-											disabled:
-												trackedResources.length > 0
-										},
-										{
-											key: "azure",
-											label: "Azure",
-											disabled: true
-										}
-									]}
-									initial={selectedProvider}
-									onChange={(value: string) => {
-										setSelectedProvider(value);
+								]}
+								initial={selectedProvider}
+								onChange={(value: string) => {
+									setSelectedProvider(value);
+									setSettingsHaveBeenEdited(true);
+								}}
+							/>
+							{selectedProvider === "google" && (
+								<LabelledTextInput
+									direction="row"
+									text="Google Project ID"
+									description={
+										<p>
+											To locate your project ID:
+											<ol>
+												<li>
+													Go to the
+													<Link
+														href="https://console.cloud.google.com/home/dashboard"
+														target="_blank"
+														rel="noopener">
+														{" "}
+														API Console
+													</Link>
+													.
+												</li>
+												<li>
+													From the projects list,
+													select Manage all projects.
+													The names and IDs for all
+													the projects you're a member
+													of are displayed.
+												</li>
+											</ol>
+											<Link
+												href="https://support.google.com/googleapi/answer/7014113?hl=en"
+												target="_blank"
+												rel="noopener">
+												Learn more.
+											</Link>
+										</p>
+									}
+									pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
+									initial={project}
+									onChange={(val: string) => {
+										setProject(val);
 										setSettingsHaveBeenEdited(true);
 									}}
 								/>
-								{selectedProvider === "google" && (
-									<LabelledTextInput
-										direction="row"
-										text="Google Project ID"
-										description={
-											<p>
-												To locate your project ID:
-												<ol>
-													<li>
-														Go to the
-														<Link
-															href="https://console.cloud.google.com/home/dashboard"
-															target="_blank"
-															rel="noopener">
-															{" "}
-															API Console
-														</Link>
-														.
-													</li>
-													<li>
-														From the projects list,
-														select Manage all
-														projects. The names and
-														IDs for all the projects
-														you're a member of are
-														displayed.
-													</li>
-												</ol>
-												<Link
-													href="https://support.google.com/googleapi/answer/7014113?hl=en"
-													target="_blank"
-													rel="noopener">
-													Learn more.
-												</Link>
-											</p>
-										}
-										pattern="^[a-zA-Z][a-zA-Z0-9-_]{5}[a-zA-Z0-9-_]*$"
-										initial={project}
-										onChange={(val: string) => {
-											setProject(val);
-											setSettingsHaveBeenEdited(true);
-										}}
-									/>
-								)}
-							</Grid>
-							<Grid item xs={1}>
-								<IconButton
-									onClick={() => {
-										setAdvancedOptionsModalIsOpen(true);
-									}}
-									disabled={
-										selectedProvider === "aws"
-											? false
-											: true
-									}>
-									<Tooltip title="Advanced Options">
-										<SettingsIcon />
-									</Tooltip>
-								</IconButton>
-							</Grid>
+							)}
 						</Grid>
-					</FormControl>
-				</Grid>
+						<Grid item xs={1}>
+							<IconButton
+								onClick={() => {
+									setAdvancedOptionsModalIsOpen(true);
+								}}
+								disabled={
+									selectedProvider === "aws" ? false : true
+								}>
+								<Tooltip title="Advanced Options">
+									<SettingsIcon />
+								</Tooltip>
+							</IconButton>
+						</Grid>
+					</Grid>
+				</FormControl>
+			</Grid>
+			<Grid
+				container
+				direction="row"
+				sx={{
+					gridGap: "2vw"
+				}}>
 				<BackButton
 					defaultCardSize={defaultCardSize}
 					onClick={() => {
 						if (settingsHaveBeenEdited) {
 							setExitWarningModalIsOpen(true);
 						} else {
-							props.backButton();
+							backButton();
 						}
 					}}
 				/>
-				<Grid item>
-					<Card>
-						<CardActionArea
-							onClick={() => {
-								if (selectedProvider) {
-									setOpenOptionsModal(true);
-								} else {
-									setAddResourceWarningModalIsOpen(true);
-								}
-							}}
+				<Card>
+					<CardActionArea
+						onClick={() => {
+							if (selectedProvider) {
+								setOpenOptionsModal(true);
+							} else {
+								setAddResourceWarningModalIsOpen(true);
+							}
+						}}
+						sx={{
+							backgroundColor: "secondary.light",
+							"&:hover": {
+								backgroundColor: "success.dark"
+							}
+						}}>
+						<Grid
+							container
+							justifyContent="center"
+							alignItems="center"
 							sx={{
-								backgroundColor: "secondary.light",
-								"&:hover": {
-									backgroundColor: "success.dark"
-								}
+								width: (defaultCardSize / 3) * 2 - 16,
+								height: defaultCardSize,
+								borderWidth: 1,
+								borderColor: "success.main",
+								borderStyle: "solid",
+								borderRadius: 1
 							}}>
-							<Grid
-								container
-								justifyContent="center"
-								alignItems="center"
-								sx={{
-									width: (defaultCardSize / 3) * 2 - 16,
-									height: defaultCardSize,
-									borderWidth: 1,
-									borderColor: "success.main",
-									borderStyle: "solid",
-									borderRadius: 1
-								}}>
-								<Grid item>
-									<AddIcon
-										sx={{
-											width: 75,
-											height: 75,
-											opacity: 1,
-											color: "success.main"
-										}}
-									/>
-								</Grid>
+							<Grid item>
+								<AddIcon
+									sx={{
+										width: 75,
+										height: 75,
+										opacity: 1,
+										color: "success.main"
+									}}
+								/>
 							</Grid>
-						</CardActionArea>
-					</Card>
-				</Grid>
+						</Grid>
+					</CardActionArea>
+				</Card>
 				{trackedResources.map((resource, index) => (
 					<Grid item key={`prevInstanceCardGrid${index}`}>
 						{(
@@ -461,28 +393,9 @@ export default function TerraformManager(props: {backButton: () => void}) {
 					</Grid>
 				))}
 			</Grid>
-			<BottomActionButtons
-				pullRequestDisabled={
-					//openCards > 0 ||
-					!settingsHaveBeenEdited ||
-					(selectedProvider?.length ?? 0) < 1 ||
-					(selectedRepo?.length ?? 0) < 1 ||
-					(selectedProvider === "google" && project.length < 6)
-				}
-				pullRequestOnClick={handleOpenSubmitModalConfirmation(
-					setSubmitModalInfo,
-					setSubmitModalIsOpen,
-					selectedRepo
-				)}
-				discardDisabled={!settingsHaveBeenEdited}
-				discardOnClick={() => {
-					setSettingsHaveBeenEdited(false);
-					resetRepoData();
-				}}
-			/>
 			{isMobile === false && (
 				<PreviewWindow data={previewData} error={previewError} />
 			)}
-		</Box>
+		</>
 	);
 }

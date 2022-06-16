@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid";
 import React, {Dispatch} from "react";
 import typeToResource from "../resources/typeToResource";
-import {partialResource} from "../terraformManager";
+import {partialResource} from "../managedToolWrapper";
 import {resourceSettings} from "../terraformOptions";
 import GenericModal from "./GenericModal";
 

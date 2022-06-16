@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import {lightTheme, darkTheme} from "../style/themes";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
+import ManagedToolWrapper from "../components/managedToolWrapper";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -145,14 +146,18 @@ export default function ToolManager() {
 								</Grid>
 							</Grid>
 						)}
-						{selectedTool == "terraform" && (
-							<TerraformManager
+						{selectedTool !== "none" && (
+							<ManagedToolWrapper
 								backButton={() => setSelectedTool("none")}
-							/>
-						)}
-						{selectedTool == "pipeline" && (
-							<TerraformManager
-								backButton={() => setSelectedTool("none")}
+								children={(() => {
+									if (selectedTool === "terraform") {
+										return props => (
+											<TerraformManager {...props} />
+										);
+									} else {
+										return null;
+									}
+								})()}
 							/>
 						)}
 					</Grid>

@@ -1,10 +1,9 @@
 import React, {Dispatch} from "react";
-import {partialResource, SubmitModalInfoInterface} from "../terraformManager";
+import {partialResource, SubmitModalInfoInterface} from "../managedToolWrapper";
 import {resourceSettings} from "../terraformOptions";
 import AddNewResourceModal from "./AddNewResourceModal";
 import AdvancedOptionsModal from "./AdvancedOptionsModal";
 import CustomizeOrQuickstartModal from "./CustomizeOrQuickstartModal";
-import LoadingModal from "./LoadingModal";
 import {handleCloseModal} from "./modalHandlers";
 import OkCancelModal from "./OkCancelModal";
 import OkModal from "./OkModal";
