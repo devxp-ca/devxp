@@ -45,9 +45,17 @@ export default ({
 		React.useState(false);
 
 	useEffect(() => {
+		const storageRepo: string | null =
+			localStorage.getItem("cachedSelectedRepo");
+		if (storageRepo) {
+			updateSelectedRepo(storageRepo);
+		}
+	}, []);
+	useEffect(() => {
 		if (onRepoChange) {
 			onRepoChange(selectedRepo);
 		}
+		localStorage.setItem("cachedSelectedRepo", selectedRepo);
 	}, [selectedRepo]);
 
 	const [copyRepoModalIsOpen, setCopyRepoModalIsOpen] = React.useState(false);

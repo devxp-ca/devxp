@@ -64,9 +64,6 @@ export interface ManagedToolProps {
 	setExitWarningModalIsOpen: Dispatch<boolean>;
 	setPrButtonClicked: Dispatch<boolean>;
 }
-export type ManagedToolPropsMin = ManagedToolProps | {};
-export const hasProps = (p: ManagedToolPropsMin): p is ManagedToolProps =>
-	"selectedRepo" in p;
 
 export default function ManagedToolWrapper(props: {
 	backButton: () => void;
