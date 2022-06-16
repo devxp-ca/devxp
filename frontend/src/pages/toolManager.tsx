@@ -3,7 +3,9 @@ import Navbar from "../components/Navbar";
 import {lightTheme, darkTheme} from "../style/themes";
 import ToolManagerCard from "../components/toolManagerCard";
 import TerraformManager from "../components/terraformManager";
-import ManagedToolWrapper from "../components/managedToolWrapper";
+import ManagedToolWrapper, {
+	ManagedToolProps
+} from "../components/managedToolWrapper";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -16,6 +18,7 @@ import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 import logoPNG from "../assets/logo.png";
 import githubPNG from "../assets/github.png";
+import PipelineManager from "../components/pipelineManager";
 
 export default function ToolManager() {
 	//True if screen width > 600px, else false
@@ -51,6 +54,22 @@ export default function ToolManager() {
 	};
 
 	const [selectedTool, setSelectedTool] = React.useState<string>("none");
+
+	const [managedTool, setManagedTool] =
+		React.useState<(props: ManagedToolProps) => React.ReactNode>(null);
+	React.useEffect(() => {
+		if (selectedTool === "terraform") {
+			setManagedTool(() => (props: ManagedToolProps) => (
+				<TerraformManager {...props} />
+			));
+		} else if (selectedTool === "pipeline") {
+			setManagedTool(() => (props: ManagedToolProps) => (
+				<PipelineManager {...props} />
+			));
+		} else {
+			setManagedTool(null);
+		}
+	}, [selectedTool]);
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -149,15 +168,7 @@ export default function ToolManager() {
 						{selectedTool !== "none" && (
 							<ManagedToolWrapper
 								backButton={() => setSelectedTool("none")}
-								children={(() => {
-									if (selectedTool === "terraform") {
-										return props => (
-											<TerraformManager {...props} />
-										);
-									} else {
-										return null;
-									}
-								})()}
+								children={managedTool}
 							/>
 						)}
 					</Grid>

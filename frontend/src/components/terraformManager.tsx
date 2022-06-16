@@ -7,7 +7,6 @@ import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
-import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 import typeToResource from "./resources/typeToResource";
 import Resource from "./resources/Resource";
 import {handleOpenSubmitModalConfirmation} from "./modals/modalHandlers";
@@ -29,6 +28,7 @@ import {
 	SubmitModalInfoDefaults
 } from "./managedToolWrapper";
 import BackButton from "./buttons/BackButton";
+import ProviderSelector from "./providerSelector";
 
 export default function TerraformManager(props: ManagedToolProps) {
 	const {
@@ -223,46 +223,13 @@ export default function TerraformManager(props: ManagedToolProps) {
 							xs={11}
 							justifyContent="center"
 							alignItems="center">
-							<LabelledRadioSelect
-								text="Provider"
-								description={
-									<div>
-										<p>
-											Select the provider you have a cloud
-											services account with.
-										</p>
-										<p>
-											<Link
-												href="https://github.com/devxp-ca/devxp/wiki/Terraform#providers"
-												target="_blank"
-												rel="noopener">
-												Learn more.
-											</Link>
-										</p>
-									</div>
-								}
-								options={[
-									{
-										key: "aws",
-										label: "Amazon",
-										disabled: trackedResources.length > 0
-									},
-									{
-										key: "google",
-										label: "Google",
-										disabled: trackedResources.length > 0
-									},
-									{
-										key: "azure",
-										label: "Azure",
-										disabled: true
-									}
-								]}
-								initial={selectedProvider}
+							<ProviderSelector
+								disabled={trackedResources.length > 0}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
 									setSettingsHaveBeenEdited(true);
 								}}
+								initial={selectedProvider}
 							/>
 							{selectedProvider === "google" && (
 								<LabelledTextInput
