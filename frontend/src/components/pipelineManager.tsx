@@ -30,12 +30,16 @@ export default function PipelineManager(props: ManagedToolProps) {
 		setShouldResetData
 	} = props;
 
-	const [selectedProvider, setSelectedProvider] = React.useState("");
+	const [selectedProvider, setSelectedProvider] = React.useState(
+		selectedRepoSavedData?.settings?.provider ?? ""
+	);
 
 	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
 	const [submitModalInfo, setSubmitModalInfo] = React.useState(
 		SubmitModalInfoDefaults
 	);
+
+	console.dir(selectedRepoSavedData);
 
 	const resetRepoData = () => {
 		setShouldResetData(false);
@@ -88,6 +92,9 @@ export default function PipelineManager(props: ManagedToolProps) {
 							justifyContent="center"
 							alignItems="center">
 							<ProviderSelector
+								disabled={
+									!!selectedRepoSavedData?.settings?.provider
+								}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
 									setSettingsHaveBeenEdited(true);
