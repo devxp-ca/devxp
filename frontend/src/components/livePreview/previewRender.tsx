@@ -107,6 +107,7 @@ export default function PreviewRender(props: {
 						},
 						backgroundColor: `${colour}10`
 					}}
+					component="div"
 					paragraph={false}>
 					<pre
 						style={{
