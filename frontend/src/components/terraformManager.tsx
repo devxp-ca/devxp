@@ -230,6 +230,11 @@ export default function TerraformManager(props: ManagedToolProps) {
 									setSettingsHaveBeenEdited(true);
 								}}
 								initial={selectedProvider}
+								selectedRepo={
+									selectedRepo !== ""
+										? selectedRepo
+										: undefined
+								}
 							/>
 							{selectedProvider === "google" && (
 								<LabelledTextInput

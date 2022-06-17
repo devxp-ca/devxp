@@ -5,23 +5,30 @@ import LabelledRadioSelect from "./labelledInputs/LabelledRadioSelect";
 export default ({
 	disabled,
 	onChange,
-	initial
+	initial,
+	selectedRepo
 }: {
 	disabled?: boolean;
 	onChange?: (value: string) => void;
 	initial?: string;
+	selectedRepo?: string;
 }) => {
 	const [initialInternal, setInitialInternal] = React.useState<
 		string | undefined
 	>(
-		initial && initial !== ""
+		(initial && initial !== "") || !selectedRepo
 			? initial
-			: localStorage.getItem("cachedSelectedProvider")
+			: localStorage.getItem(`cachedSelectedProvider-${selectedRepo}`)
 	);
 	React.useEffect(() => {
 		if (initial && initial !== "") {
 			setInitialInternal(initial);
-			localStorage.setItem("cachedSelectedProvider", initial);
+			if (selectedRepo) {
+				localStorage.setItem(
+					`cachedSelectedProvider-${selectedRepo}`,
+					initial
+				);
+			}
 		}
 		console.log(initial, initialInternal);
 	}, [initial]);
@@ -70,7 +77,12 @@ export default ({
 				onChange={(value: string) => {
 					if (onChange) {
 						onChange(value);
-						localStorage.setItem("cachedSelectedProvider", value);
+						if (selectedRepo) {
+							localStorage.setItem(
+								`cachedSelectedProvider-${selectedRepo}`,
+								value
+							);
+						}
 					}
 				}}
 			/>

@@ -39,8 +39,6 @@ export default function PipelineManager(props: ManagedToolProps) {
 		SubmitModalInfoDefaults
 	);
 
-	console.dir(selectedRepoSavedData);
-
 	const resetRepoData = () => {
 		setShouldResetData(false);
 		setSelectedProvider(selectedRepoSavedData?.settings?.provider ?? "");
@@ -100,6 +98,11 @@ export default function PipelineManager(props: ManagedToolProps) {
 									setSettingsHaveBeenEdited(true);
 								}}
 								initial={selectedProvider}
+								selectedRepo={
+									selectedRepo !== ""
+										? selectedRepo
+										: undefined
+								}
 							/>
 						</Grid>
 					</Grid>
