@@ -166,7 +166,7 @@ export default function TerraformManager(props: ManagedToolProps) {
 
 	return (
 		<>
-			<Grid item>
+			<Grid container direction="row">
 				<TerraformManagerModals
 					{...{
 						submitModalIsOpen,

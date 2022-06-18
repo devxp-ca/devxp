@@ -18,6 +18,7 @@ import terraformPNGDark from "../assets/Terraform_Vertical_Dark.png";
 import terraformPNGLight from "../assets/Terraform_Vertical_Light.png";
 import logoPNG from "../assets/logo.png";
 import githubPNG from "../assets/github.png";
+import githubInvertedPNG from "../assets/github-inverted.png";
 import PipelineManager from "../components/pipelineManager";
 
 export default function ToolManager() {
@@ -125,14 +126,18 @@ export default function ToolManager() {
 										onClick={() =>
 											setSelectedTool("terraform")
 										}
-										title="Terraform"
-										desc="An infrastructure as code tool that can manage all your cloud resource needs"
+										title="Infrastructure"
+										desc="Manage, provision, and configure cloud infastructure using Terraform"
 										image={
 											theme === darkTheme
 												? terraformPNGDark
 												: terraformPNGLight
 										}
 										color="#844FBA"
+										imagesx={{
+											height: "364.781px",
+											objectFit: "contain"
+										}}
 									/>
 								</Grid>
 								<Grid item>
@@ -141,8 +146,12 @@ export default function ToolManager() {
 										onClick={() => {
 											setSelectedTool("pipeline");
 										}}
-										desc="Build, provision, and deployment pipelines using Github Actions"
-										image={githubPNG}
+										desc="Build, provisionment, and deployment pipelines using Github Actions"
+										image={
+											theme === lightTheme
+												? githubInvertedPNG
+												: githubPNG
+										}
 										color="#262b32"
 										imagesx={{
 											height: "364.781px",
@@ -153,7 +162,7 @@ export default function ToolManager() {
 								<Grid item>
 									<ToolManagerCard
 										title="Under Development"
-										desc="The remaining tools we plan to support are currently under construction"
+										desc="The remaining tools we plan to support are currently under development"
 										image={logoPNG}
 										color="#4DACFF"
 										imagesx={{

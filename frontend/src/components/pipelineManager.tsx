@@ -11,6 +11,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {ManagedToolProps, SubmitModalInfoDefaults} from "./managedToolWrapper";
 import BackButton from "./buttons/BackButton";
 import ProviderSelector from "./providerSelector";
+import Pipeline from "./Pipeline";
 
 export default function PipelineManager(props: ManagedToolProps) {
 	const {
@@ -68,9 +69,11 @@ export default function PipelineManager(props: ManagedToolProps) {
 		}
 	}, [prButtonClicked]);
 
+	console.dir(selectedRepoSavedData);
+
 	return (
 		<>
-			<Grid item>
+			<Grid container direction="row">
 				<Typography sx={{paddingTop: 4}} variant="h4">
 					Pipelines
 				</Typography>
@@ -124,6 +127,40 @@ export default function PipelineManager(props: ManagedToolProps) {
 						}
 					}}
 				/>
+				<Grid
+					container
+					direction="column"
+					sx={{
+						width: "80vw",
+						height: "50vh",
+						gridGap: "1rem",
+						flexWrap: "nowrap",
+						"& .arrow:last-of-type": {
+							display: "none"
+						}
+					}}>
+					<Pipeline
+						disabled={true}
+						title="Test"
+						description="Coming soon"
+					/>
+					<Pipeline
+						disabled={true}
+						title="Build"
+						description="Coming soon"
+						secondary={true}
+					/>
+					<Pipeline
+						title="Invoke"
+						description="Invoke your cloud infastructure using Terraform"
+					/>
+					<Pipeline
+						title="Deploy"
+						description="Coming soon"
+						disabled={true}
+						secondary={true}
+					/>
+				</Grid>
 			</Grid>
 			{isMobile === false && (
 				<PreviewWindow data={previewData} error={previewError} />
