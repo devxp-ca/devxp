@@ -5,6 +5,7 @@ import Homepage from "./pages/homepage";
 import ToolManager from "./pages/toolManager";
 import AboutPage from "./pages/aboutpage";
 import NewsPage from "./pages/newspage";
+import NextSteps from "./pages/nextsteps";
 import "./style/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 			<Route path="/toolManager" element={<ToolManager />} />
 			<Route path="/about" element={<AboutPage />} />
 			<Route path="/news" element={<NewsPage />} />
+			<Route path="/next" element={<NextSteps />} />
 		</Routes>
 	</BrowserRouter>
 );

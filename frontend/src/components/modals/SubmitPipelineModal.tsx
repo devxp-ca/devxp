@@ -53,14 +53,27 @@ export default ({
 				})
 			)
 			.then(response => {
-				handleOpenSuccessModal(
-					setSubmitModalInfo,
-					setSubmitModalIsOpen,
-					response.data?.pr?.html_url ?? "",
-					selectedProvider,
-					response.data?.initialization?.pr?.html_url
-				)();
-				setSettingsHaveBeenEdited(false);
+				if (!response.data.response) {
+					handleOpenFailModal(
+						setSubmitModalInfo,
+						setSubmitModalIsOpen
+					)([
+						{
+							timestamp: new Date(),
+							status: 500,
+							error: "Invalid response",
+							path: CONFIG.SETTINGS_PATH,
+							message: "No valid next steps were returned"
+						}
+					]);
+				} else {
+					setSettingsHaveBeenEdited(false);
+					handleOpenSuccessModal(
+						setSubmitModalInfo,
+						setSubmitModalIsOpen,
+						`${CONFIG.BACKEND_URL}${CONFIG.NEXT_STEPS_PATH}${response.data.response}`
+					)();
+				}
 			})
 			.catch((error: AxiosError) => {
 				console.dir(error.response.data);

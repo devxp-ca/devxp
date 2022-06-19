@@ -3,7 +3,6 @@ import {useEffect} from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
-import axios from "axios";
 import {handleOpenSubmitModalConfirmation} from "./modals/modalHandlers";
 
 import PreviewWindow from "../components/livePreview/previewWindow";
@@ -38,6 +37,8 @@ export default function PipelineManager(props: ManagedToolProps) {
 		setShouldResetData
 	} = props;
 
+	console.dir(selectedRepoSavedData);
+
 	const [selectedProvider, setSelectedProvider] = React.useState(
 		selectedRepoSavedData?.settings?.provider ?? ""
 	);
@@ -50,7 +51,10 @@ export default function PipelineManager(props: ManagedToolProps) {
 	///////////////////
 
 	const [terraformPipeline, setTerraformPipeline] = React.useState(
-		selectedRepoSavedData?.pipelines?.terraform?.enabled ?? false
+		selectedRepoSavedData?.pipelines?.jobs?.reduce(
+			(acc: boolean, cur: any) => acc || cur.type === "terraform",
+			false
+		) ?? false
 	);
 
 	///////////////////
@@ -59,7 +63,10 @@ export default function PipelineManager(props: ManagedToolProps) {
 		setShouldResetData(false);
 		setSelectedProvider(selectedRepoSavedData?.settings?.provider ?? "");
 		setTerraformPipeline(
-			selectedRepoSavedData?.pipelines?.terraform?.enabled ?? false
+			selectedRepoSavedData?.pipelines?.jobs?.reduce(
+				(acc: boolean, cur: any) => acc || cur.type === "terraform",
+				false
+			) ?? false
 		);
 	}, [selectedRepoSavedData, shouldResetData]);
 

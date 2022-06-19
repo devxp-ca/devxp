@@ -2,10 +2,12 @@
 import {Router} from "express";
 import {getRepoFiles} from "../controllers/getRepoFiles";
 import {getRepoList} from "../controllers/getRepoList";
+import {getResponse} from "../controllers/response";
 // import {getNumRepoPages} from "../controllers/getRepoPages";
 import {postSettings, getSettings} from "../controllers/settings";
 import {submitPr} from "../middleware/analytics";
 import getRepoFilesValidator from "../validators/getRepoFilesValidator";
+import getResponseValidator from "../validators/getResponseValidator";
 import getSettingsValidator from "../validators/getSettingsValidator";
 import {settingsValidator} from "../validators/terraformValidator";
 
@@ -34,11 +36,6 @@ apiV1Router.post(
 	postSettings
 );
 apiV1Router.get("/settings", getSettingsValidator, getSettings);
-
-//Edit terraform settings
-//apiV1Router.patch("/terraform", TODO);
-
-//Get current terraform settings
-//apiV1Router.get("/terraform", TODO);
+apiV1Router.get("/response/:id", getResponseValidator, getResponse);
 
 export default apiV1Router;

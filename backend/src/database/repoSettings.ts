@@ -45,12 +45,17 @@ export const terraformSettingsSchema = new Schema({
 	resources: [Schema.Types.Mixed] //resources.map(resource => resource.toSchema())
 });
 
+export const pipelineSettingsSchema = new Schema({
+	jobs: [Schema.Types.Mixed]
+});
+
 //================================ Repo ====================================//
 
 // export const repoSettingsSchema = (resources: TerraformResource[] = []) =>
 export const repoSettingsSchema = new Schema({
 	repo: {type: String, required: true, unique: true},
-	terraformSettings: terraformSettingsSchema //(resources)
+	terraformSettings: terraformSettingsSchema, //(resources)
+	pipelineSettings: pipelineSettingsSchema //(resources)
 });
 
 // export const RepoSettings = (resources: TerraformResource[] = []) =>
