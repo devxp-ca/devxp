@@ -30,16 +30,29 @@ export const handleOpenSuccessModal =
 			title: "Success",
 			body: (
 				<div>
-					Your changes have been successfully pushed to your
-					repository, but you're not done! View your next steps now or
-					later{" "}
-					<Link href={response} target="_blank">
-						here
-					</Link>
+					<div
+						style={{
+							marginBottom: "10px"
+						}}>
+						Your changes have been successfully pushed to your
+						repository, but you're not done!
+					</div>
+					<Divider />
+					<div
+						style={{
+							marginTop: "10px",
+							textAlign: "center"
+						}}>
+						Please view your customized next steps:{" "}
+						<Link href={response} target="_blank">
+							here
+						</Link>
+					</div>
 				</div>
 			)
 		});
 		setOpenModal(true);
+		window.open(response, "_blank").focus();
 	};
 
 export const handleAwaitSuccessModal =
