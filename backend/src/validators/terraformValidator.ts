@@ -1,5 +1,6 @@
 import {body, header, oneOf} from "express-validator";
 import {validationErrorHandler} from "../types/errorHandler";
+import jobValidator from "./jobValidator";
 import resourceValidator, {
 	resourceTypes,
 	uniquenessValidator
@@ -124,6 +125,24 @@ export const settingsValidator = [
 		.if(body("tool").equals("terraform"))
 		.isObject()
 		.custom(resourceValidator),
+
+	body("settings.jobs")
+		.if(body("tool").equals("pipeline"))
+		.isArray()
+		.isLength({min: 1})
+		.withMessage("Pipelines must have atleast one job"),
+	body("settings.jobs.*")
+		.if(body("tool").equals("pipeline"))
+		.custom(jobValidator),
+	body("settings.jobs.type")
+		.if(body("tool").equals("pipeline"))
+		.trim()
+		.escape(),
+	body("settings.jobs.provider")
+		.if(body("tool").equals("pipeline"))
+		.optional()
+		.trim()
+		.escape(),
 
 	//Only require token to exist if preview is NOT true
 	oneOf(

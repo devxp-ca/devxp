@@ -142,7 +142,7 @@ export const createTerraformSettings = (
 				//Create a new tree within that one
 				let files: GithubTreeNode[] = [
 					{
-						path: "backend.tf",
+						path: "devxp_backend.tf",
 						mode: getModeNumber("blob"),
 						type: "blob",
 						sha: blobBackend.sha,
@@ -150,7 +150,7 @@ export const createTerraformSettings = (
 					}
 				];
 				const terraformTF: GithubTreeNode = {
-					path: "terraform.tf",
+					path: "devxp_main.tf",
 					mode: getModeNumber("blob"),
 					type: "blob",
 					sha: blobRoot.sha,

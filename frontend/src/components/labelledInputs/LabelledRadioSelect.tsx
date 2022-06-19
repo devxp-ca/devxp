@@ -25,7 +25,11 @@ export default function LabelledRadioInput(props: {
 	}, [props.initial]);
 
 	return (
-		<Stack direction="row">
+		<Stack
+			sx={{
+				width: "100%"
+			}}
+			direction="row">
 			<Typography sx={{paddingTop: 0.4}} variant="h6">
 				{props.text}
 			</Typography>

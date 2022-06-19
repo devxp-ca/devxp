@@ -19,6 +19,7 @@ import axios from "axios";
 import {CONFIG} from "../config";
 import PreviewRender from "../components/livePreview/previewRender";
 import {resourceSettings} from "./terraformOptions";
+import Arrow from "./Arrow";
 
 const dummyResources: (resourceSettings & any)[] = [
 	{
@@ -160,15 +161,7 @@ export default function ProductPage() {
 								}}></Box>
 						</Grid>
 						<Grid item sx={{padding: 4, flexGrow: 1}}>
-							<Box
-								sx={{
-									height: "100%",
-									backgroundImage: `url(${arrowSecondary})`,
-									backgroundSize: "contain",
-									backgroundPosition: "center center",
-									backgroundRepeat: "no-repeat",
-									imageRendering: "pixelated"
-								}}></Box>
+							<Arrow arrow={arrowSecondary} />
 						</Grid>
 						<Grid
 							item
@@ -189,15 +182,7 @@ export default function ProductPage() {
 								}}></Box>
 						</Grid>
 						<Grid item sx={{padding: 4, flexGrow: 1}}>
-							<Box
-								sx={{
-									height: "100%",
-									backgroundImage: `url(${arrowInfo})`,
-									backgroundSize: "contain",
-									backgroundPosition: "center center",
-									backgroundRepeat: "no-repeat",
-									imageRendering: "pixelated"
-								}}></Box>
+							<Arrow arrow={arrowInfo} />
 						</Grid>
 						<Grid
 							item
@@ -416,16 +401,7 @@ export default function ProductPage() {
 								borderRadius: 2,
 								paddingLeft: 2
 							}}>
-							<Box
-								sx={{
-									height: "100%",
-									backgroundImage: `url(${arrowInfo})`,
-									backgroundSize: "contain",
-									backgroundPosition: "center center",
-									backgroundRepeat: "no-repeat",
-									transform: "rotate(90deg)",
-									imageRendering: "pixelated"
-								}}></Box>
+							<Arrow arrow={arrowInfo} />
 						</Grid>
 
 						<Grid

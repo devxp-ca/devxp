@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 
 import Link from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
-import {BackendError} from "../terraformManager";
+import {BackendError} from "../managedToolWrapper";
 
 export interface ModalParams {
 	isSubmitModal: boolean;
