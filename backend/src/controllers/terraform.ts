@@ -22,6 +22,8 @@ import {AwsLoadBalancer} from "../terraform/awsLoadBalancer";
 import {BackendModel} from "../database/bucket";
 import {reqToResources} from "../terraform/objectToResource";
 import {GithubTreeNode} from "../types/github";
+import getUser from "../githubapi/getUser";
+import {ResponseModal} from "../database/response";
 
 export const createTerraformSettings = (
 	req: Request,
@@ -248,21 +250,23 @@ export const createTerraformSettings = (
 					);
 
 					return {
-						ref: refInit,
-						pr: prInit,
-						initialization: {
-							ref,
-							pr
-						}
+						pullRequest: prInit.html_url,
+						initialPullRequest: pr.html_url
 					};
 				}
 				return {
-					ref,
-					pr
+					pullRequest: pr.html_url
 				};
 			})
-			.then(json => {
-				res.json(json);
+			.then(async json => {
+				const user = await getUser(token);
+				const response = await new ResponseModal({
+					...json,
+					user: user.id
+				}).save();
+				res.json({
+					response: response.id
+				});
 			})
 			.catch(err => {
 				//If this error occures it's likely that the repo is empty
