@@ -263,7 +263,8 @@ export const createTerraformSettings = (
 				const response = await new ResponseModal({
 					...json,
 					user: user.id,
-					provider: provider
+					provider: provider,
+					tool: "terraform"
 				}).save();
 				res.json({
 					response: response.id

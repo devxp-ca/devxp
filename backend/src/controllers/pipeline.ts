@@ -102,7 +102,8 @@ jobs:
 			const user = await getUser(token);
 			const response = await new ResponseModal({
 				...json,
-				user: user.id
+				user: user.id,
+				tool: "pipeline"
 			}).save();
 			res.json({
 				response: response.id
