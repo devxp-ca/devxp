@@ -48,9 +48,6 @@ export const rootBlock = (
 ): [any, any] => {
 	let json: TerraformJson = {
 		terraform: terraformBlock(providers, backend, false),
-		provider: arr(providers).map(provider =>
-			(provider as AwsProvider | GoogleProvider).toJSON()
-		),
 		resource: resources
 			.map(r => {
 				let json = [r.toJSON()].flat();
@@ -76,7 +73,10 @@ export const rootBlock = (
 			resource: [
 				(backend as NamedAwsBackend | NamedGoogleBackend).toResource()
 			],
-			terraform: terraformBlock(providers, backend, true)
+			terraform: terraformBlock(providers, backend, true),
+			provider: arr(providers).map(provider =>
+				(provider as AwsProvider | GoogleProvider).toJSON()
+			)
 		}
 	];
 };

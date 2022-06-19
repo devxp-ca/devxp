@@ -22,6 +22,13 @@ deploy:
     id: 'checkout'
     uses: actions/checkout@v2
 
+  - name: 'Cache Terraform State 💾'
+    id: cache-state-get
+    uses: actions/cache@v3
+    with:
+      path: terraform.tfstate
+      key: \${{ runner.os }}-state
+
 ${
 	job.provider === "google"
 		? `
@@ -38,19 +45,25 @@ ${
 }
 
   - name: 'Setup terraform 🟪'
-    run: 'terraform init'
-${
-	job.provider === "aws"
-		? `
-    env:
-      AWS_ACCESS_KEY_ID: \${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-`
-		: ""
-}
+    run: '${
+		job.provider === "aws"
+			? "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} "
+			: ""
+	}terraform init -migrate-state -force-copy'
+
+  - name: 'Cache Terraform State 💾'
+    id: cache-state-set
+    uses: actions/cache@v3
+    with:
+      path: terraform.tfstate
+      key: \${{ runner.os }}-state
 
   - name: 'Terraform Apply 🚀'
-    run: 'terraform apply -auto-approve'
+    run: '${
+		job.provider === "aws"
+			? "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} "
+			: ""
+	}terraform apply -auto-approve'
 `;
 	} else {
 		//This will never run

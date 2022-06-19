@@ -342,7 +342,7 @@ export interface PolicyStatement {
 }
 
 export interface TerraformJson {
-	provider: Record<string, any>[];
+	provider?: Record<string, any>[];
 	data: Record<string, any>[];
 	terraform: Record<string, any>[];
 	resource: Record<string, any>[];
