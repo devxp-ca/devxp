@@ -158,6 +158,7 @@ export const jsonToHcl = (json: string | Record<string, any>) => {
 	hcl = hcl.replace(/ *env = \[\]/, "");
 	hcl = hcl.replace(/ *variable = \[\]/, "");
 	hcl = hcl.replace(/ *output = \[\]/, "");
+	hcl = hcl.replace(/ *resource = \[\]/, "");
 	/*
 	//Merge duplicate blocks into arrays
 	let matches: Record<string, string[]> = {}
