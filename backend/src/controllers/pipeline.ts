@@ -1,4 +1,5 @@
 import {Request, Response} from "express";
+import {ResponseModal} from "../database/response";
 import createBranch from "../githubapi/createBranch";
 import createCommit from "../githubapi/createCommit";
 import {createPullRequestGetUrl} from "../githubapi/createPullRequest";
@@ -6,6 +7,7 @@ import createTree from "../githubapi/createTree";
 import getCommitFromUrl from "../githubapi/getCommitFromUrl";
 import getHead from "../githubapi/getHead";
 import getTreeFromUrl from "../githubapi/getTreeFromUrl";
+import getUser from "../githubapi/getUser";
 import postBlob from "../githubapi/postBlob";
 import updateHead from "../githubapi/updateHead";
 import {getModeNumber} from "../githubapi/util";
@@ -93,12 +95,18 @@ jobs:
 			);
 
 			return {
-				ref,
-				pr
+				pullRequest: pr.html_url
 			};
 		})
-		.then(json => {
-			res.json(json);
+		.then(async json => {
+			const user = await getUser(token);
+			const response = await new ResponseModal({
+				...json,
+				user: user.id
+			}).save();
+			res.json({
+				response: response.id
+			});
 		})
 		.catch(err => {
 			//If this error occures it's likely that the repo is empty

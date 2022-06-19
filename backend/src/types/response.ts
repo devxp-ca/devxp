@@ -1,5 +1,9 @@
 export interface BaseResponse {
-	initialPullRequest?: string;
 	pullRequest: string;
 	user: number;
+}
+
+export interface TerraformResponse extends BaseResponse {
+	initialPullRequest?: string;
+	provider: string;
 }

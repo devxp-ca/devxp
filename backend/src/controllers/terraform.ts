@@ -262,7 +262,8 @@ export const createTerraformSettings = (
 				const user = await getUser(token);
 				const response = await new ResponseModal({
 					...json,
-					user: user.id
+					user: user.id,
+					provider: provider
 				}).save();
 				res.json({
 					response: response.id
