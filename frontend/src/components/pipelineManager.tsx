@@ -12,6 +12,13 @@ import {ManagedToolProps, SubmitModalInfoDefaults} from "./managedToolWrapper";
 import BackButton from "./buttons/BackButton";
 import ProviderSelector from "./providerSelector";
 import Pipeline from "./Pipeline";
+import ManagedToolModals from "./modals/ManagedToolModals";
+import PipelineToolModals from "./modals/PipelineToolModals";
+
+export type Job = {
+	type: "terraform";
+	provider: "google" | "aws" | "azure";
+};
 
 export default function PipelineManager(props: ManagedToolProps) {
 	const {
@@ -40,18 +47,42 @@ export default function PipelineManager(props: ManagedToolProps) {
 		SubmitModalInfoDefaults
 	);
 
-	const resetRepoData = () => {
+	///////////////////
+
+	const [terraformPipeline, setTerraformPipeline] = React.useState(
+		selectedRepoSavedData?.pipelines?.terraform?.enabled ?? false
+	);
+
+	///////////////////
+
+	React.useEffect(() => {
 		setShouldResetData(false);
 		setSelectedProvider(selectedRepoSavedData?.settings?.provider ?? "");
-	};
+		setTerraformPipeline(
+			selectedRepoSavedData?.pipelines?.terraform?.enabled ?? false
+		);
+	}, [selectedRepoSavedData, shouldResetData]);
 
-	React.useEffect(resetRepoData, [selectedRepoSavedData, shouldResetData]);
+	React.useEffect(() => {
+		if (prButtonClicked) {
+			handleOpenSubmitModalConfirmation(
+				setSubmitModalInfo,
+				setSubmitModalIsOpen,
+				selectedRepo
+			)();
+			setPrButtonClicked(false);
+		}
+	}, [prButtonClicked]);
 
 	//   --------   PREVIEW CHANGES   --------   //
 
 	const [previewData, setPreviewData] = React.useState("");
 	const [previewError, setPreviewError] = React.useState(false);
-	React.useEffect(() => {}, [selectedRepoSavedData, selectedProvider]);
+	React.useEffect(() => {}, [
+		selectedRepoSavedData,
+		selectedProvider,
+		terraformPipeline
+	]);
 
 	//   --------   -------- --------   --------   //
 
@@ -69,11 +100,38 @@ export default function PipelineManager(props: ManagedToolProps) {
 		}
 	}, [prButtonClicked]);
 
-	console.dir(selectedRepoSavedData);
-
 	return (
 		<>
 			<Grid container direction="row">
+				<ManagedToolModals
+					{...{
+						setSettingsHaveBeenEdited,
+						overwriteWarningModalIsOpen,
+						setOverwriteWarningModalIsOpen,
+						exitWarningModalIsOpen,
+						setExitWarningModalIsOpen,
+						backButton
+					}}
+				/>
+				<PipelineToolModals
+					{...{
+						submitModalIsOpen,
+						setSubmitModalIsOpen,
+						submitModalInfo,
+						setSubmitModalInfo,
+						selectedRepo,
+						selectedProvider,
+						setSettingsHaveBeenEdited,
+						jobs: [
+							terraformPipeline
+								? {
+										type: "terraform",
+										provider: selectedProvider
+								  }
+								: undefined
+						].filter(j => !!j) as Job[]
+					}}
+				/>
 				<Typography sx={{paddingTop: 4}} variant="h4">
 					Pipelines
 				</Typography>
@@ -153,6 +211,11 @@ export default function PipelineManager(props: ManagedToolProps) {
 					<Pipeline
 						title="Invoke"
 						description="Invoke your cloud infastructure using Terraform"
+						onChange={val => {
+							setSettingsHaveBeenEdited(true);
+							setTerraformPipeline(val);
+						}}
+						initial={terraformPipeline}
 					/>
 					<Pipeline
 						title="Deploy"

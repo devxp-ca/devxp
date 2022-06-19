@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import arrowInfo from "../assets/arrow-info.png";
 import arrowSecondary from "../assets/arrow-secondary.png";
 import Arrow from "./Arrow";
@@ -15,16 +15,24 @@ export default ({
 	secondary,
 	title,
 	description,
-	initial
+	initial,
+	onChange,
+	onClick
 }: {
 	disabled?: boolean;
 	secondary?: boolean;
 	title: string;
 	description: string;
 	initial?: boolean;
+	onChange?: (e: boolean) => void;
+	onClick?: () => void;
 }) => {
 	const theme = useTheme();
 	const [used, setUsed] = useState(initial ?? false);
+
+	useEffect(() => {
+		setUsed(initial);
+	}, [initial]);
 
 	const textColour = theme.palette.secondary.dark;
 	const iD = theme.palette.mode === "dark";
@@ -48,6 +56,7 @@ export default ({
 						width: "100%",
 						height: "100%"
 					}}
+					onClick={onClick}
 					disableRipple={!used || disabled}>
 					<Grid
 						container
@@ -110,7 +119,10 @@ export default ({
 							<Switch
 								disabled={disabled}
 								checked={used}
-								onChange={e => setUsed(e.target.checked)}
+								onChange={e => {
+									setUsed(e.target.checked);
+									if (onChange) onChange(e.target.checked);
+								}}
 							/>
 						</Box>
 					</Grid>

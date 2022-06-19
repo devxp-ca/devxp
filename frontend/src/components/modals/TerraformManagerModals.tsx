@@ -5,7 +5,6 @@ import AddNewResourceModal from "./AddNewResourceModal";
 import AdvancedOptionsModal from "./AdvancedOptionsModal";
 import CustomizeOrQuickstartModal from "./CustomizeOrQuickstartModal";
 import {handleCloseModal} from "./modalHandlers";
-import OkCancelModal from "./OkCancelModal";
 import OkModal from "./OkModal";
 import SubmitTerraformModal from "./SubmitTerraformModal";
 import TerraformOptionsModal from "./TerraformOptionsModal";
@@ -150,36 +149,11 @@ export default ({
 				}}
 			/>
 			<OkModal
-				isOpen={overwriteWarningModalIsOpen}
-				handleClose={handleCloseModal(setOverwriteWarningModalIsOpen)}
-				title={"Heads up!"}
-				bodyText={
-					"It looks like you have uncommitted changes.\
-							If you select a new repo, your uncommitted changes will be lost.\
-							Consider creating a pull request before changing repos."
-				}
-			/>
-			<OkModal
 				isOpen={addResourceWarningModalIsOpen}
 				handleClose={handleCloseModal(setAddResourceWarningModalIsOpen)}
 				title={"Howdy,"}
 				bodyText={
 					"You'll need to select a provider before we can add resources for you."
-				}
-			/>
-			<OkCancelModal
-				isOpen={exitWarningModalIsOpen}
-				onOk={() => {
-					backButton();
-					setExitWarningModalIsOpen(false);
-					setSettingsHaveBeenEdited(false);
-				}}
-				onCancel={() => {
-					setExitWarningModalIsOpen(false);
-				}}
-				title={"Hold Up!"}
-				bodyText={
-					"If you leave, you will lose your currently unsaved settings."
 				}
 			/>
 			<AdvancedOptionsModal

@@ -11,7 +11,6 @@ import updateHead from "../githubapi/updateHead";
 import {getModeNumber} from "../githubapi/util";
 import {createJob, indentLines} from "../pipeline/pipeline";
 import {internalErrorHandler} from "../types/errorHandler";
-import {GithubTreeNode} from "../types/github";
 import {Job} from "../types/pipeline";
 
 export const pipelineController = (req: Request, res: Response) => {

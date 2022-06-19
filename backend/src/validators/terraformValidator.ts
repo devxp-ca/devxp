@@ -125,6 +125,7 @@ export const settingsValidator = [
 		.if(body("tool").equals("terraform"))
 		.isObject()
 		.custom(resourceValidator),
+
 	body("settings.jobs")
 		.if(body("tool").equals("pipeline"))
 		.isArray()

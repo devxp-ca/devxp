@@ -29,6 +29,7 @@ import {
 } from "./managedToolWrapper";
 import BackButton from "./buttons/BackButton";
 import ProviderSelector from "./providerSelector";
+import ManagedToolModals from "./modals/ManagedToolModals";
 
 export default function TerraformManager(props: ManagedToolProps) {
 	const {
@@ -203,6 +204,16 @@ export default function TerraformManager(props: ManagedToolProps) {
 						setSelectedAllowIngressWebOption,
 						setSelectedAllowEgressWebOption,
 						setSelectedAutoLoadBalanceOption
+					}}
+				/>
+				<ManagedToolModals
+					{...{
+						setSettingsHaveBeenEdited,
+						overwriteWarningModalIsOpen,
+						setOverwriteWarningModalIsOpen,
+						exitWarningModalIsOpen,
+						setExitWarningModalIsOpen,
+						backButton
 					}}
 				/>
 				<Typography sx={{paddingTop: 4}} variant="h4">
