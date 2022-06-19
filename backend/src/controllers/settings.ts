@@ -17,11 +17,15 @@ export const postSettings = (req: Request, res: Response) => {
 			internalErrorHandler(req, res)(new Error("Unknown resource type"));
 			return;
 		}
-
 		RepoSettings.updateOne(
 			//(resources)
 			{repo: req.body.repo},
-			{repo: req.body.repo, terraformSettings: req.body.settings},
+			{
+				$set: {
+					repo: req.body.repo,
+					terraformSettings: req.body.settings
+				}
+			},
 			{upsert: true}
 		)
 			.then(() => {
@@ -53,7 +57,20 @@ export const postSettings = (req: Request, res: Response) => {
 				internalErrorHandler(req, res)(err);
 			});
 	} else if (req.body.tool === "pipeline") {
-		pipelineController(req, res);
+		RepoSettings.updateOne(
+			//(resources)
+			{repo: req.body.repo},
+			{
+				$set: {repo: req.body.repo, pipelineSettings: req.body.settings}
+			},
+			{upsert: true}
+		)
+			.then(() => {
+				pipelineController(req, res);
+			})
+			.catch(err => {
+				internalErrorHandler(req, res)(err);
+			});
 	} else {
 		res.status(404).json(
 			new NotFoundError(req.body.tool, req.originalUrl).toResponse()
@@ -82,26 +99,28 @@ export const getSettings = (req: Request, res: Response) => {
 					).toResponse()
 				);
 			} else {
+				const terraform = settings.terraformSettings?.toJSON();
+				const pipelines = settings.pipelineSettings?.toJSON();
 				if (
 					"terraformSettings" in settings &&
 					"resources" in settings.terraformSettings
 				) {
-					const json = settings.terraformSettings.toJSON();
-					delete json._id;
-					json.resources = json.resources.map((resource: any) => {
-						delete resource._id;
-						return resource;
-					});
-
-					res.json({
-						settings: json
-					});
-				} else {
-					internalErrorHandler(
-						req,
-						res
-					)(new Error("Corrupted database entry"));
+					delete terraform._id;
+					terraform.resources = terraform.resources.map(
+						(resource: any) => {
+							delete resource._id;
+							return resource;
+						}
+					);
 				}
+				if ("pipelineSettings" in settings) {
+					delete pipelines._id;
+				}
+
+				res.json({
+					settings: terraform,
+					pipelines
+				});
 			}
 		}
 	);

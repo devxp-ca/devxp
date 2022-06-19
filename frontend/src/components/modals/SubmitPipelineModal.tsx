@@ -67,12 +67,12 @@ export default ({
 						}
 					]);
 				} else {
+					setSettingsHaveBeenEdited(false);
 					handleOpenSuccessModal(
 						setSubmitModalInfo,
 						setSubmitModalIsOpen,
 						`${CONFIG.BACKEND_URL}${CONFIG.NEXT_STEPS_PATH}${response.data.response}`
 					)();
-					setSettingsHaveBeenEdited(false);
 				}
 			})
 			.catch((error: AxiosError) => {
