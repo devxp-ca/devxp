@@ -13,11 +13,24 @@ import ProviderSelector from "./providerSelector";
 import Pipeline from "./Pipeline";
 import ManagedToolModals from "./modals/ManagedToolModals";
 import PipelineToolModals from "./modals/PipelineToolModals";
+import axios from "axios";
+import {CONFIG} from "../config";
+import {removeEmptyKeys} from "../util";
 
 export type Job = {
 	type: "terraform";
 	provider: "google" | "aws" | "azure";
 };
+
+const makeJobs = (terraformPipeline: boolean, selectedProvider?: string) =>
+	[
+		terraformPipeline
+			? {
+					type: "terraform",
+					provider: selectedProvider
+			  }
+			: undefined
+	].filter(j => !!j) as Job[];
 
 export default function PipelineManager(props: ManagedToolProps) {
 	const {
@@ -85,11 +98,27 @@ export default function PipelineManager(props: ManagedToolProps) {
 
 	const [previewData, setPreviewData] = React.useState("");
 	const [previewError, setPreviewError] = React.useState(false);
-	React.useEffect(() => {}, [
-		selectedRepoSavedData,
-		selectedProvider,
-		terraformPipeline
-	]);
+	React.useEffect(() => {
+		axios
+			.post(
+				`${CONFIG.BACKEND_URL}${CONFIG.SETTINGS_PATH}`,
+				removeEmptyKeys({
+					tool: "pipeline",
+					repo: selectedRepo,
+					preview: true,
+					settings: {
+						jobs: makeJobs(terraformPipeline, selectedProvider)
+					}
+				})
+			)
+			.then(response => {
+				setPreviewData(response.data.preview);
+			})
+			.catch(err => {
+				setPreviewError(true);
+				setTimeout(() => setPreviewError(false), 400);
+			});
+	}, [selectedRepoSavedData, selectedProvider, terraformPipeline]);
 
 	//   --------   -------- --------   --------   //
 
@@ -129,14 +158,7 @@ export default function PipelineManager(props: ManagedToolProps) {
 						selectedRepo,
 						selectedProvider,
 						setSettingsHaveBeenEdited,
-						jobs: [
-							terraformPipeline
-								? {
-										type: "terraform",
-										provider: selectedProvider
-								  }
-								: undefined
-						].filter(j => !!j) as Job[]
+						jobs: makeJobs(terraformPipeline, selectedProvider)
 					}}
 				/>
 				<Typography sx={{paddingTop: 4}} variant="h4">

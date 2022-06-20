@@ -11,6 +11,8 @@ import {pipelineController} from "./pipeline";
 export const postSettings = (req: Request, res: Response) => {
 	if (req.body.preview && req.body.tool === "terraform") {
 		createTerraformSettings(req, res, true);
+	} else if (req.body.preview && req.body.tool === "pipeline") {
+		pipelineController(req, res, true);
 	} else if (req.body.tool === "terraform") {
 		const resources = reqToResources(req) as TerraformResource[];
 		if (!resources.reduce((acc, nxt) => !!acc && !!nxt, true)) {

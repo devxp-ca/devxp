@@ -15,7 +15,11 @@ import {createJob, indentLines} from "../pipeline/pipeline";
 import {internalErrorHandler} from "../types/errorHandler";
 import {Job} from "../types/pipeline";
 
-export const pipelineController = (req: Request, res: Response) => {
+export const pipelineController = (
+	req: Request,
+	res: Response,
+	preview = false
+) => {
 	const jobs = req.body.settings.jobs as Job[];
 
 	let pipeline = `
@@ -34,6 +38,13 @@ jobs:
 	jobs.forEach(job => {
 		pipeline = `${pipeline}${indentLines(createJob(job), 2)}`;
 	});
+
+	if (preview) {
+		res.json({
+			preview: pipeline
+		});
+		return;
+	}
 
 	const repo = req.body.repo as string;
 	const token = req.headers?.token as string;

@@ -117,7 +117,9 @@ export default function PreviewRender(props: {
 						}}>
 						<code
 							className="language-terraform"
-							dangerouslySetInnerHTML={{__html: data}}
+							dangerouslySetInnerHTML={{
+								__html: `${data}<div style="margin-top: 4rem;"></div>`
+							}}
 						/>
 					</pre>
 				</Typography>
