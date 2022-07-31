@@ -115,6 +115,9 @@ export default () => {
 														url={
 															nextSteps.pullRequest
 														}
+														provider={
+															nextSteps.provider
+														}
 													/>
 												)}
 											</Typography>

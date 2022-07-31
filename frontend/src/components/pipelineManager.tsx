@@ -50,10 +50,20 @@ export default function PipelineManager(props: ManagedToolProps) {
 		setShouldResetData
 	} = props;
 
-	console.dir(selectedRepoSavedData);
+	const [project, setProject] = React.useState(
+		selectedRepoSavedData?.pipelines?.jobs?.filter(
+			(j: any) => j.type === "terraform"
+		)?.[0]?.project ??
+			selectedRepoSavedData?.settings?.project ??
+			""
+	);
 
 	const [selectedProvider, setSelectedProvider] = React.useState(
-		selectedRepoSavedData?.settings?.provider ?? ""
+		selectedRepoSavedData?.pipelines?.jobs?.filter(
+			(j: any) => j.type === "terraform"
+		)?.[0]?.provider ??
+			selectedRepoSavedData?.settings?.provider ??
+			""
 	);
 
 	const [submitModalIsOpen, setSubmitModalIsOpen] = React.useState(false);
@@ -74,7 +84,21 @@ export default function PipelineManager(props: ManagedToolProps) {
 
 	React.useEffect(() => {
 		setShouldResetData(false);
-		setSelectedProvider(selectedRepoSavedData?.settings?.provider ?? "");
+		setSelectedProvider(
+			selectedRepoSavedData?.pipelines?.jobs?.filter(
+				(j: any) => j.type === "terraform"
+			)?.[0]?.provider ??
+				selectedRepoSavedData?.settings?.provider ??
+				""
+		);
+		setProject(
+			selectedRepoSavedData?.pipelines?.jobs?.filter(
+				(j: any) => j.type === "terraform"
+			)?.[0]?.provider ??
+				selectedRepoSavedData?.settings?.project ??
+				""
+		);
+
 		setTerraformPipeline(
 			selectedRepoSavedData?.pipelines?.jobs?.reduce(
 				(acc: boolean, cur: any) => acc || cur.type === "terraform",
@@ -180,9 +204,6 @@ export default function PipelineManager(props: ManagedToolProps) {
 							justifyContent="center"
 							alignItems="center">
 							<ProviderSelector
-								disabled={
-									!!selectedRepoSavedData?.settings?.provider
-								}
 								onChange={(value: string) => {
 									setSelectedProvider(value);
 									setSettingsHaveBeenEdited(true);

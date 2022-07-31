@@ -143,6 +143,11 @@ export const settingsValidator = [
 		.optional()
 		.trim()
 		.escape(),
+	body("settings.jobs.project")
+		.if(body("tool").equals("pipeline"))
+		.optional()
+		.trim()
+		.escape(),
 
 	//Only require token to exist if preview is NOT true
 	oneOf(

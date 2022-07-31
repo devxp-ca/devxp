@@ -13,7 +13,7 @@ import updateHead from "../githubapi/updateHead";
 import {getModeNumber} from "../githubapi/util";
 import {createJob, indentLines} from "../pipeline/pipeline";
 import {internalErrorHandler} from "../types/errorHandler";
-import {Job} from "../types/pipeline";
+import {Job, jobIsTerraform, TerraformJob} from "../types/pipeline";
 
 export const pipelineController = (
 	req: Request,
@@ -109,13 +109,32 @@ jobs:
 				pullRequest: pr.html_url
 			};
 		})
-		.then(async json => {
+		.then(async (json: any) => {
 			const user = await getUser(token);
-			const response = await new ResponseModal({
+			json = {
 				...json,
 				user: user.id,
 				tool: "pipeline"
-			}).save();
+			};
+			if (jobs.filter(j => jobIsTerraform(j)).length > 0) {
+				json = {
+					...json,
+					provider: (
+						jobs.filter(j => jobIsTerraform(j))[0] as TerraformJob
+					).provider
+				};
+			}
+			if (jobs.filter(j => jobIsTerraform(j) && j.project).length > 0) {
+				json = {
+					...json,
+					project: (
+						jobs.filter(
+							j => jobIsTerraform(j) && j.project
+						)[0] as TerraformJob
+					).project
+				};
+			}
+			const response = await new ResponseModal(json).save();
 			res.json({
 				response: response.id
 			});

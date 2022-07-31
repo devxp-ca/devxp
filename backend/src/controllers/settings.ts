@@ -101,11 +101,12 @@ export const getSettings = (req: Request, res: Response) => {
 					).toResponse()
 				);
 			} else {
-				const terraform = settings.terraformSettings?.toJSON();
-				const pipelines = settings.pipelineSettings?.toJSON();
+				const terraform = settings.terraformSettings?.toJSON() ?? {};
+				const pipelines = settings.pipelineSettings?.toJSON() ?? {};
 				if (
 					"terraformSettings" in settings &&
-					"resources" in settings.terraformSettings
+					"resources" in terraform &&
+					"_id" in terraform
 				) {
 					delete terraform._id;
 					terraform.resources = terraform.resources.map(
@@ -115,7 +116,7 @@ export const getSettings = (req: Request, res: Response) => {
 						}
 					);
 				}
-				if ("pipelineSettings" in settings) {
+				if ("pipelineSettings" in settings && "_id" in pipelines) {
 					delete pipelines._id;
 				}
 

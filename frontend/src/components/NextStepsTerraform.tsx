@@ -1,6 +1,8 @@
-import {Link, Paper} from "@mui/material";
+import {Link} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import React from "react";
+import AwsAccessKey from "./awsAccessKey";
+import NextStepCodeblock from "./nextStepCodeblock";
 export default ({
 	url,
 	initUrl,
@@ -10,6 +12,8 @@ export default ({
 	initUrl?: string;
 	provider: string;
 }) => {
+	const aws = provider === "aws";
+
 	return (
 		<div>
 			<div style={{marginBottom: "18px"}}>
@@ -38,7 +42,7 @@ export default ({
 						recommend
 					</Link>{" "}
 					installing the{" "}
-					{provider === "aws" ? (
+					{aws ? (
 						<Link
 							href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"
 							target="_blank">
@@ -54,18 +58,13 @@ export default ({
 					cli tool and running:
 				</li>
 			</ol>
-			<Paper sx={{boxShadow: 6}}>
-				<pre style={{padding: "10px"}}>
-					<code>
-						{provider === "aws"
-							? "aws configure"
-							: "gcloud auth login"}
-					</code>
-				</pre>
-			</Paper>
+			{aws ? <AwsAccessKey isPipeline={false} start={3} /> : <></>}
+			<NextStepCodeblock>
+				{aws ? "aws configure" : "gcloud auth login"}
+			</NextStepCodeblock>
 			<Divider />
 			{!initUrl ? (
-				<ol start={3}>
+				<ol start={3 + (aws ? 4 : 0)}>
 					<li>
 						Merge or locally checkout your{" "}
 						<Link href={url} target="_blank">
@@ -94,7 +93,7 @@ export default ({
 						<span style={{fontWeight: "bolder"}}>two</span> pull
 						requests.
 					</div>
-					<ol start={3}>
+					<ol start={3 + (aws ? 4 : 0)}>
 						<li>
 							First merge the{" "}
 							<Link href={initUrl} target="_blank">
@@ -113,18 +112,10 @@ export default ({
 							commands:
 						</li>
 					</ol>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform init</code>
-						</pre>
-					</Paper>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform apply</code>
-						</pre>
-					</Paper>
+					<NextStepCodeblock>terraform init</NextStepCodeblock>
+					<NextStepCodeblock>terraform apply</NextStepCodeblock>
 					<Divider />
-					<ol start={5}>
+					<ol start={5 + (aws ? 4 : 0)}>
 						<li>
 							Next merge the{" "}
 							<Link href={url} target="_blank">
@@ -143,22 +134,14 @@ export default ({
 							commands:
 						</li>
 					</ol>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform init</code>
-						</pre>
-					</Paper>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform apply</code>
-						</pre>
-					</Paper>
+					<NextStepCodeblock>terraform init</NextStepCodeblock>
+					<NextStepCodeblock>terraform apply</NextStepCodeblock>
 				</>
 			)}
 			<Divider />
 			{!initUrl && (
 				<>
-					<ol start={4}>
+					<ol start={4 + (aws ? 4 : 0)}>
 						<li>
 							Invoke your infrastructure, by running the following{" "}
 							<Link
@@ -169,20 +152,12 @@ export default ({
 							commands:
 						</li>
 					</ol>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform init</code>
-						</pre>
-					</Paper>
-					<Paper sx={{boxShadow: 6}}>
-						<pre style={{padding: "10px"}}>
-							<code>terraform apply</code>
-						</pre>
-					</Paper>
+					<NextStepCodeblock>terraform init</NextStepCodeblock>
+					<NextStepCodeblock>terraform apply</NextStepCodeblock>
 					<Divider />
 				</>
 			)}
-			<ol start={initUrl ? 7 : 5}>
+			<ol start={initUrl ? 7 + (aws ? 4 : 0) : 5 + (aws ? 4 : 0)}>
 				<li>Focus on writing awesome software!</li>
 			</ol>
 		</div>

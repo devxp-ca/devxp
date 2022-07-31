@@ -6,6 +6,7 @@ export const responseSchema = new Schema({
 	user: Number,
 	initialPullRequest: String,
 	provider: String,
-	tool: String
+	tool: String,
+	project: String
 });
 export const ResponseModal = mongoose.model("Response", responseSchema);

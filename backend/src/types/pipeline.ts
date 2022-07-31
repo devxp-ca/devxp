@@ -6,6 +6,7 @@ export interface Job {
 export interface TerraformJob extends Job {
 	type: "terraform";
 	provider: providerName;
+	project?: string;
 }
 export const jobIsTerraform = (job: Job): job is TerraformJob =>
 	job.type === "terraform";
