@@ -17,8 +17,6 @@ export class RdsDatabase
 		id: string,
 		allocated_storage: number,
 		engine: rds_engine,
-		username: string,
-		password: string,
 		instance: ec2InstanceType,
 		autoIam?: boolean,
 		name?: string
@@ -26,25 +24,38 @@ export class RdsDatabase
 		super(id, "RdsDatabase", autoIam, name);
 		this.allocated_storage = allocated_storage;
 		this.engine = engine;
-		this.username = username;
-		this.password = password;
 		this.instance = instance;
 	}
 
 	//Returns a resource block
 	toJSON() {
-		return jsonRoot("aws_db_instance", this.id, {
-			name: this.name,
-			allocated_storage: this.allocated_storage,
-			engine: this.engine,
-			username: this.username,
-			password: this.password,
-			instance: this.instance
-		});
+		return [
+			jsonRoot("aws_db_instance", this.id, {
+				name: this.name,
+				allocated_storage: this.allocated_storage,
+				engine: this.engine,
+				username: `\${var.${this.id}-username}`,
+				password: `\${var.${this.id}-password}`,
+				instance: this.instance
+			})
+		];
 	}
 
 	//https://asecure.cloud/l/iam/
 	getPolicyDocument() {
-		return [];
+		return [
+			ResourceWithIam.policyStatement(
+				[
+					"rds:Describe*",
+					"rds:ListTagsForResource",
+					"rds:CreateDBInstance",
+					"rds:CreateDBSubnetGroup",
+					"rds:DeleteDBInstance",
+					"rds:StopDBInstance",
+					"rds:StartDBInstance"
+				],
+				`\${aws_db_instance.${this.id}.arn}`
+			)
+		];
 	}
 }
