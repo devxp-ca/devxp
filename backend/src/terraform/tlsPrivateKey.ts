@@ -16,11 +16,9 @@ export class TlsPrivateKey
 	}
 
 	toJSON() {
-		return [
-			jsonRoot("tls_private_key", this.id, {
-				algorithm: this.algorithm,
-				rsa_bits: this.rsa_bits
-			})
-		];
+		return jsonRoot("tls_private_key", this.id, {
+			algorithm: this.algorithm,
+			rsa_bits: this.rsa_bits
+		});
 	}
 }
