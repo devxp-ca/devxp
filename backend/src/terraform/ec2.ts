@@ -4,7 +4,7 @@ import {
 	TerraformJson,
 	defaultEc2User
 } from "../types/terraform";
-import {jsonRoot, output} from "./util";
+import {jsonRoot, output, tag} from "./util";
 import {ResourceWithIam} from "./resource";
 import {Eip} from "./Eip";
 import {arr} from "../util";
@@ -56,7 +56,8 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 
 		const json: any = {
 			ami,
-			instance_type: this.instance_type
+			instance_type: this.instance_type,
+			tags: []
 		};
 
 		if (isAutoAmi) {
@@ -85,6 +86,8 @@ export class Ec2 extends ResourceWithIam<Ec2> implements Ec2 {
 		if (this.awsKeyPair) {
 			json.key_name = this.awsKeyPair.id;
 		}
+
+		json.tags = [tag("Name", this.name ?? this.id)];
 
 		let output = [jsonRoot("aws_instance", this.id, json)];
 

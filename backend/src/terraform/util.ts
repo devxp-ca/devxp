@@ -54,6 +54,12 @@ export const output = (name: string, value: string, sensitive = false) => {
 	return json;
 };
 
+export const tag = (key: string, value: string) => {
+	const json: Record<string, any> = {};
+	json[key] = value;
+	return json;
+};
+
 export const jsonRoot = (
 	name: string,
 	id: string,
