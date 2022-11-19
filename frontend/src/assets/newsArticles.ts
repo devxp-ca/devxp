@@ -3,7 +3,7 @@ import thisIsDevOps from "../assets/ThisIsDevOps.png";
 
 export default [
 	{
-		href: "https://www.uvic.ca/ecs/home/news/current/2022may-student-unicorns-pitch-tech-startups.php?utm_source=linkedin&utm_medium=social&utm_campaign=hootsuite",
+		href: "https://www.uvic.ca/ecs/info-for/faculty-and-staff/announcements/startup-programming.php",
 		image: startup,
 		title: 'Student "unicorns" pitch tech startups',
 		description:
